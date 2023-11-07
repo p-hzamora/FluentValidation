@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Callable, List, TypeVar
+from typing import Any, Callable, List, TypeVar, overload
 import dis
 
 
@@ -23,7 +23,6 @@ TAbstractValidator = TypeVar("TAbstractValidator",bound="AbstractValidator")
 TRuleBuilder = TypeVar("TRuleBuilder",bound="RuleBuilder")
 TPropertyRule = TypeVar("TPropertyRule",bound="PropertyRule")
 
-T = TypeVar("T")
 
 
 
@@ -139,7 +138,7 @@ class AbstractValidator[T](ABC):
     def internal_validate(self, context:ValidationContext)->ValidationResult:
         for rule in self._rules:
             rule.ValidateAsync(context)
- 
+        ValidationResult(None,)
         result:ValidationResult = ValidationResult(None,context.Failures)
         # self.SetExecutedRuleSets(result,context)
         return result

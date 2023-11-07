@@ -66,11 +66,11 @@ class IHasFailures(ABC):
 class ValidationContext[T](IValidationContext,IHasFailures):
     def __init__(self
         , instance_to_validate:T
-        , failures:list[ValidationFailure] = []
-        ) -> None:        
+        , failures:list[ValidationFailure] = None
+        ) -> Self:        
 
         self._instance_to_validate = instance_to_validate
-        self._failures:list[ValidationFailure] = failures
+        self._failures:list[ValidationFailure] = failures if failures else []
         self._messageFormatter: MessageFormatter = MessageFormatter()
         self._property_path:str = None        
         self._displayNameFunc:str = None        

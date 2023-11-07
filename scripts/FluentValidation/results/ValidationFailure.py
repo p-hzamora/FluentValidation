@@ -17,6 +17,9 @@ class ValidationFailure:
         self._ErrorCode:str = ErrorCode
         self._FormattedMessagePlaceholderValues:dict[str,object] = None
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__}: {self._PropertyName} {id(self)}>"
+
     @property
     def PropertyName(self)->str: return self._PropertyName
     @property

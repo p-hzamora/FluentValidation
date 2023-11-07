@@ -1,40 +1,39 @@
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, overload
 
 from results.ValidationFailure import ValidationFailure
 from IValidationContext import ValidationContext
 
 
 class ValidationResult[T]():
+    @overload
+    def __init__(self): ...
+    @overload
+    def __init__(self,failures:Iterable[ValidationFailure]): ...
+    @overload
+    def __init__(self,errors:list[ValidationFailure]): ...
+
     def __init__(self,
                  errors:ValidationFailure= None,
                  failures:Iterable[ValidationFailure]=None
             ) -> None:
         if errors is None and failures is None:
-            self.__init__no_args()
-
+            self._errors:list[ValidationFailure] = []
+            
         elif errors is None and isinstance(failures,list):
-            self.__init__iterable_validation_failure(failures)
+            self._errors:list[ValidationFailure] = []
+            for x in failures:
+                if not x is None:
+                    self._errors.append(x)
 
         elif errors and not failures:
-            self.__init__list_error_failure(errors)
+            self._errors:list[ValidationFailure] = errors
+
         else:
             raise Exception(f"No se ha inicializado la clase {self.__class__.__name__}")
         
         
-
-    def __init__no_args(self): 
-        self._errors:list[ValidationFailure] = []
-
-    def __init__iterable_validation_failure(self,failure:Iterable[ValidationFailure]):
-        self._errors:list[ValidationFailure] = []
-        for x in failure:
-            if not x is None:
-                self._errors.append(x)
-
-    def __init__list_error_failure(self,errors:list[ValidationFailure]): 
-        self._errors:list[ValidationFailure] = errors
 
 
     @property

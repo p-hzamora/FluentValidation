@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, override
 from IValidationContext import ValidationContext
 from validators.PropertyValidator import PropertyValidator
 
@@ -13,4 +13,8 @@ class IsInstance[TProperty](PropertyValidator):
             # context.MessageFormatter.AppendArgument(")
             return False
         return True
+    
+    @override
+    def get_default_message_template(self) -> str:
+        return f"IsInstance failed. Value is not '{self._instance}'"
         

@@ -138,7 +138,7 @@ class AbstractValidator[T](ABC):
     def internal_validate(self, context:ValidationContext)->ValidationResult:
         for rule in self._rules:
             rule.ValidateAsync(context)
-        ValidationResult(None,)
+ 
         result:ValidationResult = ValidationResult(None,context.Failures)
         # self.SetExecutedRuleSets(result,context)
         return result

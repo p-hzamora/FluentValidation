@@ -9,6 +9,9 @@ class IsInstance[TProperty](PropertyValidator):
 
 
     def is_valid(self, context: ValidationContext, value:Any) -> bool:
+        if value is None: 
+            return True
+        
         if not isinstance(value, self._instance):
             # context.MessageFormatter.AppendArgument(")
             return False

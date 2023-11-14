@@ -45,10 +45,10 @@ class LengthValidator[T](PropertyValidator[T,str], ILengthValidator):
     @property
     def Max(self): return self._max
 
-    @override
     def is_valid(self, context: ValidationContext[T], value: str) -> bool:
         if value is None:
             return True
+        
         min =self.Min
         max =self.Max
         
@@ -66,7 +66,6 @@ class LengthValidator[T](PropertyValidator[T,str], ILengthValidator):
         return True
 
     
-
 
 
 class ExactLengthValidator[T](LengthValidator[T]):

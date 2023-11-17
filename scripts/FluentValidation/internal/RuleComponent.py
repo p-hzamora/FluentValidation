@@ -37,7 +37,7 @@ class RuleComponent[T,TProperty](IRuleComponent):
         if context is None:
             return rawTemplate
         
-        return f"Error on '{context.PropertyPath}' with message '{context.MessageFormatter.BuildMessage(rawTemplate)}'"
+        return context.MessageFormatter.BuildMessage(rawTemplate)
 
 
 

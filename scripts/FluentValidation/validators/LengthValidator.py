@@ -1,4 +1,4 @@
-from typing import Callable, override
+from typing import Callable, overload, override
 from abc import ABC, abstractmethod
 from IValidationContext import ValidationContext
 from validators.PropertyValidator import PropertyValidator
@@ -15,28 +15,35 @@ class ILengthValidator(ABC):
 
 
 class LengthValidator[T](PropertyValidator[T,str], ILengthValidator):
+    @overload
+    def __init__(min:int,max:int): ...
+    @overload
+    def __init__(min:Callable[[T],int],max:Callable[[T],int]): ...
+
+
     def __init__(self,min:int|Callable[[T],int],max:int|Callable[[T],int]):
+        def _init_int(min:int,max:int):
+            self._min:int = min
+            self._max:int = max
+
+            if max !=-1 and max <min:
+                raise Exception(f"({max}) Max should be larger than min ({min})")
+
+        def _init_functions(min:Callable[[T],int],max:Callable[[T],int]):
+            self._min_func = min
+            self._max_func = max
+        
         self._min:int = None
         self._max:int = None
         self._min_func:Callable[[T],int] = None
         self._max_func:Callable[[T],int] = None
 
         if isinstance(min,int) and (isinstance(max,int)):
-            self.__init__int(min,max)
+            _init_int(min,max)
         else:
-            self.__init__functions(min,max)
+            _init_functions(min,max)
 
 
-    def __init__int(self,min:int,max:int):
-        self._min:int = min
-        self._max:int = max
-
-        if max !=-1 and max <min:
-            raise Exception(f"({max}) Max should be larger than min ({min})")
-
-    def __init__functions(self, min:Callable[[T],int],max:Callable[[T],int]):
-        self._min_func = min
-        self._max_func = max
 
 
     @property

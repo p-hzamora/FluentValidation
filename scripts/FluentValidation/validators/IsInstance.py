@@ -13,7 +13,8 @@ class IsInstance[TProperty](PropertyValidator):
             return True
         
         if not isinstance(value, self._instance):
-            # context.MessageFormatter.AppendArgument(")
+            context.MessageFormatter.AppendArgument("Current value:",type(value))
+            context.MessageFormatter.AppendArgument("Excepted value:",self._instance)
             return False
         return True
     

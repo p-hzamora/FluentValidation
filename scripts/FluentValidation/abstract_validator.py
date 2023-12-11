@@ -92,6 +92,8 @@ class PropertyRule[T,TProperty](RuleBase[T,TProperty,TProperty]):
                 )->None:
         super().__init__(func, cascadeModeThunk, type_to_validate)
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__name__} from '{self.PropertyName}' at {hex(id(self))}>"
 
     @classmethod
     def create(cls, func:Callable[[T],TProperty], cascadeModeThunk:Callable[[],CascadeMode] )->Self:

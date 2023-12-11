@@ -40,7 +40,7 @@ class DefaultValidatorExtensions:
 		return ruleBuilder.SetValidator(MinimumLengthValidator[T](MinLength))
 
 	def IsInstance[T](ruleBuilder:TIRuleBuilder, instance:Any)->TIRuleBuilder:
-		return ruleBuilder.SetValidator(IsInstance(instance))
+		return ruleBuilder.SetValidator(IsInstance[T](instance))
 
 	def WithMessage(ruleBuilder:TIRuleBuilder,errorMessage:str)->TIRuleBuilder:
 		DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(errorMessage)

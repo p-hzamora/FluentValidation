@@ -56,11 +56,6 @@ class LengthValidator[T](PropertyValidator[T,str], ILengthValidator):
         if value is None:
             return True
         
-        if not isinstance(value,str):
-            context.MessageFormatter.AppendArgument("Expected dtype:",str)
-            context.MessageFormatter.AppendArgument("Current dtype:",type(value))
-            return False
-        
         min =self.Min
         max =self.Max
         

@@ -7,6 +7,7 @@ from validators.LengthValidator import *
 from validators.NotNullValidator import NotNullValidator
 from validators.RegularExpressionValidator import RegularExpressionValidator
 from validators.IsInstance import IsInstance
+from validators.NotEmptyValidator import NotEmptyValidator
 
 TIRuleBuilder = TypeVar("TIRuleBuilder",bound="IRuleBuilder")
 
@@ -45,6 +46,8 @@ class DefaultValidatorExtensions:
 		DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(errorMessage)
 		return ruleBuilder
 
+	def NotEmpty[T, TProperty](ruleBuilder:TIRuleBuilder)->TIRuleBuilder:
+		return ruleBuilder.SetValidator(NotEmptyValidator[T, TProperty]())
 
 
 

@@ -1,9 +1,14 @@
-'''from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Callable
+from typing import Callable, overload, override
+from stc.common.scripts.FluentValidation.IValidationContext import ValidationContext
 
 from stc.common.scripts.FluentValidation.validators import PropertyValidator
 from stc.common.scripts.FluentValidation.validators.IpropertyValidator import IPropertyValidator
+
+class IComparable[T](ABC):
+        @abstractmethod
+        def CompareTo(other:T)->int: ...
 
 class MemberInfo():
 	pass
@@ -19,71 +24,88 @@ class Comparison(Enum):
 
 
 class IComparisonValidator(IPropertyValidator):
-    Comparison: Comparison
-    MemberToCompare: MemberInfo
-    ValueToCompare: object
+    @abstractmethod
+    @property
+    def Comparison(self)->Comparison: ...
+    @abstractmethod
+    @property
+    def MemberToCompare(self)-> MemberInfo: ...
+    @abstractmethod
+    @property
+    def ValueToCompare(self)-> object: ...
 
 
 class AbstractComparisonValidator[T, TProperty](PropertyValidator[T,TProperty], IComparisonValidator):
-    _valueToCompareFuncForNullables:Callable[[T], tuple[bool,TProperty]]
-    private readonly Func[T, TProperty] _valueToCompareFunc;
-    private readonly string _comparisonMemberDisplayName;
+    @overload
+    def __init__(self, value:TProperty): ...
+    @overload
+    def __init__(self, valueToCompareFunc:Callable[[T], TProperty], member:MemberInfo, memberDisplayName:str): ...
+    @overload
+    def __init__(self, valueToCompareFunc:Callable[[T], tuple[bool, TProperty]], member:MemberInfo, memberDisplayName:str): ...
 
-    protected AbstractComparisonValidator(TProperty value) {
-        value.Guard("value must not be null.", nameof(value));
-        ValueToCompare = value;
-    }
 
-    protected AbstractComparisonValidator(Func[T, (bool HasValue, TProperty Value)] valueToCompareFunc, MemberInfo member, string memberDisplayName) {
-        _valueToCompareFuncForNullables = valueToCompareFunc;
-        _comparisonMemberDisplayName = memberDisplayName;
-        MemberToCompare = member;
-    }
 
-    protected AbstractComparisonValidator(Func[T, TProperty] valueToCompareFunc, MemberInfo member, string memberDisplayName) {
-        _valueToCompareFunc = valueToCompareFunc;
-        _comparisonMemberDisplayName = memberDisplayName;
-        MemberToCompare = member;
-    }
+    def __init__(self
+            , valueToCompareFunc= None
+            , member= None
+            , memberDisplayName= None
+            , value= None
+            ):
+        self._valueToCompareFuncForNullables:Callable[[T], tuple[bool,TProperty]]
+        self._valueToCompareFunc:Callable[[T], TProperty]
+        self._comparisonMemberDisplayName:str
 
-    public sealed override bool IsValid(ValidationContext[T] context, TProperty propertyValue) {
-        if(propertyValue == null) {
-            // If we're working with a nullable type then this rule should not be applied.
-            // If you want to ensure that it's never null then a NotNull rule should also be applied.
-            return true;
-        }
+        if  valueToCompareFunc is None and  \
+            member is None and \
+            memberDisplayName is None and \
+            value is not None:
+            self.ValueToCompare = value
+        
+        elif isinstance(valueToCompareFunc(), tuple):
+            self._valueToCompareFuncForNullables = valueToCompareFunc
+            self._comparisonMemberDisplayName = memberDisplayName
+            self.MemberToCompare = member
 
-        var valueToCompare = GetComparisonValue(context);
+        else:
+            self._valueToCompareFunc = valueToCompareFunc
+            self._comparisonMemberDisplayName = memberDisplayName
+            self.MemberToCompare = member
 
-        if (!valueToCompare.HasValue || !IsValid(propertyValue, valueToCompare.Value)) {
-            context.MessageFormatter.AppendArgument("ComparisonValue", valueToCompare.HasValue ? valueToCompare.Value : "");
-            context.MessageFormatter.AppendArgument("ComparisonProperty", _comparisonMemberDisplayName ?? "");
-            return false;
-        }
 
-        return true;
-    }
+    @override
+    def is_valid(self, context:ValidationContext[T], propertyValue:TProperty)->bool:
+        if propertyValue is None:
+            # If we're working with a nullable type then this rule should not be applied.
+            # If you want to ensure that it's never null then a NotNull rule should also be applied.
+            return True
 
-    public (bool HasValue, TProperty Value) GetComparisonValue(ValidationContext[T] context) {
-        if(_valueToCompareFunc != null) {
-            var value = _valueToCompareFunc(context.InstanceToValidate);
-            return (value != null, value);
-        }
-        if (_valueToCompareFuncForNullables != null) {
-            return _valueToCompareFuncForNullables(context.InstanceToValidate);
-        }
+        valueToCompare = self.GetComparisonValue(context)
 
-        return (ValueToCompare != null, ValueToCompare);
-    }
+        if not valueToCompare[0] or not self.IsValid(propertyValue, valueToCompare[1]):
+            context.MessageFormatter.AppendArgument("ComparisonValue", valueToCompare[1] if valueToCompare[0] else "")
+            context.MessageFormatter.AppendArgument("ComparisonProperty", self._comparisonMemberDisplayName if self._comparisonMemberDisplayName is not None else "")
+            return False
+        return True
 
-    public abstract bool IsValid(TProperty value, TProperty valueToCompare);
 
-    public abstract Comparison Comparison { get; }
-    public MemberInfo MemberToCompare { get; private set; }
+    def GetComparisonValue(self, context:ValidationContext[T])->tuple[bool, TProperty]:
+        if self._valueToCompareFunc is not None:
+            value = self._valueToCompareFunc(context.instance_to_validate)
+            return (value is not None, value)
+        if self._valueToCompareFuncForNullables is not None:
+            return self._valueToCompareFuncForNullables(context.instance_to_validate)
 
-    public TProperty ValueToCompare { get; }
+        return (self.ValueToCompare is not None, self.ValueToCompare)
 
-    object IComparisonValidator.ValueToCompare =]
-        MemberToCompare != null || _valueToCompareFunc != null ? null : ValueToCompare;
-    }
-'''
+    @abstractmethod
+    def is_valid(value:TProperty , valueToCompare:TProperty)->bool: ...
+
+    @property
+    @abstractmethod
+    def Comparison(self)->Comparison: ...
+    
+    @property
+    def MemberToCompare(self)->MemberInfo: self._MemberInfo
+
+    @property
+    def ValueToCompare(self)->TProperty: self._TProperty

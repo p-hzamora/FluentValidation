@@ -53,6 +53,8 @@ class RuleBase[T,TProperty,TValue](IValidationRule[T,TValue]):
     def Current(self)->IRuleComponent: return self._components[-1]
 
     @property
+    def MessageBuilder(self)-> Callable[[IMessageBuilderContext[T,TProperty]],str]: return None
+
     @property
     def CascadeMode(self)-> Callable[[],CascadeMode]: return self._cascadeModeThunk()
     @CascadeMode.setter

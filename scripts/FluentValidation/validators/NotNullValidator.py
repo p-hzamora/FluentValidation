@@ -4,7 +4,7 @@ from validators.PropertyValidator import PropertyValidator
 
 
 class NotNullValidator[T,TProperty](PropertyValidator):
-
+    @override
     def is_valid(self, _: ValidationContext, value: TProperty) -> bool:
         return value is not None
     

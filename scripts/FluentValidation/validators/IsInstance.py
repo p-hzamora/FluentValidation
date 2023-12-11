@@ -7,7 +7,7 @@ class IsInstance[TProperty](PropertyValidator):
     def __init__(self, instance:TProperty):
         self._instance = instance
 
-
+    @override
     def is_valid(self, context: ValidationContext, value:Any) -> bool:
         if value is None: 
             return True

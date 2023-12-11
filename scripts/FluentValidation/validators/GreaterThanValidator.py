@@ -1,4 +1,4 @@
-"""from typing import Callable, overload, override
+from typing import Callable, overload, override
 from stc.common.scripts.FluentValidation.validators import AbstractComparisonValidator
 
 class MemberInfo: ... #    BORRAR clase cuando acabe
@@ -16,17 +16,17 @@ class GreaterThanValidator[T, TProperty](AbstractComparisonValidator[T, TPropert
     
     
     
-    def __init__(self,
-                 value, 
-                 valueToCompareFunc, 
-                 member, 
-                 memberDisplayName):
-        
+    def __init__(self
+            , value= None
+            , valueToCompareFunc= None
+            , member= None
+            , memberDisplayName= None
+            ):
         super().__init__(value,
-                         valueToCompareFunc,
-                         member,
-                         memberDisplayName
-                         )
+                valueToCompareFunc,
+                member,
+                memberDisplayName
+                )
 
     @override
     def is_valid(self, value:TProperty, valueToCompare:TProperty):
@@ -37,4 +37,3 @@ class GreaterThanValidator[T, TProperty](AbstractComparisonValidator[T, TPropert
     
     # @override
     # def Comparison Comparison => Validators.Comparison.GreaterThan
-"""

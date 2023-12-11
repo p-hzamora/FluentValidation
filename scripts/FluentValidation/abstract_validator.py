@@ -15,6 +15,7 @@ from results.ValidationResult import ValidationResult
 from IValidationContext import ValidationContext
 from IValidationRule import *
 from syntax import *
+from DefaultValidatorExtensions import CascadeMode, ValidatorOptions
 
 
 
@@ -25,12 +26,11 @@ TPropertyRule = TypeVar("TPropertyRule",bound="PropertyRule")
 
 
 
-
 class RuleBase[T,TProperty,TValue](IValidationRule[T,TValue]):
-    def __init__(self,propertyFunc:Callable[[T],TProperty],type_to_validate:type):
+    def __init__(self,propertyFunc:Callable[[T],TProperty], cascadeModeThunk:Callable[[],CascadeMode], type_to_validate:type):
         self._PropertyFunc = propertyFunc
         self._type_to_validate = type_to_validate
-        
+        self._cascadeModeThunk:Callable[[],CascadeMode] = cascadeModeThunk
         self._components:List[RuleComponent[T, TProperty]] = []
         self._propertyName:str = {x.opname:x.argval for x in dis.Bytecode(propertyFunc)}["LOAD_ATTR"]
         self._displayName:str = self._propertyName
@@ -53,7 +53,10 @@ class RuleBase[T,TProperty,TValue](IValidationRule[T,TValue]):
     def Current(self)->IRuleComponent: return self._components[-1]
 
     @property
-    def MessageBuilder(self)-> Callable[[IMessageBuilderContext[T,TProperty]],str]: None
+    @property
+    def CascadeMode(self)-> Callable[[],CascadeMode]: return self._cascadeModeThunk()
+    @CascadeMode.setter
+    def CascadeMode(self,value): lambda: value
 
 
     @staticmethod
@@ -80,12 +83,17 @@ class RuleBase[T,TProperty,TValue](IValidationRule[T,TValue]):
 
 
 class PropertyRule[T,TProperty](RuleBase[T,TProperty,TProperty]):
-    def __init__(self,func:Callable[[T],TProperty],type_to_validate:type):
-        super().__init__(func,type_to_validate)
+    def __init__(self
+                 , func:Callable[[T],TProperty]
+                 , cascadeModeThunk:Callable[[],CascadeMode]
+                 , type_to_validate:type
+                )->None:
+        super().__init__(func, cascadeModeThunk, type_to_validate)
+
 
     @classmethod
-    def create(cls, func:Callable[[T],TProperty])->Self:
-        return PropertyRule(func,type(TProperty))
+    def create(cls, func:Callable[[T],TProperty], cascadeModeThunk:Callable[[],CascadeMode] )->Self:
+        return PropertyRule(func, cascadeModeThunk, type(TProperty))
 
     def AddValidator(self,validator:IPropertyValidator[T,TProperty])->None:
         component:RuleComponent = RuleComponent[T,TProperty](validator)
@@ -97,6 +105,8 @@ class PropertyRule[T,TProperty](RuleBase[T,TProperty,TProperty]):
 
     def ValidateAsync(self, context:ValidationContext[T])-> None:
         first = True
+        cascade = self.CascadeMode
+        total_failures = len(context.Failures)
         context.InitializeForPropertyValidator(self.PropertyName)
         for component in self.Components:
             context.MessageFormatter.Reset()
@@ -109,6 +119,9 @@ class PropertyRule[T,TProperty](RuleBase[T,TProperty,TProperty]):
                 # super().PrepareMessageFormatterForValidationError(context,propValue)
                 failure = self.CreateValidationError(context,propValue,component)
                 context.Failures.append(failure)
+            if len(context.Failures)> total_failures and cascade == CascadeMode.Stop:
+                break
+
         return None
     
 
@@ -129,6 +142,8 @@ class RuleBuilder[T,TProperty](IRuleBuilder,IRuleBuilderInternal): # no implemen
 
 class AbstractValidator[T](ABC):
     def __init__(self) -> None:
+        self._classLevelCascadeMode:Callable[[],CascadeMode] = lambda : ValidatorOptions.Global.DefaultClassLevelCascadeMode
+        self._ruleLevelCascadeMode:Callable[[],CascadeMode] = lambda : ValidatorOptions.Global.DefaultRuleLevelCascadeMode
         self._rules:list[PropertyRule] = []
 
     def validate(self, instance:T)->ValidationResult:
@@ -138,53 +153,26 @@ class AbstractValidator[T](ABC):
     def internal_validate(self, context:ValidationContext)->ValidationResult:
         for rule in self._rules:
             rule.ValidateAsync(context)
+            if self.ClassLevelCascadeMode== CascadeMode.Stop and len(result.errors)> 0:
+                break
  
         result:ValidationResult = ValidationResult(None,context.Failures)
         # self.SetExecutedRuleSets(result,context)
         return result
 
     def RuleFor[TProperty](self,func:Callable[[T],TProperty])->IRuleBuilder[T,TProperty]: #IRuleBuilderInitial[T,TProperty]:
-        rule:PropertyRule[T,TProperty] = PropertyRule.create(func)
+        rule:PropertyRule[T,TProperty] = PropertyRule.create(func, lambda: self.RuleLevelCascadeMode)
         self._rules.append(rule)
         return RuleBuilder(rule,self)
-
-    def SetExecutedRuleSets(self, result:ValidationResult, context:ValidationContext[T]):...
-        #result.RuleSetExecuted = RulesetValidatorSelector.DefaultRuleSetNameInArray
-
-
-class RegexPattern():
-    Email = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]+$"
-    PhoneNumber = r"^\d{9}$"
-    PostalCode = r"^\d{5}$"
-    Dni = r"^[0-9]{8}[A-Z]$"
+    @property
+    def ClassLevelCascadeMode(self)->CascadeMode:
+        return self._classLevelCascadeMode()
+    @ClassLevelCascadeMode.setter
+    def ClassLevelCascadeMode(self, value): self._classLevelCascadeMode = lambda: value
 
 
-
-
-
-
-
-if __name__ == "__main__":
-    @dataclass
-    class Person():
-        name:str
-        dni:str
-        email:str
-        person_id:int =None
-
-
-    class PersonValidator(AbstractValidator[Person]):
-        def __init__(self) -> None:
-            super().__init__()
-            self.RuleFor(lambda x: x.dni).IsInstance(float).WithMessage("mensaje personalizado de is_instance").Matches(RegexPattern.PhoneNumber).Length(10,50).WithMessage("no tiene los caracteres exactos").Length(15,20).WithMessage("error personalizado de longitud")
-            self.RuleFor(lambda x:x.email).NotNull().MaxLength(5).Matches(RegexPattern.Email).WithMessage("El correo introducido no cumple con la regex especifica").MaxLength(5).WithMessage("El correo excede los 5 caracteres")
-            pass
-
-
-    person = Person(name="Pablo",dni="51527736P",email="pablogmail.org")
-
-    validator = PersonValidator()
-    result = validator.validate(person)
-    if not result.is_valid:
-        for error in result.errors:
-            print(f"Error en {error.PropertyName} con mensaje:\t{error.ErrorMessage}")
+    @property
+    def RuleLevelCascadeMode(self)->CascadeMode:
+        return self._ruleLevelCascadeMode()
+    @RuleLevelCascadeMode.setter
+    def RuleLevelCascadeMode(self, value): self._ruleLevelCascadeMode = lambda: value

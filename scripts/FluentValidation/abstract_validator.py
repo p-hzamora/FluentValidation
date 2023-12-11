@@ -151,12 +151,12 @@ class AbstractValidator[T](ABC):
 
 
     def internal_validate(self, context:ValidationContext)->ValidationResult:
+        result:ValidationResult = ValidationResult(errors=context.Failures)
         for rule in self._rules:
             rule.ValidateAsync(context)
             if self.ClassLevelCascadeMode== CascadeMode.Stop and len(result.errors)> 0:
                 break
  
-        result:ValidationResult = ValidationResult(None,context.Failures)
         # self.SetExecutedRuleSets(result,context)
         return result
 

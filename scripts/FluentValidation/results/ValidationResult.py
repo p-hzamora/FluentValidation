@@ -27,9 +27,8 @@ class ValidationResult[T]():
                 if not x is None:
                     self._errors.append(x)
 
-        elif errors and not failures:
+        elif isinstance(errors,list) and failures is None:
             self._errors:list[ValidationFailure] = errors
-
         else:
             raise Exception(f"No se ha inicializado la clase {self.__class__.__name__}")
         

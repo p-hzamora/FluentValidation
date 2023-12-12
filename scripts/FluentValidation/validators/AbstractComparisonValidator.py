@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Callable, overload, override
 from stc.common.scripts.FluentValidation.IValidationContext import ValidationContext
 
-from stc.common.scripts.FluentValidation.validators import PropertyValidator
+from stc.common.scripts.FluentValidation.validators.PropertyValidator import PropertyValidator
 from stc.common.scripts.FluentValidation.validators.IpropertyValidator import IPropertyValidator
 
 class IComparable[T](ABC):
@@ -24,14 +24,14 @@ class Comparison(Enum):
 
 
 class IComparisonValidator(IPropertyValidator):
-    @abstractmethod
     @property
+    @abstractmethod
     def Comparison(self)->Comparison: ...
-    @abstractmethod
     @property
+    @abstractmethod
     def MemberToCompare(self)-> MemberInfo: ...
-    @abstractmethod
     @property
+    @abstractmethod
     def ValueToCompare(self)-> object: ...
 
 
@@ -109,3 +109,5 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T,TProperty], 
 
     @property
     def ValueToCompare(self)->TProperty: self._TProperty
+    @ValueToCompare.setter
+    def ValueToCompare(self, value): self._valueToCompareFunc = lambda: value

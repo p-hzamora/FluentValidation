@@ -8,6 +8,7 @@ from validators.NotNullValidator import NotNullValidator
 from validators.RegularExpressionValidator import RegularExpressionValidator
 from validators.IsInstance import IsInstance
 from validators.NotEmptyValidator import NotEmptyValidator
+from validators.GreaterThanValidator import GreaterThanValidator
 
 TIRuleBuilder = TypeVar("TIRuleBuilder",bound="IRuleBuilder")
 
@@ -48,6 +49,9 @@ class DefaultValidatorExtensions:
 
 	def NotEmpty[T, TProperty](ruleBuilder:TIRuleBuilder)->TIRuleBuilder:
 		return ruleBuilder.SetValidator(NotEmptyValidator[T, TProperty]())
+
+	def GreaterThan[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:TProperty)->TIRuleBuilder:
+		return ruleBuilder.SetValidator(GreaterThanValidator[T,TProperty](value=valueToCompare))
 
 
 

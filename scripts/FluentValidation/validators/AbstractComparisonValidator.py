@@ -11,7 +11,7 @@ class IComparable[T](ABC):
         def CompareTo(other:T)->int: ...
 
 class MemberInfo():
-	pass
+	...
 
 
 class Comparison(Enum):

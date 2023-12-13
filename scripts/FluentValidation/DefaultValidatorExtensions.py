@@ -1,8 +1,8 @@
-from enum import Enum
+from enum import Enum, auto
 
 class CascadeMode(Enum):
-    Continue=0
-    Stop = 1    
+    Continue= auto()
+    Stop = auto()
 
 
 class ValidatorConfiguration:

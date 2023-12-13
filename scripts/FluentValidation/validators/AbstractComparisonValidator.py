@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from enum import Enum
+from typing import TypeVar
+from enum import Enum, auto
 from typing import Callable, overload, override
 from stc.common.scripts.FluentValidation.IValidationContext import ValidationContext
 
@@ -33,21 +34,18 @@ class Comparable(object):
     
 
 class Comparison(Enum):
-    Equal = 1
-    NotEqual = 2
-    LessThan = 3
-    GreaterThan = 4
-    GreaterThanOrEqual = 5
-    LessThanOrEqual = 6
+    LessThan = auto()
+    LessThanOrEqual = auto()
+    Equal = auto()
+    NotEqual = auto()
+    GreaterThan = auto()
+    GreaterThanOrEqual = auto()
 
 
 class IComparisonValidator(IPropertyValidator):
     @property
     @abstractmethod
     def Comparison(self)->Comparison: ...
-    @property
-    @abstractmethod
-    def MemberToCompare(self)-> MemberInfo: ...
     @property
     @abstractmethod
     def ValueToCompare(self)-> object: ...
@@ -57,37 +55,33 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T,TProperty], 
     @overload
     def __init__(self, value:TProperty): ...
     @overload
-    def __init__(self, valueToCompareFunc:Callable[[T], TProperty], member:MemberInfo, memberDisplayName:str): ...
+    def __init__(self, valueToCompareFunc:Callable[[T], TProperty], memberDisplayName:str): ...
     @overload
-    def __init__(self, valueToCompareFunc:Callable[[T], tuple[bool, TProperty]], member:MemberInfo, memberDisplayName:str): ...
+    def __init__(self, valueToCompareFunc:Callable[[T], tuple[bool, TProperty]], memberDisplayName:str): ...
 
 
 
     def __init__(self
             , valueToCompareFunc= None
-            , member= None
             , memberDisplayName= None
             , value= None
             ):
-        self._valueToCompareFuncForNullables:Callable[[T], tuple[bool,TProperty]]
-        self._valueToCompareFunc:Callable[[T], TProperty]
-        self._comparisonMemberDisplayName:str
+        self._valueToCompareFuncForNullables:Callable[[T], tuple[bool,TProperty]] = None
+        self._valueToCompareFunc:Callable[[T], TProperty] = None
+        self._comparisonMemberDisplayName:str = None
 
         if  valueToCompareFunc is None and  \
-            member is None and \
             memberDisplayName is None and \
             value is not None:
             self.ValueToCompare = value
         
-        elif isinstance(valueToCompareFunc(), tuple):
-            self._valueToCompareFuncForNullables = valueToCompareFunc
-            self._comparisonMemberDisplayName = memberDisplayName
-            self.MemberToCompare = member
-
-        else:
+        elif callable(valueToCompareFunc):
             self._valueToCompareFunc = valueToCompareFunc
             self._comparisonMemberDisplayName = memberDisplayName
-            self.MemberToCompare = member
+
+        else:
+            self._valueToCompareFuncForNullables = valueToCompareFunc
+            self._comparisonMemberDisplayName = memberDisplayName
 
 
     @override
@@ -99,9 +93,9 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T,TProperty], 
 
         valueToCompare = self.GetComparisonValue(context)
 
-        if not valueToCompare[0] or not self.IsValid(propertyValue, valueToCompare[1]):
+        if not valueToCompare[0] or not self._is_valid(propertyValue, valueToCompare[1]):
             context.MessageFormatter.AppendArgument("ComparisonValue", valueToCompare[1] if valueToCompare[0] else "")
-            context.MessageFormatter.AppendArgument("ComparisonProperty", self._comparisonMemberDisplayName if self._comparisonMemberDisplayName is not None else "")
+            context.MessageFormatter.AppendArgument("ComparisonProperty", self._comparisonMemberDisplayName if self._comparisonMemberDisplayName is not None else context.PropertyPath)
             return False
         return True
 
@@ -115,17 +109,35 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T,TProperty], 
 
         return (self.ValueToCompare is not None, self.ValueToCompare)
 
-    @abstractmethod
-    def is_valid(value:TProperty , valueToCompare:TProperty)->bool: ...
-
-    @property
-    @abstractmethod
-    def Comparison(self)->Comparison: ...
     
-    @property
-    def MemberToCompare(self)->MemberInfo: self._MemberInfo
+    def _is_valid(self, value:TProperty , valueToCompare:TProperty)->bool:
+        dicc = {
+            Comparison.LessThan:            Comparable(value) <  Comparable(valueToCompare)
+          , Comparison.LessThanOrEqual:     Comparable(value) <= Comparable(valueToCompare)
+          , Comparison.Equal:               Comparable(value) == Comparable(valueToCompare)
+          , Comparison.NotEqual:            Comparable(value) != Comparable(valueToCompare)
+          , Comparison.GreaterThan:         Comparable(value) >  Comparable(valueToCompare)
+          , Comparison.GreaterThanOrEqual:  Comparable(value) >= Comparable(valueToCompare)
+        }
+        if valueToCompare is None:
+            return False
+        return dicc[self.Comparison]
 
+    @property
+    @abstractmethod
+    def Comparison(self)->Comparison:
+        """        
+        Propiedad indispensable en aquellas clases que hereden de AbstractComparisonValidator
+        - Comparison.LessThan           : value < valueToCompare 
+        - Comparison.LessThanOrEqual    : value <= valueToCompare 
+        - Comparison.Equal              : value == valueToCompare 
+        - Comparison.NotEqual           : value != valueToCompare 
+        - Comparison.GreaterThan        : value > valueToCompare 
+        - Comparison.GreaterThanOrEqual : value >= valueToCompare 
+        """
+        ...
+    
     @property
     def ValueToCompare(self)->TProperty: self._TProperty
     @ValueToCompare.setter
-    def ValueToCompare(self, value): self._valueToCompareFunc = lambda: value
+    def ValueToCompare(self, value): self._valueToCompareFunc = lambda _: value

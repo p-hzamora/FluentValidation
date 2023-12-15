@@ -33,7 +33,6 @@ class PropertyRule[T,TProperty](RuleBase[T,TProperty,TProperty]):
 
     def ValidateAsync(self, context:ValidationContext[T])-> None:
         first = True
-        cascade = self.CascadeMode
         total_failures = len(context.Failures)
         context.InitializeForPropertyValidator(self.PropertyName)
         for component in self.Components:

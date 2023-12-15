@@ -9,8 +9,9 @@ from results.ValidationFailure import ValidationFailure
 
 from IValidationContext import ValidationContext
 from IValidationRule import *
+from enums import CascadeMode
+
 from syntax import *
-from DefaultValidatorExtensions import CascadeMode
 
 
 class RuleBase[T,TProperty,TValue](IValidationRule[T,TValue]):

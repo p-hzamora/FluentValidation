@@ -1,7 +1,7 @@
 
 from typing import Callable, Self
 
-from stc.common.scripts.FluentValidation.DefaultValidatorExtensions import CascadeMode
+from enums import CascadeMode
 from stc.common.scripts.FluentValidation.IValidationContext import ValidationContext
 from stc.common.scripts.FluentValidation.internal.RuleBase import RuleBase
 from stc.common.scripts.FluentValidation.internal.RuleComponent import RuleComponent

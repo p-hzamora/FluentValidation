@@ -1,9 +1,4 @@
-from enum import Enum, auto
-
-class CascadeMode(Enum):
-    Continue= auto()
-    Stop = auto()
-
+from enums import CascadeMode
 
 class ValidatorConfiguration:
     # private Func<Type, MemberInfo, LambdaExpression, string> _propertyNameResolver = DefaultPropertyNameResolver;

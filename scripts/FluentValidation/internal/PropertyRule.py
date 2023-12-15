@@ -2,10 +2,10 @@
 from typing import Callable, Self
 
 from enums import CascadeMode
-from stc.common.scripts.FluentValidation.IValidationContext import ValidationContext
-from stc.common.scripts.FluentValidation.internal.RuleBase import RuleBase
-from stc.common.scripts.FluentValidation.internal.RuleComponent import RuleComponent
-from stc.common.scripts.FluentValidation.validators.IpropertyValidator import IPropertyValidator
+from IValidationContext import ValidationContext
+from internal.RuleBase import RuleBase
+from internal.RuleComponent import RuleComponent
+from validators.IpropertyValidator import IPropertyValidator
 
 
 class PropertyRule[T,TProperty](RuleBase[T,TProperty,TProperty]):

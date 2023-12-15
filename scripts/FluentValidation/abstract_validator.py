@@ -5,9 +5,10 @@ from results.ValidationResult import ValidationResult
 from IValidationContext import ValidationContext
 from IValidationRule import *
 from syntax import *
-from stc.common.scripts.FluentValidation.internal.PropertyRule import PropertyRule
-from stc.common.scripts.FluentValidation.internal.RuleBuilder import RuleBuilder
+from internal.PropertyRule import PropertyRule
+from internal.RuleBuilder import RuleBuilder
 
+from DefaultValidatorExtensions import ValidatorOptions
 from enums import CascadeMode
 
 class AbstractValidator[T](ABC):

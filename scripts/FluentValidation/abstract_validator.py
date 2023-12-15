@@ -23,8 +23,9 @@ class AbstractValidator[T](ABC):
         result:ValidationResult = ValidationResult(errors=context.Failures)
         for rule in self._rules:
             rule.ValidateAsync(context)
-            #FIXME [ ] al modificar ClassLevelCascade fuera de esta clase, el enum no es el mismo pues no tiene la misma direccion en memoria
-            if self.ClassLevelCascadeMode== CascadeMode.Stop and len(result.errors)> 0:
+            #FIXME [x] al modificar ClassLevelCascade fuera de esta clase, el enum no es el mismo pues no tiene la misma direccion en memoria
+            #COMMENT: Buscar la forma de no utilizar .value ya que no es la forma correcta de operar
+            if self.ClassLevelCascadeMode.value== CascadeMode.Stop.value and len(result.errors)> 0:
                 break
  
         # self.SetExecutedRuleSets(result,context)

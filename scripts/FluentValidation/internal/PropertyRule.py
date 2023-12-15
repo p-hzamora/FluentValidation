@@ -47,8 +47,9 @@ class PropertyRule[T,TProperty](RuleBase[T,TProperty,TProperty]):
                 # super().PrepareMessageFormatterForValidationError(context,propValue)
                 failure = self.CreateValidationError(context,propValue,component)
                 context.Failures.append(failure)
-            #FIXME [ ] al modificar ClassLevelCascade fuera de esta clase, el enum no es el mismo pues no tiene la misma direccion en memoria
-            if len(context.Failures)> total_failures and cascade == CascadeMode.Stop:
+            #FIXME [x] al modificar ClassLevelCascade fuera de esta clase, el enum no es el mismo pues no tiene la misma direccion en memoria
+            #COMMENT: Buscar la forma de no utilizar .value ya que no es la forma correcta de operar
+            if len(context.Failures)> total_failures and self.CascadeMode.value == CascadeMode.Stop.value:
                 break
 
         return None

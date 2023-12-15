@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
 from enum import Enum, auto
 from typing import Callable, overload, override
 from stc.common.scripts.FluentValidation.IValidationContext import ValidationContext
@@ -7,28 +6,27 @@ from stc.common.scripts.FluentValidation.IValidationContext import ValidationCon
 from stc.common.scripts.FluentValidation.validators.PropertyValidator import PropertyValidator
 from stc.common.scripts.FluentValidation.validators.IpropertyValidator import IPropertyValidator
 
-IComparable = TypeVar("IComparable",bound="Comparable")
 
 class Comparable(object):
     def __init__(self, value):
         self._value = value
 
-    def __lt__(self, __value: IComparable) -> bool:
+    def __lt__(self, __value: "Comparable") -> bool:
         return self._value < __value._value
 
-    def __le__(self, __value: IComparable) -> bool:
+    def __le__(self, __value: "Comparable") -> bool:
         return self._value <= __value._value
 
-    def __eq__(self, __value: IComparable) -> bool:
+    def __eq__(self, __value: "Comparable") -> bool:
         return self._value == __value._value
 
-    def __nq__(self, __value: IComparable) -> bool:
+    def __nq__(self, __value: "Comparable") -> bool:
         return self._value != __value._value
 
-    def __gt__(self, __value: IComparable) -> bool:
+    def __gt__(self, __value: "Comparable") -> bool:
         return self._value > __value._value
 
-    def __ge__(self, __value: IComparable) -> bool:
+    def __ge__(self, __value: "Comparable") -> bool:
         return self._value >= __value._value
 
     

@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Any, Self, TypeVar
+from typing import Any, Self
 import dis
 
 from validators.IpropertyValidator import IPropertyValidator
@@ -17,8 +17,6 @@ from validators.GreaterThanValidator import GreaterThanValidator
 from validators.GreaterThanOrEqualValidator import GreaterThanOrEqualValidator
 from IValidationRule import IValidationRule
 
-TIRuleBuilder = TypeVar("TIRuleBuilder",bound="IRuleBuilder")
-
 
 
 
@@ -26,44 +24,44 @@ class DefaultValidatorExtensions:
 	"""
 	ruleBuilder actua como self, ya que es la instancia padre que se le pasa a traves de la herencia
 	"""
-	def configurable[T,TProperty](ruleBuilder:TIRuleBuilder)->IValidationRule[T,TProperty]:
+	def configurable[T,TProperty](ruleBuilder:"IRuleBuilder")->IValidationRule[T,TProperty]:
 		return ruleBuilder.Rule
 	
-	def NotNull[T, TProperty](ruleBuilder:TIRuleBuilder)->TIRuleBuilder:
+	def NotNull[T, TProperty](ruleBuilder:"IRuleBuilder")->"IRuleBuilder":
 		return ruleBuilder.SetValidator(NotNullValidator[T,TProperty]())
 
-	def Matches[T](ruleBuilder:TIRuleBuilder, pattern:str)->TIRuleBuilder:
+	def Matches[T](ruleBuilder:"IRuleBuilder", pattern:str)->"IRuleBuilder":
 		return ruleBuilder.SetValidator(RegularExpressionValidator[T](pattern))
 
-	def Length[T](ruleBuilder:TIRuleBuilder, min:int,max:int)->TIRuleBuilder:
+	def Length[T](ruleBuilder:"IRuleBuilder", min:int,max:int)->"IRuleBuilder":
 		return ruleBuilder.SetValidator(LengthValidator[T](min,max))
 
-	def ExactLength[T](ruleBuilder:TIRuleBuilder, exactLength:int)->TIRuleBuilder:
+	def ExactLength[T](ruleBuilder:"IRuleBuilder", exactLength:int)->"IRuleBuilder":
 		return ruleBuilder.SetValidator(ExactLengthValidator[T](exactLength))
 
-	def MaxLength[T](ruleBuilder:TIRuleBuilder, MaxLength:int)->TIRuleBuilder:
+	def MaxLength[T](ruleBuilder:"IRuleBuilder", MaxLength:int)->"IRuleBuilder":
 		return ruleBuilder.SetValidator(MaximumLengthValidator[T](MaxLength))
 
-	def MinLength[T](ruleBuilder:TIRuleBuilder, MinLength:int)->TIRuleBuilder:
+	def MinLength[T](ruleBuilder:"IRuleBuilder", MinLength:int)->"IRuleBuilder":
 		return ruleBuilder.SetValidator(MinimumLengthValidator[T](MinLength))
 
-	def IsInstance[T](ruleBuilder:TIRuleBuilder, instance:Any)->TIRuleBuilder:
+	def IsInstance[T](ruleBuilder:"IRuleBuilder", instance:Any)->"IRuleBuilder":
 		return ruleBuilder.SetValidator(IsInstance[T](instance))
 
-	def WithMessage(ruleBuilder:TIRuleBuilder,errorMessage:str)->TIRuleBuilder:
+	def WithMessage(ruleBuilder:"IRuleBuilder",errorMessage:str)->"IRuleBuilder":
 		DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(errorMessage)
 		return ruleBuilder
 
-	def NotEmpty[T, TProperty](ruleBuilder:TIRuleBuilder)->TIRuleBuilder:
+	def NotEmpty[T, TProperty](ruleBuilder:"IRuleBuilder")->"IRuleBuilder":
 		return ruleBuilder.SetValidator(NotEmptyValidator[T, TProperty]())
 
 	#region LessThan
 	@overload
-	def LessThan[TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:TProperty)->TIRuleBuilder: ...
+	def LessThan[TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:TProperty)->"IRuleBuilder": ...
 	@overload
-	def LessThan[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty])->TIRuleBuilder: ...
+	def LessThan[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty])->"IRuleBuilder": ...
 	
-	def LessThan[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty]|TProperty)->TIRuleBuilder:
+	def LessThan[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty]|TProperty)->"IRuleBuilder":
 		if callable(valueToCompare):
 			func = valueToCompare
 			name = {x.opname:x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
@@ -73,11 +71,11 @@ class DefaultValidatorExtensions:
 	#endregion
 	#region LessThanOrEqual
 	@overload
-	def LessThanOrEqual[TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:TProperty)->TIRuleBuilder: ...
+	def LessThanOrEqual[TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:TProperty)->"IRuleBuilder": ...
 	@overload
-	def LessThanOrEqual[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty])->TIRuleBuilder: ...
+	def LessThanOrEqual[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty])->"IRuleBuilder": ...
 	
-	def LessThanOrEqual[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty]|TProperty)->TIRuleBuilder:
+	def LessThanOrEqual[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty]|TProperty)->"IRuleBuilder":
 		if callable(valueToCompare):
 			func = valueToCompare
 			name = {x.opname:x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
@@ -87,11 +85,11 @@ class DefaultValidatorExtensions:
 	#endregion
 	#region Equal
 	@overload
-	def Equal[TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:TProperty)->TIRuleBuilder: ...
+	def Equal[TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:TProperty)->"IRuleBuilder": ...
 	@overload
-	def Equal[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty])->TIRuleBuilder: ...
+	def Equal[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty])->"IRuleBuilder": ...
 	
-	def Equal[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty]|TProperty)->TIRuleBuilder:
+	def Equal[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty]|TProperty)->"IRuleBuilder":
 		if callable(valueToCompare):
 			func = valueToCompare
 			name = {x.opname:x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
@@ -101,11 +99,11 @@ class DefaultValidatorExtensions:
 	#endregion
 	#region NotEqual
 	@overload
-	def NotEqual[TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:TProperty)->TIRuleBuilder: ...
+	def NotEqual[TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:TProperty)->"IRuleBuilder": ...
 	@overload
-	def NotEqual[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty])->TIRuleBuilder: ...
+	def NotEqual[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty])->"IRuleBuilder": ...
 	
-	def NotEqual[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty]|TProperty)->TIRuleBuilder:
+	def NotEqual[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty]|TProperty)->"IRuleBuilder":
 		if callable(valueToCompare):
 			func = valueToCompare
 			name = {x.opname:x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
@@ -115,11 +113,11 @@ class DefaultValidatorExtensions:
 	#endregion
 	#region GreaterThan
 	@overload
-	def GreaterThan[TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:TProperty)->TIRuleBuilder: ...
+	def GreaterThan[TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:TProperty)->"IRuleBuilder": ...
 	@overload
-	def GreaterThan[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty])->TIRuleBuilder: ...
+	def GreaterThan[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty])->"IRuleBuilder": ...
 	
-	def GreaterThan[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty]|TProperty)->TIRuleBuilder:
+	def GreaterThan[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty]|TProperty)->"IRuleBuilder":
 		if callable(valueToCompare):
 			func = valueToCompare
 			name = {x.opname:x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
@@ -129,11 +127,11 @@ class DefaultValidatorExtensions:
 	#endregion
 	#region GreaterThanOrEqual
 	@overload
-	def GreaterThanOrEqual[TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:TProperty)->TIRuleBuilder: ...
+	def GreaterThanOrEqual[TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:TProperty)->"IRuleBuilder": ...
 	@overload
-	def GreaterThanOrEqual[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty])->TIRuleBuilder: ...
+	def GreaterThanOrEqual[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty])->"IRuleBuilder": ...
 	
-	def GreaterThanOrEqual[T,TProperty](ruleBuilder:TIRuleBuilder, valueToCompare:Callable[[T],TProperty]|TProperty)->TIRuleBuilder:
+	def GreaterThanOrEqual[T,TProperty](ruleBuilder:"IRuleBuilder", valueToCompare:Callable[[T],TProperty]|TProperty)->"IRuleBuilder":
 		if callable(valueToCompare):
 			func = valueToCompare
 			name = {x.opname:x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]

@@ -1,13 +1,10 @@
 from abc import ABC, abstractmethod
 
-from typing import Iterable, Callable,TypeVar
+from typing import Iterable, Callable
 from internal.IRuleComponent import IRuleComponent
 from IValidationContext import IValidationContext
 from internal.MessageBuilderContext import IMessageBuilderContext
 from validators.IpropertyValidator import IPropertyValidator
-
-IIValidationRule = TypeVar("IIValidationRule",bound="IValidationRule")
-
 
 
 

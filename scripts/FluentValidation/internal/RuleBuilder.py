@@ -8,8 +8,6 @@ from syntax import *
 
 
 TAbstractValidator = TypeVar("TAbstractValidator")
-TRuleBuilder = TypeVar("TRuleBuilder",bound="RuleBuilder")
-
 
 
 

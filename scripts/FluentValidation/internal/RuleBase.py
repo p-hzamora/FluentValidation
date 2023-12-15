@@ -43,7 +43,7 @@ class RuleBase[T,TProperty,TValue](IValidationRule[T,TValue]):
     def MessageBuilder(self)-> Callable[[IMessageBuilderContext[T,TProperty]],str]: return None
 
     @property
-    def CascadeMode(self)-> Callable[[],CascadeMode]: return self._cascadeModeThunk()
+    def CascadeMode(self)-> CascadeMode: return self._cascadeModeThunk()
     @CascadeMode.setter
     def CascadeMode(self,value): lambda: value
 

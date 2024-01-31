@@ -52,22 +52,22 @@ class PersonValidator(AbstractValidator[Person]):
         self.RuleFor(lambda x: x.fecha_ini).GreaterThan(datetime.today())
 
         self.RuleFor(lambda x: x.dni).IsInstance(float).WithMessage(
-            "mensaje personalizado de is_instance"
+            "Custom message of IsInstance method"
         ).Matches(RegexPattern.PhoneNumber).Length(10, 50).WithMessage(
-            "no tiene los caracteres exactos"
-        ).Length(15, 20).WithMessage("error personalizado de longitud")
+            "First Length error"
+        ).Length(15, 20).WithMessage("Second Length error")
 
         self.RuleFor(lambda x: x.email).NotNull().MaxLength(5).Matches(
             RegexPattern.Email
         ).WithMessage(
-            "El correo introducido no cumple con la regex especifica"
-        ).MaxLength(5).WithMessage("El correo excede los 5 caracteres")
+            "The entered mail does not comply with the specific regex rules"
+        ).MaxLength(5).WithMessage("The entered mail exceeds the 5-character limit")
         pass
 
 
 person = Person(
     name="Pablo",
-    dni="51527736P",
+    dni="00000000P",
     email="pablogmail.org",
     fecha_ini=datetime(2020, 11, 20),
     fecha_fin=datetime.today(),

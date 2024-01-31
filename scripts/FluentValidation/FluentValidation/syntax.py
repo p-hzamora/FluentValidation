@@ -55,7 +55,9 @@ class DefaultValidatorExtensions:
         return ruleBuilder.SetValidator(IsInstance[T](instance))
 
     def WithMessage(ruleBuilder: "IRuleBuilder", errorMessage: str) -> "IRuleBuilder":
-        DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(errorMessage)
+        DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(
+            errorMessage
+        )
         return ruleBuilder
 
     def NotEmpty[T, TProperty](ruleBuilder: "IRuleBuilder") -> "IRuleBuilder":

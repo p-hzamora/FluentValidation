@@ -1,5 +1,6 @@
 from .enums import CascadeMode
 
+
 class ValidatorConfiguration:
     # private Func<Type, MemberInfo, LambdaExpression, string> _propertyNameResolver = DefaultPropertyNameResolver;
     # private Func<Type, MemberInfo, LambdaExpression, string> _displayNameResolver = DefaultDisplayNameResolver;
@@ -8,21 +9,28 @@ class ValidatorConfiguration:
     # private ILanguageManager _languageManager = new LanguageManager();
 
     # original C# Library has this vars as CascadeMode.Continue
-    _defaultClassLevelCascadeMode:CascadeMode = CascadeMode.Continue
-    _defaultRuleLevelCascadeMode:CascadeMode = CascadeMode.Stop
+    _defaultClassLevelCascadeMode: CascadeMode = CascadeMode.Continue
+    _defaultRuleLevelCascadeMode: CascadeMode = CascadeMode.Stop
 
-    #region Properties
+    # region Properties
     @property
-    def DefaultClassLevelCascadeMode(self)->CascadeMode: return self._defaultClassLevelCascadeMode
+    def DefaultClassLevelCascadeMode(self) -> CascadeMode:
+        return self._defaultClassLevelCascadeMode
+
     @DefaultClassLevelCascadeMode.setter
-    def DefaultClassLevelCascadeMode(self,value): self._defaultClassLevelCascadeMode= value
-    
+    def DefaultClassLevelCascadeMode(self, value):
+        self._defaultClassLevelCascadeMode = value
+
     @property
-    def DefaultRuleLevelCascadeMode(self)->CascadeMode: return self._defaultRuleLevelCascadeMode
+    def DefaultRuleLevelCascadeMode(self) -> CascadeMode:
+        return self._defaultRuleLevelCascadeMode
+
     @DefaultRuleLevelCascadeMode.setter
-    def DefaultRuleLevelCascadeMode(self,value): self._defaultRuleLevelCascadeMode= value
-    #endregion
+    def DefaultRuleLevelCascadeMode(self, value):
+        self._defaultRuleLevelCascadeMode = value
+
+    # endregion
 
 
 class ValidatorOptions:
-    Global:ValidatorConfiguration = ValidatorConfiguration()
+    Global: ValidatorConfiguration = ValidatorConfiguration()

@@ -38,14 +38,29 @@ class PersonValidator(AbstractValidator[Person]):
         super().__init__()
         self.ClassLevelCascadeMode = CascadeMode.Stop
         self.RuleLevelCascadeMode = CascadeMode.Stop
-        self.RuleFor(lambda x: x.fecha_ini).IsInstance(int).WithMessage("asdf").GreaterThanOrEqual(lambda x: x.fecha_fin)
-        self.RuleFor(lambda x: x.edad).GreaterThanOrEqual(lambda x: x.edad_min).LessThanOrEqual(lambda x: x.edad_max)
-        self.RuleFor(lambda x: x.ppto).IsInstance(int | float | Decimal).GreaterThanOrEqual(0)
+        self.RuleFor(lambda x: x.fecha_ini).IsInstance(int).GreaterThanOrEqual(
+            lambda x: x.fecha_fin
+        )
+        self.RuleFor(lambda x: x.edad).GreaterThanOrEqual(
+            lambda x: x.edad_min
+        ).LessThanOrEqual(lambda x: x.edad_max)
+
+        self.RuleFor(lambda x: x.ppto).IsInstance(
+            int | float | Decimal
+        ).GreaterThanOrEqual(0)
+
         self.RuleFor(lambda x: x.fecha_ini).GreaterThan(datetime.today())
-        self.RuleFor(lambda x: x.dni).IsInstance(float).WithMessage("mensaje personalizado de is_instance").Matches(RegexPattern.PhoneNumber).Length(10, 50).WithMessage("no tiene los caracteres exactos"
+
+        self.RuleFor(lambda x: x.dni).IsInstance(float).WithMessage(
+            "mensaje personalizado de is_instance"
+        ).Matches(RegexPattern.PhoneNumber).Length(10, 50).WithMessage(
+            "no tiene los caracteres exactos"
         ).Length(15, 20).WithMessage("error personalizado de longitud")
 
-        self.RuleFor(lambda x: x.email).NotNull().MaxLength(5).Matches(RegexPattern.Email).WithMessage("El correo introducido no cumple con la regex especifica"
+        self.RuleFor(lambda x: x.email).NotNull().MaxLength(5).Matches(
+            RegexPattern.Email
+        ).WithMessage(
+            "El correo introducido no cumple con la regex especifica"
         ).MaxLength(5).WithMessage("El correo excede los 5 caracteres")
         pass
 

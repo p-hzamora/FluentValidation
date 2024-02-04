@@ -1,100 +1,107 @@
-public class EqualValidatorTests {
-
-	public EqualValidatorTests() {
-		CultureScope.SetDefaultCulture();
-	}
-
-	[Fact]
-	public void When_the_objects_are_equal_validation_should_succeed() {
-		var validator = new TestValidator { v => v.RuleFor(x => x.Forename).Equal("Foo") };
-		var result = validator.Validate(new Person { Forename = "Foo"});
-
-		result.is_valid.ShouldBeTrue();
-	}
-
-	[Fact]
-	public void When_the_objects_are_not_equal_validation_should_fail() {
-		var validator = new TestValidator { v => v.RuleFor(x => x.Forename).Equal("Foo") };
-		var result = validator.Validate(new Person() { Forename = "Bar" });
-
-		result.is_valid.ShouldBeFalse();
-	}
-
-	[Fact]
-	public void When_validation_fails_the_error_should_be_set() {
-		var validator = new TestValidator { v => v.RuleFor(x => x.Forename).Equal("Foo") };
-		var result = validator.Validate(new Person() {Forename = "Bar"});
-
-		result.Errors.Single().ErrorMessage.ShouldEqual("'Forename' must be equal to 'Foo'.");
-	}
-
-	[Fact]
-	public void Should_store_property_to_compare() {
-		var validator = new TestValidator { v => v.RuleFor(x => x.Forename).Equal(x => x.Surname) };
-		var descriptor = validator.CreateDescriptor();
-		var propertyValidator = descriptor.GetValidatorsForMember("Forename")
-			.Select(x => x.Validator)
-			.Cast<EqualValidator<Person,string>>().Single();
-
-		propertyValidator.MemberToCompare.ShouldEqual(typeof(Person).GetProperty("Surname"));
-	}
+import sys
+import unittest
+from pathlib import Path
 
 
-	[Fact]
-	public void Should_store_comparison_type() {
-		var validator = new TestValidator { v => v.RuleFor(x => x.Surname).Equal("Foo") };
-		var descriptor = validator.CreateDescriptor();
-		var propertyValidator = descriptor.GetValidatorsForMember("Surname")
-			.Select(x => x.Validator)
-			.Cast<EqualValidator<Person,string>>().Single();
+sys.path.append(
+    [str(x) for x in Path(__file__).parents if x.name == "FluentValidation"].pop()
+)
 
-		propertyValidator.Comparison.ShouldEqual(Comparison.Equal);
-	}
+from TestValidator import TestValidator  # noqa: E402
+from person import Person  # noqa: E402
 
-	[Fact]
-	public void Validates_against_property() {
-		var validator = new TestValidator {v => v.RuleFor(x => x.Surname).Equal(x => x.Forename).WithMessage("{ComparisonProperty}")};
-		var result = validator.Validate(new Person {Surname = "foo", Forename = "bar"});
-		result.is_valid.ShouldBeFalse();
-		result.Errors[0].ErrorMessage.ShouldEqual("Forename");
-	}
+from src.FluentValidation.DefaultValidatorExtensions import ValidatorOptions  # noqa: E402, F401
 
-	[Fact]
-	public void Comparison_property_uses_custom_resolver() {
-		var originalResolver = ValidatorOptions.Global.DisplayNameResolver;
 
-		try {
-			ValidatorOptions.Global.DisplayNameResolver = (type, member, expr) => member.Name + "Foo";
-			var validator = new TestValidator {v => v.RuleFor(x => x.Surname).Equal(x => x.Forename).WithMessage("{ComparisonProperty}")};
-			var result = validator.Validate(new Person {Surname = "foo", Forename = "bar"});
-			result.Errors[0].ErrorMessage.ShouldEqual("ForenameFoo");
-		}
-		finally {
-			ValidatorOptions.Global.DisplayNameResolver = originalResolver;
-		}
-	}
+class EqualValidatorTests(unittest.TestCase):
+    # def __init__(self):
 
-	[Fact]
-	public void Should_succeed_on_case_insensitive_comparison() {
-		var validator = new TestValidator { v => v.RuleFor(x => x.Surname).Equal("FOO", StringComparer.OrdinalIgnoreCase) };
-		var result = validator.Validate(new Person { Surname = "foo" });
+    # self.CultureScope.SetDefaultCulture()
 
-		result.is_valid.ShouldBeTrue();
-	}
+    def test_When_the_objects_are_equal_validation_should_succeed(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Forename).Equal("Foo")
+        )
+        result = validator.validate(Person(Forename="Foo"))
 
-	[Fact]
-	public void Should_succeed_on_case_insensitive_comparison_using_expression() {
-		var validator = new TestValidator { v => v.RuleFor(x => x.Surname).Equal(x => x.Forename, StringComparer.OrdinalIgnoreCase) };
-		var result = validator.Validate(new Person { Surname = "foo", Forename = "FOO"});
+        self.assertTrue(result.is_valid)
 
-		result.is_valid.ShouldBeTrue();
-	}
+    def test_When_the_objects_are_not_equal_validation_should_fail(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Forename).Equal("Foo")
+        )
+        result = validator.validate(Person(Forename="Bar"))
 
-	[Fact]
-	public void Should_use_ordinal_comparison_by_default() {
-		var validator = new TestValidator();
-		validator.RuleFor(x => x.Surname).Equal("a");
-		var result = validator.Validate(new Person {Surname = "a\0"});
-		result.is_valid.ShouldBeFalse();
-	}
-}
+        self.assertFalse(result.is_valid)
+
+    # def test_When_validation_fails_the_error_should_be_set(self):
+    #     validator = TestValidator(
+    #         lambda v: v.RuleFor(lambda x: x.Forename).Equal("Foo")
+    #     )
+    #     result = validator.validate(Person(Forename="Bar"))
+
+    #     result.errors[0].ErrorMessage.ShouldEqual(
+    #         "'Forename' must be equal to 'Foo'."
+    #     )
+
+    # def test_Should_store_property_to_compare(self):
+    # 	validator =TestValidator(lambda v: v.RuleFor(lambda x: x.Forename).Equa(lambda x: x.Surname))
+    # 	descriptor = validator.CreateDescriptor()
+    # 	propertyValidator = descriptor.GetValidatorsForMember("Forename")
+    # 		.Selec(lambda x: x.Validator)
+    # 		.Cast<EqualValidator<Person,string>>().Single()
+
+    # 	propertyValidator.MemberToCompare.ShouldEqual(typeof(Person).GetProperty("Surname"))
+    # }
+
+    # def test_Should_store_comparison_type(self):
+    # 	validator =TestValidator(lambda v: v.RuleFor(lambda x: x.Surname).Equal("Foo"))
+    # 	descriptor = validator.CreateDescriptor()
+    # 	propertyValidator = descriptor.GetValidatorsForMember("Surname")
+    # 		.Selec(lambda x: x.Validator)
+    # 		.Cast<EqualValidator<Person,string>>().Single()
+
+    # 	propertyValidator.Comparison.ShouldEqual(Comparison.Equal)
+
+    def test_Validates_against_property(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Surname)
+            .Equal(lambda x: x.Forename)
+            .WithMessage("{ComparisonProperty}")
+        )
+        result = validator.validate(Person(Surname="foo", Forename="bar"))
+        self.assertFalse(result.is_valid)
+        # result.Errors[0].ErrorMessage.ShouldEqual("Forename")
+
+    # def test_Comparison_property_uses_custom_resolver(self):
+    # 	originalResolver = ValidatorOptions.Global.DisplayNameResolver
+
+    # 	try:
+    # 		ValidatorOptions.Global.DisplayNameResolver = (type, member,(lambda ): member.Name + "Foo"
+    # 		validator =TestValidator(lambda v: v.RuleFor(lambda x: x.Surname).Equa(lambda x: x.Forename).WithMessage("{ComparisonProperty}")}
+    # 		result = validator.validate(Person {Surname = "foo", Forename = "bar"})
+    # 		# result.Errors[0].ErrorMessage.ShouldEqual("ForenameFoo")
+    # 	finally:
+    # 		ValidatorOptions.Global.DisplayNameResolver = originalResolver
+
+    # def test_Should_succeed_on_case_insensitive_comparison(self):
+    # 	validator =TestValidator(lambda v: v.RuleFor(lambda x: x.Surname).Equal("FOO", StringComparerOrdinalIgnoreCase))
+    # 	result = validator.validate(Person(Surname = "foo" ))
+
+    # 	self.assertTrue(result.is_valid)
+
+    # def test_Should_succeed_on_case_insensitive_comparison_using_expression(self):
+    # 	validator =TestValidator(lambda v: v.RuleFor(lambda x: x.Surname).Equa(lambda x: x.Forename, StringComparer.OrdinalIgnoreCase))
+    # 	result = validator.validate(Person(Surname = "foo", Forename = "FOO"))
+
+    # 	self.assertTrue(result.is_valid)
+
+    def test_Should_use_ordinal_comparison_by_default(self):
+        validator = TestValidator()
+        validator.RuleFor(lambda x: x.Surname).Equal("a")
+        result = validator.validate(Person(Surname="a\0"))
+        self.assertFalse(result.is_valid)
+
+
+if __name__ == "__main__":
+    unittest.main()

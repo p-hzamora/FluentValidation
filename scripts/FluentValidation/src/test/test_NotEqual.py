@@ -32,14 +32,14 @@ public class NotEqualValidatorTests {
 	public void When_the_objects_are_equal_then_the_validator_should_fail() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual("Foo"));
 		var result = validator.Validate(new Person { Forename = "Foo" });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
 	public void When_the_objects_are_not_equal_then_the_validator_should_pass() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual("Bar"));
 		var result = validator.Validate(new Person { Forename = "Foo" });
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -58,7 +58,7 @@ public class NotEqualValidatorTests {
 		);
 
 		var result = validator.Validate(new Person { Surname = "foo", Forename = "foo" });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 		result.Errors[0].ErrorMessage.ShouldEqual("Surname");
 	}
 
@@ -109,14 +109,14 @@ public class NotEqualValidatorTests {
 	public void Should_not_be_valid_for_case_insensitve_comparison() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual("FOO", StringComparer.OrdinalIgnoreCase));
 		var result = validator.Validate(new Person{Forename = "foo"});
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
 	public void Should_not_be_valid_for_case_insensitve_comparison_with_expression() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual(x => x.Surname, StringComparer.OrdinalIgnoreCase));
 		var result = validator.Validate(new Person { Forename = "foo", Surname = "FOO"});
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
@@ -125,7 +125,7 @@ public class NotEqualValidatorTests {
 		var myTypeValidator = new MyTypeValidator();
 
 		var validationResult = myTypeValidator.Validate(myType);
-		validationResult.IsValid.ShouldEqual(false);
+		validationResult.is_valid.ShouldEqual(false);
 	}
 
 	[Fact]
@@ -133,7 +133,7 @@ public class NotEqualValidatorTests {
 		var validator = new TestValidator();
 		validator.RuleFor(x => x.Surname).NotEqual("a");
 		var result = validator.Validate(new Person {Surname = "a\0"});
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	public class MyType {

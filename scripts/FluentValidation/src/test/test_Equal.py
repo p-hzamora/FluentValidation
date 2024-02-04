@@ -9,7 +9,7 @@ public class EqualValidatorTests {
 		var validator = new TestValidator { v => v.RuleFor(x => x.Forename).Equal("Foo") };
 		var result = validator.Validate(new Person { Forename = "Foo"});
 
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -17,7 +17,7 @@ public class EqualValidatorTests {
 		var validator = new TestValidator { v => v.RuleFor(x => x.Forename).Equal("Foo") };
 		var result = validator.Validate(new Person() { Forename = "Bar" });
 
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
@@ -55,7 +55,7 @@ public class EqualValidatorTests {
 	public void Validates_against_property() {
 		var validator = new TestValidator {v => v.RuleFor(x => x.Surname).Equal(x => x.Forename).WithMessage("{ComparisonProperty}")};
 		var result = validator.Validate(new Person {Surname = "foo", Forename = "bar"});
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 		result.Errors[0].ErrorMessage.ShouldEqual("Forename");
 	}
 
@@ -79,7 +79,7 @@ public class EqualValidatorTests {
 		var validator = new TestValidator { v => v.RuleFor(x => x.Surname).Equal("FOO", StringComparer.OrdinalIgnoreCase) };
 		var result = validator.Validate(new Person { Surname = "foo" });
 
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -87,7 +87,7 @@ public class EqualValidatorTests {
 		var validator = new TestValidator { v => v.RuleFor(x => x.Surname).Equal(x => x.Forename, StringComparer.OrdinalIgnoreCase) };
 		var result = validator.Validate(new Person { Surname = "foo", Forename = "FOO"});
 
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -95,6 +95,6 @@ public class EqualValidatorTests {
 		var validator = new TestValidator();
 		validator.RuleFor(x => x.Surname).Equal("a");
 		var result = validator.Validate(new Person {Surname = "a\0"});
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 }

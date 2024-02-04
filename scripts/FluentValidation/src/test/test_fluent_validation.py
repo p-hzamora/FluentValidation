@@ -8,8 +8,8 @@ sys.path.append(
 )
 
 from dataclasses import dataclass  # noqa: E402
-from FluentValidation.abstract_validator import AbstractValidator  # noqa: E402
-from FluentValidation.enums import CascadeMode  # noqa: E402
+from src.FluentValidation.abstract_validator import AbstractValidator  # noqa: E402
+from src.FluentValidation.enums import CascadeMode  # noqa: E402
 
 
 class RegexPattern:
@@ -43,7 +43,7 @@ class PersonValidator(AbstractValidator[Person]):
         )
         self.RuleFor(lambda x: x.edad).GreaterThanOrEqual(
             lambda x: x.edad_min
-        ).LessThanOrEqual(lambda x: x.edad_max)
+        ).LessThanOrEqualTo(lambda x: x.edad_max)
 
         self.RuleFor(lambda x: x.ppto).IsInstance(
             int | float | Decimal

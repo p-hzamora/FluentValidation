@@ -7,7 +7,7 @@ from person import Person
 sys.path.append(
     [str(x) for x in Path(__file__).parents if x.name == "FluentValidation"].pop()
 )
-from FluentValidation.InlineValidator import InlineValidator  # noqa: E402
+from src.FluentValidation.InlineValidator import InlineValidator  # noqa: E402
 
 
 class TestValidator(InlineValidator[Person]):

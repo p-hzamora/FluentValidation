@@ -50,7 +50,7 @@ class AbstractValidator[T](ABC):
     def validate(self, instance: T) -> ValidationResult:
         return self.internal_validate(ValidationContext(instance))
 
-    def RuleFor[TProperty](
+    def  RuleFor[TProperty](
         self, func: Callable[[T], TProperty]
     ) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
         rule: PropertyRule[T, TProperty] = PropertyRule.create(

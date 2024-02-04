@@ -9,11 +9,11 @@ sys.path.append(
 
 from TestValidator import TestValidator  # noqa: E402
 from person import Person  # noqa: E402
-from FluentValidation.validators.AbstractComparisonValidator import (  # noqa: E402
+from src.FluentValidation.validators.AbstractComparisonValidator import (  # noqa: E402
     Comparison,
     IComparisonValidator,
 )
-from FluentValidation.validators.LessThanValidator import LessThanValidator  # noqa: E402
+from src.FluentValidation.validators.LessThanValidator import LessThanValidator  # noqa: E402
 
 
 class LessThanValidatorTester(unittest.TestCase):

@@ -62,7 +62,7 @@ class RangeValidator[T, TProperty](PropertyValidator[T, TProperty], IBetweenVali
         ...
 
     @override
-    def IsValid(self, context: ValidationContext[T], value: TProperty):
+    def is_valid(self, context: ValidationContext[T], value: TProperty):
         # If the value is null then we abort and assume success.
         # This should not be a failure condition - only a NotNull/NotEmpty should cause a null to fail.
         if value is None:

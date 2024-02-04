@@ -33,7 +33,7 @@ public class LengthValidatorTests {
 	public void When_the_text_is_between_the_range_specified_then_the_validator_should_pass() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(1, 10));
 		var result = validator.Validate(new Person { Surname = "Test"});
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -41,14 +41,14 @@ public class LengthValidatorTests {
 	{
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(x => x.MinLength, x => x.MaxLength));
 		var result = validator.Validate(new Person { Surname = "Test", MinLength = 1, MaxLength = 10 });
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
 	public void When_the_text_is_smaller_than_the_range_then_the_validator_should_fail() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(5, 10));
 		var result = validator.Validate(new Person { Surname = "Test" });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
@@ -56,14 +56,14 @@ public class LengthValidatorTests {
 	{
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(x => x.MinLength, x => x.MaxLength));
 		var result = validator.Validate(new Person { Surname = "Test", MinLength = 5, MaxLength = 10 });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
 	public void When_the_text_is_larger_than_the_range_then_the_validator_should_fail() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(1, 2));
 		var result = validator.Validate(new Person { Surname = "Test" });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
@@ -71,14 +71,14 @@ public class LengthValidatorTests {
 	{
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(x => x.MinLength, x => x.MaxLength));
 		var result = validator.Validate(new Person { Surname = "Test", MinLength = 1, MaxLength = 2 });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
 	public void When_the_text_is_exactly_the_size_of_the_upper_bound_then_the_validator_should_pass() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(1, 4));
 		var result = validator.Validate(new Person{Surname = "Test"});
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -86,14 +86,14 @@ public class LengthValidatorTests {
 	{
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(x => x.MinLength, x => x.MaxLength));
 		var result = validator.Validate(new Person { Surname = "Test", MinLength = 1, MaxLength = 4 });
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
 	public void When_the_text_is_exactly_the_size_of_the_lower_bound_then_the_validator_should_pass() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(4, 5));
 		var result = validator.Validate(new Person { Surname = "Test" });
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -101,7 +101,7 @@ public class LengthValidatorTests {
 	{
 		var validator = new TestValidator(v => v.RuleFor(x => x.Surname).Length(x => x.MinLength, x => x.MaxLength));
 		var result = validator.Validate(new Person { Surname = "Test", MinLength = 4, MaxLength = 5 });
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -133,7 +133,7 @@ public class LengthValidatorTests {
 		};
 
 		var result = validator.Validate(new Person {Surname = null});
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]

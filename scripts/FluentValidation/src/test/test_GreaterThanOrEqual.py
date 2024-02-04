@@ -34,19 +34,19 @@ public class GreaterThanOrEqualToValidatorTester {
 	[Fact]
 	public void Should_fail_when_less_than_input() {
 		var result = validator.Validate(new Person{Id=0});
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
 	public void Should_succeed_when_greater_than_input() {
 		var result = validator.Validate(new Person{Id=2});
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
 	public void Should_succeed_when_equal_to_input() {
 		var result = validator.Validate(new Person{Id=value});
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -59,7 +59,7 @@ public class GreaterThanOrEqualToValidatorTester {
 	public void Validates_with_property() {
 		var validator = new TestValidator(v => v.RuleFor(x => x.Id).GreaterThanOrEqualTo(x => x.AnotherInt).WithMessage("{ComparisonProperty}"));
 		var result = validator.Validate(new Person { Id = 0, AnotherInt = 1 });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 		result.Errors[0].ErrorMessage.ShouldEqual("Another Int");
 	}
 
@@ -87,10 +87,10 @@ public class GreaterThanOrEqualToValidatorTester {
 		var resultEqual = validator.Validate(new Person { Id = 0, NullableInt = 0 });
 		var resultMore = validator.Validate(new Person { Id = 0, NullableInt = 1 });
 
-		resultNull.IsValid.ShouldBeFalse();
-		resultLess.IsValid.ShouldBeTrue();
-		resultEqual.IsValid.ShouldBeTrue();
-		resultMore.IsValid.ShouldBeFalse();
+		resultNull.is_valid.ShouldBeFalse();
+		resultLess.is_valid.ShouldBeTrue();
+		resultEqual.is_valid.ShouldBeTrue();
+		resultMore.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
@@ -102,10 +102,10 @@ public class GreaterThanOrEqualToValidatorTester {
 		var resultEqual = validator.Validate(new Person { NullableInt = 0, OtherNullableInt = 0 });
 		var resultMore = validator.Validate(new Person { NullableInt = 0, OtherNullableInt = 1 });
 
-		resultNull.IsValid.ShouldBeFalse();
-		resultLess.IsValid.ShouldBeTrue();
-		resultEqual.IsValid.ShouldBeTrue();
-		resultMore.IsValid.ShouldBeFalse();
+		resultNull.is_valid.ShouldBeFalse();
+		resultLess.is_valid.ShouldBeTrue();
+		resultEqual.is_valid.ShouldBeTrue();
+		resultMore.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
@@ -122,14 +122,14 @@ public class GreaterThanOrEqualToValidatorTester {
 	public void Validates_with_nullable_when_property_is_null() {
 		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(5));
 		var result = validator.Validate(new Person());
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
 	public void Validates_with_nullable_when_property_not_null() {
 		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(5));
 		var result = validator.Validate(new Person { NullableInt = 1 });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 
 	[Fact]
@@ -148,7 +148,7 @@ public class GreaterThanOrEqualToValidatorTester {
 	{
 		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(x => x.Id));
 		var result = validator.Validate(new Person { Id = 5 });
-		result.IsValid.ShouldBeTrue();
+		result.is_valid.ShouldBeTrue();
 	}
 
 	[Fact]
@@ -156,6 +156,6 @@ public class GreaterThanOrEqualToValidatorTester {
 	{
 		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(x=>x.Id));
 		var result = validator.Validate(new Person { NullableInt = 1, Id = 5 });
-		result.IsValid.ShouldBeFalse();
+		result.is_valid.ShouldBeFalse();
 	}
 }

@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Callable, Self
 from abc import ABC, abstractmethod
 
 from .internal.MessageFormatter import MessageFormatter
@@ -86,7 +86,12 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     def PropertyPath(self) -> str:
         return self._property_path
 
-    # def InitializeForPropertyValidator(self, propertyPath:str, displayNameFunc:Callable[[Self],str]):
-    def InitializeForPropertyValidator(self, propertyPath: str):
+    @property
+    def DisplayName(self) -> str:  # FIXME [ ]: Must be Callable[[self],str]
+        return self._displayNameFunc
+
+    def InitializeForPropertyValidator(
+        self, propertyPath: str, displayNameFunc: Callable[[Self], str]
+    ):
         self._property_path = propertyPath
-        # self._displayNameFunc = displayNameFunc
+        self._displayNameFunc = displayNameFunc

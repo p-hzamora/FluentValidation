@@ -33,3 +33,7 @@ class NotEqualValidator[T, TProperty](AbstractComparisonValidator[T, TProperty])
     @property
     def Comparison(self) -> Comparison:
         return Comparison.NotEqual
+
+    @override
+    def get_default_message_template(self, error_code: str) -> str:
+        return self.Localized(error_code, self.Name)

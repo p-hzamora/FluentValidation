@@ -30,10 +30,10 @@ class LessThanValidator[T, TProperty](AbstractComparisonValidator[T, TProperty])
         )
 
     @override
-    def get_default_message_template(self) -> str:
-        return f"'{self._comparisonMemberDisplayName}' must be less than '{self.Comparison.name}'"
-
-    @override
     @property
     def Comparison(self) -> Comparison:
         return Comparison.LessThan
+
+    @override
+    def get_default_message_template(self, error_code: str) -> str:
+        return self.Localized(error_code, self.Name)

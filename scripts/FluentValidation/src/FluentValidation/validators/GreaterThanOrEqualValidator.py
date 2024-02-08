@@ -5,17 +5,13 @@ from ..validators.AbstractComparisonValidator import (
 )
 
 
-class GreaterThanOrEqualValidator[T, TProperty](
-    AbstractComparisonValidator[T, TProperty]
-):
+class GreaterThanOrEqualValidator[T, TProperty](AbstractComparisonValidator[T, TProperty]):
     @overload
     def __init__(self, value: TProperty):
         ...
 
     @overload
-    def __init__(
-        self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str
-    ):
+    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):
         ...
 
     @overload

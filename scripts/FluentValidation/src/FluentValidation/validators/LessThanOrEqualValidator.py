@@ -11,9 +11,7 @@ class LessThanOrEqualValidator[T, TProperty](AbstractComparisonValidator[T, TPro
         ...
 
     @overload
-    def __init__(
-        self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str
-    ):
+    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):
         ...
 
     @overload

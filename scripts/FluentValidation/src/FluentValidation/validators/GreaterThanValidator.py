@@ -11,9 +11,7 @@ class GreaterThanValidator[T, TProperty](AbstractComparisonValidator[T, TPropert
         ...
 
     @overload
-    def __init__(
-        self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str
-    ):
+    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):
         ...
 
     @overload

@@ -11,9 +11,7 @@ class EqualValidator[T, TProperty](AbstractComparisonValidator[T, TProperty]):
         ...
 
     @overload
-    def __init__(
-        self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str
-    ):
+    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):
         ...
 
     @overload

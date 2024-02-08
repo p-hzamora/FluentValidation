@@ -22,10 +22,11 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._type_to_validate = type_to_validate
         self._cascadeModeThunk: Callable[[], CascadeMode] = cascadeModeThunk
         self._components: List[RuleComponent[T, TProperty]] = []
-        self._propertyName: str = {
-            x.opname: x.argval for x in dis.Bytecode(propertyFunc)
-        }["LOAD_ATTR"]
-        self._displayName: str = self._propertyName
+        self._propertyName: str = {x.opname: x.argval for x in dis.Bytecode(propertyFunc)}["LOAD_ATTR"]
+        self._displayName: str = self._propertyName  # FIXME [ ]: This implementation is wrong. It Must call the "GetDisplay" method
+
+        # public string GetDisplayName(ValidationContext<T> context)
+        #     => _displayNameFactory?.Invoke(context) ?? _displayName ?? _propertyDisplayName;
 
     @property
     def PropertyFunc(self) -> Callable[[T], TProperty]:
@@ -64,12 +65,10 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         lambda: value
 
     @staticmethod
-    def PrepareMessageFormatterForValidationError(
-        context: ValidationContext[T], value: TValue
-    ) -> None:
-        # context.MessageFormatter.AppendPropertyName(context.DisplayName)
+    def PrepareMessageFormatterForValidationError(context: ValidationContext[T], value: TValue) -> None:
+        context.MessageFormatter.AppendPropertyName(context.DisplayName)
         context.MessageFormatter.AppendPropertyValue(value)
-        # context.MessageFormatter.AppendArgument("PropertyPath", context.PropertyPath)
+        context.MessageFormatter.AppendArgument("PropertyPath", context.PropertyPath)
 
     def CreateValidationError(
         self,
@@ -78,19 +77,13 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         component: RuleComponent[T, TValue],
     ) -> ValidationFailure:
         if self.MessageBuilder is not None:
-            error = self.MessageBuilder(
-                MessageBuilderContext[T, TProperty](context, value, component)
-            )
+            error = self.MessageBuilder(MessageBuilderContext[T, TProperty](context, value, component))
         else:
             error = component.GetErrorMessage(context, value)
 
-        failure = ValidationFailure(
-            context.PropertyPath, error, value, component.ErrorCode
-        )
+        failure = ValidationFailure(context.PropertyPath, error, value, component.ErrorCode)
 
         # failure.FormattedMessagePlaceholderValues = context.MessageFormatter.PlaceholderValues
-        failure._ErrorCode = (
-            component.ErrorCode
-        )  # ?? ValidatorOptions.Global.ErrorCodeResolver(component.Validator);
+        failure._ErrorCode = component.ErrorCode  # ?? ValidatorOptions.Global.ErrorCodeResolver(component.Validator);
 
         return failure

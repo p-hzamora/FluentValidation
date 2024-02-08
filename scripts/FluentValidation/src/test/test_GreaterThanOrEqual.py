@@ -1,161 +1,129 @@
-#region License
-// Copyright (c) .NET Foundation and contributors.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
-#endregion
+import unittest
 
-namespace FluentValidation.Tests;
-
-using System.Linq;
-using Xunit;
-using Validators;
+from person import Person
+from TestValidator import TestValidator
 
 
-public class GreaterThanOrEqualToValidatorTester {
-	private TestValidator validator;
-	private const int value = 1;
-	public GreaterThanOrEqualToValidatorTester() {
-		CultureScope.SetDefaultCulture();
-		validator = new TestValidator(v => v.RuleFor(x => x.Id).GreaterThanOrEqualTo(value));
-	}
+class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
+    validator: TestValidator
+    value: int = 1
 
-	[Fact]
-	public void Should_fail_when_less_than_input() {
-		var result = validator.Validate(new Person{Id=0});
-		result.is_valid.ShouldBeFalse();
-	}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # CultureScope.SetDefaultCulture()
+        self.validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(self.value)
+        )
 
-	[Fact]
-	public void Should_succeed_when_greater_than_input() {
-		var result = validator.Validate(new Person{Id=2});
-		result.is_valid.ShouldBeTrue();
-	}
+    def test_Should_fail_when_less_than_input(self):
+        result = self.validator.validate(Person(Id=0))
+        self.assertFalse(result.is_valid)
 
-	[Fact]
-	public void Should_succeed_when_equal_to_input() {
-		var result = validator.Validate(new Person{Id=value});
-		result.is_valid.ShouldBeTrue();
-	}
+    def test_Should_succeed_when_greater_than_input(self):
+        result = self.validator.validate(Person(Id=2))
+        self.assertTrue(result.is_valid)
 
-	[Fact]
-	public void Should_set_default_error_when_validation_fails() {
-		var result = validator.Validate(new Person{Id=0});
-		result.Errors.Single().ErrorMessage.ShouldEqual("'Id' must be greater than or equal to '1'.");
-	}
+    def test_Should_succeed_when_equal_to_input(self):
+        result = self.validator.validate(Person(Id=self.value))
+        self.assertTrue(result.is_valid)
 
-	[Fact]
-	public void Validates_with_property() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Id).GreaterThanOrEqualTo(x => x.AnotherInt).WithMessage("{ComparisonProperty}"));
-		var result = validator.Validate(new Person { Id = 0, AnotherInt = 1 });
-		result.is_valid.ShouldBeFalse();
-		result.Errors[0].ErrorMessage.ShouldEqual("Another Int");
-	}
+    def test_Should_set_default_error_when_validation_fails(self):
+        result = self.validator.validate(Person(Id=0))
+        self.assertEqual(result.errors[0].ErrorMessage, "'Id' must be greater than or equal to '1'.")
 
-	[Fact]
-	public void Comparison_property_uses_custom_resolver() {
-		var originalResolver = ValidatorOptions.Global.DisplayNameResolver;
+    def test_Validates_with_property(self):
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
+        result= validator.validate(Person(Id = 0, AnotherInt = 1))
+        self.assertFalse(result.is_valid)
+        self.assertEqual(result.errors[0].ErrorMessage, "Another Int") #FIXME [ ]: I don't know why It's return AnotherInt whitout space
 
-		try {
-			ValidatorOptions.Global.DisplayNameResolver = (type, member, expr) => member.Name + "Foo";
-			var validator = new TestValidator(v => v.RuleFor(x => x.Id).GreaterThanOrEqualTo(x => x.AnotherInt).WithMessage("{ComparisonProperty}"));
-			var result = validator.Validate(new Person { Id = 0, AnotherInt = 1 });
-			result.Errors[0].ErrorMessage.ShouldEqual("AnotherIntFoo");
-		}
-		finally {
-			ValidatorOptions.Global.DisplayNameResolver = originalResolver;
-		}
-	}
+    # def test_Comparison_property_uses_custom_resolver(self):
+    #     originalResolver= ValidatorOptions.Global.DisplayNameResolver
 
-	[Fact]
-	public void Validates_with_nullable_property() {
-		validator = new TestValidator(v => v.RuleFor(x => x.Id).GreaterThanOrEqualTo(x => x.NullableInt));
+    #     try:
+    #         ValidatorOptions.Global.DisplayNameResolver = (type, member, exprlambda ): member.Name + "Foo"
+    #         validator= TestValidator(lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
+    #         result= self.validator.validate(Person(Id = 0, AnotherInt = 1))
+    #         self.assertEqual(result.errors[0].ErrorMessage, "AnotherIntFoo")
 
-		var resultNull = validator.Validate(new Person { Id = 0, NullableInt = null });
-		var resultLess = validator.Validate(new Person { Id = 0, NullableInt = -1 });
-		var resultEqual = validator.Validate(new Person { Id = 0, NullableInt = 0 });
-		var resultMore = validator.Validate(new Person { Id = 0, NullableInt = 1 });
+    #     finally:
+    #         ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
-		resultNull.is_valid.ShouldBeFalse();
-		resultLess.is_valid.ShouldBeTrue();
-		resultEqual.is_valid.ShouldBeTrue();
-		resultMore.is_valid.ShouldBeFalse();
-	}
 
-	[Fact]
-	public void Validates_nullable_with_nullable_property() {
-		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(x => x.OtherNullableInt));
+    def test_Validates_with_nullable_property(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(
+                lambda x: x.NullableInt
+            )
+        )
 
-		var resultNull = validator.Validate(new Person { NullableInt = 0, OtherNullableInt = null });
-		var resultLess = validator.Validate(new Person { NullableInt = 0, OtherNullableInt = -1 });
-		var resultEqual = validator.Validate(new Person { NullableInt = 0, OtherNullableInt = 0 });
-		var resultMore = validator.Validate(new Person { NullableInt = 0, OtherNullableInt = 1 });
+        resultNull = validator.validate(Person(Id=0, NullableInt=None))
+        resultLess = validator.validate(Person(Id=0, NullableInt=-1))
+        resultEqual = validator.validate(Person(Id=0, NullableInt=0))
+        resultMore = validator.validate(Person(Id=0, NullableInt=1))
 
-		resultNull.is_valid.ShouldBeFalse();
-		resultLess.is_valid.ShouldBeTrue();
-		resultEqual.is_valid.ShouldBeTrue();
-		resultMore.is_valid.ShouldBeFalse();
-	}
+        self.assertFalse(resultNull.is_valid)
+        self.assertTrue(resultLess.is_valid)
+        self.assertTrue(resultEqual.is_valid)
+        self.assertFalse(resultMore.is_valid)
 
-	[Fact]
-	public void Comparison_type() {
-		var propertyValidator = validator.CreateDescriptor()
-			.GetValidatorsForMember("Id")
-			.Select(x => x.Validator)
-			.Cast<GreaterThanOrEqualValidator<Person,int>>().Single();
+    def test_Validates_nullable_with_nullable_property(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(
+                lambda x: x.OtherNullableInt
+            )
+        )
 
-		propertyValidator.Comparison.ShouldEqual(Comparison.GreaterThanOrEqual);
-	}
+        resultNull = validator.validate(Person(NullableInt=0, OtherNullableInt=None))
+        resultLess = validator.validate(Person(NullableInt=0, OtherNullableInt=-1))
+        resultEqual = validator.validate(Person(NullableInt=0, OtherNullableInt=0))
+        resultMore = validator.validate(Person(NullableInt=0, OtherNullableInt=1))
 
-	[Fact]
-	public void Validates_with_nullable_when_property_is_null() {
-		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(5));
-		var result = validator.Validate(new Person());
-		result.is_valid.ShouldBeTrue();
-	}
+        self.assertFalse(resultNull.is_valid)
+        self.assertTrue(resultLess.is_valid)
+        self.assertTrue(resultEqual.is_valid)
+        self.assertFalse(resultMore.is_valid)
 
-	[Fact]
-	public void Validates_with_nullable_when_property_not_null() {
-		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(5));
-		var result = validator.Validate(new Person { NullableInt = 1 });
-		result.is_valid.ShouldBeFalse();
-	}
+    # def test_Comparison_type(self):
+    # 	propertyValidator= self.validator.validate()
+    # 		.GetValidatorsForMember("Id")
+    # 		.Select(lambda x: x.Validator)
+    # 		.Cast<GreaterThanOrEqualValidator<Person,int>>().Single()
 
-	[Fact]
-	public void Should_localize_value() {
-		using (new CultureScope("fr-fr")) {
-			var orderValidator = new InlineValidator<Order>();
-			orderValidator.RuleFor(x => x.Amount).GreaterThanOrEqualTo(1.2M).WithMessage("{ComparisonValue}");
-			var result = orderValidator.Validate(new Order());
-			var msg = result.Errors[0].ErrorMessage;
-			msg.ShouldEqual("1,2");
-		}
-	}
+    # 	propertyValidator.Comparison.ShouldEqual(Comparison.GreaterThanOrEqual)
 
-	[Fact]
-	public void Validates_with_nullable_when_property_is_null_cross_property()
-	{
-		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(x => x.Id));
-		var result = validator.Validate(new Person { Id = 5 });
-		result.is_valid.ShouldBeTrue();
-	}
+    def test_Validates_with_nullable_when_property_is_null(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(5)
+        )
+        result = validator.validate(Person())
+        self.assertTrue(result.is_valid)
 
-	[Fact]
-	public void Validates_with_nullable_when_property_not_null_cross_property()
-	{
-		validator = new TestValidator(v => v.RuleFor(x => x.NullableInt).GreaterThanOrEqualTo(x=>x.Id));
-		var result = validator.Validate(new Person { NullableInt = 1, Id = 5 });
-		result.is_valid.ShouldBeFalse();
-	}
-}
+    def test_Validates_with_nullable_when_property_not_null(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(5)
+        )
+        result = validator.validate(Person(NullableInt=1))
+        self.assertFalse(result.is_valid)
+
+    def test_Validates_with_nullable_when_property_is_null_cross_property(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(
+                lambda x: x.Id
+            )
+        )
+        result = validator.validate(Person(Id=5))
+        self.assertTrue(result.is_valid)
+
+    def test_Validates_with_nullable_when_property_not_null_cross_property(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(
+                lambda x: x.Id
+            )
+        )
+        result = validator.validate(Person(NullableInt=1, Id=5))
+        self.assertFalse(result.is_valid)
+
+
+if __name__ == "__main__":
+    unittest.main()

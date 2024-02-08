@@ -38,16 +38,16 @@ class PersonValidator(AbstractValidator[Person]):
         super().__init__()
         self.ClassLevelCascadeMode = CascadeMode.Stop
         self.RuleLevelCascadeMode = CascadeMode.Stop
-        self.RuleFor(lambda x: x.fecha_ini).IsInstance(int).GreaterThanOrEqual(
+        self.RuleFor(lambda x: x.fecha_ini).IsInstance(int).GreaterThanOrEqualTo(
             lambda x: x.fecha_fin
         )
-        self.RuleFor(lambda x: x.edad).GreaterThanOrEqual(
+        self.RuleFor(lambda x: x.edad).GreaterThanOrEqualTo(
             lambda x: x.edad_min
         ).LessThanOrEqualTo(lambda x: x.edad_max)
 
         self.RuleFor(lambda x: x.ppto).IsInstance(
             int | float | Decimal
-        ).GreaterThanOrEqual(0)
+        ).GreaterThanOrEqualTo(0)
 
         self.RuleFor(lambda x: x.fecha_ini).GreaterThan(datetime.today())
 

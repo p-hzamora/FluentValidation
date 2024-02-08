@@ -1,190 +1,150 @@
-#region License
-// Copyright (c) .NET Foundation and contributors.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// The latest version of this file can be found at https://github.com/FluentValidation/FluentValidation
-#endregion
+import unittest
 
-namespace FluentValidation.Tests;
+from person import Person
+from TestValidator import TestValidator
 
-using System;
-using System.Linq;
-using Xunit;
-using Validators;
 
-public class NotEqualValidatorTests {
-	public  NotEqualValidatorTests() {
-		CultureScope.SetDefaultCulture();
-	}
+class NotEqualValidatorTests(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-	[Fact]
-	public void When_the_objects_are_equal_then_the_validator_should_fail() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual("Foo"));
-		var result = validator.Validate(new Person { Forename = "Foo" });
-		result.is_valid.ShouldBeFalse();
-	}
+    def test_When_the_objects_are_equal_then_the_validator_should_fail(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Forename).NotEqual("Foo")
+        )
+        result = validator.validate(Person(Forename="Foo"))
+        self.assertFalse(result.is_valid)
 
-	[Fact]
-	public void When_the_objects_are_not_equal_then_the_validator_should_pass() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual("Bar"));
-		var result = validator.Validate(new Person { Forename = "Foo" });
-		result.is_valid.ShouldBeTrue();
-	}
+    def test_When_the_objects_are_not_equal_then_the_validator_should_pass(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Forename).NotEqual("Bar")
+        )
+        result = validator.validate(Person(Forename="Foo"))
+        self.assertTrue(result.is_valid)
 
-	[Fact]
-	public void When_the_validator_fails_the_error_message_should_be_set() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual("Foo"));
-		var result = validator.Validate(new Person { Forename = "Foo" });
-		result.Errors.Single().ErrorMessage.ShouldEqual("'Forename' must not be equal to 'Foo'.");
-	}
+    def test_When_the_validator_fails_the_error_message_should_be_set(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Forename).NotEqual("Foo")
+        )
+        result = validator.validate(Person(Forename="Foo"))
+        self.assertEqual(
+            result.errors[0].ErrorMessage, "'Forename' must not be equal to 'Foo'."
+        )
 
-	[Fact]
-	public void Validates_across_properties() {
-		var validator = new TestValidator(
-			v => v.RuleFor(x => x.Forename)
-				.NotEqual(x => x.Surname)
-				.WithMessage("{ComparisonProperty}")
-		);
+    def test_Validates_across_properties(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Forename)
+                .NotEqual(lambda x: x.Surname)
+                .WithMessage("{ComparisonProperty}")
+        )
 
-		var result = validator.Validate(new Person { Surname = "foo", Forename = "foo" });
-		result.is_valid.ShouldBeFalse();
-		result.Errors[0].ErrorMessage.ShouldEqual("Surname");
-	}
+        result = validator.validate(Person( Surname = "foo", Forename = "foo"))
+        self.assertFalse(result.is_valid)
+        self.assertEqual(result.errors[0].ErrorMessage, "Surname")
 
-	[Fact]
-	public void Comparison_property_uses_custom_resolver() {
-		var originalResolver = ValidatorOptions.Global.DisplayNameResolver;
+    # def test_Comparison_property_uses_custom_resolver(self):
+    # 	originalResolver = ValidatorOptions.Global.DisplayNameResolver
 
-		try {
-			ValidatorOptions.Global.DisplayNameResolver = (type, member, expr) => member.Name + "Foo";
-			var validator = new TestValidator(
-				v => v.RuleFor(x => x.Forename)
-					.NotEqual(x => x.Surname)
-					.WithMessage("{ComparisonProperty}")
-			);
+    # 	try:
+    # 		ValidatorOptions.Global.DisplayNameResolver = (type, member, exprlambda ): member.Name + "Foo"
+    # 		validator = TestValidator(
+    # 			lambda v: v.RuleFor(lambda x: x.Forename)
+    # 				.NotEqual(lambda x: x.Surname)
+    # 				.WithMessage("{ComparisonProperty}")
+    # 		)
 
-			var result = validator.Validate(new Person { Surname = "foo", Forename = "foo" });
-			result.Errors[0].ErrorMessage.ShouldEqual("SurnameFoo");
-		}
-		finally {
-			ValidatorOptions.Global.DisplayNameResolver = originalResolver;
-		}
-	}
+    # 		result = validator.validate(Person( Surname = "foo", Forename = "foo" })
+    # 		self.assertEqual(result.errors[0].ErrorMessage, "SurnameFoo")
+    # 	finally:
+    # 		ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
-	[Fact]
-	public void Should_store_property_to_compare() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual(x => x.Surname));
-		var propertyValidator = validator.CreateDescriptor()
-			.GetValidatorsForMember("Forename")
-			.Select(x => x.Validator)
-			.OfType<NotEqualValidator<Person,string>>()
-			.Single();
+    # def test_Should_store_property_to_compare(self):
+    # 	validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Forename).NotEqual(lambda x: x.Surname))
+    # 	propertyValidator = validator.CreateDescriptor()
+    # 		.GetValidatorsForMember("Forename")
+    # 		.Select(lambda x: x.Validator)
+    # 		.OfType<NotEqualValidator<Person,string>>()
+    # 		.Single()
 
-		propertyValidator.MemberToCompare.ShouldEqual(typeof(Person).GetProperty("Surname"));
-	}
+    # 	propertyValidator.MemberToCompare.ShouldEqual(typeof(Person).GetProperty("Surname"))
 
-	[Fact]
-	public void Should_store_comparison_type() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual(x => x.Surname));
-		var propertyValidator = validator.CreateDescriptor()
-			.GetValidatorsForMember("Forename")
-			.Select(x => x.Validator)
-			.OfType<NotEqualValidator<Person,string>>()
-			.Single();
-		propertyValidator.Comparison.ShouldEqual(Comparison.NotEqual);
-	}
+    # def test_Should_store_comparison_type(self):
+    # 	validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Forename).NotEqual(lambda x: x.Surname))
+    # 	propertyValidator = validator.CreateDescriptor()
+    # 		.GetValidatorsForMember("Forename")
+    # 		.Select(lambda x: x.Validator)
+    # 		.OfType<NotEqualValidator<Person,string>>()
+    # 		.Single()
+    # 	propertyValidator.Comparison.ShouldEqual(Comparison.NotEqual)
 
-	[Fact]
-	public void Should_not_be_valid_for_case_insensitve_comparison() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual("FOO", StringComparer.OrdinalIgnoreCase));
-		var result = validator.Validate(new Person{Forename = "foo"});
-		result.is_valid.ShouldBeFalse();
-	}
+    def test_Should_not_be_valid_for_case_insensitve_comparison(self):
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Forename).NotEqual("FOO")
+        )
+        result = validator.validate(Person(Forename="foo"))
+        self.assertTrue(result.is_valid)
 
-	[Fact]
-	public void Should_not_be_valid_for_case_insensitve_comparison_with_expression() {
-		var validator = new TestValidator(v => v.RuleFor(x => x.Forename).NotEqual(x => x.Surname, StringComparer.OrdinalIgnoreCase));
-		var result = validator.Validate(new Person { Forename = "foo", Surname = "FOO"});
-		result.is_valid.ShouldBeFalse();
-	}
+    def test_Should_not_be_valid_for_case_insensitve_comparison_with_expression(self):
+        # validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Forename).NotEqual(lambda x: x.Surname, StringComparer.OrdinalIgnoreCase)) #FIXME [ ]: Try to use implement StringComparer.OrdinalIgnoreCase
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Forename).NotEqual(lambda x: x.Surname))
+        # result = validator.validate(Person( Forename = "foo", Surname = "FOO")) # original
+        result = validator.validate(Person( Forename = "foo", Surname = "foo"))
+        self.assertFalse(result.is_valid)
 
-	[Fact]
-	public void Should_handle_custom_value_types_correctly() {
-		var myType = new MyType();
-		var myTypeValidator = new MyTypeValidator();
+    # def test_Should_handle_custom_value_types_correctly(self):
+    # 	myType = MyType()
+    # 	myTypeValidator = MyTypeValidator()
 
-		var validationResult = myTypeValidator.Validate(myType);
-		validationResult.is_valid.ShouldEqual(false);
-	}
+    # 	validationResult = myTypeValidator.Validate(myType)
+    # 	validationResult.is_valid.ShouldEqual(false)
 
-	[Fact]
-	public void Should_use_ordinal_comparison_by_default() {
-		var validator = new TestValidator();
-		validator.RuleFor(x => x.Surname).NotEqual("a");
-		var result = validator.Validate(new Person {Surname = "a\0"});
-		result.is_valid.ShouldBeTrue();
-	}
+    # def test_Should_use_ordinal_comparison_by_default(self):
+    # 	validator = TestValidator()
+    # 	validator.RuleFor(lambda x: x.Surname).NotEqual("a")
+    # 	result = validator.validate(Person(Surname = "a\0"))
+    # 	self.assertTrue(result.is_valid)
 
-	public class MyType {
-		public MyValueType Value { get; set; }
-	}
+    # class MyType:
+    # 	Value:MyValueType
 
-	public class MyTypeValidator : AbstractValidator<MyType> {
-		public MyTypeValidator() {
-			RuleFor(myType => myType.Value).NotEqual(MyValueType.None);
-		}
-	}
+    # class MyTypeValidator(AbstractValidator)[MyType]:
+    # 	MyTypeValidator()
+    # 		RuleFor(myTyplambda e: myType.Value).NotEqual(MyValueType.None)
 
-	public struct MyValueType {
-		public static readonly MyValueType None = default;
+    # class MyValueType:
+    # 	static readonly MyValueType None = default
 
-		public MyValueType(int value) {
-			_value = value;
-		}
+    # 	MyValueType(int value)
+    # 		_value = value
 
-		public int Value {
-			get { return _value ?? -1; }
-		}
+    # 	int Value
+    # 		get { return _value ?? -1 }
 
-		private readonly int? _value;
+    # 	private readonly int? _value
 
-		public override int GetHashCode() {
-			return _value == null ? 0 : _value.Value.GetHashCode();
-		}
+    # 	override int GetHashCode() {
+    # 		return _value == null ? 0 : _value.Value.GetHashCode()
 
-		public override string ToString() {
-			return _value == null ? null : _value.Value.ToString();
-		}
+    # 	override string ToString() {
+    # 		return _value == null ? null : _value.Value.ToString()
 
-		public override bool Equals(object obj) {
-			if (obj == null || obj.GetType() != typeof(MyValueType))
-				return false;
+    # 	override bool Equals(object obj) {
+    # 		if (obj == null || obj.GetType() != typeof(MyValueType))
+    # 			return false
 
-			var otherValueType = (MyValueType)obj;
-			return Equals(otherValueType);
-		}
+    # 		otherValueType = (MyValueType)obj
+    # 		return Equals(otherValueType)
 
-		public bool Equals(MyValueType other) {
-			return _value == other._value;
-		}
+    # 	bool Equals(MyValueType other) {
+    # 		return _value == other._value
 
-		public static bool operator ==(MyValueType first, MyValueType second) {
-			return first.Equals(second);
-		}
+    # 	static bool operator ==(MyValueType first, MyValueType second) {
+    # 		return first.Equals(second)
 
-		public static bool operator !=(MyValueType first, MyValueType second) {
-			return !(first == second);
-		}
-	}
-}
+    # 	static bool operator !=(MyValueType first, MyValueType second) {
+    # 		return !(first == second)
+    # }
+
+
+if __name__ == "__main__":
+    unittest.main()

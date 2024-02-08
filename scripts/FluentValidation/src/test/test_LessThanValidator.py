@@ -42,34 +42,34 @@ class LessThanValidatorTester(unittest.TestCase):
         result = validator.validate(Person(Id=self.value))
         self.assertFalse(result.is_valid)
 
-    # def test_Should_set_default_validation_message_when_validation_fails(self) -> None:
-    #     validator = TestValidator(
-    #         lambda v: v.RuleFor(lambda x: x.Id).LessThan(self.value)
-    #     )
-    #     result = validator.validate(Person(Id=2))
-    #     self.assertEqual(result.errors[0].ErrorMessage, "'Id' must be less than '1'.")
+    def test_Should_set_default_validation_message_when_validation_fails(self) -> None:
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Id).LessThan(self.value)
+        )
+        result = validator.validate(Person(Id=2))
+        self.assertEqual(result.errors[0].ErrorMessage, "'Id' must be less than '1'.")
 
-    # def test_Validates_against_property(self) -> None:
-    #     validator = TestValidator(
-    #         lambda v: v.RuleFor(lambda x: x.Id)
-    #         .LessThan(lambda x: x.AnotherInt)
-    #         .WithMessage(r"{ComparisonProperty}")
-    #     )
-    #     result = validator.validate(Person(Id=2, AnotherInt=1))
-    #     self.assertFalse(result.is_valid)
-    #     self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
+    def test_Validates_against_property(self) -> None:
+        validator = TestValidator(
+            lambda v: v.RuleFor(lambda x: x.Id)
+            .LessThan(lambda x: x.AnotherInt)
+            .WithMessage(r"{ComparisonProperty}")
+        )
+        result = validator.validate(Person(Id=2, AnotherInt=1))
+        self.assertFalse(result.is_valid)
+        self.assertEqual(result.errors[0].ErrorMessage, "Another Int") #FIXME [ ]: I don't know why It's return AnotherInt whitout space
 
-    # def test_Comparison_property_uses_custom_resolver(self) -> None:
-    #     try:
-    #         validator = TestValidator(
-    #             lambda v: v.RuleFor(lambda x: x.Id)
-    #             .LessThan(lambda x: x.AnotherInt)
-    #             .WithMessage(r"ComparisonProperty")
-    #         )
-    #         result = validator.validate(Person(Id=2, AnotherInt=1))
-    #         self.assertEqual(result.errors[0].ErrorMessage, "ComparisonProperty")
-    #     finally:
-    #         pass
+    def test_Comparison_property_uses_custom_resolver(self) -> None:
+        try:
+            validator = TestValidator(
+                lambda v: v.RuleFor(lambda x: x.Id)
+                .LessThan(lambda x: x.AnotherInt)
+                .WithMessage(r"ComparisonProperty")
+            )
+            result = validator.validate(Person(Id=2, AnotherInt=1))
+            self.assertEqual(result.errors[0].ErrorMessage, "ComparisonProperty")
+        finally:
+            pass
 
     def test_Validates_with_nullable_property(self) -> None:
         validator = TestValidator(

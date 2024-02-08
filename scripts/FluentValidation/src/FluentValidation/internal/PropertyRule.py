@@ -17,14 +17,10 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         super().__init__(func, cascadeModeThunk, type_to_validate)
 
     def __repr__(self) -> str:
-        return (
-            f"<{self.__class__.__name__} from '{self.PropertyName}' at {hex(id(self))}>"
-        )
+        return f"<{self.__class__.__name__} from '{self.PropertyName}' at {hex(id(self))}>"
 
     @classmethod
-    def create(
-        cls, func: Callable[[T], TProperty], cascadeModeThunk: Callable[[], CascadeMode]
-    ) -> Self:
+    def create(cls, func: Callable[[T], TProperty], cascadeModeThunk: Callable[[], CascadeMode]) -> Self:
         return PropertyRule(func, cascadeModeThunk, type(TProperty))
 
     def AddValidator(self, validator: IPropertyValidator[T, TProperty]) -> None:
@@ -38,7 +34,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
     def ValidateAsync(self, context: ValidationContext[T]) -> None:
         first = True
         total_failures = len(context.Failures)
-        context.InitializeForPropertyValidator(self.PropertyName)
+        context.InitializeForPropertyValidator(self.PropertyName, self._displayName)
         for component in self.Components:
             context.MessageFormatter.Reset()
             if first:
@@ -47,13 +43,10 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
 
             valid: bool = component.ValidateAsync(context, propValue)
             if not valid:
-                # super().PrepareMessageFormatterForValidationError(context,propValue)
+                self.PrepareMessageFormatterForValidationError(context, propValue)
                 failure = self.CreateValidationError(context, propValue, component)
                 context.Failures.append(failure)
-            if (
-                len(context.Failures) > total_failures
-                and self.CascadeMode == CascadeMode.Stop
-            ):
+            if len(context.Failures) > total_failures and self.CascadeMode == CascadeMode.Stop:
                 break
 
         return None

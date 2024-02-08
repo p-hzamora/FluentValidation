@@ -8,18 +8,12 @@ from ..syntax import IRuleBuilder, IRuleBuilderInternal
 TAbstractValidator = TypeVar("TAbstractValidator")
 
 
-class RuleBuilder[T, TProperty](
-    IRuleBuilder, IRuleBuilderInternal
-):  # IRuleBuilderOptions does not implemented due to I don't know what it does
-    def __init__(
-        self, rule: IValidationRuleInternal[T, TProperty], parent: TAbstractValidator
-    ):
+class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal):  # IRuleBuilderOptions does not implemented due to I don't know what it does
+    def __init__(self, rule: IValidationRuleInternal[T, TProperty], parent: TAbstractValidator):
         self._rule = rule
         self.parent_validator = parent
 
-    def SetValidator(
-        self, validator: IPropertyValidator[T, TProperty]
-    ) -> IRuleBuilder[T, TProperty]:  # -> IRuleBuilderOptions[T,TProperty]
+    def SetValidator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # -> IRuleBuilderOptions[T,TProperty]
         self.Rule.AddValidator(validator)
         return self
 

@@ -51,17 +51,13 @@ class IComparisonValidator(IPropertyValidator):
         ...
 
 
-class AbstractComparisonValidator[T, TProperty](
-    PropertyValidator[T, TProperty], IComparisonValidator
-):
+class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty], IComparisonValidator):
     @overload
     def __init__(self, value: TProperty):
         ...
 
     @overload
-    def __init__(
-        self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str
-    ):
+    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):
         ...
 
     @overload
@@ -73,17 +69,11 @@ class AbstractComparisonValidator[T, TProperty](
         ...
 
     def __init__(self, valueToCompareFunc=None, memberDisplayName=None, value=None):
-        self._valueToCompareFuncForNullables: Callable[
-            [T], tuple[bool, TProperty]
-        ] = None
+        self._valueToCompareFuncForNullables: Callable[[T], tuple[bool, TProperty]] = None
         self._valueToCompareFunc: Callable[[T], TProperty] = None
         self._comparisonMemberDisplayName: str = None
 
-        if (
-            valueToCompareFunc is None
-            and memberDisplayName is None
-            and value is not None
-        ):
+        if valueToCompareFunc is None and memberDisplayName is None and value is not None:
             self._valueToCompare = value
 
         elif callable(valueToCompareFunc):
@@ -103,24 +93,16 @@ class AbstractComparisonValidator[T, TProperty](
 
         valueToCompare = self.GetComparisonValue(context)
 
-        if not valueToCompare[0] or not self._is_valid(
-            propertyValue, valueToCompare[1]
-        ):
-            context.MessageFormatter.AppendArgument(
-                "ComparisonValue", valueToCompare[1] if valueToCompare[0] else ""
-            )
+        if not valueToCompare[0] or not self._is_valid(propertyValue, valueToCompare[1]):
+            context.MessageFormatter.AppendArgument("ComparisonValue", valueToCompare[1] if valueToCompare[0] else "")
             context.MessageFormatter.AppendArgument(
                 "ComparisonProperty",
-                self._comparisonMemberDisplayName
-                if self._comparisonMemberDisplayName is not None
-                else context.PropertyPath,
+                self._comparisonMemberDisplayName if self._comparisonMemberDisplayName is not None else context.PropertyPath,
             )
             return False
         return True
 
-    def GetComparisonValue(
-        self, context: ValidationContext[T]
-    ) -> tuple[bool, TProperty]:
+    def GetComparisonValue(self, context: ValidationContext[T]) -> tuple[bool, TProperty]:
         if self._valueToCompareFunc is not None:
             value = self._valueToCompareFunc(context.instance_to_validate)
             return (value is not None, value)
@@ -136,8 +118,7 @@ class AbstractComparisonValidator[T, TProperty](
             Comparison.Equal: Comparable(value) == Comparable(valueToCompare),
             Comparison.NotEqual: Comparable(value) != Comparable(valueToCompare),
             Comparison.GreaterThan: Comparable(value) > Comparable(valueToCompare),
-            Comparison.GreaterThanOrEqual: Comparable(value)
-            >= Comparable(valueToCompare),
+            Comparison.GreaterThanOrEqual: Comparable(value) >= Comparable(valueToCompare),
         }
         if valueToCompare is None:
             return False
@@ -160,7 +141,6 @@ class AbstractComparisonValidator[T, TProperty](
     @property
     def ValueToCompare(self) -> TProperty:
         return self._valueToCompare
-        
 
     @ValueToCompare.setter
     def ValueToCompare(self, value):

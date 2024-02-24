@@ -8,6 +8,8 @@ class MessageFormatter:
     PropertyName = "PropertyName"
     PropertyValue = "PropertyValue"
 
+    def __repr__(self) -> str:
+        return f"{MessageFormatter.__name__}"
     def AppendArgument(self, name: str, value: object):
         self._placeholderValues[name] = value
         return self
@@ -21,7 +23,7 @@ class MessageFormatter:
     def BuildMessage(self, messageTemplate: str) -> str:
         return self.replace_placeholders(messageTemplate, self.PlaceholderValues)
 
-    def replace_placeholders(self, message_template, placeholder_values: dict[str, Any]):
+    def replace_placeholders(self, message_template:str, placeholder_values: dict[str, Any]):
         def replace(match: re.Match) -> str:
             key = match.group(1)
 

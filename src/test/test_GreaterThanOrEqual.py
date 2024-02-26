@@ -34,7 +34,7 @@ class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
         validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
         result = validator.validate(Person(Id=0, AnotherInt=1))
         self.assertFalse(result.is_valid)
-        self.assertEqual(result.errors[0].ErrorMessage, "Another Int")  # FIXME [ ]: I don't know why It's return AnotherInt whitout space
+        self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
 
     # def test_Comparison_property_uses_custom_resolver(self):
     #     originalResolver= ValidatorOptions.Global.DisplayNameResolver

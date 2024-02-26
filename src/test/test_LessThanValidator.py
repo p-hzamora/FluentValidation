@@ -57,7 +57,7 @@ class LessThanValidatorTester(unittest.TestCase):
         )
         result = validator.validate(Person(Id=2, AnotherInt=1))
         self.assertFalse(result.is_valid)
-        self.assertEqual(result.errors[0].ErrorMessage, "Another Int") #FIXME [ ]: I don't know why It's return AnotherInt whitout space
+        self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
 
     def test_Comparison_property_uses_custom_resolver(self) -> None:
         try:

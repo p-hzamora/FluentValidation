@@ -26,14 +26,14 @@ class CultureInfo:
 class ILanguageManager(ABC, ExtensionsInternal):
     @property
     @abstractmethod
-    def Enabled(sefl) -> bool:
+    def Enabled(self) -> bool:
         ...
 
     @property
     @abstractmethod
-    def Culture(sefl) -> CultureInfo:
+    def Culture(self) -> CultureInfo:
         ...
 
     @abstractmethod
-    def GetString(sefl, key: str, culture: CultureInfo = None):
+    def GetString(self, key: str, culture: CultureInfo = None):
         ...

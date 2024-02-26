@@ -33,7 +33,7 @@ the validator class would look like this:
 ```python
 from src.FluentValidation.abstract_validator import AbstractValidator
 class CustomerValidator : AbstractValidator[Customer]
-  def __init__(sefl)-> None:
+  def __init__(self)-> None:
     super().__init__()
     RuleFor(lambda customer: customer.Surname).NotNull()
 ```
@@ -83,7 +83,7 @@ You can chain multiple validators together for the same property: -->
 from src.FluentValidation.abstract_validator import AbstractValidator
 
 CustomerValidator(AbstractValidator[Customer]):
-  def __init__(sefl)-> None:
+  def __init__(self)-> None:
     super().__init__()
     RuleFor(lambda customer: customer.Surname).NotNull().NotEqual("foo")
 

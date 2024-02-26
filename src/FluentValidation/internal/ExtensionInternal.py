@@ -24,30 +24,23 @@ class ExtensionsInternal:
 	# 	return expression.Body.NodeType == ExpressionType.Parameter;
 	# }
 
-	# @staticmethod
-    # string SplitPascalCase(this string input) {
-	# 	if (string.IsNullOrEmpty(input))
-	# 		return input;
+	@staticmethod
+	def SplitPascalCase(input_str:str)->str:
+		if input_str is None or input_str.isspace():
+			return input_str
 
-	# 	var retVal = new StringBuilder(input.Length + 5);
+		retVal = []
+		for i in range(len(input_str)):
+			current_char = input_str[i]
+			if current_char.isupper():
+				if (i > 1 and not input_str[i - 1].isupper()) or (i + 1 < len(input_str) and not input_str[i + 1].isupper()):
+					retVal.append(" ")
 
-	# 	for (int i = 0; i < input.Length; ++i) {
-	# 		var currentChar = input[i];
-	# 		if (char.IsUpper(currentChar)) {
-	# 			if ((i > 1 && !char.IsUpper(input[i - 1]))
-	# 			    || (i + 1 < input.Length && !char.IsUpper(input[i + 1])))
-	# 				retVal.Append(' ');
-	# 		}
+			if not current_char == "." or i + 1 == len(input_str) or not input_str[i + 1].isupper():
+				retVal.append(current_char)
 
-	# 		if(!char.Equals('.', currentChar)
-	# 		   || i + 1 == input.Length
-	# 		   || !char.IsUpper(input[i + 1])) {
-	# 			retVal.Append(currentChar);
-	# 		}
-	# 	}
+		return "".join(retVal).strip()
 
-	# 	return retVal.ToString().Trim();
-	# }
 
 	# @staticmethod
     # T GetOrAdd<T>(this IDictionary<string, object> dict, string key, Func<T> value) {

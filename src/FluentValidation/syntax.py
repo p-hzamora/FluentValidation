@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Any, Self, Callable, overload
+from typing import Self, Callable, overload
 import dis
 import inspect
 

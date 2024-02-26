@@ -40,12 +40,12 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
         result = self.validator.validate(Person(Id=self.value))
         self.assertTrue(result.is_valid)
 
-    # def test_Should_set_default_error_when_validation_fails(self):
-    #     result = self.validator.validate(Person(Id=2))
-    #     # self.assertEqual(result.errors.Single().ErrorMessage,"'Id' must be less than or equal to '1'.")
-    #     self.assertEqual(
-    #         result.errors[0].ErrorMessage, "'Id' must be less than or equal to '1'."
-    #     )
+    def test_Should_set_default_error_when_validation_fails(self):
+        result = self.validator.validate(Person(Id=2))
+        self.assertEqual(result.errors[0].ErrorMessage,"'Id' must be less than or equal to '1'.")
+        self.assertEqual(
+            result.errors[0].ErrorMessage, "'Id' must be less than or equal to '1'."
+        )
 
     def test_Comparison_type(self):
         self.assertEqual(
@@ -53,11 +53,11 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
             Comparison.LessThanOrEqual,
         )
 
-    # def test_Validates_with_property(self):
-    # 	validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).LessThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
-    # 	result = validator.validate(Person(Id = 1, AnotherInt = 0))
-    # 	result.is_valid.ShouldBeFalse()
-    # 	result.Errors[0].ErrorMessage.ShouldEqual("Another Int")
+    def test_Validates_with_property(self):
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).LessThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
+        result = validator.validate(Person(Id = 1, AnotherInt = 0))
+        self.assertFalse(result.is_valid)
+        self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
 
     # def test_Comparison_property_uses_custom_resolver(self):
     # 	originalResolver = ValidatorOptions.Global.DisplayNameResolver
@@ -66,7 +66,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
     # 		ValidatorOptions.Global.DisplayNameResolver = (type, member, exprlambda ): member.Name + "Foo"
     # 		validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).LessThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty"))
     # 		result = validator.validate(Person(Id = 1, AnotherInt = 0))
-    # 		result.Errors[0].ErrorMessage.ShouldEqual("AnotherIntFoo")
+    # 		self.assertEqual(result.errors[0].ErrorMessage, "AnotherIntFoo")
 
     # 	finally:
     # 		ValidatorOptions.Global.DisplayNameResolver = originalResolver

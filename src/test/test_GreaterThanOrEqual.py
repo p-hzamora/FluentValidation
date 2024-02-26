@@ -32,9 +32,9 @@ class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
 
     def test_Validates_with_property(self):
         validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
-        result= validator.validate(Person(Id = 0, AnotherInt = 1))
+        result = validator.validate(Person(Id=0, AnotherInt=1))
         self.assertFalse(result.is_valid)
-        self.assertEqual(result.errors[0].ErrorMessage, "Another Int") #FIXME [ ]: I don't know why It's return AnotherInt whitout space
+        self.assertEqual(result.errors[0].ErrorMessage, "Another Int")  # FIXME [ ]: I don't know why It's return AnotherInt whitout space
 
     # def test_Comparison_property_uses_custom_resolver(self):
     #     originalResolver= ValidatorOptions.Global.DisplayNameResolver
@@ -48,13 +48,8 @@ class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
     #     finally:
     #         ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
-
     def test_Validates_with_nullable_property(self):
-        validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(
-                lambda x: x.NullableInt
-            )
-        )
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(lambda x: x.NullableInt))
 
         resultNull = validator.validate(Person(Id=0, NullableInt=None))
         resultLess = validator.validate(Person(Id=0, NullableInt=-1))
@@ -67,11 +62,7 @@ class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
         self.assertFalse(resultMore.is_valid)
 
     def test_Validates_nullable_with_nullable_property(self):
-        validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(
-                lambda x: x.OtherNullableInt
-            )
-        )
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(lambda x: x.OtherNullableInt))
 
         resultNull = validator.validate(Person(NullableInt=0, OtherNullableInt=None))
         resultLess = validator.validate(Person(NullableInt=0, OtherNullableInt=-1))
@@ -92,34 +83,22 @@ class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
     # 	propertyValidator.Comparison.ShouldEqual(Comparison.GreaterThanOrEqual)
 
     def test_Validates_with_nullable_when_property_is_null(self):
-        validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(5)
-        )
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(5))
         result = validator.validate(Person())
         self.assertTrue(result.is_valid)
 
     def test_Validates_with_nullable_when_property_not_null(self):
-        validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(5)
-        )
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(5))
         result = validator.validate(Person(NullableInt=1))
         self.assertFalse(result.is_valid)
 
     def test_Validates_with_nullable_when_property_is_null_cross_property(self):
-        validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(
-                lambda x: x.Id
-            )
-        )
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(lambda x: x.Id))
         result = validator.validate(Person(Id=5))
         self.assertTrue(result.is_valid)
 
     def test_Validates_with_nullable_when_property_not_null_cross_property(self):
-        validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(
-                lambda x: x.Id
-            )
-        )
+        validator = TestValidator(lambda v: v.RuleFor(lambda x: x.NullableInt).GreaterThanOrEqualTo(lambda x: x.Id))
         result = validator.validate(Person(NullableInt=1, Id=5))
         self.assertFalse(result.is_valid)
 

@@ -38,7 +38,7 @@ Example
        rule_for(x => x.Surname).NotEmpty();
        rule_for(x => x.Forename).NotEmpty().with_message("Please specify a first name");
        rule_for(x => x.Discount).NotEqual(0).When(x => x.HasDiscount);
-       rule_for(x => x.Address).Length(20, 250);
+       rule_for(x => x.Address).length(20, 250);
        rule_for(x => x.Postcode).must(BeAValidPostcode).with_message("Please specify a valid postcode");
      }
 

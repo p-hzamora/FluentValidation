@@ -20,8 +20,8 @@ public class PersonNameValidator : AbstractValidator<Person>
 {
   public PersonNameValidator() 
   {
-    rule_for(x => x.Surname).not_null().Length(0, 255);
-    rule_for(x => x.Forename).not_null().Length(0, 255);
+    rule_for(x => x.Surname).not_null().length(0, 255);
+    rule_for(x => x.Forename).not_null().length(0, 255);
   }
 }
 ```

@@ -105,12 +105,12 @@ self.rule_for(lambda customer: customer.Surname).Equal("Foo", StringComparer.Ord
 
 If you are using FluentValidation 9 (or newer), ordinal will be the default behaviour. If you wish to do a culture-specific comparison instead, you should pass `StringComparer.CurrentCulture` as the second parameter.
 
-## Length Validator
+## length Validator
 Ensures that the length of a particular string property is within the specified range. However, it doesn't ensure that the string property isn't null.
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Surname).Length(1, 250) //must be between 1 and 250 chars (inclusive)
+self.rule_for(lambda customer: customer.Surname).length(1, 250) //must be between 1 and 250 chars (inclusive)
 ```
 Example error: *'Surname' must be between 1 and 250 characters. You entered 251 characters.*
 

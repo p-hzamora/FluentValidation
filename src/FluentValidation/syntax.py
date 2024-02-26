@@ -44,14 +44,14 @@ class DefaultValidatorExtensions:
         return ruleBuilder.SetValidator(RegularExpressionValidator[T](pattern))
 
     @overload
-    def Length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: Callable[[T], None], max: Callable[[T], None]) -> "IRuleBuilder[T, TProperty]":
+    def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: Callable[[T], None], max: Callable[[T], None]) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def Length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int, max: int) -> "IRuleBuilder[T, TProperty]":
+    def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int, max: int) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def Length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int | T, max: int | T) -> "IRuleBuilder[T, TProperty]":
+    def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int | T, max: int | T) -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(LengthValidator[T](min, max))
 
     def ExactLength[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", exactLength: int) -> "IRuleBuilder[T, TProperty]":

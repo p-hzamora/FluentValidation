@@ -240,13 +240,13 @@ Notes: Only valid on types that implement `IComparable[T]`
 * `{PropertyPath}` - The full path of the property
 
 ## Predicate Validator
-(Also known as `Must`)
+(Also known as `must`)
 
 Passes the value of the specified property into a delegate that can perform custom validation logic on the value.
 
 Example:
 ```
-self.rule_for(lambda customer: customer.Surname).Must(lambda surname: surname == "Foo")
+self.rule_for(lambda customer: customer.Surname).must(lambda surname: surname == "Foo")
 ```
 
 Example error: *The specified condition was not met for 'Surname'*
@@ -256,10 +256,10 @@ String format args:
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-Note that there is an additional overload for `Must` that also accepts an instance of the parent object being validated. This can be useful if you want to compare the current property with another property from inside the predicate:
+Note that there is an additional overload for `must` that also accepts an instance of the parent object being validated. This can be useful if you want to compare the current property with another property from inside the predicate:
 
 ```
-rule_for(lambda customer: customer.Surname).Must((customer, lambda surname): surname != customer.Forename)
+rule_for(lambda customer: customer.Surname).must((customer, lambda surname): surname != customer.Forename)
 ```
 
 Note that in this particular example, it would be better to use the cross-property version of `NotEqual`.

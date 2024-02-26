@@ -7,7 +7,7 @@ public class PersonAgeValidator : AbstractValidator<Person>
 {
   public PersonAgeValidator() 
   {
-    rule_for(x => x.DateOfBirth).Must(BeOver18);
+    rule_for(x => x.DateOfBirth).must(BeOver18);
   }
 
   protected bool BeOver18(DateTime date) 

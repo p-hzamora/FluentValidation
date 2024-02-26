@@ -170,7 +170,7 @@ class DefaultValidatorOptions:
 # @classmethod
 # def WithName[T, TProperty](cls, rule:IRuleBuilderOptions[T, TProperty], nameProvider:Callable[[T], str])->IRuleBuilderOptions[T, TProperty]:
 #     nameProvider.Guard("A nameProvider WithName.", nameof(nameProvider))
-#     # Must use null propagation here.
+#     # must use null propagation here.
 #     # The MVC clientside validation will try and retrieve the name, but won't
 #     # be able to to so if we've used this overload of WithName.
 #     cls.Configurable(rule).SetDisplayName((context => {
@@ -189,7 +189,7 @@ class DefaultValidatorOptions:
 # IRuleBuilderOptions[T, TProperty> OverridePropertyName[T, TProperty](this IRuleBuilderOptions[T, TProperty> rule, Expression[Callable[T, object]] expr) {
 # 	if (expr == null) throw new ArgumentNullException(nameof(expr))
 # 	var member = expr.GetMember()
-# 	if (member == null) throw new NotSupportedException("Must supply a MemberExpression when calling OverridePropertyName")
+# 	if (member == null) throw new NotSupportedException("must supply a MemberExpression when calling OverridePropertyName")
 # 	return rule.OverridePropertyName(member.Name)
 # }
 

@@ -132,28 +132,28 @@ class DefaultValidatorExtensions:
 
         return ruleBuilder.SetValidator(EqualValidator(value=valueToCompare))
 
-    # region Must
+    # region must
     @overload
-    def Must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
+    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def Must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
+    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def Must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty, ValidationContext[T]], bool]) -> "IRuleBuilder[T, TProperty]":
+    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty, ValidationContext[T]], bool]) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def Must[T, TProperty](
+    def must[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool] | Callable[[T, TProperty], bool] | Callable[[T, TProperty, ValidationContext[T]], bool]
     ) -> "IRuleBuilder[T, TProperty]":
         num_args = len(inspect.signature(predicate).parameters)
 
         if num_args == 1:
-            return ruleBuilder.Must(lambda _, val: predicate(val))
+            return ruleBuilder.must(lambda _, val: predicate(val))
         elif num_args == 2:
-            return ruleBuilder.Must(lambda x, val, _: predicate(x, val))
+            return ruleBuilder.must(lambda x, val, _: predicate(x, val))
         elif num_args == 3:
             return ruleBuilder.SetValidator(
                 PredicateValidator[T, TProperty](lambda instance, property, propertyValidatorContext: predicate(instance, property, propertyValidatorContext)),

@@ -39,7 +39,7 @@ Example
        rule_for(x => x.Forename).NotEmpty().WithMessage("Please specify a first name");
        rule_for(x => x.Discount).NotEqual(0).When(x => x.HasDiscount);
        rule_for(x => x.Address).Length(20, 250);
-       rule_for(x => x.Postcode).Must(BeAValidPostcode).WithMessage("Please specify a valid postcode");
+       rule_for(x => x.Postcode).must(BeAValidPostcode).WithMessage("Please specify a valid postcode");
      }
 
      private bool BeAValidPostcode(string postcode) 

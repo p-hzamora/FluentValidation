@@ -13,13 +13,13 @@ The `PropertyValidatorContext` class has been deprecated, and various places tha
 
 ```csharp
 // Before:
-rule_for(x => x.Foo).Must((instance, value, context) => 
+rule_for(x => x.Foo).must((instance, value, context) => 
 {
   return context.ParentContext.RootContextData.ContainsKey("Something");
 });
 
 // After:
-rule_for(x => x.Foo).Must((instance, value, context) => 
+rule_for(x => x.Foo).must((instance, value, context) => 
 {
   return context.RootContextData.ContainsKey("Something");
 });

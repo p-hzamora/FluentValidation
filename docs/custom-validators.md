@@ -5,7 +5,7 @@ There are several ways to create a custom, reusable validator. The recommended w
 For these examples, we'll imagine a scenario where you want to create a reusable validator that will ensure a List object contains fewer than 10 items.
 
 ## Predicate Validator
-The simplest way to implement a custom validator is by using the `Must` method, which internally uses the `PredicateValidator`.
+The simplest way to implement a custom validator is by using the `must` method, which internally uses the `PredicateValidator`.
 
 Imagine we have the following class:
 ```csharp
@@ -19,7 +19,7 @@ To ensure our list property contains fewer than 10 items, we could do this:
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
-    rule_for(x => x.Pets).Must(list => list.Count < 10)
+    rule_for(x => x.Pets).must(list => list.Count < 10)
       .WithMessage("The list must contain fewer than 10 items");
   }
 }
@@ -30,12 +30,12 @@ To make this logic reusable, we can wrap it an extension method that acts upon a
 ```csharp
 public static class MyCustomValidators {
   public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
-	return ruleBuilder.Must(list => list.Count < num).WithMessage("The list contains too many items");
+	return ruleBuilder.must(list => list.Count < num).WithMessage("The list contains too many items");
   }
 }
 ```
 
-Here we create an extension method on `IRuleBuilder<T,TProperty>`, and we use a generic type constraint to ensure this method only appears in intellisense for List types. Inside the method, we call the Must method in the same way as before but this time we call it on the passed-in `RuleBuilder` instance. We also pass in the number of items for comparison as a parameter. Our rule definition can now be rewritten to use this method:
+Here we create an extension method on `IRuleBuilder<T,TProperty>`, and we use a generic type constraint to ensure this method only appears in intellisense for List types. Inside the method, we call the must method in the same way as before but this time we call it on the passed-in `RuleBuilder` instance. We also pass in the number of items for comparison as a parameter. Our rule definition can now be rewritten to use this method:
 
 ```csharp
 rule_for(x => x.Pets).ListMustContainFewerThan(10);
@@ -45,12 +45,12 @@ rule_for(x => x.Pets).ListMustContainFewerThan(10);
 
 We can extend the above example to include a more useful error message. At the moment, our custom validator always returns the message "The list contains too many items" if validation fails. Instead, let's change the message so it returns "'Pets' must contain fewer than 10 items." This can be done by using custom message placeholders. FluentValidation supports several message placeholders by default including `{PropertyName}` and `{PropertyValue}` ([see this list for more](built-in-validators)), but we can also add our own.
 
-We need to modify our extension method slightly to use a different overload of the `Must` method, one that accepts a `ValidationContext<T>` instance. This context provides additional information and methods we can use when performing validation:
+We need to modify our extension method slightly to use a different overload of the `must` method, one that accepts a `ValidationContext<T>` instance. This context provides additional information and methods we can use when performing validation:
 
 ```csharp
 public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
 
-  return ruleBuilder.Must((rootObject, list, context) => {
+  return ruleBuilder.must((rootObject, list, context) => {
     context.MessageFormatter.AppendArgument("MaxElements", num);
     return list.Count < num;
   })
@@ -58,14 +58,14 @@ public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T
 }
 ```
 
-Note that the overload of Must that we're using now accepts 3 parameters: the root (parent) object, the property value itself, and the context. We use the context to add a custom message replacement value of `MaxElements` and set its value to the number passed to the method. We can now use this placeholder as `{MaxElements}` within the call to `WithMessage`.
+Note that the overload of must that we're using now accepts 3 parameters: the root (parent) object, the property value itself, and the context. We use the context to add a custom message replacement value of `MaxElements` and set its value to the number passed to the method. We can now use this placeholder as `{MaxElements}` within the call to `WithMessage`.
 
 The resulting message will now be `'Pets' must contain fewer than 10 items.` We could even extend this further to include the number of elements that the list contains like this:
 
 ```csharp
 public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
 
-  return ruleBuilder.Must((rootObject, list, context) => {
+  return ruleBuilder.must((rootObject, list, context) => {
     context.MessageFormatter
       .AppendArgument("MaxElements", num)
       .AppendArgument("TotalElements", list.Count);
@@ -78,7 +78,7 @@ public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T
 
 ## Writing a Custom Validator
 
-If you need more control of the validation process than is available with `Must`, you can write a custom rule using the `Custom` method. This method allows you to manually create the `ValidationFailure` instance associated with the validation error. Usually, the framework does this for you, so it is more verbose than using `Must`.
+If you need more control of the validation process than is available with `must`, you can write a custom rule using the `Custom` method. This method allows you to manually create the `ValidationFailure` instance associated with the validation error. Usually, the framework does this for you, so it is more verbose than using `must`.
 
 
 ```csharp
@@ -120,7 +120,7 @@ In some cases where your custom logic is very complex, you may wish to move the 
 
 ```eval_rst
 .. note::
-  This is an advanced technique that is usually unnecessary - the `Must` and `Custom` methods explained above are usually more appropriate.
+  This is an advanced technique that is usually unnecessary - the `must` and `Custom` methods explained above are usually more appropriate.
 ```
 
 We can recreate the above example using a custom `PropertyValidator` implementation like this:

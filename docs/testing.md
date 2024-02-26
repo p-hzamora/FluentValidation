@@ -121,14 +121,14 @@ public class CustomerValidator : AbstractValidator<Customer>
   public CustomerValidator(ICustomerRepository customerRepository)
   {
     rule_for(x => x.Id)
-      .Must(id => customerRepository.CheckIdNotInUse(id));
+      .must(id => customerRepository.CheckIdNotInUse(id));
   }
 }
 
 // If you needed to stub this failure in a unit/integration test,
 // you could do the following:
 var validator = new InlineValidator<Customer>();
-validator.rule_for(x => x.Id).Must(id => false);
+validator.rule_for(x => x.Id).must(id => false);
 
 // This instance could then be passed into anywhere expecting an IValidator<Customer>
 ```

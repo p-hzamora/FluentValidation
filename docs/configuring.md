@@ -21,7 +21,7 @@ As shown in the example above, the message can contain placeholders for special 
 The placeholders used in all validators are:
 * `{PropertyName}` – Name of the property being validated
 * `{PropertyValue}` – Value of the property being validated
-These include the predicate validator (`Must` validator), the email and the regex validators.
+These include the predicate validator (`must` validator), the email and the regex validators.
 
 Used in comparison validators: (`Equal`, `NotEqual`, `GreaterThan`, `GreaterThanOrEqual`, etc.)
 * `{ComparisonValue}` – Value that the property should be compared to

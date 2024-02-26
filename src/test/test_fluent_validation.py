@@ -37,12 +37,12 @@ class PersonValidator(AbstractValidator[Person]):
         self.ClassLevelCascadeMode = CascadeMode.Continue
         self.RuleLevelCascadeMode = CascadeMode.Continue
         self.rule_for(lambda x: x.edad).must(lambda obj, value: obj.edad_min == value)
-        self.rule_for(lambda x: x.fecha_ini).LessThanOrEqualTo(lambda x: x.fecha_fin)
-        self.rule_for(lambda x: x.edad).GreaterThanOrEqualTo(lambda x: x.edad_min).LessThanOrEqualTo(lambda x: x.edad_max)
+        self.rule_for(lambda x: x.fecha_ini).less_than_or_equal_to(lambda x: x.fecha_fin)
+        self.rule_for(lambda x: x.edad).GreaterThanOrEqualTo(lambda x: x.edad_min).less_than_or_equal_to(lambda x: x.edad_max)
 
         self.rule_for(lambda x: x.ppto).must(lambda x: isinstance(x, (int, float, Decimal))).GreaterThanOrEqualTo(0)
 
-        self.rule_for(lambda x: x.fecha_ini).LessThanOrEqualTo(datetime.today())
+        self.rule_for(lambda x: x.fecha_ini).less_than_or_equal_to(datetime.today())
 
         self.rule_for(lambda x: x.dni).must(lambda x: isinstance(x, str)).WithMessage("Custom message of IsInstance method").Matches(RegexPattern.Dni)
 

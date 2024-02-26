@@ -91,16 +91,16 @@ class DefaultValidatorExtensions:
         return ruleBuilder.SetValidator(LessThanValidator(value=valueToCompare))
 
     # endregion
-    # region LessThanOrEqualTo
+    # region less_than_or_equal_to
     @overload
-    def LessThanOrEqualTo[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
+    def less_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def LessThanOrEqualTo[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
+    def less_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def LessThanOrEqualTo[T, TProperty](
+    def less_than_or_equal_to[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> "IRuleBuilder[T, TProperty]":

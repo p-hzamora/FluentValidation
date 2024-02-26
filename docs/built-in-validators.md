@@ -188,10 +188,10 @@ Ensures that the value of the specified property is less than or equal to a part
 Example:
 ```python
 //Less than a particular value
-self.rule_for(lambda customer: customer.CreditLimit).LessThanOrEqualTo(100)
+self.rule_for(lambda customer: customer.CreditLimit).less_than_or_equal_to(100)
 
 //Less than another property
-self.rule_for(lambda customer: customer.CreditLimit).LessThanOrEqualTo(lambda customer: customer.MaxCreditLimit)
+self.rule_for(lambda customer: customer.CreditLimit).less_than_or_equal_to(lambda customer: customer.MaxCreditLimit)
 ```
 Example error: *'Credit Limit' must be less than or equal to 100.*
 Notes: Only valid on types that implement `IComparable[T]`

@@ -27,7 +27,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
         super().__init__(*args, **kwargs)
         CultureScope.SetDefaultCulture()
 
-        self.validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThanOrEqualTo(self.value))
+        self.validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(self.value))
 
     def test_Should_fail_when_greater_than_input(self):
         result = self.validator.validate(Person(Id=2))
@@ -53,7 +53,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
         )
 
     def test_Validates_with_property(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
         result = validator.validate(Person(Id=1, AnotherInt=0))
         self.assertFalse(result.is_valid)
         self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
@@ -63,7 +63,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
 
     # 	try:
     # 		ValidatorOptions.Global.DisplayNameResolver = (type, member, exprlambda ): member.Name + "Foo"
-    # 		validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThanOrEqualTo(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty"))
+    # 		validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty"))
     # 		result = validator.validate(Person(Id = 1, AnotherInt = 0))
     # 		self.assertEqual(result.errors[0].ErrorMessage, "AnotherIntFoo")
 
@@ -71,7 +71,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
     # 		ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
     def test_Validates_with_nullable_property(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThanOrEqualTo(lambda x: x.NullableInt))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.NullableInt))
 
         resultNull = validator.validate(Person(Id=0, NullableInt=None))
         resultLess = validator.validate(Person(Id=0, NullableInt=-1))
@@ -84,7 +84,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
         self.assertTrue(resultMore.is_valid)
 
     def test_Validates_nullable_with_nullable_property(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).LessThanOrEqualTo(lambda x: x.OtherNullableInt))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).less_than_or_equal_to(lambda x: x.OtherNullableInt))
 
         resultNull = validator.validate(Person(NullableInt=0, OtherNullableInt=None))
         resultLess = validator.validate(Person(NullableInt=0, OtherNullableInt=-1))
@@ -97,22 +97,22 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
         self.assertTrue(resultMore.is_valid)
 
     def test_Validates_with_nullable_when_property_is_null(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).LessThanOrEqualTo(5))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).less_than_or_equal_to(5))
         result = validator.validate(Person())
         self.assertTrue(result.is_valid)
 
     def test_Validates_with_nullable_when_property_not_null(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).LessThanOrEqualTo(5))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).less_than_or_equal_to(5))
         result = validator.validate(Person(NullableInt=10))
         self.assertFalse(result.is_valid)
 
     def test_Validates_with_nullable_when_property_is_null_cross_property(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).LessThanOrEqualTo(lambda x: x.Id))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).less_than_or_equal_to(lambda x: x.Id))
         result = validator.validate(Person(Id=5))
         self.assertTrue(result.is_valid)
 
     def test_Validates_with_nullable_when_property_not_null_cross_property(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).LessThanOrEqualTo(lambda x: x.Id))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.NullableInt).less_than_or_equal_to(lambda x: x.Id))
         result = validator.validate(Person(NullableInt=10, Id=5))
         self.assertFalse(result.is_valid)
 

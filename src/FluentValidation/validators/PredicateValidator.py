@@ -22,5 +22,5 @@ class PredicateValidator[T, TProperty](PropertyValidator[T, TProperty], IPredica
         return True
 
     @override
-    def get_default_message_template(self, errorCode: str) -> str:
-        return self.Localized(errorCode, self.Name)
+    def get_default_message_template(self, error_code: str) -> str:
+        return self.Localized(error_code, self.Name)

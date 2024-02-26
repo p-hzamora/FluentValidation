@@ -189,7 +189,7 @@ class AbstractValidatorTester(unittest.TestCase):
 
 #             return false
 
-#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).GreaterThanOrEqualTo(0)
+#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).greater_than_or_equal_to(0)
 
 #         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
 
@@ -227,7 +227,7 @@ class AbstractValidatorTester(unittest.TestCase):
 #             validationResult.errors.Add(ValidationFailure(testProperty, testMessage))
 #             return true
 
-#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).GreaterThanOrEqualTo(0)
+#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).greater_than_or_equal_to(0)
 
 #         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
 

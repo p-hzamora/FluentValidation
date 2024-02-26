@@ -207,14 +207,14 @@ class DefaultValidatorExtensions:
     # endregion
     # region GreaterThanOrEqual
     @overload
-    def GreaterThanOrEqualTo[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
+    def greater_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def GreaterThanOrEqualTo[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
+    def greater_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def GreaterThanOrEqualTo[T, TProperty](
+    def greater_than_or_equal_to[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> "IRuleBuilder[T, TProperty]":

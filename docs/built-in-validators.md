@@ -226,10 +226,10 @@ Ensures that the value of the specified property is greater than or equal to a p
 Example:
 ```python
 //Greater than a particular value
-self.rule_for(lambda customer: customer.CreditLimit).GreaterThanOrEqualTo(1)
+self.rule_for(lambda customer: customer.CreditLimit).greater_than_or_equal_to(1)
 
 //Greater than another property
-rule_for(lambda customer: customer.CreditLimit).GreaterThanOrEqualTo(lambda customer: customer.self.MinimumCreditLimit)
+rule_for(lambda customer: customer.CreditLimit).greater_than_or_equal_to(lambda customer: customer.self.MinimumCreditLimit)
 ```
 Example error: *'Credit Limit' must be greater than or equal to 1.*
 Notes: Only valid on types that implement `IComparable[T]`

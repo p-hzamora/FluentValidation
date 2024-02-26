@@ -15,7 +15,7 @@ For example, let's imagine we have 3 properties on a Person object (Id, Surname 
         rule_for(x => x.Forename).not_null();
      });
 
-     rule_for(x => x.Id).NotEqual(0);
+     rule_for(x => x.Id).not_equal(0);
   }
 }
 ```

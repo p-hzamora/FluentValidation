@@ -88,7 +88,7 @@ from FluentValidation import AbstractValidator
 CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
     super().__init__()
-    rule_for(lambda customer: customer.Surname).not_null().NotEqual("foo")
+    rule_for(lambda customer: customer.Surname).not_null().not_equal("foo")
 
 ```
 

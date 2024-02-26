@@ -23,7 +23,7 @@ The placeholders used in all validators are:
 * `{PropertyValue}` – Value of the property being validated
 These include the predicate validator (`must` validator), the email and the regex validators.
 
-Used in comparison validators: (`equal`, `NotEqual`, `GreaterThan`, `GreaterThanOrEqual`, etc.)
+Used in comparison validators: (`equal`, `not_equal`, `GreaterThan`, `GreaterThanOrEqual`, etc.)
 * `{ComparisonValue}` – Value that the property should be compared to
 * `{ComparisonProperty}` – Name of the property being compared against (if any)
 

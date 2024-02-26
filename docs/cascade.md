@@ -3,23 +3,23 @@
 You can set the cascade mode to customise how FluentValidation executes rules and validators when a particular rule in the validator class, or validator in the rule fails.
 
 ## Rule-Level Cascade Modes
-Imagine you have two validators defined as part of a single rule definition, a `not_null` validator and a `NotEqual` validator:
+Imagine you have two validators defined as part of a single rule definition, a `not_null` validator and a `not_equal` validator:
 
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
-    rule_for(x => x.Surname).not_null().NotEqual("foo");
+    rule_for(x => x.Surname).not_null().not_equal("foo");
   }
 }
 ```
 
-This will first check whether the Surname property is not null and then will check if it's not equal to the string "foo". If the first validator (`not_null`) fails, then by default, the call to `NotEqual` will still be invoked. This can be changed for this specific rule only by specifying a cascade mode of `Stop` (omitting the class and constructor definition from now on; assume that they are still present as above):
+This will first check whether the Surname property is not null and then will check if it's not equal to the string "foo". If the first validator (`not_null`) fails, then by default, the call to `not_equal` will still be invoked. This can be changed for this specific rule only by specifying a cascade mode of `Stop` (omitting the class and constructor definition from now on; assume that they are still present as above):
 
 ```csharp
-rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().NotEqual("foo");
+rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
 ```
 
-Now, if the `not_null` validator fails then the `NotEqual` validator will not be executed. This is particularly useful if you have a complex chain where each validator depends on the previous validator to succeed.
+Now, if the `not_null` validator fails then the `not_equal` validator will not be executed. This is particularly useful if you have a complex chain where each validator depends on the previous validator to succeed.
 
 The two cascade modes are:
 - `Continue` (the default) - always invokes all rules in a validator class, or all validators in a rule, depending on where it is used (see below).
@@ -32,19 +32,19 @@ The two cascade modes are:
 
 If you have a validator class with multiple rules, and would like this `Stop` behaviour to be set for all of your rules, you could do e.g.:
 ```csharp
-rule_for(x => x.Forename).Cascade(CascadeMode.Stop).not_null().NotEqual("foo");
-rule_for(x => x.MiddleNames).Cascade(CascadeMode.Stop).not_null().NotEqual("foo");
-rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().NotEqual("foo");
+rule_for(x => x.Forename).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
+rule_for(x => x.MiddleNames).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
+rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
 ```
 To avoid repeating `Cascade(CascadeMode.Stop)`, you can set a default value for the rule-level cascade mode by setting the `AbstractValidator.RuleLevelCascadeMode` property, resulting in
 ```csharp
 RuleLevelCascadeMode = CascadeMode.Stop;
 
-rule_for(x => x.Forename).not_null().NotEqual("foo");
-rule_for(x => x.MiddleNames).not_null().NotEqual("foo");
-rule_for(x => x.Surname).not_null().NotEqual("foo");
+rule_for(x => x.Forename).not_null().not_equal("foo");
+rule_for(x => x.MiddleNames).not_null().not_equal("foo");
+rule_for(x => x.Surname).not_null().not_equal("foo");
 ```
-With default global settings, this code will stop executing any rule whose `not_null` call fails, and not call `NotEqual`, but it will then continue to the next rule, and always execute all three, regardless of failures. See "Validator Class-Level Cascade Modes" for how to control this behavior. This particular behaviour is useful if you want to create a list of all validation failures, as opposed to only returning the first one.
+With default global settings, this code will stop executing any rule whose `not_null` call fails, and not call `not_equal`, but it will then continue to the next rule, and always execute all three, regardless of failures. See "Validator Class-Level Cascade Modes" for how to control this behavior. This particular behaviour is useful if you want to create a list of all validation failures, as opposed to only returning the first one.
 
 See "Global Default Cascade Modes" for setting the default value of this property.
 
@@ -86,16 +86,16 @@ With `StopOnFirstFailure`,  the following would provide the example behavior des
 ```csharp
 CascadeMode = CascadeMode.StopOnFirstFailure;
 
-rule_for(x => x.Forename).not_null().NotEqual("foo");
-rule_for(x => x.MiddleNames).not_null().NotEqual("foo");
-rule_for(x => x.Surname).not_null().NotEqual("foo");
+rule_for(x => x.Forename).not_null().not_equal("foo");
+rule_for(x => x.MiddleNames).not_null().not_equal("foo");
+rule_for(x => x.Surname).not_null().not_equal("foo");
 ```
 If they all fail, you will get three validation errors. That is the equivalent of doing
 
 ```csharp
-rule_for(x => x.Forename).Cascade(CascadeMode.StopOnFirstFailure).not_null().NotEqual("foo");
-rule_for(x => x.MiddleNames).Cascade(CascadeMode.StopOnFirstFailure).not_null().NotEqual("foo");
-rule_for(x => x.Surname).Cascade(CascadeMode.StopOnFirstFailure).not_null().NotEqual("foo");
+rule_for(x => x.Forename).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
+rule_for(x => x.MiddleNames).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
+rule_for(x => x.Surname).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
 ```
 This behaviour caused a lot of confusion over the years, so the `Stop` option was introduced in FluentValidation 9.1. Using `Stop` instead of `StopOnFirstFailure`, _any_ failure at all would stop execution, so only the first failure result would be returned.
 

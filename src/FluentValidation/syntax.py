@@ -163,16 +163,16 @@ class DefaultValidatorExtensions:
     # endregion
 
     # endregion
-    # region NotEqual
+    # region not_equal
     @overload
-    def NotEqual[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
+    def not_equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def NotEqual[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
+    def not_equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def NotEqual[T, TProperty](
+    def not_equal[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> "IRuleBuilder[T, TProperty]":

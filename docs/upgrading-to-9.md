@@ -36,7 +36,7 @@ The TestHelper has been updated with several syntax improvements. It is now poss
 ```csharp
 var validator = new InlineValidator<Person>();
 validator.rule_for(x => x.Surname).not_null().with_message("required");
-validator.rule_for(x => x.Address.Line1).NotEqual("foo");
+validator.rule_for(x => x.Address.Line1).not_equal("foo");
 
 // New advanced test syntax
 var result = validator.TestValidate(new Person { Address = new Address()) };
@@ -46,9 +46,9 @@ result.ShouldNotHaveValidationErrorFor(x => x.Address.Line1);
 
 [See the documentation for full details on the Test Helper](testing)
 
-### equal/NotEqual string comparisons
+### equal/not_equal string comparisons
 
-FluentValidation 4.x-8.x contained a bug where using `NotEqual`/`equal` on string properties would perform a culture-specific check, which would lead to unintented results. 9.0 reverts the bad change which introduced this several years ago. An ordinal string comparison will now be performed instead.
+FluentValidation 4.x-8.x contained a bug where using `not_equal`/`equal` on string properties would perform a culture-specific check, which would lead to unintented results. 9.0 reverts the bad change which introduced this several years ago. An ordinal string comparison will now be performed instead.
 
 [See the documentation for further details.](built-in-validators.html#equal-validator)
 

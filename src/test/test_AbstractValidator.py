@@ -155,7 +155,7 @@ class AbstractValidatorTester(unittest.TestCase):
     #         self.validator.rule_for(lambda x: x.Surname).not_null()
     #         self.validator.rule_for(lambda x: x.Forename).not_null()
     #     )
-    #     self.validator.rule_for(lambda x: x.Id).NotEqual(0)
+    #     self.validator.rule_for(lambda x: x.Id).not_equal(0)
 
     #     result = self.validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
     #     self.assertEqual(len(result.errors),2)

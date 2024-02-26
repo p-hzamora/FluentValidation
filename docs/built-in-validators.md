@@ -30,17 +30,17 @@ String format args:
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-## NotEqual Validator
+## not_equal Validator
 
 Ensures that the value of the specified property is not equal to a particular value (or not equal to the value of another property).
 
 Example:
 ```python
 //Not equal to a particular value
-self.rule_for(lambda customer: customer.Surname).NotEqual("Foo")
+self.rule_for(lambda customer: customer.Surname).not_equal("Foo")
 
 //Not equal to another property
-self.rule_for(lambda customer: customer.Surname).NotEqual(lambda customer: customer.Forename)
+self.rule_for(lambda customer: customer.Surname).not_equal(lambda customer: customer.Forename)
 ```
 Example error: *'Surname' should not be equal to 'Foo'*
 
@@ -54,18 +54,18 @@ String format args:
 Optionally, a comparer can be provided to ensure a specific type of comparison is performed:
 
 ```python
-self.rule_for(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.OrdinalIgnoreCase)
+self.rule_for(lambda customer: customer.Surname).not_equal("Foo", StringComparer.OrdinalIgnoreCase)
 ```
 
 ```eval_rst
 .. warning::
-  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `equal` or `NotEqual` with string properties. Starting with version 9, this is changed to an ordinal comparison.
+  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `equal` or `not_equal` with string properties. Starting with version 9, this is changed to an ordinal comparison.
 ```
 
 If you are using FluentValidation 8.x (or older), you can force an ordinal comparison by using
 
 ```python
-self.rule_for(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.Ordinal)
+self.rule_for(lambda customer: customer.Surname).not_equal("Foo", StringComparer.Ordinal)
 ```
 If you are using FluentValidation 9 (or newer), ordinal will be the default behaviour. If you wish to do a culture-specific comparison instead, you should pass `StringComparer.CurrentCulture` as the second parameter.
 
@@ -94,7 +94,7 @@ self.rule_for(lambda customer: customer.Surname).equal("Foo", StringComparer.Ord
 
 ```eval_rst
 .. warning::
-  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `equal` or `NotEqual` with string properties. Starting with version 9, this is changed to an ordinal comparison.
+  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `equal` or `not_equal` with string properties. Starting with version 9, this is changed to an ordinal comparison.
 ```
 
 If you are using FluentValidation 8.x (or older), you can force an ordinal comparison by using
@@ -262,7 +262,7 @@ Note that there is an additional overload for `must` that also accepts an instan
 rule_for(lambda customer: customer.Surname).must((customer, lambda surname): surname != customer.Forename)
 ```
 
-Note that in this particular example, it would be better to use the cross-property version of `NotEqual`.
+Note that in this particular example, it would be better to use the cross-property version of `not_equal`.
 
 ## Regular Expression Validator
 Ensures that the value of the specified property matches the given regular expression.

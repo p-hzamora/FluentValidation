@@ -83,7 +83,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
         failure = ValidationFailure(context.PropertyPath, error, value, component.ErrorCode)
 
-        # failure.FormattedMessagePlaceholderValues = context.MessageFormatter.PlaceholderValues
+        failure.FormattedMessagePlaceholderValues = context.MessageFormatter.PlaceholderValues
         failure._ErrorCode = component.ErrorCode  # ?? ValidatorOptions.Global.ErrorCodeResolver(component.Validator);
 
         return failure

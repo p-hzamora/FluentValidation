@@ -119,12 +119,12 @@ Note: Only valid on string properties.
 String format args:
 * `{PropertyName}` – Name of the property being validated
 * `{MinLength}` – Minimum length
-* `{MaxLength}` – Maximum length
+* `{max_length}` – Maximum length
 * `{TotalLength}` – Number of characters entered
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-## MaxLength Validator
+## max_length Validator
 Ensures that the length of a particular string property is no longer than the specified value.
 
 Example:
@@ -137,7 +137,7 @@ Note: Only valid on string properties.
 
 String format args:
 * `{PropertyName}` – Name of the property being validated
-* `{MaxLength}` – Maximum length
+* `{max_length}` – Maximum length
 * `{TotalLength}` – Number of characters entered
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property

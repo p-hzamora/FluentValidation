@@ -29,7 +29,7 @@ Used in comparison validators: (`Equal`, `NotEqual`, `GreaterThan`, `GreaterThan
 
 Used only in the Length validator:
 * `{MinLength}` – Minimum length
-* `{MaxLength}` – Maximum length
+* `{max_length}` – Maximum length
 * `{TotalLength}` – Number of characters entered
 
 For a complete list of error message placeholders see the [Built in Validators page](built-in-validators). Each built in validator has its own supported placeholders.

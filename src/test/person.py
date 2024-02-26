@@ -89,7 +89,7 @@ class Person:
         CreditCard: str = None,
         Regex: str = None,
         MinLength: int = None,
-        MaxLength: int = None,
+        max_length: int = None,
         Gender: EnumGender = None,
         Genderstr: str = None,
         Children: list["Person"] = [],
@@ -119,7 +119,7 @@ class Person:
         self.OtherNullableInt: int = OtherNullableInt
         self.Regex: str = Regex
         self.MinLength: int = MinLength
-        self.MaxLength: int = MaxLength
+        self.max_length: int = max_length
         self.Gender: EnumGender = Gender
         self.Genderstr: str = Genderstr
 

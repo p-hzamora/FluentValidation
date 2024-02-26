@@ -26,8 +26,8 @@ class LengthValidatorTests(unittest.TestCase):
     def test_When_the_text_is_between_the_lambda_range_specified_then_the_validator_should_pass(
         self,
     ):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.MaxLength))
-        result = validator.validate(Person(Surname="Test", MinLength=1, MaxLength=10))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.max_length))
+        result = validator.validate(Person(Surname="Test", MinLength=1, max_length=10))
         self.assertTrue(result.is_valid)
 
     def test_When_the_text_is_smaller_than_the_range_then_the_validator_should_fail(
@@ -40,8 +40,8 @@ class LengthValidatorTests(unittest.TestCase):
     def test_When_the_text_is_smaller_than_the_lambda_range_then_the_validator_should_fail(
         self,
     ):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.MaxLength))
-        result = validator.validate(Person(Surname="Test", MinLength=5, MaxLength=10))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.max_length))
+        result = validator.validate(Person(Surname="Test", MinLength=5, max_length=10))
         self.assertFalse(result.is_valid)
 
     def test_When_the_text_is_larger_than_the_range_then_the_validator_should_fail(
@@ -54,8 +54,8 @@ class LengthValidatorTests(unittest.TestCase):
     def test_When_the_text_is_larger_than_the_lambda_range_then_the_validator_should_fail(
         self,
     ):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.MaxLength))
-        result = validator.validate(Person(Surname="Test", MinLength=1, MaxLength=2))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.max_length))
+        result = validator.validate(Person(Surname="Test", MinLength=1, max_length=2))
         self.assertFalse(result.is_valid)
 
     def test_When_the_text_is_exactly_the_size_of_the_upper_bound_then_the_validator_should_pass(
@@ -68,8 +68,8 @@ class LengthValidatorTests(unittest.TestCase):
     def test_When_the_text_is_exactly_the_size_of_the_lambda_upper_bound_then_the_validator_should_pass(
         self,
     ):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.MaxLength))
-        result = validator.validate(Person(Surname="Test", MinLength=1, MaxLength=4))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.max_length))
+        result = validator.validate(Person(Surname="Test", MinLength=1, max_length=4))
         self.assertTrue(result.is_valid)
 
     def test_When_the_text_is_exactly_the_size_of_the_lower_bound_then_the_validator_should_pass(
@@ -82,8 +82,8 @@ class LengthValidatorTests(unittest.TestCase):
     def test_When_the_text_is_exactly_the_size_of_the_lambda_lower_bound_then_the_validator_should_pass(
         self,
     ):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.MaxLength))
-        result = validator.validate(Person(Surname="Test", MinLength=4, MaxLength=5))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Length(lambda x: x.MinLength, lambda x: x.max_length))
+        result = validator.validate(Person(Surname="Test", MinLength=4, max_length=5))
         self.assertTrue(result.is_valid)
 
     def test_When_the_max_is_smaller_than_the_min_then_the_validator_should_throw(self):
@@ -117,7 +117,7 @@ class LengthValidatorTests(unittest.TestCase):
         )
 
     def test_When_the_maxlength_validator_fails_the_error_message_should_be_set(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).MaxLength(4))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).max_length(4))
         result = validator.validate(Person(Surname="abcde"))
         self.assertEqual(
             result.errors[0].ErrorMessage,

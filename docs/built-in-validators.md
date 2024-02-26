@@ -120,7 +120,7 @@ String format args:
 * `{PropertyName}` – Name of the property being validated
 * `{min_length}` – Minimum length
 * `{max_length}` – Maximum length
-* `{TotalLength}` – Number of characters entered
+* `{total_length}` – Number of characters entered
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
@@ -138,7 +138,7 @@ Note: Only valid on string properties.
 String format args:
 * `{PropertyName}` – Name of the property being validated
 * `{max_length}` – Maximum length
-* `{TotalLength}` – Number of characters entered
+* `{total_length}` – Number of characters entered
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
@@ -156,7 +156,7 @@ Note: Only valid on string properties.
 String format args:
 * `{PropertyName}` – Name of the property being validated
 * `{min_length}` – Minimum length
-* `{TotalLength}` – Number of characters entered
+* `{total_length}` – Number of characters entered
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 

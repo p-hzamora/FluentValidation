@@ -72,7 +72,7 @@ class LengthValidator[T](PropertyValidator[T, str], ILengthValidator):
         if length < min or (length > max and max != -1):
             context.MessageFormatter.AppendArgument("min_length", min)
             context.MessageFormatter.AppendArgument("max_length", max)
-            context.MessageFormatter.AppendArgument("TotalLength", length)
+            context.MessageFormatter.AppendArgument("total_length", length)
             return False
         return True
 

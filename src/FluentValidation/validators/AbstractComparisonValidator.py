@@ -31,7 +31,7 @@ class Comparable(object):
 
 
 class Comparison(Enum):
-    LessThan = auto()
+    less_than = auto()
     LessThanOrEqual = auto()
     Equal = auto()
     NotEqual = auto()
@@ -113,7 +113,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
 
     def _is_valid(self, value: TProperty, valueToCompare: TProperty) -> bool:
         dicc = {
-            Comparison.LessThan: Comparable(value) < Comparable(valueToCompare),
+            Comparison.less_than: Comparable(value) < Comparable(valueToCompare),
             Comparison.LessThanOrEqual: Comparable(value) <= Comparable(valueToCompare),
             Comparison.Equal: Comparable(value) == Comparable(valueToCompare),
             Comparison.NotEqual: Comparable(value) != Comparable(valueToCompare),
@@ -129,7 +129,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
     def Comparison(self) -> Comparison:
         """
         Propiedad indispensable en aquellas clases que hereden de AbstractComparisonValidator
-        - Comparison.LessThan           : value < valueToCompare
+        - Comparison.less_than           : value < valueToCompare
         - Comparison.LessThanOrEqual    : value <= valueToCompare
         - Comparison.Equal              : value == valueToCompare
         - Comparison.NotEqual           : value != valueToCompare

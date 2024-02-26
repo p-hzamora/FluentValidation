@@ -166,10 +166,10 @@ Ensures that the value of the specified property is less than a particular value
 Example:
 ```python
 //Less than a particular value
-self.rule_for(lambda customer: customer.CreditLimit).LessThan(100)
+self.rule_for(lambda customer: customer.CreditLimit).less_than(100)
 
 //Less than another property
-self.rule_for(lambda customer: customer.CreditLimit).LessThan(lambda customer: customer.MaxCreditLimit)
+self.rule_for(lambda customer: customer.CreditLimit).less_than(lambda customer: customer.MaxCreditLimit)
 ```
 Example error: *'Credit Limit' must be less than 100.*
 

@@ -70,16 +70,16 @@ class DefaultValidatorExtensions:
     def not_empty[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(NotEmptyValidator[T, TProperty]())
 
-    # region LessThan
+    # region less_than
     @overload
-    def LessThan[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
+    def less_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def LessThan[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
+    def less_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def LessThan[T, TProperty](
+    def less_than[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> "IRuleBuilder[T, TProperty]":

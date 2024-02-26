@@ -32,7 +32,7 @@ class LessThanValidator[T, TProperty](AbstractComparisonValidator[T, TProperty])
     @override
     @property
     def Comparison(self) -> Comparison:
-        return Comparison.LessThan
+        return Comparison.less_than
 
     @override
     def get_default_message_template(self, error_code: str) -> str:

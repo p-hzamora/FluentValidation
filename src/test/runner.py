@@ -1,5 +1,6 @@
 import unittest
 
+import test_AbstractValidator
 import test_Equal
 import test_GreaterThanOrEqual
 import test_GreaterThanValidator
@@ -13,6 +14,7 @@ loader = unittest.TestLoader()
 suite = unittest.TestSuite()
 
 # add tests to the test suite
+suite.addTests(loader.loadTestsFromModule(test_AbstractValidator))
 suite.addTests(loader.loadTestsFromModule(test_Equal))
 suite.addTests(loader.loadTestsFromModule(test_GreaterThanOrEqual))
 suite.addTests(loader.loadTestsFromModule(test_GreaterThanValidator))

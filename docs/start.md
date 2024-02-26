@@ -20,8 +20,10 @@ class Customer:
 You would define a set of validation rules for this class by inheriting from `AbstractValidator[Customer]`:
 
 ```python
-from src.FluentValidation.abstract_validator import AbstractValidator
-class CustomerValidator(AbstractValidator[Customer]) 
+from FluentValidation import AbstractValidator
+
+class CustomerValidator(AbstractValidator[Customer]):
+  ...
 ```
 
 The validation rules themselves should be defined in the validator class's constructor.
@@ -31,11 +33,12 @@ that indicates the property that you wish to validate. For example, to ensure th
 the validator class would look like this:
 
 ```python
-from src.FluentValidation.abstract_validator import AbstractValidator
-class CustomerValidator : AbstractValidator[Customer]
+from FluentValidation import AbstractValidator
+
+class CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
     super().__init__()
-    rule_for(lambda customer: customer.Surname).NotNull()
+    self.rule_for(lambda customer: customer.Surname).NotNull()
 ```
 To run the validator, instantiate the validator object and call the `validate` method, passing in the object to validate.
 
@@ -50,7 +53,7 @@ result = validator.validate(customer)
 The `validate` method returns a `ValidationResult` object. This contains two properties:
 
 - `is_valid` - a boolean that says whether the validation succeeded.
-- `errors` - a collection of ValidationFailure objects containing details about any validation failures.
+- `errors` - a collection of `ValidationFailure` objects containing details about any validation failures.
 
 The following code would write any validation failures to the console:
 
@@ -73,14 +76,14 @@ ValidationResult results = validator.validate(customer);
 string allMessages = results.ToString("~");     // In this case, each message will be separated with a `~`
 ```
 
-*Note* : if there are no validation errors, `ToString()` will return an empty string.
+*Note* : if there are no validation errors, `ToString()` will return an empty string.-->
 
 # Chaining validators
 
-You can chain multiple validators together for the same property: -->
+You can chain multiple validators together for the same property:
 
 ```python
-from src.FluentValidation.abstract_validator import AbstractValidator
+from FluentValidation import AbstractValidator
 
 CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:

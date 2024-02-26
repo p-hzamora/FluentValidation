@@ -40,7 +40,7 @@ class DefaultValidatorExtensions:
     def NotNull[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(NotNullValidator[T, TProperty]())
 
-    def Matches[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", pattern: str) -> "IRuleBuilder[T, TProperty]":
+    def matches[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", pattern: str) -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(RegularExpressionValidator[T](pattern))
 
     @overload

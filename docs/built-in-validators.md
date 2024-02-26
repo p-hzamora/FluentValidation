@@ -269,7 +269,7 @@ Ensures that the value of the specified property matches the given regular expre
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Surname).Matches("some regex here")
+self.rule_for(lambda customer: customer.Surname).matches("some regex here")
 ```
 Example error: *'Surname' is not in the correct format.*
 String format args:

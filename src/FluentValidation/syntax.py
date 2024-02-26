@@ -228,7 +228,7 @@ class DefaultValidatorExtensions:
     @staticmethod
     def get_display_name[T, TProperty](expression: Callable[[T], TProperty]) -> str:
         name = {x.opname: x.argval for x in dis.Bytecode(expression)}["LOAD_ATTR"]
-        return ExtensionsInternal.SplitPascalCase(name)
+        return ExtensionsInternal.split_pascal_case(name)
 
     # endregion
 

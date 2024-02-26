@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class ValidationFailure:
     def __init__(
         self,
@@ -38,8 +41,12 @@ class ValidationFailure:
         return self._ErrorCode
 
     @property
-    def FormattedMessagePlaceholderValues(self) -> dict[str, object]:
+    def FormattedMessagePlaceholderValues(self) -> dict[str, Any]:
         return self._FormattedMessagePlaceholderValues
+
+    @FormattedMessagePlaceholderValues.setter
+    def FormattedMessagePlaceholderValues(self, value: dict[str, Any]):
+        self._FormattedMessagePlaceholderValues = value
 
     def __str__(self) -> str:
         return self._ErrorMessage

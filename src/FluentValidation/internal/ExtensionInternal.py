@@ -64,6 +64,6 @@ class ExtensionsInternal:
 		if error_code is not None:
 			result:str = languageManager.GetString(error_code)
 
-			if not result.isspace() and result is not None:
+			if result is not None and not result.isspace():
 				return result
 		return languageManager.GetString(fall_back_Key)

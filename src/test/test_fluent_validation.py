@@ -3,9 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 import sys
 
-sys.path.append(
-    [str(x) for x in Path(__file__).parents if x.name == "FluentValidation"].pop()
-)
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "FluentValidation"].pop())
 
 from dataclasses import dataclass  # noqa: E402
 from src.FluentValidation.abstract_validator import AbstractValidator  # noqa: E402
@@ -36,45 +34,31 @@ class Person:
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
         super().__init__()
-        self.ClassLevelCascadeMode = CascadeMode.Stop
-        self.RuleLevelCascadeMode = CascadeMode.Stop
-        self.RuleFor(lambda x: x.fecha_ini).IsInstance(int).GreaterThanOrEqualTo(
-            lambda x: x.fecha_fin
-        )
-        self.RuleFor(lambda x: x.edad).GreaterThanOrEqualTo(
-            lambda x: x.edad_min
-        ).LessThanOrEqualTo(lambda x: x.edad_max)
+        self.ClassLevelCascadeMode = CascadeMode.Continue
+        self.RuleLevelCascadeMode = CascadeMode.Continue
+        self.RuleFor(lambda x: x.edad).Must(lambda obj, value: obj.edad_min == value)
+        self.RuleFor(lambda x: x.fecha_ini).LessThanOrEqualTo(lambda x: x.fecha_fin)
+        self.RuleFor(lambda x: x.edad).GreaterThanOrEqualTo(lambda x: x.edad_min).LessThanOrEqualTo(lambda x: x.edad_max)
 
-        self.RuleFor(lambda x: x.ppto).IsInstance(
-            int | float | Decimal
-        ).GreaterThanOrEqualTo(0)
+        self.RuleFor(lambda x: x.ppto).Must(lambda x: isinstance(x, (int, float, Decimal))).GreaterThanOrEqualTo(0)
 
-        self.RuleFor(lambda x: x.fecha_ini).GreaterThan(datetime.today())
+        self.RuleFor(lambda x: x.fecha_ini).LessThanOrEqualTo(datetime.today())
 
-        self.RuleFor(lambda x: x.dni).IsInstance(float).WithMessage(
-            "Custom message of IsInstance method"
-        ).Matches(RegexPattern.PhoneNumber).Length(10, 50).WithMessage(
-            "First Length error"
-        ).Length(15, 20).WithMessage("Second Length error")
+        self.RuleFor(lambda x: x.dni).Must(lambda x: isinstance(x, str)).WithMessage("Custom message of IsInstance method").Matches(RegexPattern.Dni)
 
-        self.RuleFor(lambda x: x.email).NotNull().MaxLength(5).Matches(
-            RegexPattern.Email
-        ).WithMessage(
-            "The entered mail does not comply with the specific regex rules"
-        ).MaxLength(5).WithMessage("The entered mail exceeds the 5-character limit")
-        pass
+        self.RuleFor(lambda x: x.email).NotNull().Matches(RegexPattern.Email).WithMessage("The entered mail does not comply with the specific regex rules").MaxLength(15)
 
 
 person = Person(
     name="Pablo",
     dni="00000000P",
-    email="pablogmail.org",
+    email="pablo@gmail.org",
     fecha_ini=datetime(2020, 11, 20),
     fecha_fin=datetime.today(),
     edad_min=5,
-    edad=4,
+    edad=5,
     edad_max=20,
-    ppto="550",  # -550.56
+    ppto=550,  # -550.56
 )
 
 
@@ -82,4 +66,4 @@ validator = PersonValidator()
 result = validator.validate(person)
 if not result.is_valid:
     for error in result.errors:
-        print(f"Error en '{error.PropertyName}' con mensaje:{error.ErrorMessage}")
+        print(f"Error en '{error.PropertyName}' con error {error.ErrorCode} y mensaje: {error.ErrorMessage}")

@@ -24,7 +24,7 @@ When(customer => customer.IsPreferred, () => {
    rule_for(customer => customer.CustomerDiscount).GreaterThan(0);
    rule_for(customer => customer.CreditCardNumber).not_null();
 }).Otherwise(() => {
-  rule_for(customer => customer.CustomerDiscount).Equal(0);
+  rule_for(customer => customer.CustomerDiscount).equal(0);
 });
 ```
 

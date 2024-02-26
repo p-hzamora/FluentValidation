@@ -59,7 +59,7 @@ self.rule_for(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.
 
 ```eval_rst
 .. warning::
-  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `Equal` or `NotEqual` with string properties. Starting with version 9, this is changed to an ordinal comparison.
+  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `equal` or `NotEqual` with string properties. Starting with version 9, this is changed to an ordinal comparison.
 ```
 
 If you are using FluentValidation 8.x (or older), you can force an ordinal comparison by using
@@ -69,16 +69,16 @@ self.rule_for(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.
 ```
 If you are using FluentValidation 9 (or newer), ordinal will be the default behaviour. If you wish to do a culture-specific comparison instead, you should pass `StringComparer.CurrentCulture` as the second parameter.
 
-## Equal Validator
+## equal Validator
 Ensures that the value of the specified property is equal to a particular value (or equal to the value of another property).
 
 Example:
 ```python
-//Equal to a particular value
-self.rule_for(lambda customer: customer.Surname).Equal("Foo")
+//equal to a particular value
+self.rule_for(lambda customer: customer.Surname).equal("Foo")
 
-//Equal to another property
-self.rule_for(lambda customer: customer.Password).Equal(lambda customer: customer.PasswordConfirmation)
+//equal to another property
+self.rule_for(lambda customer: customer.Password).equal(lambda customer: customer.PasswordConfirmation)
 ```
 Example error: *'Surname' should be equal to 'Foo'*
 String format args:
@@ -89,18 +89,18 @@ String format args:
 * `{PropertyPath}` - The full path of the property
 
 ```python
-self.rule_for(lambda customer: customer.Surname).Equal("Foo", StringComparer.OrdinalIgnoreCase)
+self.rule_for(lambda customer: customer.Surname).equal("Foo", StringComparer.OrdinalIgnoreCase)
 ```
 
 ```eval_rst
 .. warning::
-  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `Equal` or `NotEqual` with string properties. Starting with version 9, this is changed to an ordinal comparison.
+  FluentValidation versions prior to 9 perform a *culture specific* comparison when using `equal` or `NotEqual` with string properties. Starting with version 9, this is changed to an ordinal comparison.
 ```
 
 If you are using FluentValidation 8.x (or older), you can force an ordinal comparison by using
 
 ```python
-self.rule_for(lambda customer: customer.Surname).Equal("Foo", StringComparer.Ordinal)
+self.rule_for(lambda customer: customer.Surname).equal("Foo", StringComparer.Ordinal)
 ```
 
 If you are using FluentValidation 9 (or newer), ordinal will be the default behaviour. If you wish to do a culture-specific comparison instead, you should pass `StringComparer.CurrentCulture` as the second parameter.
@@ -182,7 +182,7 @@ String format args:
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-## Less Than Or Equal Validator
+## Less Than Or equal Validator
 Ensures that the value of the specified property is less than or equal to a particular value (or less than or equal to the value of another property).
 
 Example:
@@ -220,7 +220,7 @@ Notes: Only valid on types that implement `IComparable[T]`
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-## Greater Than Or Equal Validator
+## Greater Than Or equal Validator
 Ensures that the value of the specified property is greater than or equal to a particular value (or greater than or equal to the value of another property).
 
 Example:

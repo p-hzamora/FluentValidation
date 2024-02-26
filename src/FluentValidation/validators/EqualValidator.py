@@ -32,7 +32,7 @@ class EqualValidator[T, TProperty](AbstractComparisonValidator[T, TProperty]):
     @override
     @property
     def Comparison(self) -> Comparison:
-        return Comparison.Equal
+        return Comparison.equal
 
     @override
     def get_default_message_template(self, error_code: str) -> str:

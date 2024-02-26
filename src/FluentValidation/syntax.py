@@ -112,16 +112,16 @@ class DefaultValidatorExtensions:
         return ruleBuilder.SetValidator(LessThanOrEqualValidator(value=valueToCompare))
 
     # endregion
-    # region Equal
+    # region equal
     @overload
-    def Equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
+    def equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def Equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
+    def equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def Equal[T, TProperty](
+    def equal[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> "IRuleBuilder[T, TProperty]":

@@ -193,7 +193,7 @@ class AbstractValidatorTester(unittest.TestCase):
 
 #         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
 
-#         Assert.Equal(preValidationResult.errors.Count, result.errors.Count)
+#         Assert.equal(preValidationResult.errors.Count, result.errors.Count)
 #         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
 
 #     [MemberData(nameof(PreValidationReturnValueTheoryData))]
@@ -209,7 +209,7 @@ class AbstractValidatorTester(unittest.TestCase):
 
 #         result = await testValidatorWithPreValidate.ValidateAsync(Person() { Age = -1 })
 
-#         Assert.Equal(preValidationResult.errors.Count, result.errors.Count)
+#         Assert.equal(preValidationResult.errors.Count, result.errors.Count)
 #         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
 
 #     def PreValidate_bypasses_nullcheck_on_instance(self):

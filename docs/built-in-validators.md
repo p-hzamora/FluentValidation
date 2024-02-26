@@ -16,13 +16,13 @@ String format args:
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-## NotEmpty Validator
+## not_empty Validator
 Ensures that the specified property is not null, an empty string or whitespace (or the default value for value types, e.g., 0 for `int`).
 When used on an IEnumerable (such as arrays, collections, lists, etc.), the validator ensures that the IEnumerable is not empty.
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Surname).NotEmpty()
+self.rule_for(lambda customer: customer.Surname).not_empty()
 ```
 Example error: *'Surname' should not be empty.*
 String format args:
@@ -370,7 +370,7 @@ String format args:
 * `{PropertyPath}` - The full path of the property
 
 ## Empty Validator
-Opposite of the `NotEmpty` validator. Checks if a property value is null, or is the default value for the type.
+Opposite of the `not_empty` validator. Checks if a property value is null, or is the default value for the type.
 When used on an IEnumerable (such as arrays, collections, lists, etc.), the validator ensures that the IEnumerable is empty.
 
 Example:

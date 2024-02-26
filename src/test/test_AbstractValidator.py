@@ -258,8 +258,8 @@ class AbstractValidatorTester(unittest.TestCase):
 #         self.assertEqual(validationResult.errors.First().ErrorMessage, "Address Line1")
 
 #     def Message_arguments_should_be_updated_on_failure_instances(self):
-#         self.validator.rule_for(lambda x: x.Surname).NotEmpty()
-#         self.validator.rule_for(lambda x: x.Forename).NotEmpty()
+#         self.validator.rule_for(lambda x: x.Surname).not_empty()
+#         self.validator.rule_for(lambda x: x.Forename).not_empty()
 
 #         // Failure instances should have different placeholders
 #         result = self.validator.validate(Person())

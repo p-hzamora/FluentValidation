@@ -67,7 +67,7 @@ class DefaultValidatorExtensions:
         DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(errorMessage)
         return ruleBuilder
 
-    def NotEmpty[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
+    def not_empty[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(NotEmptyValidator[T, TProperty]())
 
     # region LessThan

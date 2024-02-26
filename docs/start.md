@@ -26,7 +26,7 @@ class CustomerValidator(AbstractValidator[Customer])
 
 The validation rules themselves should be defined in the validator class's constructor.
 
-To specify a validation rule for a particular property, call the `RuleFor` method, passing a lambda expression
+To specify a validation rule for a particular property, call the `rule_for` method, passing a lambda expression
 that indicates the property that you wish to validate. For example, to ensure that the `Surname` property is not null,
 the validator class would look like this:
 
@@ -35,7 +35,7 @@ from src.FluentValidation.abstract_validator import AbstractValidator
 class CustomerValidator : AbstractValidator[Customer]
   def __init__(self)-> None:
     super().__init__()
-    RuleFor(lambda customer: customer.Surname).NotNull()
+    rule_for(lambda customer: customer.Surname).NotNull()
 ```
 To run the validator, instantiate the validator object and call the `validate` method, passing in the object to validate.
 
@@ -85,7 +85,7 @@ from src.FluentValidation.abstract_validator import AbstractValidator
 CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
     super().__init__()
-    RuleFor(lambda customer: customer.Surname).NotNull().NotEqual("foo")
+    rule_for(lambda customer: customer.Surname).NotNull().NotEqual("foo")
 
 ```
 
@@ -157,7 +157,7 @@ class AddressValidator : AbstractValidator[Address]
 {
   AddressValidator()
   {
-    RuleFor(address => address.Postcode).NotNull();
+    rule_for(address => address.Postcode).NotNull();
     //etc
   }
 }
@@ -170,8 +170,8 @@ class CustomerValidator : AbstractValidator[Customer]
 {
   CustomerValidator()
   {
-    RuleFor(customer => customer.Name).NotNull();
-    RuleFor(customer => customer.Address).SetValidator(new AddressValidator());
+    rule_for(customer => customer.Name).NotNull();
+    rule_for(customer => customer.Address).SetValidator(new AddressValidator());
   }
 }
 ```
@@ -183,11 +183,11 @@ If the child property is null, then the child validator will not be executed.
 Instead of using a child validator, you can define child rules inline, eg:
 
 ```python
-RuleFor(customer => customer.Address.Postcode).NotNull()
+rule_for(customer => customer.Address.Postcode).NotNull()
 ```
 
 In this case, a null check will *not* be performed automatically on `Address`, so you should explicitly add a condition
 
 ```python
-RuleFor(customer => customer.Address.Postcode).NotNull().When(customer => customer.Address != null)
+rule_for(customer => customer.Address.Postcode).NotNull().When(customer => customer.Address != null)
 ``` -->

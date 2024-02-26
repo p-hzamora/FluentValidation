@@ -27,10 +27,10 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    RuleFor(x => x.Id).NotNull();
-    RuleFor(x => x.Name).Length(0, 10);
-    RuleFor(x => x.Email).EmailAddress();
-    RuleFor(x => x.Age).InclusiveBetween(18, 60);
+    rule_for(x => x.Id).NotNull();
+    rule_for(x => x.Name).Length(0, 10);
+    rule_for(x => x.Email).EmailAddress();
+    rule_for(x => x.Age).InclusiveBetween(18, 60);
   }
 }
 ```

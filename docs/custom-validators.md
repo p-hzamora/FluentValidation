@@ -19,7 +19,7 @@ To ensure our list property contains fewer than 10 items, we could do this:
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
-    RuleFor(x => x.Pets).Must(list => list.Count < 10)
+    rule_for(x => x.Pets).Must(list => list.Count < 10)
       .WithMessage("The list must contain fewer than 10 items");
   }
 }
@@ -38,7 +38,7 @@ public static class MyCustomValidators {
 Here we create an extension method on `IRuleBuilder<T,TProperty>`, and we use a generic type constraint to ensure this method only appears in intellisense for List types. Inside the method, we call the Must method in the same way as before but this time we call it on the passed-in `RuleBuilder` instance. We also pass in the number of items for comparison as a parameter. Our rule definition can now be rewritten to use this method:
 
 ```csharp
-RuleFor(x => x.Pets).ListMustContainFewerThan(10);
+rule_for(x => x.Pets).ListMustContainFewerThan(10);
 ```
 
 ## Custom message placeholders
@@ -84,7 +84,7 @@ If you need more control of the validation process than is available with `Must`
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
-   RuleFor(x => x.Pets).Custom((list, context) => {
+   rule_for(x => x.Pets).Custom((list, context) => {
      if(list.Count > 10) {
        context.AddFailure("The list must contain 10 items or fewer");
      }
@@ -160,7 +160,7 @@ To use the new custom validator you can call `SetValidator` when defining a vali
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
     public PersonValidator() {
-       RuleFor(person => person.Pets).SetValidator(new ListCountValidator<Person, Pet>(10));
+       rule_for(person => person.Pets).SetValidator(new ListCountValidator<Person, Pet>(10));
     }
 }
 ```
@@ -179,7 +179,7 @@ public static class MyValidatorExtensions {
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
     public PersonValidator() {
-       RuleFor(person => person.Pets).ListMustContainFewerThan(10);
+       rule_for(person => person.Pets).ListMustContainFewerThan(10);
     }
 }
 ```

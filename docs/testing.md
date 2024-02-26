@@ -15,7 +15,7 @@ public class PersonValidator : AbstractValidator<Person>
 {
    public PersonValidator()
    {
-      RuleFor(person => person.Name).NotNull();
+      rule_for(person => person.Name).NotNull();
    }
 }
 ```
@@ -120,7 +120,7 @@ public class CustomerValidator : AbstractValidator<Customer>
 {
   public CustomerValidator(ICustomerRepository customerRepository)
   {
-    RuleFor(x => x.Id)
+    rule_for(x => x.Id)
       .Must(id => customerRepository.CheckIdNotInUse(id));
   }
 }
@@ -128,7 +128,7 @@ public class CustomerValidator : AbstractValidator<Customer>
 // If you needed to stub this failure in a unit/integration test,
 // you could do the following:
 var validator = new InlineValidator<Customer>();
-validator.RuleFor(x => x.Id).Must(id => false);
+validator.rule_for(x => x.Id).Must(id => false);
 
 // This instance could then be passed into anywhere expecting an IValidator<Customer>
 ```

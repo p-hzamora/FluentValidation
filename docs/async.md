@@ -13,7 +13,7 @@ public class CustomerValidator : AbstractValidator<Customer>
   {
     _client = client;
 
-    RuleFor(x => x.Id).MustAsync(async (id, cancellation) => 
+    rule_for(x => x.Id).MustAsync(async (id, cancellation) => 
     {
       bool exists = await _client.IdExists(id);
       return !exists;

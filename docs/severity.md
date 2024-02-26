@@ -7,8 +7,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator()
   {
-    RuleFor(person => person.Surname).NotNull();
-    RuleFor(person => person.Forename).NotNull();
+    rule_for(person => person.Surname).NotNull();
+    rule_for(person => person.Forename).NotNull();
   }
 }
 ```
@@ -16,13 +16,13 @@ public class PersonValidator : AbstractValidator<Person>
 By default, if these rules fail they will have a severity of `Error`. This can be changed by calling the `WithSeverity` method. For example, if we wanted a missing surname to be identified as a warning instead of an error then we could modify the above line to:
 
 ```
-RuleFor(x => x.Surname).NotNull().WithSeverity(Severity.Warning);
+rule_for(x => x.Surname).NotNull().WithSeverity(Severity.Warning);
 ```
 
 In version 9.0 and above a callback can be used instead, which also gives you access to the item being validated:
 
 ```
-RuleFor(person => person.Surname).NotNull().WithSeverity(person => Severity.Warning);
+rule_for(person => person.Surname).NotNull().WithSeverity(person => Severity.Warning);
 ```
 
 In this case, the `ValidationResult` would still have an `is_valid` result of `false`. However, in the list of `Errors`, the `ValidationFailure` associated with this field will have its `Severity` property set to `Warning`:

@@ -8,7 +8,7 @@ Imagine you have two validators defined as part of a single rule definition, a `
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
-    RuleFor(x => x.Surname).NotNull().NotEqual("foo");
+    rule_for(x => x.Surname).NotNull().NotEqual("foo");
   }
 }
 ```
@@ -16,7 +16,7 @@ public class PersonValidator : AbstractValidator<Person> {
 This will first check whether the Surname property is not null and then will check if it's not equal to the string "foo". If the first validator (`NotNull`) fails, then by default, the call to `NotEqual` will still be invoked. This can be changed for this specific rule only by specifying a cascade mode of `Stop` (omitting the class and constructor definition from now on; assume that they are still present as above):
 
 ```csharp
-RuleFor(x => x.Surname).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
+rule_for(x => x.Surname).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
 ```
 
 Now, if the `NotNull` validator fails then the `NotEqual` validator will not be executed. This is particularly useful if you have a complex chain where each validator depends on the previous validator to succeed.
@@ -32,17 +32,17 @@ The two cascade modes are:
 
 If you have a validator class with multiple rules, and would like this `Stop` behaviour to be set for all of your rules, you could do e.g.:
 ```csharp
-RuleFor(x => x.Forename).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
-RuleFor(x => x.MiddleNames).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
-RuleFor(x => x.Surname).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
+rule_for(x => x.Forename).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
+rule_for(x => x.MiddleNames).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
+rule_for(x => x.Surname).Cascade(CascadeMode.Stop).NotNull().NotEqual("foo");
 ```
 To avoid repeating `Cascade(CascadeMode.Stop)`, you can set a default value for the rule-level cascade mode by setting the `AbstractValidator.RuleLevelCascadeMode` property, resulting in
 ```csharp
 RuleLevelCascadeMode = CascadeMode.Stop;
 
-RuleFor(x => x.Forename).NotNull().NotEqual("foo");
-RuleFor(x => x.MiddleNames).NotNull().NotEqual("foo");
-RuleFor(x => x.Surname).NotNull().NotEqual("foo");
+rule_for(x => x.Forename).NotNull().NotEqual("foo");
+rule_for(x => x.MiddleNames).NotNull().NotEqual("foo");
+rule_for(x => x.Surname).NotNull().NotEqual("foo");
 ```
 With default global settings, this code will stop executing any rule whose `NotNull` call fails, and not call `NotEqual`, but it will then continue to the next rule, and always execute all three, regardless of failures. See "Validator Class-Level Cascade Modes" for how to control this behavior. This particular behaviour is useful if you want to create a list of all validation failures, as opposed to only returning the first one.
 
@@ -86,16 +86,16 @@ With `StopOnFirstFailure`,  the following would provide the example behavior des
 ```csharp
 CascadeMode = CascadeMode.StopOnFirstFailure;
 
-RuleFor(x => x.Forename).NotNull().NotEqual("foo");
-RuleFor(x => x.MiddleNames).NotNull().NotEqual("foo");
-RuleFor(x => x.Surname).NotNull().NotEqual("foo");
+rule_for(x => x.Forename).NotNull().NotEqual("foo");
+rule_for(x => x.MiddleNames).NotNull().NotEqual("foo");
+rule_for(x => x.Surname).NotNull().NotEqual("foo");
 ```
 If they all fail, you will get three validation errors. That is the equivalent of doing
 
 ```csharp
-RuleFor(x => x.Forename).Cascade(CascadeMode.StopOnFirstFailure).NotNull().NotEqual("foo");
-RuleFor(x => x.MiddleNames).Cascade(CascadeMode.StopOnFirstFailure).NotNull().NotEqual("foo");
-RuleFor(x => x.Surname).Cascade(CascadeMode.StopOnFirstFailure).NotNull().NotEqual("foo");
+rule_for(x => x.Forename).Cascade(CascadeMode.StopOnFirstFailure).NotNull().NotEqual("foo");
+rule_for(x => x.MiddleNames).Cascade(CascadeMode.StopOnFirstFailure).NotNull().NotEqual("foo");
+rule_for(x => x.Surname).Cascade(CascadeMode.StopOnFirstFailure).NotNull().NotEqual("foo");
 ```
 This behaviour caused a lot of confusion over the years, so the `Stop` option was introduced in FluentValidation 9.1. Using `Stop` instead of `StopOnFirstFailure`, _any_ failure at all would stop execution, so only the first failure result would be returned.
 

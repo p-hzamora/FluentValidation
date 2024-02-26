@@ -16,7 +16,7 @@ Instead of using `SetCollectionValidator` you should use FluentValidation's `Rul
 
 FluentValidation 7:
 ```csharp
-RuleFor(x => x.AddressLines).SetCollectionValidator(new AddressLineValidator());
+rule_for(x => x.AddressLines).SetCollectionValidator(new AddressLineValidator());
 ```
 
 FluentValidation 8:
@@ -58,14 +58,14 @@ Previously, if you defined a child validator with `SetValidator`, then whichever
 Now you can explicitly define which ruleset will run on the child:
 
 ```csharp
-RuleFor(x => x.Address).SetValidator(new AddressValidator(), "myRuleset");
+rule_for(x => x.Address).SetValidator(new AddressValidator(), "myRuleset");
 ```
 
 ### Many old and deprecated methods have been removed
 
 FluentValidation 8 removes many old/deprecated methods that have been marked as obsolete for a long time.
 
-- Removed the pre-7 way of performing custom validation (`Custom` and `CustomAsync`). Use `RuleFor(x => x).Custom()` instead. [See the section on Custom Validators](/custom-validators)
+- Removed the pre-7 way of performing custom validation (`Custom` and `CustomAsync`). Use `rule_for(x => x).Custom()` instead. [See the section on Custom Validators](/custom-validators)
 - The old localization mechanism that was deprecated with the release of FluentValidation 7. This included several overloads of `WithLocalizedName` and `WithLocalizedMessage`. [See the section on localization for more details](/localization).
 - The `RemoveRule`, `ReplaceRule` and `ClearRules` methods that have been marked obsolete for many years (FluentValidation does not offer a replacement for these as runtime modification of validation rules is not recommended or supported in any way)
 - Removed various async method overloads that didn't accept a `CancellationToken` (use the overloads that do accept them instead.)

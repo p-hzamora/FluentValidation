@@ -11,11 +11,11 @@ For example, let's imagine we have 3 properties on a Person object (Id, Surname 
   {
      RuleSet("Names", () => 
      {
-        RuleFor(x => x.Surname).NotNull();
-        RuleFor(x => x.Forename).NotNull();
+        rule_for(x => x.Surname).NotNull();
+        rule_for(x => x.Forename).NotNull();
      });
 
-     RuleFor(x => x.Id).NotEqual(0);
+     rule_for(x => x.Id).NotEqual(0);
   }
 }
 ```

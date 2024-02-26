@@ -7,7 +7,7 @@ Ensures that the specified property is not null.
 
 Example:
 ```python
-self.RuleFor(lambda customer: customer.Surname).NotNull()
+self.rule_for(lambda customer: customer.Surname).NotNull()
 ```
 Example error: *'Surname' must not be empty.*
 
@@ -22,7 +22,7 @@ When used on an IEnumerable (such as arrays, collections, lists, etc.), the vali
 
 Example:
 ```python
-self.RuleFor(lambda customer: customer.Surname).NotEmpty()
+self.rule_for(lambda customer: customer.Surname).NotEmpty()
 ```
 Example error: *'Surname' should not be empty.*
 String format args:
@@ -37,10 +37,10 @@ Ensures that the value of the specified property is not equal to a particular va
 Example:
 ```python
 //Not equal to a particular value
-self.RuleFor(lambda customer: customer.Surname).NotEqual("Foo")
+self.rule_for(lambda customer: customer.Surname).NotEqual("Foo")
 
 //Not equal to another property
-self.RuleFor(lambda customer: customer.Surname).NotEqual(lambda customer: customer.Forename)
+self.rule_for(lambda customer: customer.Surname).NotEqual(lambda customer: customer.Forename)
 ```
 Example error: *'Surname' should not be equal to 'Foo'*
 
@@ -54,7 +54,7 @@ String format args:
 Optionally, a comparer can be provided to ensure a specific type of comparison is performed:
 
 ```python
-self.RuleFor(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.OrdinalIgnoreCase)
+self.rule_for(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.OrdinalIgnoreCase)
 ```
 
 ```eval_rst
@@ -65,7 +65,7 @@ self.RuleFor(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.O
 If you are using FluentValidation 8.x (or older), you can force an ordinal comparison by using
 
 ```python
-self.RuleFor(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.Ordinal)
+self.rule_for(lambda customer: customer.Surname).NotEqual("Foo", StringComparer.Ordinal)
 ```
 If you are using FluentValidation 9 (or newer), ordinal will be the default behaviour. If you wish to do a culture-specific comparison instead, you should pass `StringComparer.CurrentCulture` as the second parameter.
 
@@ -75,10 +75,10 @@ Ensures that the value of the specified property is equal to a particular value 
 Example:
 ```python
 //Equal to a particular value
-self.RuleFor(lambda customer: customer.Surname).Equal("Foo")
+self.rule_for(lambda customer: customer.Surname).Equal("Foo")
 
 //Equal to another property
-self.RuleFor(lambda customer: customer.Password).Equal(lambda customer: customer.PasswordConfirmation)
+self.rule_for(lambda customer: customer.Password).Equal(lambda customer: customer.PasswordConfirmation)
 ```
 Example error: *'Surname' should be equal to 'Foo'*
 String format args:
@@ -89,7 +89,7 @@ String format args:
 * `{PropertyPath}` - The full path of the property
 
 ```python
-self.RuleFor(lambda customer: customer.Surname).Equal("Foo", StringComparer.OrdinalIgnoreCase)
+self.rule_for(lambda customer: customer.Surname).Equal("Foo", StringComparer.OrdinalIgnoreCase)
 ```
 
 ```eval_rst
@@ -100,7 +100,7 @@ self.RuleFor(lambda customer: customer.Surname).Equal("Foo", StringComparer.Ordi
 If you are using FluentValidation 8.x (or older), you can force an ordinal comparison by using
 
 ```python
-self.RuleFor(lambda customer: customer.Surname).Equal("Foo", StringComparer.Ordinal)
+self.rule_for(lambda customer: customer.Surname).Equal("Foo", StringComparer.Ordinal)
 ```
 
 If you are using FluentValidation 9 (or newer), ordinal will be the default behaviour. If you wish to do a culture-specific comparison instead, you should pass `StringComparer.CurrentCulture` as the second parameter.
@@ -110,7 +110,7 @@ Ensures that the length of a particular string property is within the specified 
 
 Example:
 ```python
-self.RuleFor(lambda customer: customer.Surname).Length(1, 250) //must be between 1 and 250 chars (inclusive)
+self.rule_for(lambda customer: customer.Surname).Length(1, 250) //must be between 1 and 250 chars (inclusive)
 ```
 Example error: *'Surname' must be between 1 and 250 characters. You entered 251 characters.*
 
@@ -129,7 +129,7 @@ Ensures that the length of a particular string property is no longer than the sp
 
 Example:
 ```python
-self.RuleFor(lambda customer: customer.Surname).MaximumLength(250) //must be 250 chars or fewer
+self.rule_for(lambda customer: customer.Surname).MaximumLength(250) //must be 250 chars or fewer
 ```
 Example error: *The length of 'Surname' must be 250 characters or fewer. You entered 251 characters.*
 
@@ -147,7 +147,7 @@ Ensures that the length of a particular string property is longer than the speci
 
 Example:
 ```python
-self.RuleFor(lambda customer: customer.Surname).MinimumLength(10) //must be 10 chars or more
+self.rule_for(lambda customer: customer.Surname).MinimumLength(10) //must be 10 chars or more
 ```
 Example error: *The length of 'Surname' must be at least 10 characters. You entered 5 characters.*
 
@@ -166,10 +166,10 @@ Ensures that the value of the specified property is less than a particular value
 Example:
 ```python
 //Less than a particular value
-self.RuleFor(lambda customer: customer.CreditLimit).LessThan(100)
+self.rule_for(lambda customer: customer.CreditLimit).LessThan(100)
 
 //Less than another property
-self.RuleFor(lambda customer: customer.CreditLimit).LessThan(lambda customer: customer.MaxCreditLimit)
+self.rule_for(lambda customer: customer.CreditLimit).LessThan(lambda customer: customer.MaxCreditLimit)
 ```
 Example error: *'Credit Limit' must be less than 100.*
 
@@ -188,10 +188,10 @@ Ensures that the value of the specified property is less than or equal to a part
 Example:
 ```python
 //Less than a particular value
-self.RuleFor(lambda customer: customer.CreditLimit).LessThanOrEqualTo(100)
+self.rule_for(lambda customer: customer.CreditLimit).LessThanOrEqualTo(100)
 
 //Less than another property
-self.RuleFor(lambda customer: customer.CreditLimit).LessThanOrEqualTo(lambda customer: customer.MaxCreditLimit)
+self.rule_for(lambda customer: customer.CreditLimit).LessThanOrEqualTo(lambda customer: customer.MaxCreditLimit)
 ```
 Example error: *'Credit Limit' must be less than or equal to 100.*
 Notes: Only valid on types that implement `IComparable[T]`
@@ -207,10 +207,10 @@ Ensures that the value of the specified property is greater than a particular va
 Example:
 ```python
 //Greater than a particular value
-self.RuleFor(lambda customer: customer.CreditLimit).GreaterThan(0)
+self.rule_for(lambda customer: customer.CreditLimit).GreaterThan(0)
 
 //Greater than another property
-self.RuleFor(lambda customer: customer.CreditLimit).GreaterThan(lambda customer: customer.MinimumCreditLimit)
+self.rule_for(lambda customer: customer.CreditLimit).GreaterThan(lambda customer: customer.MinimumCreditLimit)
 ```
 Example error: *'Credit Limit' must be greater than 0.*
 Notes: Only valid on types that implement `IComparable[T]`
@@ -226,10 +226,10 @@ Ensures that the value of the specified property is greater than or equal to a p
 Example:
 ```python
 //Greater than a particular value
-self.RuleFor(lambda customer: customer.CreditLimit).GreaterThanOrEqualTo(1)
+self.rule_for(lambda customer: customer.CreditLimit).GreaterThanOrEqualTo(1)
 
 //Greater than another property
-RuleFor(lambda customer: customer.CreditLimit).GreaterThanOrEqualTo(lambda customer: customer.self.MinimumCreditLimit)
+rule_for(lambda customer: customer.CreditLimit).GreaterThanOrEqualTo(lambda customer: customer.self.MinimumCreditLimit)
 ```
 Example error: *'Credit Limit' must be greater than or equal to 1.*
 Notes: Only valid on types that implement `IComparable[T]`
@@ -246,7 +246,7 @@ Passes the value of the specified property into a delegate that can perform cust
 
 Example:
 ```
-self.RuleFor(lambda customer: customer.Surname).Must(lambda surname: surname == "Foo")
+self.rule_for(lambda customer: customer.Surname).Must(lambda surname: surname == "Foo")
 ```
 
 Example error: *The specified condition was not met for 'Surname'*
@@ -259,7 +259,7 @@ String format args:
 Note that there is an additional overload for `Must` that also accepts an instance of the parent object being validated. This can be useful if you want to compare the current property with another property from inside the predicate:
 
 ```
-RuleFor(lambda customer: customer.Surname).Must((customer, lambda surname): surname != customer.Forename)
+rule_for(lambda customer: customer.Surname).Must((customer, lambda surname): surname != customer.Forename)
 ```
 
 Note that in this particular example, it would be better to use the cross-property version of `NotEqual`.
@@ -269,7 +269,7 @@ Ensures that the value of the specified property matches the given regular expre
 
 Example:
 ```python
-self.RuleFor(lambda customer: customer.Surname).Matches("some regex here")
+self.rule_for(lambda customer: customer.Surname).Matches("some regex here")
 ```
 Example error: *'Surname' is not in the correct format.*
 String format args:
@@ -283,7 +283,7 @@ Ensures that the value of the specified property is a valid email address format
 
 Example:
 ```python
-self.RuleFor(lambda customer: customer.Email).EmailAddress()
+self.rule_for(lambda customer: customer.Email).EmailAddress()
 ```
 Example error: *'Email' is not a valid email address.*
 
@@ -298,7 +298,7 @@ From the comments:
 
 > "The check is intentionally naive because doing something infallible is very hard. The email really should be validated in some other way, such as through an email confirmation flow where an email is actually sent. The validation attribute is designed only to catch egregiously wrong values such as for a U.I."
 
-Alternatively, you can use the old email validation behaviour that uses a regular expression consistent with the .NET 4.x version of the ASP.NET `EmailAddressAttribute`. You can use this behaviour in FluentValidation by calling `RuleFor(lambda x: x.Email).EmailAddress(EmailValidationMode.Net4xRegex)`. Note that this approach is deprecated and will generate a warning as regex-based email validation is not recommended.
+Alternatively, you can use the old email validation behaviour that uses a regular expression consistent with the .NET 4.x version of the ASP.NET `EmailAddressAttribute`. You can use this behaviour in FluentValidation by calling `rule_for(lambda x: x.Email).EmailAddress(EmailValidationMode.Net4xRegex)`. Note that this approach is deprecated and will generate a warning as regex-based email validation is not recommended.
 
 ```eval_rst
 .. note::
@@ -310,7 +310,7 @@ Checks whether a string property could be a valid credit card number.
 
 Example:
 ```python
-self.RuleFor(lambda x: x.CreditCard).CreditCard()
+self.rule_for(lambda x: x.CreditCard).CreditCard()
 ```
 Example error: *'Credit Card' is not a valid credit card number.*
 
@@ -342,7 +342,7 @@ self.model.ErrorLevel = (ErrorLevel)4
 The compiler will allow this, but a value of 4 is technically not valid for this enum. The Enum validator can prevent this from happening.
 
 ```python
-self.RuleFor(lambda x: x.ErrorLevel).IsInEnum()
+self.rule_for(lambda x: x.ErrorLevel).IsInEnum()
 ```
 Example error: *'Error Level' has a range of values which does not include '4'.*
 
@@ -357,10 +357,10 @@ Checks whether a string is a valid enum name.
 Example:
 ```python
 // For a case sensitive comparison
-self.RuleFor(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel))
+self.rule_for(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel))
 
 // For a case-insensitive comparison
-self.RuleFor(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel), caseSensitive: false)
+self.rule_for(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel), caseSensitive: false)
 ```
 Example error: *'Error Level' has a range of values which does not include 'Foo'.*
 
@@ -375,7 +375,7 @@ When used on an IEnumerable (such as arrays, collections, lists, etc.), the vali
 
 Example:
 ```python
-self.RuleFor(lambda x: x.Surname).Empty()
+self.rule_for(lambda x: x.Surname).Empty()
 ```
 Example error: *'Surname' must be empty.*
 
@@ -389,7 +389,7 @@ Opposite of the `NotNull` validator. Checks if a property value is null.
 
 Example:
 ```python
-self.RuleFor(lambda x: x.Surname).Null()
+self.rule_for(lambda x: x.Surname).Null()
 ```
 Example error: *'Surname' must be empty.*
 
@@ -403,7 +403,7 @@ Checks whether the property value is in a range between the two specified number
 
 Example:
 ```python
-self.RuleFor(lambda x: x.Id).ExclusiveBetween(1,10)
+self.rule_for(lambda x: x.Id).ExclusiveBetween(1,10)
 ```
 Example error: *'Id' must be between 1 and 10 (exclusive). You entered 1.*
 
@@ -419,7 +419,7 @@ Checks whether the property value is in a range between the two specified number
 
 Example:
 ```python
-self.RuleFor(lambda x: x.Id).InclusiveBetween(1,10)
+self.rule_for(lambda x: x.Id).InclusiveBetween(1,10)
 ```
 Example error: *'Id' must be between 1 and 10. You entered 0.*
 
@@ -435,7 +435,7 @@ Checks whether a decimal value has the specified precision and scale.
 
 Example:
 ```python
-self.RuleFor(lambda x: x.Amount).PrecisionScale(4, 2, false)
+self.rule_for(lambda x: x.Amount).PrecisionScale(4, 2, false)
 ```
 Example error: *'Amount' must not be more than 4 digits in total, with allowance for 2 decimals. 5 digits and 3 decimals were found.*
 

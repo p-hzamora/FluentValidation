@@ -8,7 +8,7 @@ class PredicateValidatorTester(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
         # CultureScope.SetDefaultCulture()
-        self.validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Forename).Must(lambda forename: forename == "Jeremy"))
+        self.validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).Must(lambda forename: forename == "Jeremy"))
 
     def test_Should_fail_when_predicate_returns_false(self):
         result = self.validator.validate(Person(Forename="Foo"))
@@ -20,7 +20,7 @@ class PredicateValidatorTester(unittest.TestCase):
 
     def test_Should_throw_when_predicate_is_null(self):
         with self.assertRaises(TypeError):
-            TestValidator(lambda v: v.RuleFor(lambda x: x.Surname).Must(None))
+            TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Must(None))
 
     def test_When_validation_fails_the_default_error_should_be_set(self):
         result = self.validator.validate(Person(Forename="Foo"))
@@ -28,7 +28,7 @@ class PredicateValidatorTester(unittest.TestCase):
 
     def test_When_validation_fails_metadata_should_be_set_on_failure(self):
         validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.Forename).Must(lambda forename: forename == "Jeremy")
+            lambda v: v.rule_for(lambda x: x.Forename).Must(lambda forename: forename == "Jeremy")
             # .WithMessage(lambda x: TestMessages.ValueOfForPropertyNameIsNotValid)
         )
 

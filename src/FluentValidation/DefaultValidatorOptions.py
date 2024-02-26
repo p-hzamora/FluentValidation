@@ -155,7 +155,7 @@ class DefaultValidatorOptions:
 # }
 
 # IRuleBuilderInitialCollection[T, TCollectionElement> Where[T, TCollectionElement](this IRuleBuilderInitialCollection[T, TCollectionElement> rule, Callable[TCollectionElement, bool> predicate) {
-# 	// This overload supports RuleFor().SetCollectionValidator() (which returns IRuleBuilderOptions[T, IEnumerable[TElement]])
+# 	// This overload supports rule_for().SetCollectionValidator() (which returns IRuleBuilderOptions[T, IEnumerable[TElement]])
 # 	predicate.Guard("Cannot pass null to Where.", nameof(predicate))
 # 	Configurable(rule).Filter = predicate
 # 	return rule
@@ -250,7 +250,7 @@ class DefaultValidatorOptions:
 # }
 
 # IRuleBuilderInitialCollection[T, TCollectionElement> OverrideIndexer[T, TCollectionElement](this IRuleBuilderInitialCollection[T, TCollectionElement> rule, Callable[T, IEnumerable[TCollectionElement>, TCollectionElement, int, str> callback) {
-# 	// This overload supports RuleFor().SetCollectionValidator() (which returns IRuleBuilderOptions[T, IEnumerable[TElement]])
+# 	// This overload supports rule_for().SetCollectionValidator() (which returns IRuleBuilderOptions[T, IEnumerable[TElement]])
 # 	callback.Guard("Cannot pass null to OverrideIndexer.", nameof(callback))
 # 	Configurable(rule).IndexBuilder = callback
 # 	return rule

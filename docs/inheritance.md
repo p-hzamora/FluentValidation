@@ -49,9 +49,9 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    RuleFor(x => x.Name).NotNull();
-    RuleFor(x => x.Email).NotNull();
-    RuleFor(x => x.DateOfBirth).GreaterThan(DateTime.MinValue);
+    rule_for(x => x.Name).NotNull();
+    rule_for(x => x.Email).NotNull();
+    rule_for(x => x.DateOfBirth).GreaterThan(DateTime.MinValue);
   }
 }
 
@@ -59,9 +59,9 @@ public class OrganisationValidator : AbstractValidator<Organisation>
 {
   public OrganisationValidator() 
   {
-    RuleFor(x => x.Name).NotNull();
-    RuleFor(x => x.Email).NotNull();
-    RuleFor(x => x.HeadQuarters).SetValidator(new AddressValidator());
+    rule_for(x => x.Name).NotNull();
+    rule_for(x => x.Email).NotNull();
+    rule_for(x => x.HeadQuarters).SetValidator(new AddressValidator());
   }
 }
 ```
@@ -74,7 +74,7 @@ public class ContactRequestValidator : AbstractValidator<ContactRequest>
   public ContactRequestValidator()
   {
 
-    RuleFor(x => x.Contact).SetInheritanceValidator(v => 
+    rule_for(x => x.Contact).SetInheritanceValidator(v => 
     {
       v.Add<Organisation>(new OrganisationValidator());
       v.Add<Person>(new PersonValidator());

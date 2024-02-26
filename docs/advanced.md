@@ -15,7 +15,7 @@ public class MyValidator : AbstractValidator<Person>
 {
   public MyValidator() 
   {
-    RuleFor(x => x.Name).NotNull();
+    rule_for(x => x.Name).NotNull();
   }
 
   protected override bool PreValidate(ValidationContext<Person> context, ValidationResult result) 
@@ -47,7 +47,7 @@ validator.Validate(context);
 The RootContextData can then be accessed inside any custom property validators, as well as calls to `Custom`:
 
 ```csharp
-RuleFor(x => x.Surname).Custom((x, context) => 
+rule_for(x => x.Surname).Custom((x, context) => 
 {
   if(context.RootContextData.ContainsKey("MyCustomData")) 
   {

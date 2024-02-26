@@ -7,8 +7,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    RuleFor(person => person.Surname).NotNull().WithErrorCode("ERR1234");        
-    RuleFor(person => person.Forename).NotNull();
+    rule_for(person => person.Surname).NotNull().WithErrorCode("ERR1234");        
+    rule_for(person => person.Forename).NotNull();
   }
 }
 ```

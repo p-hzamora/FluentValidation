@@ -8,7 +8,7 @@ You can also use the `WithMessage` and `WithLocalizedMessage` methods to specify
 If you are using Visual Studio's built in support for `.resx` files and their strongly-typed wrappers, then you can localize a message by calling the overload of `WithMessage` that accepts a lambda expression:
 
 ```
-RuleFor(x => x.Surname).NotNull().WithMessage(x => MyLocalizedMessages.SurnameRequired);
+rule_for(x => x.Surname).NotNull().WithMessage(x => MyLocalizedMessages.SurnameRequired);
 ```
 You could also use the same approach if you need to obtain the localized message from another source (such as a database) by obtaining the string from within the lambda.
 
@@ -23,7 +23,7 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator(IStringLocalizer<Person> localizer)
    {
-    RuleFor(x => x.Surname).NotNull().WithMessage(x => localizer["Surname is required"]);
+    rule_for(x => x.Surname).NotNull().WithMessage(x => localizer["Surname is required"]);
   }
 }
 ```

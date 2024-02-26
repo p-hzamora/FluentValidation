@@ -58,3 +58,7 @@ class RegularExpressionValidator[T](PropertyValidator[T, str], IRegularExpressio
             context.MessageFormatter.AppendArgument(self.Name, str(self._regex_func))
             return False
         return True
+
+    @override
+    def get_default_message_template(self, error_code: str) -> str:
+        return self.Localized(error_code, self.Name)

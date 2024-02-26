@@ -2,6 +2,7 @@ import unittest
 
 from person import Person
 from TestValidator import TestValidator
+from CultureScope import CultureScope
 import sys
 from pathlib import Path
 
@@ -11,10 +12,10 @@ sys.path.append(
 
 from src.FluentValidation.validators.LengthValidator import LengthValidator  # noqa: E402
 
-
 class LengthValidatorTests(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        CultureScope.SetDefaultCulture()
 
     def test_When_the_text_is_between_the_range_specified_then_the_validator_should_pass(
         self,

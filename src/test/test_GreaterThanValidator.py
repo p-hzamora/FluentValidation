@@ -2,13 +2,14 @@ import unittest
 
 from person import Person
 from TestValidator import TestValidator
-
+from CultureScope import CultureScope
 
 class GreaterThanValidatorTester(unittest.TestCase):
     VALUE: int = 1
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        CultureScope.SetDefaultCulture()
 
         self.validator = TestValidator(
             lambda v: v.RuleFor(lambda x: x.Id).GreaterThan(self.VALUE)

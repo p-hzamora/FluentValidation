@@ -2,6 +2,7 @@ import unittest
 
 from person import Person
 from TestValidator import TestValidator
+from CultureScope import CultureScope
 
 
 class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
@@ -10,10 +11,8 @@ class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # CultureScope.SetDefaultCulture()
-        self.validator = TestValidator(
-            lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(self.value)
-        )
+        CultureScope.SetDefaultCulture()
+        self.validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).GreaterThanOrEqualTo(self.value))
 
     def test_Should_fail_when_less_than_input(self):
         result = self.validator.validate(Person(Id=0))

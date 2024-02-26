@@ -7,12 +7,13 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "FluentVali
 
 from TestValidator import TestValidator  # noqa: E402
 from person import Person  # noqa: E402
+from CultureScope import CultureScope  # noqa: E402
 
 
 class EqualValidatorTests(unittest.TestCase):
-    # def __init__(self):
-
-    # self.CultureScope.SetDefaultCulture()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        CultureScope.SetDefaultCulture()
 
     def test_When_the_objects_are_equal_validation_should_succeed(self):
         validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Forename).Equal("Foo"))

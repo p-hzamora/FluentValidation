@@ -17,12 +17,14 @@ from src.FluentValidation.validators.LessThanOrEqualValidator import (  # noqa: 
     LessThanOrEqualValidator,
 )  # noqa: E402
 
+from CultureScope import CultureScope  # noqa: E402
 
 class LessThanOrEqualToValidatorTester(unittest.TestCase):
     value: int = 1
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        CultureScope.SetDefaultCulture()
 
         self.validator = TestValidator(lambda v: v.RuleFor(lambda x: x.Id).LessThanOrEqualTo(self.value))
 

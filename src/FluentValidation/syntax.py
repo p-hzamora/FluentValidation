@@ -1,6 +1,8 @@
 from abc import abstractmethod, ABC
 from typing import Any, Self, Callable, overload
 import dis
+import inspect
+
 
 from .validators.IpropertyValidator import IPropertyValidator
 from .validators.LengthValidator import (
@@ -20,7 +22,10 @@ from .validators.EqualValidator import EqualValidator
 from .validators.NotEqualValidator import NotEqualValidator
 from .validators.GreaterThanValidator import GreaterThanValidator
 from .validators.GreaterThanOrEqualValidator import GreaterThanOrEqualValidator
+from .validators.PredicateValidator import PredicateValidator
+
 from .IValidationRule import IValidationRule
+from .IValidationContext import ValidationContext
 
 
 class DefaultValidatorExtensions:
@@ -28,6 +33,7 @@ class DefaultValidatorExtensions:
     ruleBuilder actua como self, ya que es la instancia padre que se le pasa a traves de la herencia
     """
 
+    @staticmethod
     def configurable[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> IValidationRule[T, TProperty]:
         return ruleBuilder.Rule
 
@@ -128,6 +134,36 @@ class DefaultValidatorExtensions:
             return ruleBuilder.SetValidator(EqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.SetValidator(EqualValidator(value=valueToCompare))
+
+    # region Must
+    @overload
+    def Must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
+        ...
+
+    @overload
+    def Must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
+        ...
+
+    @overload
+    def Must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty, ValidationContext[T]], bool]) -> "IRuleBuilder[T, TProperty]":
+        ...
+
+    def Must[T, TProperty](
+        ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool] | Callable[[T, TProperty], bool] | Callable[[T, TProperty, ValidationContext[T]], bool]
+    ) -> "IRuleBuilder[T, TProperty]":
+        num_args = len(inspect.signature(predicate).parameters)
+
+        if num_args == 1:
+            return ruleBuilder.Must(lambda _, val: predicate(val))
+        elif num_args == 2:
+            return ruleBuilder.Must(lambda x, val, _: predicate(x, val))
+        elif num_args == 3:
+            return ruleBuilder.SetValidator(
+                PredicateValidator[T, TProperty](lambda instance, property, propertyValidatorContext: predicate(instance, property, propertyValidatorContext)),
+            )
+        raise Exception(f"Number of arguments exceeded. Passed {num_args}")
+
+    # endregion
 
     # endregion
     # region NotEqual

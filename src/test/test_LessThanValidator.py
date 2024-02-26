@@ -40,14 +40,14 @@ class LessThanValidatorTester(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "'Id' must be less than '1'.")
 
     def test_Validates_against_property(self) -> None:
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThan(lambda x: x.AnotherInt).WithMessage(r"{ComparisonProperty}"))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThan(lambda x: x.AnotherInt).with_message(r"{ComparisonProperty}"))
         result = validator.validate(Person(Id=2, AnotherInt=1))
         self.assertFalse(result.is_valid)
         self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
 
     def test_Comparison_property_uses_custom_resolver(self) -> None:
         try:
-            validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThan(lambda x: x.AnotherInt).WithMessage(r"ComparisonProperty"))
+            validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).LessThan(lambda x: x.AnotherInt).with_message(r"ComparisonProperty"))
             result = validator.validate(Person(Id=2, AnotherInt=1))
             self.assertEqual(result.errors[0].ErrorMessage, "ComparisonProperty")
         finally:

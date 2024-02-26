@@ -44,9 +44,9 @@ class PersonValidator(AbstractValidator[Person]):
 
         self.rule_for(lambda x: x.fecha_ini).less_than_or_equal_to(datetime.today())
 
-        self.rule_for(lambda x: x.dni).must(lambda x: isinstance(x, str)).WithMessage("Custom message of IsInstance method").Matches(RegexPattern.Dni)
+        self.rule_for(lambda x: x.dni).must(lambda x: isinstance(x, str)).with_message("Custom message of IsInstance method").Matches(RegexPattern.Dni)
 
-        self.rule_for(lambda x: x.email).NotNull().Matches(RegexPattern.Email).WithMessage("The entered mail does not comply with the specific regex rules").MaxLength(15)
+        self.rule_for(lambda x: x.email).NotNull().Matches(RegexPattern.Email).with_message("The entered mail does not comply with the specific regex rules").MaxLength(15)
 
 
 person = Person(

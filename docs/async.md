@@ -17,7 +17,7 @@ public class CustomerValidator : AbstractValidator<Customer>
     {
       bool exists = await _client.IdExists(id);
       return !exists;
-    }).WithMessage("ID must be unique");
+    }).with_message("ID must be unique");
   }
 }
 ```

@@ -35,12 +35,12 @@ The TestHelper has been updated with several syntax improvements. It is now poss
 
 ```csharp
 var validator = new InlineValidator<Person>();
-validator.rule_for(x => x.Surname).NotNull().WithMessage("required");
+validator.rule_for(x => x.Surname).NotNull().with_message("required");
 validator.rule_for(x => x.Address.Line1).NotEqual("foo");
 
 // New advanced test syntax
 var result = validator.TestValidate(new Person { Address = new Address()) };
-result.ShouldHaveValidationErrorFor(x => x.Surname).WithMessage("required");
+result.ShouldHaveValidationErrorFor(x => x.Surname).with_message("required");
 result.ShouldNotHaveValidationErrorFor(x => x.Address.Line1);
 ```
 
@@ -122,7 +122,7 @@ rule_for(x => x.Surname).NotNull().WithLocalizedMessage(typeof(MyLocalizedMessag
 This syntax has been superceded by the callback syntax. To access the localized messages with a strongly-typed wrapper, you should now explicitly access the wrapper property inside a callback:
 
 ```csharp
-rule_for(x => x.Surname).NotNull().WithMessage(x => MyLocalizedMessages.SurnameRequired);
+rule_for(x => x.Surname).NotNull().with_message(x => MyLocalizedMessages.SurnameRequired);
 ```
 
 Note that support for localization with `IStringLocalzier` is unchanged.

@@ -53,7 +53,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
         )
 
     def test_Validates_with_property(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty}"))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.AnotherInt).with_message("{ComparisonProperty}"))
         result = validator.validate(Person(Id=1, AnotherInt=0))
         self.assertFalse(result.is_valid)
         self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
@@ -63,7 +63,7 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
 
     # 	try:
     # 		ValidatorOptions.Global.DisplayNameResolver = (type, member, exprlambda ): member.Name + "Foo"
-    # 		validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.AnotherInt).WithMessage("{ComparisonProperty"))
+    # 		validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.AnotherInt).with_message("{ComparisonProperty"))
     # 		result = validator.validate(Person(Id = 1, AnotherInt = 0))
     # 		self.assertEqual(result.errors[0].ErrorMessage, "AnotherIntFoo")
 

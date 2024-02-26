@@ -52,7 +52,7 @@ class EqualValidatorTests(unittest.TestCase):
     #     propertyValidator.Comparison.ShouldEqual(Comparison.Equal)
 
     def test_Validates_against_property(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Equal(lambda x: x.Forename).WithMessage("{ComparisonProperty}"))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Equal(lambda x: x.Forename).with_message("{ComparisonProperty}"))
         result = validator.validate(Person(Surname="foo", Forename="bar"))
         self.assertFalse(result.is_valid)
         self.assertEqual(result.errors[0].ErrorMessage, "Forename")
@@ -62,7 +62,7 @@ class EqualValidatorTests(unittest.TestCase):
 
     # try:44
     # ValidatorOptions.Global.DisplayNameResolver = (type, member,(lambda ): member.Name + "Foo"
-    #     validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Equal(lambda x: x.Forename).WithMessage("{ComparisonProperty}"))
+    #     validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).Equal(lambda x: x.Forename).with_message("{ComparisonProperty}"))
     #     result = validator.validate(Person(Surname="foo", Forename="bar"))
     #     self.assertEqual(result.errors[0].ErrorMessage, "ForenameFoo")
     # finally:

@@ -29,7 +29,7 @@ class PredicateValidatorTester(unittest.TestCase):
     def test_When_validation_fails_metadata_should_be_set_on_failure(self):
         validator = TestValidator(
             lambda v: v.rule_for(lambda x: x.Forename).must(lambda forename: forename == "Jeremy")
-            # .WithMessage(lambda x: TestMessages.ValueOfForPropertyNameIsNotValid)
+            # .with_message(lambda x: TestMessages.ValueOfForPropertyNameIsNotValid)
         )
 
         result = validator.validate(Person(Forename="test"))

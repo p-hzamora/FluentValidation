@@ -38,7 +38,7 @@ class AbstractValidatorTester(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
 
     def test_WithMessage_should_override_error_message(self):
-        self.validator.rule_for(lambda x: x.Forename).NotNull().WithMessage("Foo")
+        self.validator.rule_for(lambda x: x.Forename).NotNull().with_message("Foo")
         result = self.validator.validate(Person())
         self.assertEqual(result.errors[0].ErrorMessage, "Foo")
 
@@ -60,7 +60,7 @@ class AbstractValidatorTester(unittest.TestCase):
     #     self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
 
     # def WithMessage_and_WithErrorCode_should_override_error_message_and_error_code(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull().WithMessage("Foo").WithErrorCode("ErrCode101")
+    #     self.validator.rule_for(lambda x: x.Forename).NotNull().with_message("Foo").WithErrorCode("ErrCode101")
     #     result = self.validator.validate(Person())
     #     self.assertEqual(result.errors[0].ErrorMessage, "Foo")
     #     self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
@@ -251,7 +251,7 @@ class AbstractValidatorTester(unittest.TestCase):
 #         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
 
 #     def PropertyName_With_Periods_Displays_Correctly_In_Messages(self):
-#         self.validator.rule_for(lambda x: x.Address.Line1).NotNull().WithMessage("{PropertyName}")
+#         self.validator.rule_for(lambda x: x.Address.Line1).NotNull().with_message("{PropertyName}")
 
 #         validationResult = self.validator.validate(Person( Address = Address() })
 

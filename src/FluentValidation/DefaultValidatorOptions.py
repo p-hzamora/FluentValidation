@@ -38,13 +38,13 @@ class DefaultValidatorOptions:
 # 	return ruleBuilder
 # }
 
-# IRuleBuilderOptions[T, TProperty> WithMessage[T, TProperty](this IRuleBuilderOptions[T, TProperty> rule, str errorMessage) {
-# 	errorMessage.Guard("A message must be specified when calling WithMessage.", nameof(errorMessage))
+# IRuleBuilderOptions[T, TProperty> with_message[T, TProperty](this IRuleBuilderOptions[T, TProperty> rule, str errorMessage) {
+# 	errorMessage.Guard("A message must be specified when calling with_message.", nameof(errorMessage))
 # 	Configurable(rule).Current.SetErrorMessage(errorMessage)
 # 	return rule
 # }
 
-# IRuleBuilderOptions[T, TProperty> WithMessage[T, TProperty](this IRuleBuilderOptions[T, TProperty> rule, Callable[T, str> messageProvider) {
+# IRuleBuilderOptions[T, TProperty> with_message[T, TProperty](this IRuleBuilderOptions[T, TProperty> rule, Callable[T, str> messageProvider) {
 # 	messageProvider.Guard("A messageProvider must be provided.", nameof(messageProvider))
 # 	Configurable(rule).Current.SetErrorMessage((ctx, val) => {
 # 		return messageProvider(ctx == null ? default : ctx.InstanceToValidate)
@@ -52,7 +52,7 @@ class DefaultValidatorOptions:
 # 	return rule
 # }
 
-# IRuleBuilderOptions[T, TProperty> WithMessage[T, TProperty](this IRuleBuilderOptions[T, TProperty> rule, Callable[T, TProperty, str> messageProvider) {
+# IRuleBuilderOptions[T, TProperty> with_message[T, TProperty](this IRuleBuilderOptions[T, TProperty> rule, Callable[T, TProperty, str> messageProvider) {
 # 	messageProvider.Guard("A messageProvider must be provided.", nameof(messageProvider))
 # 	Configurable(rule).Current.SetErrorMessage((context, value) => {
 # 		return messageProvider(context == null ? default : context.InstanceToValidate, value)

@@ -20,7 +20,7 @@ To ensure our list property contains fewer than 10 items, we could do this:
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
     rule_for(x => x.Pets).must(list => list.Count < 10)
-      .WithMessage("The list must contain fewer than 10 items");
+      .with_message("The list must contain fewer than 10 items");
   }
 }
 ```
@@ -30,7 +30,7 @@ To make this logic reusable, we can wrap it an extension method that acts upon a
 ```csharp
 public static class MyCustomValidators {
   public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
-	return ruleBuilder.must(list => list.Count < num).WithMessage("The list contains too many items");
+	return ruleBuilder.must(list => list.Count < num).with_message("The list contains too many items");
   }
 }
 ```
@@ -54,11 +54,11 @@ public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T
     context.MessageFormatter.AppendArgument("MaxElements", num);
     return list.Count < num;
   })
-  .WithMessage("{PropertyName} must contain fewer than {MaxElements} items.");
+  .with_message("{PropertyName} must contain fewer than {MaxElements} items.");
 }
 ```
 
-Note that the overload of must that we're using now accepts 3 parameters: the root (parent) object, the property value itself, and the context. We use the context to add a custom message replacement value of `MaxElements` and set its value to the number passed to the method. We can now use this placeholder as `{MaxElements}` within the call to `WithMessage`.
+Note that the overload of must that we're using now accepts 3 parameters: the root (parent) object, the property value itself, and the context. We use the context to add a custom message replacement value of `MaxElements` and set its value to the number passed to the method. We can now use this placeholder as `{MaxElements}` within the call to `with_message`.
 
 The resulting message will now be `'Pets' must contain fewer than 10 items.` We could even extend this further to include the number of elements that the list contains like this:
 
@@ -72,7 +72,7 @@ public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T
 
     return list.Count < num;
   })
-  .WithMessage("{PropertyName} must contain fewer than {MaxElements} items. The list contains {TotalElements} element");
+  .with_message("{PropertyName} must contain fewer than {MaxElements} items. The list contains {TotalElements} element");
 }
 ```
 

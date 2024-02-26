@@ -24,7 +24,7 @@ class NotEqualValidatorTests(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "'Forename' must not be equal to 'Foo'.")
 
     def test_Validates_across_properties(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).NotEqual(lambda x: x.Surname).WithMessage("{ComparisonProperty}"))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).NotEqual(lambda x: x.Surname).with_message("{ComparisonProperty}"))
 
         result = validator.validate(Person(Surname="foo", Forename="foo"))
         self.assertFalse(result.is_valid)
@@ -38,7 +38,7 @@ class NotEqualValidatorTests(unittest.TestCase):
     # 		validator = TestValidator(
     # 			lambda v: v.rule_for(lambda x: x.Forename)
     # 				.NotEqual(lambda x: x.Surname)
-    # 				.WithMessage("{ComparisonProperty}")
+    # 				.with_message("{ComparisonProperty}")
     # 		)
 
     # 		result = validator.validate(Person( Surname = "foo", Forename = "foo" })

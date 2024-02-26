@@ -63,7 +63,7 @@ class DefaultValidatorExtensions:
     def MinLength[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", MinLength: int) -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(MinimumLengthValidator[T](MinLength))
 
-    def WithMessage[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", errorMessage: str) -> "IRuleBuilder[T, TProperty]":
+    def with_message[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", errorMessage: str) -> "IRuleBuilder[T, TProperty]":
         DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(errorMessage)
         return ruleBuilder
 

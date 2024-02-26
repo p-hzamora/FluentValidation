@@ -104,7 +104,7 @@ class LengthValidatorTests(unittest.TestCase):
         self.assertEqual(validator.Max, 5)
 
     def test_When_input_is_null_then_the_validator_should_pass(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).ExactLength(5))  # can't use length method due to the lack of overload in Python
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).exact_length(5))  # can't use length method due to the lack of overload in Python
         result = validator.validate(Person(Surname=None))
         self.assertTrue(result.is_valid)
 

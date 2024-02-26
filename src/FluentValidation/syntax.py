@@ -54,7 +54,7 @@ class DefaultValidatorExtensions:
     def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int | T, max: int | T) -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(LengthValidator[T](min, max))
 
-    def ExactLength[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", exactLength: int) -> "IRuleBuilder[T, TProperty]":
+    def exact_length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", exactLength: int) -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(ExactLengthValidator[T](exactLength))
 
     def max_length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", max_length: int) -> "IRuleBuilder[T, TProperty]":

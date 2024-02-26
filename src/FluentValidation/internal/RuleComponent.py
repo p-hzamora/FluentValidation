@@ -31,9 +31,8 @@ class RuleComponent[T, TProperty](IRuleComponent):
         return self.invoke_property_validator(context, value)
 
     def GetErrorMessage(self, context: ValidationContext[T], value: TProperty):
-        rawTemplate: str = (
-            setattr(self._errorMessageFactory, value) if self._errorMessageFactory else self._error_message
-        )  # FIXME [ ]: self._error_message has value when it must by empty test "test_When_the_maxlength_validator_fails_the_error_message_should_be_set"
+        # FIXME [ ]: self._error_message has value when it must by empty test "test_When_the_maxlength_validator_fails_the_error_message_should_be_set"
+        rawTemplate: str = setattr(self._errorMessageFactory, value) if self._errorMessageFactory else self._error_message
         if rawTemplate is None:
             rawTemplate = self.Validator.get_default_message_template(self.ErrorCode)  # original
 

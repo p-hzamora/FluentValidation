@@ -24,7 +24,7 @@ class IValidatoinRule_no_args(ABC):
         ...
 
     @abstractmethod
-    def GetDisplayName(context: IValidationContext) -> str:
+    def get_display_name(context: IValidationContext) -> str:
         ...
 
 

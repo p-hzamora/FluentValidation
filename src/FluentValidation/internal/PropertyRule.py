@@ -28,7 +28,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         self._components.append(component)
         return None
 
-    def GetDisplayName():
+    def get_display_name():
         ...
 
     def ValidateAsync(self, context: ValidationContext[T]) -> None:

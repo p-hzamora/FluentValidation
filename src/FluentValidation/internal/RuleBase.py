@@ -25,7 +25,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._propertyName: str = {x.opname: x.argval for x in dis.Bytecode(propertyFunc)}["LOAD_ATTR"]
         self._displayName: str = self._propertyName  # FIXME [ ]: This implementation is wrong. It must call the "GetDisplay" method
 
-        # public string GetDisplayName(ValidationContext<T> context)
+        # public string get_display_name(ValidationContext<T> context)
         #     => _displayNameFactory?.Invoke(context) ?? _displayName ?? _propertyDisplayName;
 
     @property

@@ -88,7 +88,7 @@ class Person:
         AnotherInt: int = None,
         CreditCard: str = None,
         Regex: str = None,
-        MinLength: int = None,
+        min_length: int = None,
         max_length: int = None,
         Gender: EnumGender = None,
         Genderstr: str = None,
@@ -118,7 +118,7 @@ class Person:
         self.CreditCard: str = CreditCard
         self.OtherNullableInt: int = OtherNullableInt
         self.Regex: str = Regex
-        self.MinLength: int = MinLength
+        self.min_length: int = min_length
         self.max_length: int = max_length
         self.Gender: EnumGender = Gender
         self.Genderstr: str = Genderstr

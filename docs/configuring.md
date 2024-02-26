@@ -28,7 +28,7 @@ Used in comparison validators: (`Equal`, `NotEqual`, `GreaterThan`, `GreaterThan
 * `{ComparisonProperty}` – Name of the property being compared against (if any)
 
 Used only in the length validator:
-* `{MinLength}` – Minimum length
+* `{min_length}` – Minimum length
 * `{max_length}` – Maximum length
 * `{TotalLength}` – Number of characters entered
 

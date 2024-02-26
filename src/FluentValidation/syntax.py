@@ -38,10 +38,10 @@ class DefaultValidatorExtensions:
         return ruleBuilder.Rule
 
     def not_null[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
-        return ruleBuilder.SetValidator(NotNullValidator[T, TProperty]())
+        return ruleBuilder.set_validator(NotNullValidator[T, TProperty]())
 
     def matches[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", pattern: str) -> "IRuleBuilder[T, TProperty]":
-        return ruleBuilder.SetValidator(RegularExpressionValidator[T](pattern))
+        return ruleBuilder.set_validator(RegularExpressionValidator[T](pattern))
 
     @overload
     def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: Callable[[T], None], max: Callable[[T], None]) -> "IRuleBuilder[T, TProperty]":
@@ -52,23 +52,23 @@ class DefaultValidatorExtensions:
         ...
 
     def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int | T, max: int | T) -> "IRuleBuilder[T, TProperty]":
-        return ruleBuilder.SetValidator(LengthValidator[T](min, max))
+        return ruleBuilder.set_validator(LengthValidator[T](min, max))
 
     def exact_length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", exactLength: int) -> "IRuleBuilder[T, TProperty]":
-        return ruleBuilder.SetValidator(ExactLengthValidator[T](exactLength))
+        return ruleBuilder.set_validator(ExactLengthValidator[T](exactLength))
 
     def max_length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", max_length: int) -> "IRuleBuilder[T, TProperty]":
-        return ruleBuilder.SetValidator(MaximumLengthValidator[T](max_length))
+        return ruleBuilder.set_validator(MaximumLengthValidator[T](max_length))
 
     def min_length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min_length: int) -> "IRuleBuilder[T, TProperty]":
-        return ruleBuilder.SetValidator(MinimumLengthValidator[T](min_length))
+        return ruleBuilder.set_validator(MinimumLengthValidator[T](min_length))
 
     def with_message[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", errorMessage: str) -> "IRuleBuilder[T, TProperty]":
         DefaultValidatorExtensions.configurable(ruleBuilder).Current.set_error_message(errorMessage)
         return ruleBuilder
 
     def not_empty[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
-        return ruleBuilder.SetValidator(NotEmptyValidator[T, TProperty]())
+        return ruleBuilder.set_validator(NotEmptyValidator[T, TProperty]())
 
     # region less_than
     @overload
@@ -86,9 +86,9 @@ class DefaultValidatorExtensions:
         if callable(valueToCompare):
             func = valueToCompare
             name = DefaultValidatorExtensions.get_display_name(valueToCompare)
-            return ruleBuilder.SetValidator(LessThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
+            return ruleBuilder.set_validator(LessThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
-        return ruleBuilder.SetValidator(LessThanValidator(value=valueToCompare))
+        return ruleBuilder.set_validator(LessThanValidator(value=valueToCompare))
 
     # endregion
     # region less_than_or_equal_to
@@ -107,9 +107,9 @@ class DefaultValidatorExtensions:
         if callable(valueToCompare):
             func = valueToCompare
             name = DefaultValidatorExtensions.get_display_name(valueToCompare)
-            return ruleBuilder.SetValidator(LessThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
+            return ruleBuilder.set_validator(LessThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
-        return ruleBuilder.SetValidator(LessThanOrEqualValidator(value=valueToCompare))
+        return ruleBuilder.set_validator(LessThanOrEqualValidator(value=valueToCompare))
 
     # endregion
     # region equal
@@ -128,9 +128,9 @@ class DefaultValidatorExtensions:
         if callable(valueToCompare):
             func = valueToCompare
             name = DefaultValidatorExtensions.get_display_name(valueToCompare)
-            return ruleBuilder.SetValidator(EqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
+            return ruleBuilder.set_validator(EqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
-        return ruleBuilder.SetValidator(EqualValidator(value=valueToCompare))
+        return ruleBuilder.set_validator(EqualValidator(value=valueToCompare))
 
     # region must
     @overload
@@ -155,7 +155,7 @@ class DefaultValidatorExtensions:
         elif num_args == 2:
             return ruleBuilder.must(lambda x, val, _: predicate(x, val))
         elif num_args == 3:
-            return ruleBuilder.SetValidator(
+            return ruleBuilder.set_validator(
                 PredicateValidator[T, TProperty](lambda instance, property, propertyValidatorContext: predicate(instance, property, propertyValidatorContext)),
             )
         raise Exception(f"Number of arguments exceeded. Passed {num_args}")
@@ -179,9 +179,9 @@ class DefaultValidatorExtensions:
         if callable(valueToCompare):
             func = valueToCompare
             name = DefaultValidatorExtensions.get_display_name(valueToCompare)
-            return ruleBuilder.SetValidator(NotEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
+            return ruleBuilder.set_validator(NotEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
-        return ruleBuilder.SetValidator(NotEqualValidator(value=valueToCompare))
+        return ruleBuilder.set_validator(NotEqualValidator(value=valueToCompare))
 
     # endregion
     # region greater_than
@@ -200,9 +200,9 @@ class DefaultValidatorExtensions:
         if callable(valueToCompare):
             func = valueToCompare
             name = DefaultValidatorExtensions.get_display_name(valueToCompare)
-            return ruleBuilder.SetValidator(GreaterThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
+            return ruleBuilder.set_validator(GreaterThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
-        return ruleBuilder.SetValidator(GreaterThanValidator(value=valueToCompare))
+        return ruleBuilder.set_validator(GreaterThanValidator(value=valueToCompare))
 
     # endregion
     # region GreaterThanOrEqual
@@ -221,9 +221,9 @@ class DefaultValidatorExtensions:
         if callable(valueToCompare):
             func = valueToCompare
             name = DefaultValidatorExtensions.get_display_name(valueToCompare)
-            return ruleBuilder.SetValidator(GreaterThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
+            return ruleBuilder.set_validator(GreaterThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
-        return ruleBuilder.SetValidator(GreaterThanOrEqualValidator(value=valueToCompare))
+        return ruleBuilder.set_validator(GreaterThanOrEqualValidator(value=valueToCompare))
 
     @staticmethod
     def get_display_name[T, TProperty](expression: Callable[[T], TProperty]) -> str:
@@ -243,7 +243,7 @@ class IRuleBuilderInternal[T, TProperty](ABC):
 class IRuleBuilder[T, TProperty](IRuleBuilderInternal, DefaultValidatorExtensions):
     @staticmethod
     @abstractmethod
-    def SetValidator(validator: IPropertyValidator[T, TProperty]) -> Self:
+    def set_validator(validator: IPropertyValidator[T, TProperty]) -> Self:
         ...
 
 

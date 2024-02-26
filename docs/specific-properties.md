@@ -10,7 +10,7 @@ public class CustomerValidator : AbstractValidator<Customer>
   {
     rule_for(x => x.Surname).not_null();
     rule_for(x => x.Forename).not_null();
-    RuleForEach(x => x.Orders).SetValidator(new OrderValidator());
+    RuleForEach(x => x.Orders).set_validator(new OrderValidator());
   }
 }
 ```

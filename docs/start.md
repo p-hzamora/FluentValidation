@@ -174,7 +174,7 @@ class CustomerValidator : AbstractValidator[Customer]
   CustomerValidator()
   {
     rule_for(customer => customer.Name).not_null();
-    rule_for(customer => customer.Address).SetValidator(new AddressValidator());
+    rule_for(customer => customer.Address).set_validator(new AddressValidator());
   }
 }
 ```

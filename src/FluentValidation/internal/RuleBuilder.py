@@ -13,7 +13,7 @@ class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal
         self._rule = rule
         self.parent_validator = parent
 
-    def SetValidator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # -> IRuleBuilderOptions[T,TProperty]
+    def set_validator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # -> IRuleBuilderOptions[T,TProperty]
         self.Rule.AddValidator(validator)
         return self
 

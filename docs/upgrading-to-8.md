@@ -21,7 +21,7 @@ rule_for(x => x.AddressLines).SetCollectionValidator(new AddressLineValidator())
 
 FluentValidation 8:
 ```csharp
-RuleForEach(x => x.AddressLines).SetValidator(new AddressLineValidator());
+RuleForEach(x => x.AddressLines).set_validator(new AddressLineValidator());
 ```
 
 #### Why was this done?
@@ -52,13 +52,13 @@ You can now validate specific properties using a full path, eg:
 validator.Validate(customer, "Address.Line1", "Address.Line2");
 ```
 
-### Validating a specific ruleset with SetValidator
+### Validating a specific ruleset with set_validator
 
-Previously, if you defined a child validator with `SetValidator`, then whichever ruleset you invoked on the parent validator will cascade to the child validator.
+Previously, if you defined a child validator with `set_validator`, then whichever ruleset you invoked on the parent validator will cascade to the child validator.
 Now you can explicitly define which ruleset will run on the child:
 
 ```csharp
-rule_for(x => x.Address).SetValidator(new AddressValidator(), "myRuleset");
+rule_for(x => x.Address).set_validator(new AddressValidator(), "myRuleset");
 ```
 
 ### Many old and deprecated methods have been removed

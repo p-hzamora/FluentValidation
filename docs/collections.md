@@ -37,7 +37,7 @@ public class PersonValidator : AbstractValidator<Person>
 
 ## Collections of Complex Types
 
-You can also combine `RuleForEach` with `SetValidator` when the collection is of another complex objects. For example:
+You can also combine `RuleForEach` with `set_validator` when the collection is of another complex objects. For example:
 
 ```csharp
 public class Customer 
@@ -64,7 +64,7 @@ public class CustomerValidator : AbstractValidator<Customer>
 {
   public CustomerValidator() 
   {
-    RuleForEach(x => x.Orders).SetValidator(new OrderValidator());
+    RuleForEach(x => x.Orders).set_validator(new OrderValidator());
   }
 }
 ```
@@ -89,7 +89,7 @@ You can optionally include or exclude certain items in the collection from being
 ```csharp
 RuleForEach(x => x.Orders)
   .Where(x => x.Cost != null)
-  .SetValidator(new OrderValidator());
+  .set_validator(new OrderValidator());
 ```
 
 As of version 8.2, an alternative to using `RuleForEach` is to call `ForEach` as part of a regular `rule_for`. With this approach you can combine rules that act upon the entire collection with rules which act upon individual elements within the collection. For example, imagine you have the following 2 rules:

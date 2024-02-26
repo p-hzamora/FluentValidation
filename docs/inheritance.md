@@ -61,7 +61,7 @@ public class OrganisationValidator : AbstractValidator<Organisation>
   {
     rule_for(x => x.Name).not_null();
     rule_for(x => x.Email).not_null();
-    rule_for(x => x.HeadQuarters).SetValidator(new AddressValidator());
+    rule_for(x => x.HeadQuarters).set_validator(new AddressValidator());
   }
 }
 ```

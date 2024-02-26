@@ -155,12 +155,12 @@ When you inherit from `PropertyValidator` you must override the `is_valid` metho
 
 Note that the error message to use is specified by overriding `GetDefaultMessageTemplate`.
 
-To use the new custom validator you can call `SetValidator` when defining a validation rule.
+To use the new custom validator you can call `set_validator` when defining a validation rule.
 
 ```csharp
 public class PersonValidator : AbstractValidator<Person> {
     public PersonValidator() {
-       rule_for(person => person.Pets).SetValidator(new ListCountValidator<Person, Pet>(10));
+       rule_for(person => person.Pets).set_validator(new ListCountValidator<Person, Pet>(10));
     }
 }
 ```
@@ -169,7 +169,7 @@ As with the first example, you can wrap this in an extension method to make the 
 ```csharp
 public static class MyValidatorExtensions {
    public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
-      return ruleBuilder.SetValidator(new ListCountValidator<T, TElement>(num));
+      return ruleBuilder.set_validator(new ListCountValidator<T, TElement>(num));
    }
 }
 ```

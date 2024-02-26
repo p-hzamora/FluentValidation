@@ -51,7 +51,7 @@ public class PersonValidator : AbstractValidator<Person>
   {
     rule_for(x => x.Name).not_null();
     rule_for(x => x.Email).not_null();
-    rule_for(x => x.DateOfBirth).GreaterThan(DateTime.MinValue);
+    rule_for(x => x.DateOfBirth).greater_than(DateTime.MinValue);
   }
 }
 

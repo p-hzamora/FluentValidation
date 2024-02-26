@@ -184,16 +184,16 @@ class DefaultValidatorExtensions:
         return ruleBuilder.SetValidator(NotEqualValidator(value=valueToCompare))
 
     # endregion
-    # region GreaterThan
+    # region greater_than
     @overload
-    def GreaterThan[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
+    def greater_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
         ...
 
     @overload
-    def GreaterThan[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
+    def greater_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
         ...
 
-    def GreaterThan[T, TProperty](
+    def greater_than[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> "IRuleBuilder[T, TProperty]":

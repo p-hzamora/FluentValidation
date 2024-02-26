@@ -10,7 +10,7 @@ As of FluentValidation 9.5, you can apply a transformation to a property value p
 
 ```csharp
 Transform(from: x => x.SomeStringProperty, to: value => int.TryParse(value, out int val) ? (int?) val : null)
-    .GreaterThan(10);
+    .greater_than(10);
 ```
 
 This rule transforms the value from a `string` to a nullable `int` (returning `null` if the value couldn't be converted). A greater-than check is then performed on the resulting value.
@@ -19,7 +19,7 @@ Syntactically this is not particularly nice to read, so the logic for the transf
 
 ```csharp
 Transform(x => x.SomeStringProperty, StringToNullableInt)
-    .GreaterThan(10);
+    .greater_than(10);
 
 int? StringToNullableInt(string value)
   => int.TryParse(value, out int val) ? (int?) val : null;

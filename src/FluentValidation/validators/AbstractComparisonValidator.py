@@ -35,7 +35,7 @@ class Comparison(Enum):
     LessThanOrEqual = auto()
     equal = auto()
     not_equal = auto()
-    GreaterThan = auto()
+    greater_than = auto()
     GreaterThanOrEqual = auto()
 
 
@@ -117,7 +117,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
             Comparison.LessThanOrEqual: Comparable(value) <= Comparable(valueToCompare),
             Comparison.equal: Comparable(value) == Comparable(valueToCompare),
             Comparison.not_equal: Comparable(value) != Comparable(valueToCompare),
-            Comparison.GreaterThan: Comparable(value) > Comparable(valueToCompare),
+            Comparison.greater_than: Comparable(value) > Comparable(valueToCompare),
             Comparison.GreaterThanOrEqual: Comparable(value) >= Comparable(valueToCompare),
         }
         if valueToCompare is None:
@@ -133,7 +133,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
         - Comparison.LessThanOrEqual    : value <= valueToCompare
         - Comparison.equal              : value == valueToCompare
         - Comparison.not_equal           : value != valueToCompare
-        - Comparison.GreaterThan        : value > valueToCompare
+        - Comparison.greater_than        : value > valueToCompare
         - Comparison.GreaterThanOrEqual : value >= valueToCompare
         """
         ...

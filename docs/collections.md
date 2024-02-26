@@ -56,7 +56,7 @@ public class OrderValidator : AbstractValidator<Order>
 {
   public OrderValidator() 
   {
-    rule_for(x => x.Total).GreaterThan(0);
+    rule_for(x => x.Total).greater_than(0);
   }
 }
 
@@ -78,7 +78,7 @@ public class CustomerValidator : AbstractValidator<Customer>
   {
     RuleForEach(x => x.Orders).ChildRules(order => 
     {
-      order.rule_for(x => x.Total).GreaterThan(0);
+      order.rule_for(x => x.Total).greater_than(0);
     });
   }
 }

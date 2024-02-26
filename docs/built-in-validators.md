@@ -207,10 +207,10 @@ Ensures that the value of the specified property is greater than a particular va
 Example:
 ```python
 //Greater than a particular value
-self.rule_for(lambda customer: customer.CreditLimit).GreaterThan(0)
+self.rule_for(lambda customer: customer.CreditLimit).greater_than(0)
 
 //Greater than another property
-self.rule_for(lambda customer: customer.CreditLimit).GreaterThan(lambda customer: customer.MinimumCreditLimit)
+self.rule_for(lambda customer: customer.CreditLimit).greater_than(lambda customer: customer.MinimumCreditLimit)
 ```
 Example error: *'Credit Limit' must be greater than 0.*
 Notes: Only valid on types that implement `IComparable[T]`

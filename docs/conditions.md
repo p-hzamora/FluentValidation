@@ -3,7 +3,7 @@
 The `When` and `Unless` methods can be used to specify conditions that control when the rule should execute. For example, this rule on the `CustomerDiscount` property will only execute when `IsPreferredCustomer` is `true`:
 
 ```csharp
-rule_for(customer => customer.CustomerDiscount).GreaterThan(0).When(customer => customer.IsPreferredCustomer);
+rule_for(customer => customer.CustomerDiscount).greater_than(0).When(customer => customer.IsPreferredCustomer);
 ```
 
 The `Unless` method is simply the opposite of `When`.
@@ -12,7 +12,7 @@ If you need to specify the same condition for multiple rules then you can call t
 
 ```csharp
 When(customer => customer.IsPreferred, () => {
-   rule_for(customer => customer.CustomerDiscount).GreaterThan(0);
+   rule_for(customer => customer.CustomerDiscount).greater_than(0);
    rule_for(customer => customer.CreditCardNumber).not_null();
 });
 ```
@@ -21,7 +21,7 @@ This time, the condition will be applied to both rules. You can also chain a cal
 
 ```csharp
 When(customer => customer.IsPreferred, () => {
-   rule_for(customer => customer.CustomerDiscount).GreaterThan(0);
+   rule_for(customer => customer.CustomerDiscount).greater_than(0);
    rule_for(customer => customer.CreditCardNumber).not_null();
 }).Otherwise(() => {
   rule_for(customer => customer.CustomerDiscount).equal(0);
@@ -32,7 +32,7 @@ By default FluentValidation will apply the condition to all preceding validators
 
 ```csharp
 rule_for(customer => customer.CustomerDiscount)
-    .GreaterThan(0).When(customer => customer.IsPreferredCustomer, ApplyConditionTo.CurrentValidator)
+    .greater_than(0).When(customer => customer.IsPreferredCustomer, ApplyConditionTo.CurrentValidator)
     .EqualTo(0).When(customer => ! customer.IsPreferredCustomer, ApplyConditionTo.CurrentValidator);
 ```
 

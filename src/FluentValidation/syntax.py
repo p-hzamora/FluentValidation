@@ -4,6 +4,7 @@ import dis
 import inspect
 
 
+from .internal.ExtensionInternal import ExtensionsInternal
 from .validators.IpropertyValidator import IPropertyValidator
 from .validators.LengthValidator import (
     LengthValidator,
@@ -84,7 +85,7 @@ class DefaultValidatorExtensions:
     ) -> "IRuleBuilder[T, TProperty]":
         if callable(valueToCompare):
             func = valueToCompare
-            name = {x.opname: x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
+            name = DefaultValidatorExtensions.GetDisplayName(valueToCompare)
             return ruleBuilder.SetValidator(LessThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.SetValidator(LessThanValidator(value=valueToCompare))
@@ -105,7 +106,7 @@ class DefaultValidatorExtensions:
     ) -> "IRuleBuilder[T, TProperty]":
         if callable(valueToCompare):
             func = valueToCompare
-            name = {x.opname: x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
+            name = DefaultValidatorExtensions.GetDisplayName(valueToCompare)
             return ruleBuilder.SetValidator(LessThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.SetValidator(LessThanOrEqualValidator(value=valueToCompare))
@@ -126,7 +127,7 @@ class DefaultValidatorExtensions:
     ) -> "IRuleBuilder[T, TProperty]":
         if callable(valueToCompare):
             func = valueToCompare
-            name = {x.opname: x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
+            name = DefaultValidatorExtensions.GetDisplayName(valueToCompare)
             return ruleBuilder.SetValidator(EqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.SetValidator(EqualValidator(value=valueToCompare))
@@ -177,7 +178,7 @@ class DefaultValidatorExtensions:
     ) -> "IRuleBuilder[T, TProperty]":
         if callable(valueToCompare):
             func = valueToCompare
-            name = {x.opname: x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
+            name = DefaultValidatorExtensions.GetDisplayName(valueToCompare)
             return ruleBuilder.SetValidator(NotEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.SetValidator(NotEqualValidator(value=valueToCompare))
@@ -198,7 +199,7 @@ class DefaultValidatorExtensions:
     ) -> "IRuleBuilder[T, TProperty]":
         if callable(valueToCompare):
             func = valueToCompare
-            name = {x.opname: x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
+            name = DefaultValidatorExtensions.GetDisplayName(valueToCompare)
             return ruleBuilder.SetValidator(GreaterThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.SetValidator(GreaterThanValidator(value=valueToCompare))
@@ -219,10 +220,15 @@ class DefaultValidatorExtensions:
     ) -> "IRuleBuilder[T, TProperty]":
         if callable(valueToCompare):
             func = valueToCompare
-            name = {x.opname: x.argval for x in dis.Bytecode(valueToCompare)}["LOAD_ATTR"]
+            name = DefaultValidatorExtensions.GetDisplayName(valueToCompare)
             return ruleBuilder.SetValidator(GreaterThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.SetValidator(GreaterThanOrEqualValidator(value=valueToCompare))
+
+    @staticmethod
+    def GetDisplayName[T, TProperty](expression: Callable[[T], TProperty]) -> str:
+        name = {x.opname: x.argval for x in dis.Bytecode(expression)}["LOAD_ATTR"]
+        return ExtensionsInternal.SplitPascalCase(name)
 
     # endregion
 

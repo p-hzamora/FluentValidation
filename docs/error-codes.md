@@ -7,8 +7,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    rule_for(person => person.Surname).NotNull().WithErrorCode("ERR1234");        
-    rule_for(person => person.Forename).NotNull();
+    rule_for(person => person.Surname).not_null().WithErrorCode("ERR1234");        
+    rule_for(person => person.Forename).not_null();
   }
 }
 ```
@@ -35,7 +35,7 @@ Property: Forename Error Code: NotNullValidator
 
 The `ErrorCode` is also used to determine the default error message for a particular validator. At a high level:
 
-* The error code is used as the lookup key for an error message. For example, a `NotNull()` validator has a default error code of `NotNullValidator`, which used to look up the error messages from the `LanguageManager`. [See the documentation on localization.](localization)
+* The error code is used as the lookup key for an error message. For example, a `not_null()` validator has a default error code of `NotNullValidator`, which used to look up the error messages from the `LanguageManager`. [See the documentation on localization.](localization)
 * If you provide an error code, you could also provide a localized message with the name of that error code to create a custom message.
 * If you provide an error code but no custom message, the message will fall back to the default message for that validator. You're not required to add a custom message.
-* Using `ErrorCode` can also be used to override the default error message. For example, if you use a custom `must()` validator, but you'd like to reuse the `NotNull()` validator's default error message, you can call `WithErrorCode("NotNullValidator")` to achieve this result.
+* Using `ErrorCode` can also be used to override the default error message. For example, if you use a custom `must()` validator, but you'd like to reuse the `not_null()` validator's default error message, you can call `WithErrorCode("NotNullValidator")` to achieve this result.

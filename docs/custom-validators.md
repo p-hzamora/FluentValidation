@@ -184,7 +184,7 @@ public class PersonValidator : AbstractValidator<Person> {
 }
 ```
 
-As another simpler example, this is how FluentValidation's own `NotNull` validator is implemented:
+As another simpler example, this is how FluentValidation's own `not_null` validator is implemented:
 
 ```csharp
 public class NotNullValidator<T,TProperty> : PropertyValidator<T,TProperty> {

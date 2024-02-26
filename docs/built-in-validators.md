@@ -2,12 +2,12 @@
 
 FluentValidation ships with several built-in validators. The error message for each validator can contain special placeholders that will be filled in when the error message is constructed.
 
-## NotNull Validator
+## not_null Validator
 Ensures that the specified property is not null.
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Surname).NotNull()
+self.rule_for(lambda customer: customer.Surname).not_null()
 ```
 Example error: *'Surname' must not be empty.*
 
@@ -385,7 +385,7 @@ String format args:
 * `{PropertyPath}` - The full path of the property
 
 ## Null Validator
-Opposite of the `NotNull` validator. Checks if a property value is null.
+Opposite of the `not_null` validator. Checks if a property value is null.
 
 Example:
 ```python

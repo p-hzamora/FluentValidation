@@ -20,73 +20,73 @@ class AbstractValidatorTester(unittest.TestCase):
         # testValidatorWithPreValidate = TestValidatorWithPreValidate()
 
     def test_When_the_Validators_pass_then_the_validatorRunner_should_return_true(self):
-        self.validator.rule_for(lambda x: x.Forename).NotNull()
+        self.validator.rule_for(lambda x: x.Forename).not_null()
         self.assertTrue(self.validator.validate(Person(Forename="Jeremy")))
 
     def test_When_the_validators_fail_then_validatorrunner_should_return_false(self):
-        self.validator.rule_for(lambda x: x.Forename).NotNull()
+        self.validator.rule_for(lambda x: x.Forename).not_null()
         self.assertFalse(self.validator.validate(Person()).is_valid)
 
     def test_When_the_validators_fail_then_the_errors_Should_be_accessible_via_the_errors_property(self):
-        self.validator.rule_for(lambda x: x.Forename).NotNull()
+        self.validator.rule_for(lambda x: x.Forename).not_null()
         result = self.validator.validate(Person())
         self.assertEqual(len(result.errors), 1)
 
     def test_Should_validate_public_Field(self):
-        self.validator.rule_for(lambda x: x.NameField).NotNull()
+        self.validator.rule_for(lambda x: x.NameField).not_null()
         result = self.validator.validate(Person())
         self.assertEqual(len(result.errors), 1)
 
     def test_WithMessage_should_override_error_message(self):
-        self.validator.rule_for(lambda x: x.Forename).NotNull().with_message("Foo")
+        self.validator.rule_for(lambda x: x.Forename).not_null().with_message("Foo")
         result = self.validator.validate(Person())
         self.assertEqual(result.errors[0].ErrorMessage, "Foo")
 
     def test_Default_error_code_should_be_class_name(self):
-        self.validator.rule_for(lambda x: x.Forename).NotNull()
+        self.validator.rule_for(lambda x: x.Forename).not_null()
         result = self.validator.validate(Person())
         self.assertEqual(result.errors[0].ErrorCode, "NotNullValidator")
 
     # def Can_replace_default_errorcode_resolver(self):
     #     ValidatorOptions.Global.ErrorCodeResolver = lambda x: x.GetType().Name.Split('`')[0] + "_foo"
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull()
+    #     self.validator.rule_for(lambda x: x.Forename).not_null()
     #     result = self.validator.validate(Person())
     #     ValidatorOptions.Global.ErrorCodeResolver = None
     #     self.assertEqual(result.errors[0].ErrorCode, "NotNullValidator_foo")
 
     # def WithErrorCode_should_override_error_code(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull().WithErrorCode("ErrCode101")
+    #     self.validator.rule_for(lambda x: x.Forename).not_null().WithErrorCode("ErrCode101")
     #     result = self.validator.validate(Person())
     #     self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
 
     # def WithMessage_and_WithErrorCode_should_override_error_message_and_error_code(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull().with_message("Foo").WithErrorCode("ErrCode101")
+    #     self.validator.rule_for(lambda x: x.Forename).not_null().with_message("Foo").WithErrorCode("ErrCode101")
     #     result = self.validator.validate(Person())
     #     self.assertEqual(result.errors[0].ErrorMessage, "Foo")
     #     self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
 
     # def WithName_should_override_field_name(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull().WithName("First Name")
+    #     self.validator.rule_for(lambda x: x.Forename).not_null().WithName("First Name")
     #     result = self.validator.validate(Person())
     #     self.assertEqual(result.errors[0].ErrorMessage, "'First Name' must not be empty.")
 
     # def WithName_should_override_field_name_with_value_from_other_property(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull().WithName(lambda x: x.Surname)
+    #     self.validator.rule_for(lambda x: x.Forename).not_null().WithName(lambda x: x.Surname)
     #     result = self.validator.validate(Person(Surname="Foo"))
     #     self.assertEqual(result.errors[0].ErrorMessage, "'Foo' must not be empty.")
 
     # def OverridePropertyName_should_override_property_name(self):
-    #     self.validator.rule_for(lambda x: x.Surname).NotNull().OverridePropertyName("foo")
+    #     self.validator.rule_for(lambda x: x.Surname).not_null().OverridePropertyName("foo")
     #     result = self.validator.validate(Person())
     #     self.assertEqual(result.errors[0].PropertyName, "foo")
 
     # def OverridePropertyName_with_lambda_should_override_property_name(self):
-    #     self.validator.rule_for(lambda x: x.Surname).NotNull().OverridePropertyName(lambda x: x.Forename)
+    #     self.validator.rule_for(lambda x: x.Surname).not_null().OverridePropertyName(lambda x: x.Forename)
     #     result = self.validator.validate(Person())
     #     self.assertEqual(result.errors[0].PropertyName, "Forename")
 
     def Should_not_main_state(self):
-        self.validator.rule_for(lambda x: x.Forename).NotNull()
+        self.validator.rule_for(lambda x: x.Forename).not_null()
         self.validator.validate(Person())
         result = self.validator.validate(Person())
         self.assertEqual(len(result.errors), 1)
@@ -96,13 +96,13 @@ class AbstractValidatorTester(unittest.TestCase):
             self.validator.rule_for(None)
 
     # def Should_validate_single_property(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull()
-    #     self.validator.rule_for(lambda x: x.Surname).NotNull()
+    #     self.validator.rule_for(lambda x: x.Forename).not_null()
+    #     self.validator.rule_for(lambda x: x.Surname).not_null()
     #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: x.Surname))
     #     self.assertEqual(len(result.errors), 1)
 
     # def Should_validate_single_Field(self):
-    #     self.validator.rule_for(lambda x: x.NameField).NotNull()
+    #     self.validator.rule_for(lambda x: x.NameField).not_null()
     #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: x.NameField))
     #     self.assertEqual(len(result.errors), 1)
 
@@ -110,29 +110,29 @@ class AbstractValidatorTester(unittest.TestCase):
     #     Assert.Throws<ArgumentException>((lambda ): self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: "foo")))
 
     # def Should_be_valid_when_there_are_no_failures_for_single_property(self):
-    #     self.validator.rule_for(lambda x: x.Surname).NotNull()
+    #     self.validator.rule_for(lambda x: x.Surname).not_null()
     #     result = self.validator.validate(Person(Surname="foo"), lambda v: v.IncludeProperties(lambda x: x.Surname))
     #     self.assertTrue(result)
 
     # def Should_validate_single_property_where_property_as_string(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull()
-    #     self.validator.rule_for(lambda x: x.Surname).NotNull()
+    #     self.validator.rule_for(lambda x: x.Forename).not_null()
+    #     self.validator.rule_for(lambda x: x.Surname).not_null()
     #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties("Surname"))
     #     self.assertEqual(len(result.errors), 1)
 
     # def Should_validate_single_property_where_invalid_property_as_string(self):
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull()
-    #     self.validator.rule_for(lambda x: x.Surname).NotNull()
+    #     self.validator.rule_for(lambda x: x.Forename).not_null()
+    #     self.validator.rule_for(lambda x: x.Surname).not_null()
     #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties("Surname1"))
     #     self.assertEqual(len(result.errors), 0)
 
     # def Validates_single_property_by_path(self):
     #     addressValidator = InlineValidator < Address > ()
-    #     addressValidator.rule_for(lambda x: x.Line1).NotNull()
-    #     addressValidator.rule_for(lambda x: x.Line2).NotNull()
+    #     addressValidator.rule_for(lambda x: x.Line1).not_null()
+    #     addressValidator.rule_for(lambda x: x.Line2).not_null()
 
     #     self.validator.rule_for(lambda x: x.Address).SetValidator(addressValidator)
-    #     self.validator.rule_for(lambda x: x.Forename).NotNull()
+    #     self.validator.rule_for(lambda x: x.Forename).not_null()
 
     #     result = self.validator.validate(Person(Address=Address()), lambda v: v.IncludeProperties("Address.Line1"))
     #     self.assertEqual(len(result.errors), 1)
@@ -152,8 +152,8 @@ class AbstractValidatorTester(unittest.TestCase):
 
     # def Uses_named_parameters_to_validate_ruleset(self):
     #     self.validator.RuleSet("Names", (lambda ): {
-    #         self.validator.rule_for(lambda x: x.Surname).NotNull()
-    #         self.validator.rule_for(lambda x: x.Forename).NotNull()
+    #         self.validator.rule_for(lambda x: x.Surname).not_null()
+    #         self.validator.rule_for(lambda x: x.Forename).not_null()
     #     )
     #     self.validator.rule_for(lambda x: x.Id).NotEqual(0)
 
@@ -172,7 +172,7 @@ class AbstractValidatorTester(unittest.TestCase):
 #             NickNames = string[] { None }
 
 
-#         self.validator.RuleForEach(lambda x: x.NickNames).NotNull()
+#         self.validator.RuleForEach(lambda x: x.NickNames).not_null()
 #         result = self.validator.validate(model)
 #         Console.WriteLine(result.errors[0].ErrorMessage)
 #         self.assertFalse(result)
@@ -213,7 +213,7 @@ class AbstractValidatorTester(unittest.TestCase):
 #         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
 
 #     def PreValidate_bypasses_nullcheck_on_instance(self):
-#         testValidatorWithPreValidate.rule_for(lambda x: x.Surname).NotNull()
+#         testValidatorWithPreValidate.rule_for(lambda x: x.Surname).not_null()
 #         testValidatorWithPreValidate.PreValidateMethod = (ctx, rlambda ): false
 
 #         result = testValidatorWithPreValidate.validate((Person)None)
@@ -251,7 +251,7 @@ class AbstractValidatorTester(unittest.TestCase):
 #         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
 
 #     def PropertyName_With_Periods_Displays_Correctly_In_Messages(self):
-#         self.validator.rule_for(lambda x: x.Address.Line1).NotNull().with_message("{PropertyName}")
+#         self.validator.rule_for(lambda x: x.Address.Line1).not_null().with_message("{PropertyName}")
 
 #         validationResult = self.validator.validate(Person( Address = Address() })
 

@@ -16,12 +16,12 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    RuleForEach(x => x.AddressLines).NotNull();
+    RuleForEach(x => x.AddressLines).not_null();
   }
 }
 ```
 
-The above rule will run a NotNull check against each item in the `AddressLines` collection.
+The above rule will run a not_null check against each item in the `AddressLines` collection.
 
 As of version 8.5, if you want to access the index of the collection element that caused the validation failure, you can use the special `{CollectionIndex}` placeholder:
 
@@ -30,7 +30,7 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    RuleForEach(x => x.AddressLines).NotNull().with_message("Address {CollectionIndex} is required.");
+    RuleForEach(x => x.AddressLines).not_null().with_message("Address {CollectionIndex} is required.");
   }
 }
 ```

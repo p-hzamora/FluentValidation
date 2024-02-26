@@ -37,7 +37,7 @@ class DefaultValidatorExtensions:
     def configurable[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> IValidationRule[T, TProperty]:
         return ruleBuilder.Rule
 
-    def NotNull[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
+    def not_null[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]") -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.SetValidator(NotNullValidator[T, TProperty]())
 
     def matches[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", pattern: str) -> "IRuleBuilder[T, TProperty]":

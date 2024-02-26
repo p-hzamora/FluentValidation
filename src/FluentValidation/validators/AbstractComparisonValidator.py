@@ -88,7 +88,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
     def is_valid(self, context: ValidationContext[T], propertyValue: TProperty) -> bool:
         if propertyValue is None:
             # If we're working with a nullable type then this rule should not be applied.
-            # If you want to ensure that it's never null then a NotNull rule should also be applied.
+            # If you want to ensure that it's never null then a not_null rule should also be applied.
             return True
 
         valueToCompare = self.GetComparisonValue(context)

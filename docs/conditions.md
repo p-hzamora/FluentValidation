@@ -13,7 +13,7 @@ If you need to specify the same condition for multiple rules then you can call t
 ```csharp
 When(customer => customer.IsPreferred, () => {
    rule_for(customer => customer.CustomerDiscount).GreaterThan(0);
-   rule_for(customer => customer.CreditCardNumber).NotNull();
+   rule_for(customer => customer.CreditCardNumber).not_null();
 });
 ```
 
@@ -22,7 +22,7 @@ This time, the condition will be applied to both rules. You can also chain a cal
 ```csharp
 When(customer => customer.IsPreferred, () => {
    rule_for(customer => customer.CustomerDiscount).GreaterThan(0);
-   rule_for(customer => customer.CreditCardNumber).NotNull();
+   rule_for(customer => customer.CreditCardNumber).not_null();
 }).Otherwise(() => {
   rule_for(customer => customer.CustomerDiscount).Equal(0);
 });

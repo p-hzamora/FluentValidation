@@ -38,7 +38,7 @@ from FluentValidation import AbstractValidator
 class CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
     super().__init__()
-    self.rule_for(lambda customer: customer.Surname).NotNull()
+    self.rule_for(lambda customer: customer.Surname).not_null()
 ```
 To run the validator, instantiate the validator object and call the `validate` method, passing in the object to validate.
 
@@ -88,7 +88,7 @@ from FluentValidation import AbstractValidator
 CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
     super().__init__()
-    rule_for(lambda customer: customer.Surname).NotNull().NotEqual("foo")
+    rule_for(lambda customer: customer.Surname).not_null().NotEqual("foo")
 
 ```
 
@@ -160,7 +160,7 @@ class AddressValidator : AbstractValidator[Address]
 {
   AddressValidator()
   {
-    rule_for(address => address.Postcode).NotNull();
+    rule_for(address => address.Postcode).not_null();
     //etc
   }
 }
@@ -173,7 +173,7 @@ class CustomerValidator : AbstractValidator[Customer]
 {
   CustomerValidator()
   {
-    rule_for(customer => customer.Name).NotNull();
+    rule_for(customer => customer.Name).not_null();
     rule_for(customer => customer.Address).SetValidator(new AddressValidator());
   }
 }
@@ -186,11 +186,11 @@ If the child property is null, then the child validator will not be executed.
 Instead of using a child validator, you can define child rules inline, eg:
 
 ```python
-rule_for(customer => customer.Address.Postcode).NotNull()
+rule_for(customer => customer.Address.Postcode).not_null()
 ```
 
 In this case, a null check will *not* be performed automatically on `Address`, so you should explicitly add a condition
 
 ```python
-rule_for(customer => customer.Address.Postcode).NotNull().When(customer => customer.Address != null)
+rule_for(customer => customer.Address.Postcode).not_null().When(customer => customer.Address != null)
 ``` -->

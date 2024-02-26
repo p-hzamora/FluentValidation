@@ -9,8 +9,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    rule_for(person => person.Surname).NotNull();
-    rule_for(person => person.Forename).NotNull().WithState(person => 1234);  
+    rule_for(person => person.Surname).not_null();
+    rule_for(person => person.Forename).not_null().WithState(person => 1234);  
   }
 }
 ```

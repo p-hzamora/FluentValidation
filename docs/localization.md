@@ -8,7 +8,7 @@ You can also use the `with_message` and `WithLocalizedMessage` methods to specif
 If you are using Visual Studio's built in support for `.resx` files and their strongly-typed wrappers, then you can localize a message by calling the overload of `with_message` that accepts a lambda expression:
 
 ```
-rule_for(x => x.Surname).NotNull().with_message(x => MyLocalizedMessages.SurnameRequired);
+rule_for(x => x.Surname).not_null().with_message(x => MyLocalizedMessages.SurnameRequired);
 ```
 You could also use the same approach if you need to obtain the localized message from another source (such as a database) by obtaining the string from within the lambda.
 
@@ -23,7 +23,7 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator(IStringLocalizer<Person> localizer)
    {
-    rule_for(x => x.Surname).NotNull().with_message(x => localizer["Surname is required"]);
+    rule_for(x => x.Surname).not_null().with_message(x => localizer["Surname is required"]);
   }
 }
 ```
@@ -31,7 +31,7 @@ public class PersonValidator : AbstractValidator<Person>
 ### Default Messages
 If you want to replace all (or some) of FluentValidation's default messages then you can do this by implementing a custom version of the `ILanguageManager` interface.
 
-For example, the default message for the `NotNull` validator is `'{PropertyName}' must not be empty.`. If you wanted to replace this message for all uses of the `NotNull` validator in your application, you could write a custom Language Manager:
+For example, the default message for the `not_null` validator is `'{PropertyName}' must not be empty.`. If you wanted to replace this message for all uses of the `not_null` validator in your application, you could write a custom Language Manager:
 
 ```csharp
 public class CustomLanguageManager : FluentValidation.Resources.LanguageManager

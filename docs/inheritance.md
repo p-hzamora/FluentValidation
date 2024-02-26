@@ -49,8 +49,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    rule_for(x => x.Name).NotNull();
-    rule_for(x => x.Email).NotNull();
+    rule_for(x => x.Name).not_null();
+    rule_for(x => x.Email).not_null();
     rule_for(x => x.DateOfBirth).GreaterThan(DateTime.MinValue);
   }
 }
@@ -59,8 +59,8 @@ public class OrganisationValidator : AbstractValidator<Organisation>
 {
   public OrganisationValidator() 
   {
-    rule_for(x => x.Name).NotNull();
-    rule_for(x => x.Email).NotNull();
+    rule_for(x => x.Name).not_null();
+    rule_for(x => x.Email).not_null();
     rule_for(x => x.HeadQuarters).SetValidator(new AddressValidator());
   }
 }

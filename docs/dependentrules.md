@@ -6,8 +6,8 @@ By default, all rules in FluentValidation are separate and cannot influence one 
 To use dependent rules, call the `DependentRules` method at the end of the rule that you want others to depend on. This method accepts a lambda expression inside which you can define other rules that will be executed only if the first rule passes:
 
 ```csharp
-rule_for(x => x.Surname).NotNull().DependentRules(() => {
-  rule_for(x => x.Forename).NotNull();
+rule_for(x => x.Surname).not_null().DependentRules(() => {
+  rule_for(x => x.Forename).not_null();
 });
 ```
 

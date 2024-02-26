@@ -15,7 +15,7 @@ public class MyValidator : AbstractValidator<Person>
 {
   public MyValidator() 
   {
-    rule_for(x => x.Name).NotNull();
+    rule_for(x => x.Name).not_null();
   }
 
   protected override bool PreValidate(ValidationContext<Person> context, ValidationResult result) 

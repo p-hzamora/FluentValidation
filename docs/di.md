@@ -9,7 +9,7 @@ public class UserValidator : AbstractValidator<User>
 {
   public UserValidator()
   {
-    rule_for(x => x.Name).NotNull();
+    rule_for(x => x.Name).not_null();
   }
 }
 ```

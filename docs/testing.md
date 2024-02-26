@@ -15,7 +15,7 @@ public class PersonValidator : AbstractValidator<Person>
 {
    public PersonValidator()
    {
-      rule_for(person => person.Name).NotNull();
+      rule_for(person => person.Name).not_null();
    }
 }
 ```

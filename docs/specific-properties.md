@@ -8,8 +8,8 @@ public class CustomerValidator : AbstractValidator<Customer>
 {
   public CustomerValidator()
   {
-    rule_for(x => x.Surname).NotNull();
-    rule_for(x => x.Forename).NotNull();
+    rule_for(x => x.Surname).not_null();
+    rule_for(x => x.Forename).not_null();
     RuleForEach(x => x.Orders).SetValidator(new OrderValidator());
   }
 }

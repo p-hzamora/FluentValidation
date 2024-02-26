@@ -27,7 +27,7 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    rule_for(x => x.Id).NotNull();
+    rule_for(x => x.Id).not_null();
     rule_for(x => x.Name).Length(0, 10);
     rule_for(x => x.Email).EmailAddress();
     rule_for(x => x.Age).InclusiveBetween(18, 60);

@@ -46,7 +46,7 @@ class PersonValidator(AbstractValidator[Person]):
 
         self.rule_for(lambda x: x.dni).must(lambda x: isinstance(x, str)).with_message("Custom message of IsInstance method").matches(RegexPattern.Dni)
 
-        self.rule_for(lambda x: x.email).NotNull().matches(RegexPattern.Email).with_message("The entered mail does not comply with the specific regex rules").MaxLength(15)
+        self.rule_for(lambda x: x.email).not_null().matches(RegexPattern.Email).with_message("The entered mail does not comply with the specific regex rules").MaxLength(15)
 
 
 person = Person(

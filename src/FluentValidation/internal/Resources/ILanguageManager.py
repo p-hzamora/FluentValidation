@@ -9,11 +9,11 @@ class CultureInfo:
     CurrentUICulture = None
 
     @overload
-    def __new__(cls) -> None:
+    def __new__(cls) -> "CultureInfo":
         ...
 
     @overload
-    def __new__(cls, curent_ui_Culture) -> None:
+    def __new__(cls, curent_ui_Culture) -> "CultureInfo":
         ...
 
     def __new__(cls, current_ui_Culture=None) -> "CultureInfo":

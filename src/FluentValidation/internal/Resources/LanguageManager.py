@@ -74,7 +74,7 @@ class LanguageManager(ILanguageManager):
 	@property
 	@override
 	def Culture(self) -> CultureInfo:
-		return CultureInfo.CurrentUICulture
+		return CultureInfo().CurrentUICulture
 
 	@override
 	def GetString(self, key: str, culture: CultureInfo = None) -> Optional[str]:

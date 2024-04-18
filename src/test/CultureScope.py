@@ -1,8 +1,8 @@
+from FluentValidation.internal.Resources.ILanguageManager import CultureInfo
 
-from src.FluentValidation.internal.Resources.ILanguageManager import CultureInfo
 
 class CultureScope:
-    CurrentCulture:CultureInfo = None
+    CurrentCulture: CultureInfo = None
 
     @classmethod
     def SetDefaultCulture(cls):

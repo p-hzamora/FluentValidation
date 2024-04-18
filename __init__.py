@@ -1,1 +1,1 @@
-from .src.FluentValidation.abstract_validator import AbstractValidator  # noqa: F401
+from .src.FluentValidation import AbstractValidator  # noqa: F401

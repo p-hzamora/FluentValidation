@@ -7,7 +7,7 @@ from .syntax import IRuleBuilder
 from .internal.PropertyRule import PropertyRule
 from .internal.RuleBuilder import RuleBuilder
 
-from ..FluentValidation.ValidatorOptions import ValidatorOptions
+from .ValidatorOptions import ValidatorOptions
 from .enums import CascadeMode
 
 

@@ -3,11 +3,11 @@ from decimal import Decimal
 from pathlib import Path
 import sys
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "FluentValidation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 from dataclasses import dataclass  # noqa: E402
-from src.FluentValidation.abstract_validator import AbstractValidator  # noqa: E402
-from src.FluentValidation.enums import CascadeMode  # noqa: E402
+from FluentValidation.abstract_validator import AbstractValidator  # noqa: E402
+from FluentValidation.enums import CascadeMode  # noqa: E402
 
 
 class RegexPattern:

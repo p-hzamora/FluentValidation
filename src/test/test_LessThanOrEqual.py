@@ -3,17 +3,17 @@ import unittest
 from pathlib import Path
 
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "FluentValidation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 from TestValidator import TestValidator  # noqa: E402
 from person import Person  # noqa: E402
 
-from src.FluentValidation.ValidatorOptions import ValidatorOptions  # noqa: E402, F401
-from src.FluentValidation.validators.AbstractComparisonValidator import (  # noqa: E402
+from FluentValidation.ValidatorOptions import ValidatorOptions  # noqa: E402, F401
+from FluentValidation.validators.AbstractComparisonValidator import (  # noqa: E402
     Comparison,
     IComparisonValidator,  # noqa: F401
 )
-from src.FluentValidation.validators.LessThanOrEqualValidator import (  # noqa: E402
+from FluentValidation.validators.LessThanOrEqualValidator import (  # noqa: E402
     LessThanOrEqualValidator,
 )  # noqa: E402
 

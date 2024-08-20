@@ -1,8 +1,8 @@
 import re
 
-from src.FluentValidation.IValidationContext import IValidationContext
-from src.FluentValidation.IValidationRule import IValidationRule
-from src.FluentValidation.internal.IValidatorSelector import IValidatorSelector
+from src.fluent_validation.IValidationContext import IValidationContext
+from src.fluent_validation.IValidationRule import IValidationRule
+from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from typing import Iterable, override
 
 class MemberNameValidatorSelector(IValidatorSelector):

@@ -25,7 +25,7 @@ class IValidationContext(ABC):
 
     @property
     @abstractmethod
-    def RootContextData(self)->dict[str, object]: ...
+    def RootContextData(self) -> dict[str, object]: ...
 
     # @property
     # @abstractmethod
@@ -33,7 +33,7 @@ class IValidationContext(ABC):
 
     @property
     @abstractmethod
-    def IsChildContext(self)->bool: ...
+    def IsChildContext(self) -> bool: ...
 
     # @property
     # @abstractmethod
@@ -61,13 +61,19 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._messageFormatter: MessageFormatter = MessageFormatter()
         self._property_path: str = None
         self._displayNameFunc: str = None
+        self._ThrowOnFailures: bool = False
 
     @property
     def instance_to_validate(self) -> object:
         return self._instance_to_validate
 
     @property
-    def ThrowOnFailures(self) -> bool: ...
+    def ThrowOnFailures(self) -> bool:
+        return self._ThrowOnFailures
+
+    @ThrowOnFailures.setter
+    def ThrowOnFailures(self, value: bool) -> None:
+        self._ThrowOnFailures = value
 
     @property
     def Failures(self) -> list[ValidationFailure]:

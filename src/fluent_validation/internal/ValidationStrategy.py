@@ -1,89 +1,90 @@
-from typing import Callable
+from typing import Callable, Optional, overload
+
+from src.fluent_validation.IValidationContext import ValidationContext
+from src.fluent_validation.ValidatorOptions import ValidatorOptions
+from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
+from src.fluent_validation.internal.MemberNameValidatorSelector import MemberNameValidatorSelector
 
 
 class ValidationStrategy[T]:
     def __init__(self):
-        self._properties: list[str]
-        self._ruleSets: list[str]
+        self._properties: Optional[list[str]] = None
+        self._ruleSets: Optional[list[str]] = None
         self._throw: bool = False
-        # self._customSelector:IValidatorSelector
+        self._customSelector: Optional[MemberNameValidatorSelector] = None
 
-    def IncludeProperties(self, *properties: str) -> "ValidationStrategy[T]":
+    @overload
+    def IncludeProperties(self, *properties: str) -> "ValidationStrategy[T]": ...
+    @overload
+    def IncludeProperties(self, *properties: Callable[[T, object]]) -> "ValidationStrategy[T]": ...
+
+    def IncludeProperties(self, *properties) -> "ValidationStrategy[T]":
         if self._properties is None:
             self._properties = list(properties)
-        else:
+
+        # if self._properties is None:
+        #     self._properties = list(MemberNameValidatorSelector.MemberNamesFromExpressions(properties))
+
+        if isinstance(properties[0], str):
             self._properties.extend(properties)
-        return self
-
-
-    def IncludeProperties(self, *propertyExpressions:Callable[[T,object]])->"ValidationStrategy[T]":
-        if (self._properties == None):
-            self._properties = list(MemberNameValidatorSelector.MemberNamesFromExpressions(propertyExpressions));
-        }
-        else {
-            self._properties.AddRange(MemberNameValidatorSelector.MemberNamesFromExpressions(propertyExpressions));
-        }
+        else:
+            self._properties.extend(MemberNameValidatorSelector.MemberNamesFromExpressions(properties))
 
         return self
 
-#     def IncludeRulesNotInRuleSet(self)->"ValidationStrategy[T]":
-#         self._ruleSets ??= new List<string>();
-#         self._ruleSets.Add(RulesetValidatorSelector.DefaultRuleSetName);
-#         return self
+    #     def IncludeRulesNotInRuleSet(self)->"ValidationStrategy[T]":
+    #         self._ruleSets ??= new List<string>()
+    #         self._ruleSets.Add(RulesetValidatorSelector.DefaultRuleSetName)
+    #         return self
 
-#     def IncludeAllRuleSets()->"ValidationStrategy[T]":
-#         self._ruleSets ??= new List<string>();
-#         self._ruleSets.Add(RulesetValidatorSelector.WildcardRuleSetName);
-#         return self
+    #     def IncludeAllRuleSets()->"ValidationStrategy[T]":
+    #         self._ruleSets ??= new List<string>()
+    #         self._ruleSets.Add(RulesetValidatorSelector.WildcardRuleSetName)
+    #         return self
 
-#     def IncludeRuleSets(params string[] ruleSets)->"ValidationStrategy[T]":
-#         if (ruleSets != None && ruleSets.Length > 0) {
-#             if (self._ruleSets == None) {
-#                 self._ruleSets = new List<string>(ruleSets);
-#             }
-#             else {
-#                 self._ruleSets.AddRange(ruleSets);
-#             }
-#         }
+    #     def IncludeRuleSets(params string[] ruleSets)->"ValidationStrategy[T]":
+    #         if (ruleSets is not None && ruleSets.Length > 0) {
+    #             if (self._ruleSets is None) {
+    #                 self._ruleSets = new List<string>(ruleSets)
+    #             }
+    #             else {
+    #                 self._ruleSets.AddRange(ruleSets)
+    #             }
+    #         }
 
-#         return self
+    #         return self
 
-#     def UseCustomSelector(IValidatorSelector selector)->"ValidationStrategy[T]":
-#         if (selector == None) throw new ArgumentNoneException(nameof(selector));
-#         _customSelector = selector;
-#         return self
+    #     def UseCustomSelector(IValidatorSelector selector)->"ValidationStrategy[T]":
+    #         if (selector is None) throw new ArgumentNoneException(nameof(selector))
+    #         self._customSelector = selector
+    #         return self
 
-#     def ThrowOnFailures()->"ValidationStrategy[T]":
-#         _throw = true;
-#         return self
+    #     def ThrowOnFailures()->"ValidationStrategy[T]":
+    #         _throw = true
+    #         return self
 
-    private IValidatorSelector GetSelector() {
-        IValidatorSelector selector = None;
+    def GetSelector(self) -> IValidatorSelector:
+        selector: IValidatorSelector = None
 
-        if (self._properties != None || self._ruleSets != None || _customSelector != None) {
-            var selectors = new List<IValidatorSelector>(3);
+        if self._properties is not None or self._ruleSets is not None or self._customSelector is not None:
+            selectors: list[IValidatorSelector] = []
 
-            if (_customSelector != None) {
-                selectors.Add(_customSelector);
-            }
+            if self._customSelector is not None:
+                selectors.append(self._customSelector)
 
-            if (self._properties != None) {
-                selectors.Add(ValidatorOptions.Global.ValidatorSelectors.MemberNameValidatorSelectorFactory(self._properties.ToArray()));
-            }
+            if self._properties is not None:
+                selectors.append(ValidatorOptions.Global.ValidatorSelectors.MemberNameValidatorSelectorFactory([self._properties]))
 
-            if (self._ruleSets != None) {
-                selectors.Add(ValidatorOptions.Global.ValidatorSelectors.RulesetValidatorSelectorFactory(self._ruleSets.ToArray()));
-            }
+            if self._ruleSets is not None:
+                selectors.append(ValidatorOptions.Global.ValidatorSelectors.RulesetValidatorSelectorFactory([self._ruleSets]))
 
-            selector = selectors.Count == 1 ? selectors[0] : ValidatorOptions.Global.ValidatorSelectors.CompositeValidatorSelectorFactory(selectors);
-        }
-        else {
-            selector = ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory();
-        }
+            selector = selectors[0] if len(selectors) == 1 else ValidatorOptions.Global.ValidatorSelectors.CompositeValidatorSelectorFactory(selectors)
+        else:
+            selector = ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()
 
-        return selector;
-    }
+        return selector
 
-    def BuildContext(self, instance:T)->"ValidationContext[T]":
-        return ValidationContext[T](instance, None, GetSelector()) {
-            ThrowOnFailures = _throw
+    def BuildContext(self, instance: T) -> "ValidationContext[T]":
+        validation = ValidationContext[T](instance, None, self.GetSelector())
+        validation.ThrowOnFailures = self._throw
+        return validation

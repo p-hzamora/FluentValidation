@@ -2,8 +2,11 @@ import re
 
 from src.fluent_validation.IValidationContext import IValidationContext
 from src.fluent_validation.IValidationRule import IValidationRule
+# from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
-from typing import Iterable, override
+from typing import Iterable, Optional, override, Callable, Any
+
+from src.fluent_validation.internal.IncludeRule import IIncludeRule
 
 class MemberNameValidatorSelector(IValidatorSelector):
     DisableCascadeKey:str = "_FV_DisableSelectorCascadeForChildRules"
@@ -19,71 +22,65 @@ class MemberNameValidatorSelector(IValidatorSelector):
     
 
     @override
-    def CanExecute (rule: IValidationRule, propertyPath:str, context: IValidationContext)->bool:
+    def CanExecute (self, rule: IValidationRule, propertyPath:str, context: IValidationContext)->bool:
+        # Validator selector only applies to the top level.
+        # If we're running in a child context then this means that the child validator has already been selected
+        # Because of this, we assume that the rule should continue (ie if the parent rule is valid, all children are valid)
         isChildContext:bool = context.IsChildContext
-        cascadeEnabled:bool = not context.RootContextData.ContainsKey(DisableCascadeKey)
+        cascadeEnabled:bool = self.DisableCascadeKey not in context.RootContextData
 
-        if (isChildContext && cascadeEnabled && !_memberNames.Any(x => x.Contains('.'))) {
-            return true
-        }
+        # If a child validator is being executed and the cascade is enabled (which is the default)
+		# then the child validator's rule should always be included.
+		# The only time this isn't the case is if the member names contained for inclusion are for child
+		# properties (which is indicated by them containing a period).
+        if isChildContext & cascadeEnabled and not any(["." in x for x in self._memberNames]):
+            return True
 
-        if (rule is IIncludeRule) {
-            return true
-        }
+        if issubclass(rule,IIncludeRule):
+            return True
 
-        string normalizedPropertyPath = null
+        normalizedPropertyPath:Optional[str] = None
 
-        foreach (var memberName in _memberNames) {
-            if (memberName == propertyPath) {
-                return true
-            }
+        for memberName in self._memberNames:
+            if memberName == propertyPath:
+                return True
 
-            if (propertyPath.StartsWith(memberName + ".")) {
-                return true
-            }
+            if propertyPath.startswith(memberName + "."):
+                return True
 
-            if (memberName.StartsWith(propertyPath + ".")) {
-                return true
-            }
+            if memberName.startswith(propertyPath + "."):
+                return True
 
-            if (memberName.StartsWith(propertyPath + "[")) {
-                return true
-            }
+            if memberName.startswith(propertyPath + "["):
+                return True
 
-            if (memberName.Contains("[]")) {
-                if (normalizedPropertyPath == null) {
-                    normalizedPropertyPath = _collectionIndexNormalizer.Replace(propertyPath, "[]")
-                }
+            if memberName.count("[]"):
+                if normalizedPropertyPath is None:
+                    normalizedPropertyPath = self._collectionIndexNormalizer.sub(propertyPath, "[]")
 
-                if (memberName == normalizedPropertyPath) {
-                    return true
-                }
+                if memberName == normalizedPropertyPath:
+                    return True
 
-                if (memberName.StartsWith(normalizedPropertyPath + ".")) {
-                    return true
-                }
+                if memberName.startswith(normalizedPropertyPath + "."):
+                    return True
 
-                if (memberName.StartsWith(normalizedPropertyPath + "[")) {
-                    return true
-                }
-            }
-        }
+                if memberName.startswith(normalizedPropertyPath + "["):
+                    return True
 
-        return false
-    }
+        return False
+    
+    #TODOL: Check if it correct 	public static string[] MemberNamesFromExpressions<T>(params Expression<Func<T, object>>[] propertyExpressions) {
 
-    static string[] MemberNamesFromExpressions<T>(params Expression<Func<T, object>>[] propertyExpressions) {
-        var members = propertyExpressions.Select(MemberFromExpression).ToArray()
+    def MemberNamesFromExpressions[T](self, *propertyExpressions:  Callable[[T],Any])->list[str]:
+        members:list[str] = [propertyExpressions.Select(self.MemberFromExpression)]
         return members
-    }
 
-    private static string MemberFromExpression<T>(Expression<Func<T, object>> expression) {
-        var propertyName = ValidatorOptions.Global.PropertyNameResolver(typeof(T), expression.GetMember(), expression)
+    @staticmethod
+    def MemberFromExpression[T](expression:Callable[[T],Any])->str:
+        #TODOH: Implements Disassembler class developed for ormlambda
+        propertyName:str = "___"#ValidatorOptions.Global.PropertyNameResolver(, expression.GetMember(), expression)
 
-        if (string.IsNullOrEmpty(propertyName)) {
-            throw new ArgumentException($"Expression '{expression}' does not specify a valid property or field.")
-        }
-
+        if propertyName == "" or propertyName.isspace() or propertyName is None:
+            raise ValueError(f"Expression '{expression}' does not specify a valid property or field.")
+        
         return propertyName
-    }
-}

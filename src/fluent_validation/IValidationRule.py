@@ -10,39 +10,43 @@ from .validators.IpropertyValidator import IPropertyValidator
 class IValidatoinRule_no_args(ABC):
     @property
     @abstractmethod
-    def Components(self) -> Iterable[IRuleComponent]:
-        ...
+    def Components(self) -> Iterable[IRuleComponent]: ...
 
     @property
     @abstractmethod
-    def PropertyName(self) -> str:
-        ...
+    def PropertyName(self) -> str: ...
 
     @property
     @abstractmethod
-    def TypeToValidate(self) -> type:
-        ...
+    def TypeToValidate(self) -> type: ...
+
+    @property
+    @abstractmethod
+    def RuleSets(self) -> set[str]: ...
+
+    @RuleSets.setter
+    @abstractmethod
+    def RuleSets(self, value: set[str]) -> None: ...
 
     @abstractmethod
-    def get_display_name(context: IValidationContext) -> str:
-        ...
+    def get_display_name(context: IValidationContext) -> str: ...
 
 
 class IValidationRule[T, TProperty](IValidatoinRule_no_args):
     @property
     @abstractmethod
-    def Current(self) -> IRuleComponent:
-        ...
+    def Current(self) -> IRuleComponent: ...
 
     @abstractmethod
-    def AddValidator(validator: IPropertyValidator[T, TProperty]):
-        ...
+    def AddValidator(validator: IPropertyValidator[T, TProperty]): ...
 
     @property
     @abstractmethod
-    def MessageBuilder(self) -> Callable[[IMessageBuilderContext[T, TProperty]], str]:
-        ...  # {get; set;}
+    def MessageBuilder(self) -> Callable[[IMessageBuilderContext[T, TProperty]], str]: ...  # {get; set;}
+
+    @MessageBuilder.setter
+    @abstractmethod
+    def MessageBuilder(self, value: Callable[[IMessageBuilderContext[T, TProperty]], str]) -> None: ...
 
 
-class IValidationRuleInternal[T, TProperty](IValidationRule[T, TProperty]):
-    ...
+class IValidationRuleInternal[T, TProperty](IValidationRule[T, TProperty]): ...

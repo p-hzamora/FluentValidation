@@ -2,7 +2,7 @@
 
 ### Introduction
 
-FluentValidation 8.0 is a major release that included several breaking changes. Please review this document before upgrading from FluentValidation 7.x to 8.
+FluentValidation 8.0 is a major release that included several breaking changes. Please review this document before upgrading from fluent_validation 7.x to 8.
 
 ### Asynchronous Validation updates
 

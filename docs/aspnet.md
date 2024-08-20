@@ -228,7 +228,7 @@ app.MapPost("/person", async (IValidator<Person> validator, IPersonRepository re
 });
 ```
 
-Note the `ToDictionary` method on the `ValidationResult` is only available from FluentValidation 11.1 and newer. In older versions you will need to implement this as an extension method:
+Note the `ToDictionary` method on the `ValidationResult` is only available from fluent_validation 11.1 and newer. In older versions you will need to implement this as an extension method:
 
 ```csharp
 public static class FluentValidationExtensions

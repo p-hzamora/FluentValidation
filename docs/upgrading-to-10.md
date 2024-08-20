@@ -2,7 +2,7 @@
 
 ### Introduction
 
-FluentValidation 10.0 is a major release that included several breaking changes. Please review this document carefully before upgrading from FluentValidation 9.x to 10.
+FluentValidation 10.0 is a major release that included several breaking changes. Please review this document carefully before upgrading from fluent_validation 9.x to 10.
 
 The main goals for this release were to improve performance and type safety. To achieve this we have introduced generics throughout FluentValidation's internal model. If you have written custom property validators, or made use of the internal API then you will need to update your code. Users of the public-facing API and fluent interface will be largely unaffected.
 

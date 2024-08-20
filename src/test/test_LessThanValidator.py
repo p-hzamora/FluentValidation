@@ -7,11 +7,11 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop(
 
 from TestValidator import TestValidator  # noqa: E402
 from person import Person  # noqa: E402
-from FluentValidation.validators.AbstractComparisonValidator import (  # noqa: E402
+from fluent_validation.validators.AbstractComparisonValidator import (  # noqa: E402
     Comparison,
     IComparisonValidator,
 )
-from FluentValidation.validators.LessThanValidator import LessThanValidator  # noqa: E402
+from fluent_validation.validators.LessThanValidator import LessThanValidator  # noqa: E402
 
 
 class LessThanValidatorTester(unittest.TestCase):

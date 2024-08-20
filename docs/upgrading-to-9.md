@@ -2,7 +2,7 @@
 
 ### Introduction
 
-FluentValidation 9.0 is a major release that included several breaking changes. Please review this document before upgrading from FluentValidation 8.x to 9.
+FluentValidation 9.0 is a major release that included several breaking changes. Please review this document before upgrading from fluent_validation 8.x to 9.
 
 ### Supported Platforms
 

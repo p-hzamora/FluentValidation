@@ -20,7 +20,7 @@ class Customer:
 You would define a set of validation rules for this class by inheriting from `AbstractValidator[Customer]`:
 
 ```python
-from FluentValidation import AbstractValidator
+from fluent_validation import AbstractValidator
 
 class CustomerValidator(AbstractValidator[Customer]):
   ...
@@ -33,7 +33,7 @@ that indicates the property that you wish to validate. For example, to ensure th
 the validator class would look like this:
 
 ```python
-from FluentValidation import AbstractValidator
+from fluent_validation import AbstractValidator
 
 class CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
@@ -83,7 +83,7 @@ string allMessages = results.ToString("~");     // In this case, each message wi
 You can chain multiple validators together for the same property:
 
 ```python
-from FluentValidation import AbstractValidator
+from fluent_validation import AbstractValidator
 
 CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
@@ -110,7 +110,7 @@ This throws a `ValidationException` which contains the error messages in the err
 *Note* `ValidateAndThrow` is an extension method, so you must have the `FluentValidation` namespace imported with a `using` statement at the top of your file in order for this method to be available.
 
 ```python
-from src.FluentValidation.abstract_validator import AbstractValidator
+from src.fluent_validation.abstract_validator import AbstractValidator
 ```
 
 The `ValidateAndThrow` method is helpful wrapper around FluentValidation's options API, and is the equivalent of doing the following:

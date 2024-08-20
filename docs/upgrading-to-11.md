@@ -3,7 +3,7 @@
 
 ### Introduction
 
-FluentValidation 11.0 is a major release that included several breaking changes. Please review this document carefully before upgrading from FluentValidation 10.x to 11.
+FluentValidation 11.0 is a major release that included several breaking changes. Please review this document carefully before upgrading from fluent_validation 10.x to 11.
 
 There were 3 main goals for this release:
 - Removing deprecated code and support for obsolete platforms

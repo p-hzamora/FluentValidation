@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 from .internal.MessageFormatter import MessageFormatter
 from .results.ValidationFailure import ValidationFailure
+from .internal.ValidationStrategy import ValidationStrategy
 
 
 class IValidationContext(ABC):
@@ -12,29 +13,27 @@ class IValidationContext(ABC):
 
     @property
     @abstractmethod
-    def instance_to_validate(self) -> object:
-        ...
+    def instance_to_validate(self) -> object: ...
 
     @property
     @abstractmethod
-    def ThrowOnFailures(self) -> bool:
-        ...
+    def ThrowOnFailures(self) -> bool: ...
 
     # @property
     # @abstractmethod
     # def InstanceToValidate(self)->object: ...
 
-    # @property
-    # @abstractmethod
-    # def RootContextData(self)->dict[str, object]: ...
+    @property
+    @abstractmethod
+    def RootContextData(self)->dict[str, object]: ...
 
     # @property
     # @abstractmethod
     # def Selector(self)->IValidatorSelector: ...
 
-    # @property
-    # @abstractmethod
-    # def IsChildContext(self)->bool: ...
+    @property
+    @abstractmethod
+    def IsChildContext(self)->bool: ...
 
     # @property
     # @abstractmethod
@@ -52,8 +51,7 @@ class IValidationContext(ABC):
 class IHasFailures(ABC):
     @property
     @abstractmethod
-    def Failures(self) -> list[ValidationFailure]:
-        ...
+    def Failures(self) -> list[ValidationFailure]: ...
 
 
 class ValidationContext[T](IValidationContext, IHasFailures):
@@ -69,8 +67,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         return self._instance_to_validate
 
     @property
-    def ThrowOnFailures(self) -> bool:
-        ...
+    def ThrowOnFailures(self) -> bool: ...
 
     @property
     def Failures(self) -> list[ValidationFailure]:
@@ -91,3 +88,9 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     def InitializeForPropertyValidator(self, propertyPath: str, displayNameFunc: Callable[[Self], str]):
         self._property_path = propertyPath
         self._displayNameFunc = displayNameFunc
+
+    @staticmethod
+    def CreateWithOptions(instanceToValidate: T, options: Callable[[ValidationStrategy], None]) -> "ValidationContext[T]":
+        strategy = ValidationStrategy()
+        options(strategy)
+        return strategy.BuildContext(instanceToValidate)

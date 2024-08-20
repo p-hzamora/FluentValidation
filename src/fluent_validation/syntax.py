@@ -27,8 +27,20 @@ from .validators.PredicateValidator import PredicateValidator
 from .IValidationRule import IValidationRule
 from .IValidationContext import ValidationContext
 
+# from .DefaultValidatorExtensions_Validate import DefaultValidatorExtensions_Validate
 
-class DefaultValidatorExtensions:
+from .results import ValidationResult
+from .IValidator import IValidator
+from .internal.ValidationStrategy import ValidationStrategy
+
+
+class DefaultValidatorExtensions_Validate:
+    @staticmethod
+    def validate[T](validator: IValidator[T], instance: T, options: Callable[[ValidationStrategy[T], None]]) -> ValidationResult:
+        validator.Validate(ValidationContext[T].CreateWithOptions(instance,options))
+
+
+class DefaultValidatorExtensions(DefaultValidatorExtensions_Validate):
     """
     ruleBuilder actua como self, ya que es la instancia padre que se le pasa a traves de la herencia
     """
@@ -44,12 +56,10 @@ class DefaultValidatorExtensions:
         return ruleBuilder.set_validator(RegularExpressionValidator[T](pattern))
 
     @overload
-    def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: Callable[[T], None], max: Callable[[T], None]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: Callable[[T], None], max: Callable[[T], None]) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int, max: int) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int, max: int) -> "IRuleBuilder[T, TProperty]": ...
 
     def length[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", min: int | T, max: int | T) -> "IRuleBuilder[T, TProperty]":
         return ruleBuilder.set_validator(LengthValidator[T](min, max))
@@ -72,12 +82,10 @@ class DefaultValidatorExtensions:
 
     # region less_than
     @overload
-    def less_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def less_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def less_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def less_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]": ...
 
     def less_than[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
@@ -93,12 +101,10 @@ class DefaultValidatorExtensions:
     # endregion
     # region less_than_or_equal_to
     @overload
-    def less_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def less_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def less_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def less_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]": ...
 
     def less_than_or_equal_to[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
@@ -114,12 +120,10 @@ class DefaultValidatorExtensions:
     # endregion
     # region equal
     @overload
-    def equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]": ...
 
     def equal[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
@@ -134,16 +138,13 @@ class DefaultValidatorExtensions:
 
     # region must
     @overload
-    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool]) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty], bool]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty], bool]) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty, ValidationContext[T]], bool]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def must[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[T, TProperty, ValidationContext[T]], bool]) -> "IRuleBuilder[T, TProperty]": ...
 
     def must[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]", predicate: Callable[[TProperty], bool] | Callable[[T, TProperty], bool] | Callable[[T, TProperty, ValidationContext[T]], bool]
@@ -165,12 +166,10 @@ class DefaultValidatorExtensions:
     # endregion
     # region not_equal
     @overload
-    def not_equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def not_equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def not_equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def not_equal[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]": ...
 
     def not_equal[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
@@ -186,12 +185,10 @@ class DefaultValidatorExtensions:
     # endregion
     # region greater_than
     @overload
-    def greater_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def greater_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def greater_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def greater_than[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]": ...
 
     def greater_than[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
@@ -207,12 +204,10 @@ class DefaultValidatorExtensions:
     # endregion
     # region GreaterThanOrEqual
     @overload
-    def greater_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def greater_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: TProperty) -> "IRuleBuilder[T, TProperty]": ...
 
     @overload
-    def greater_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]":
-        ...
+    def greater_than_or_equal_to[T, TProperty](ruleBuilder: "IRuleBuilder[T, TProperty]", valueToCompare: Callable[[T], TProperty]) -> "IRuleBuilder[T, TProperty]": ...
 
     def greater_than_or_equal_to[T, TProperty](
         ruleBuilder: "IRuleBuilder[T, TProperty]",
@@ -236,18 +231,15 @@ class DefaultValidatorExtensions:
 class IRuleBuilderInternal[T, TProperty](ABC):
     @property
     @abstractmethod
-    def Rule(self) -> IValidationRule[T, TProperty]:
-        ...
+    def Rule(self) -> IValidationRule[T, TProperty]: ...
 
 
 class IRuleBuilder[T, TProperty](IRuleBuilderInternal, DefaultValidatorExtensions):
     @staticmethod
     @abstractmethod
-    def set_validator(validator: IPropertyValidator[T, TProperty]) -> Self:
-        ...
+    def set_validator(validator: IPropertyValidator[T, TProperty]) -> Self: ...
 
 
 class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
     @abstractmethod
-    def DependentRules(action) -> Self:
-        ...
+    def DependentRules(action) -> Self: ...

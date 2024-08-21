@@ -1,4 +1,4 @@
-from fluent_validation.internal.Resources.ILanguageManager import CultureInfo
+from src.fluent_validation.internal.Resources.ILanguageManager import CultureInfo
 
 
 class CultureScope:

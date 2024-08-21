@@ -3,7 +3,7 @@ from decimal import Decimal
 from pathlib import Path
 import sys
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
 from dataclasses import dataclass  # noqa: E402
 from fluent_validation.abstract_validator import AbstractValidator  # noqa: E402

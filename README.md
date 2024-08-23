@@ -47,7 +47,6 @@ customer = Customer()
 validator = CustomerValidator()
 
 result = validator.validate(customer)
-
 ```
 
 The `validate` method returns a `ValidationResult` object. This contains two properties:
@@ -58,7 +57,6 @@ The `validate` method returns a `ValidationResult` object. This contains two pro
 The following code would write any validation failures to the console:
 
 ```python
-
 customer = Customer()
 validator = CustomerValidator()
 
@@ -69,14 +67,14 @@ if not results.is_valid:
     print(f"Property {failure.PropertyName} failed validation. Error was: {failure.ErrorMessage}")
 ```
 
-<!-- You can also call `ToString` on the `ValidationResult` to combine all error messages into a single string. By default, the messages will be separated with new lines, but if you want to customize this behaviour you can pass a different separator character to `ToString`.
+You can also call `to_string` on the `ValidationResult` to combine all error messages into a single string. By default, the messages will be separated with new lines, but if you want to customize this behaviour you can pass a different separator character to `to_string`.
 
 ```python
-ValidationResult results = validator.validate(customer);
-string allMessages = results.ToString("~");     // In this case, each message will be separated with a `~`
+results = validator.validate(customer)
+allMessages:str = results.to_string("~");     # In this case, each message will be separated with a `~`
 ```
 
-*Note* : if there are no validation errors, `ToString()` will return an empty string.-->
+*Note* : if there are no validation errors, `to_string()` will return an empty string.
 
 # Chaining validators
 

@@ -1,7 +1,10 @@
+from __future__ import annotations
 from abc import abstractmethod, ABC
-from typing import Self, Callable, overload
-import dis
+from typing import Self, Callable, overload, TYPE_CHECKING
 import inspect
+
+if TYPE_CHECKING:
+    from src.fluent_validation.IValidator import IValidator
 
 
 from .internal.ExtensionInternal import ExtensionsInternal
@@ -235,9 +238,17 @@ class IRuleBuilderInternal[T, TProperty](ABC):
 
 
 class IRuleBuilder[T, TProperty](IRuleBuilderInternal, DefaultValidatorExtensions):
-    @staticmethod
+    @overload
+    def set_validator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
+    @overload
+    def set_validator(self, validator: IValidator[TProperty], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: ...
+    @overload
+    def set_validator[TValidator: IValidator[TProperty]](self, validator: Callable[[T], TValidator], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: ...
+    @overload
+    def set_validator[TValidator: IValidator[TProperty]](self, validator: Callable[[T, TProperty], TValidator], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: ...
+
     @abstractmethod
-    def set_validator(validator: IPropertyValidator[T, TProperty]) -> Self: ...
+    def set_validator(self, validator, *ruleSets): ...
 
 
 class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):

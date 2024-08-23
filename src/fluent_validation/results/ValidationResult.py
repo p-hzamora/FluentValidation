@@ -1,25 +1,31 @@
-from typing import Iterable, overload
+from __future__ import annotations
+from typing import Iterable, Optional, overload
+from collections import defaultdict
 
-from .ValidationFailure import ValidationFailure
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .ValidationFailure import ValidationFailure
 
 
-class ValidationResult[T]:
+class ValidationResult:
     @overload
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     @overload
-    def __init__(self, failures: Iterable[ValidationFailure]):
-        ...
+    def __init__(self, failures: Iterable[ValidationFailure]): ...
 
     @overload
-    def __init__(self, errors: list[ValidationFailure]):
-        ...
+    def __init__(self, errors: list[ValidationFailure]): ...
+
+    @overload
+    def __init__(self, otherResults: Iterable["ValidationResult"]): ...
 
     def __init__(
         self,
-        errors: ValidationFailure = None,
-        failures: Iterable[ValidationFailure] = None,
+        errors: Optional[ValidationFailure] = None,
+        failures: Optional[Iterable[ValidationFailure]] = None,
+        otherResults: Optional[Iterable["ValidationResult"]] = None,
     ) -> None:
         if errors is None and failures is None:
             self._errors: list[ValidationFailure] = []
@@ -32,6 +38,10 @@ class ValidationResult[T]:
 
         elif isinstance(errors, list) and failures is None:
             self._errors: list[ValidationFailure] = errors
+
+        elif not errors and not failures and otherResults:
+            self._errors = [err for result in otherResults for err in result.errors]
+            self._rule_sets_executed = list(set(rule_set for result in otherResults if result.RuleSetsExecuted is not None for rule_set in result.RuleSetsExecuted))
         else:
             raise Exception(f"No se ha inicializado la clase {self.__class__.__name__}")
 

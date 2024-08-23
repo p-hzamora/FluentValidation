@@ -82,11 +82,15 @@ class MessageBuilderContext[T, TProperty](IMessageBuilderContext[T, TProperty]):
     def ParentContext(self) -> ValidationContext[T]:
         return self._innerContext
 
-    # @property
-    # def PropertyName(self)->str: return self._innerContext.PropertyPath
+    @override
+    @property
+    def PropertyName(self) -> str:
+        return self._innerContext.PropertyPath
 
-    # @property
-    # def DisplayName(self)->str: return self._innerContext.DisplayName
+    @override
+    @property
+    def DisplayName(self) -> str:
+        return self._innerContext.DisplayName
 
     @property
     def MessageFormatter(self) -> MessageFormatter:

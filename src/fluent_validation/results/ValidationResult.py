@@ -61,9 +61,9 @@ class ValidationResult:
     def RuleSetsExecuted(self, value: list[str]) -> list[str]:
         self._rule_sets_executed = value
 
-    def to_string(self, separator: str = "~") -> str:
+    def to_string(self, separator: str = "\n") -> str:
         string: list[str] = [f"{separator} {failure.ErrorMessage}" for failure in self._errors]
-        return "\n".join(string)
+        return "".join(string)
 
     def to_dictionary(self) -> dict[str, list[str]]:
         Errors = defaultdict(list)

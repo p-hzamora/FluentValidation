@@ -52,3 +52,21 @@ class ValidationResult:
     @property
     def errors(self) -> list[ValidationFailure]:
         return self._errors
+
+    @property
+    def RuleSetsExecuted(self) -> list[str]:
+        return self._rule_sets_executed
+
+    @RuleSetsExecuted.setter
+    def RuleSetsExecuted(self, value: list[str]) -> list[str]:
+        self._rule_sets_executed = value
+
+    def to_string(self, separator: str = "~") -> str:
+        string: list[str] = [f"{separator} {failure.ErrorMessage}" for failure in self._errors]
+        return "\n".join(string)
+
+    def to_dictionary(self) -> dict[str, list[str]]:
+        Errors = defaultdict(list)
+        for err in self._errors:
+            Errors[err.PropertyName].append(err.ErrorMessage)
+        return dict(Errors)

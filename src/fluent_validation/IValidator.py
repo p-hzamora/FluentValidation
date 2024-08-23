@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable, overload, Optional
+from typing import TYPE_CHECKING, Callable, overload
 
 if TYPE_CHECKING:
     from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
@@ -9,6 +9,14 @@ if TYPE_CHECKING:
 
 
 class IValidator[T](ABC):
+    @overload
+    def validate(validator: "IValidator[T]", instance: T) -> ValidationResult: ...
+
+    @overload
+    def validate(validator: "IValidator[T]", instance: IValidationContext) -> ValidationResult: ...
+
+    @overload
+    def validate(validator: "IValidator[T]", instance: T, options: Callable[[ValidationStrategy[T]], None]) -> ValidationResult: ...
+
     @abstractmethod
-    def Validate(instance: T) -> ValidationResult:
-        ...
+    def validate(validator, instance, options): ...

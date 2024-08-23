@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import override
 from ..IValidationContext import IValidationContext, ValidationContext
 from ..internal.RuleComponent import RuleComponent
 
@@ -11,47 +12,38 @@ from ..internal.MessageFormatter import MessageFormatter
 class IMessageBuilderContext[T, TProperty](ABC):
     @property
     @abstractmethod
-    def Component(self) -> IRuleComponent:
-        ...
+    def Component(self) -> IRuleComponent: ...
 
     @property
     @abstractmethod
-    def PropertyValidator(self) -> IPropertyValidator:
-        ...
+    def PropertyValidator(self) -> IPropertyValidator: ...
 
     @property
     @abstractmethod
-    def ParentContext(self) -> IValidationContext:
-        ...
+    def ParentContext(self) -> IValidationContext: ...
 
     @property
     @abstractmethod
-    def PropertyName(self) -> str:
-        ...
+    def PropertyName(self) -> str: ...
 
     @property
     @abstractmethod
-    def DisplayName(self) -> str:
-        ...
+    def DisplayName(self) -> str: ...
 
     @property
     @abstractmethod
-    def MessageFormatter(self) -> MessageFormatter:
-        ...
+    def MessageFormatter(self) -> MessageFormatter: ...
 
     @property
     @abstractmethod
-    def InstanceToValidate(self) -> T:
-        ...
+    def InstanceToValidate(self) -> T: ...
 
     @property
     @abstractmethod
-    def PropertyValue(self) -> TProperty:
-        ...
+    def PropertyValue(self) -> TProperty: ...
 
     @abstractmethod
-    def GetDefaultMessage() -> str:
-        ...
+    def GetDefaultMessage() -> str: ...
 
 
 class MessageBuilderContext[T, TProperty](IMessageBuilderContext[T, TProperty]):

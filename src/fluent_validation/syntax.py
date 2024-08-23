@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from src.fluent_validation.IValidator import IValidator
 
 
+from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from .internal.ExtensionInternal import ExtensionsInternal
 from .validators.IpropertyValidator import IPropertyValidator
 from .validators.LengthValidator import (
@@ -213,7 +214,7 @@ class DefaultValidatorExtensions:
 
     @staticmethod
     def get_display_name[T, TProperty](expression: Callable[[T], TProperty]) -> str:
-        name = {x.opname: x.argval for x in dis.Bytecode(expression)}["LOAD_ATTR"]
+        name = ValidatorOptions.Global.PropertyNameResolver(expression).to_list()[0].nested_element.name
         return ExtensionsInternal.split_pascal_case(name)
 
     # endregion

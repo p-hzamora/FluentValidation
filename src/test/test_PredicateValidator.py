@@ -1,13 +1,14 @@
 import unittest
 from TestValidator import TestValidator
 from person import Person
+from src.test.CultureScope import CultureScope
 
 
 class PredicateValidatorTester(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # CultureScope.SetDefaultCulture()
+        CultureScope.SetDefaultCulture()
         self.validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).must(lambda forename: forename == "Jeremy"))
 
     def test_Should_fail_when_predicate_returns_false(self):
@@ -48,3 +49,7 @@ class PredicateValidatorTester(unittest.TestCase):
         self.assertEqual(error.FormattedMessagePlaceholderValues["PropertyName"], "Forename")
         self.assertEqual(error.FormattedMessagePlaceholderValues["PropertyValue"], "test")
         self.assertEqual(error.FormattedMessagePlaceholderValues["PropertyPath"], "Forename")
+
+
+if __name__ == "__main__":
+    unittest.main()

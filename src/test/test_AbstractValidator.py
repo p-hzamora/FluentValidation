@@ -3,11 +3,13 @@ import unittest
 from pathlib import Path
 
 
+
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
 
+from src.fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
-from person import Person  # noqa: E402
+from person import Address, Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402
 
 
@@ -85,58 +87,59 @@ class AbstractValidatorTester(unittest.TestCase):
     #     result = self.validator.validate(Person())
     #     self.assertEqual(result.errors[0].PropertyName, "Forename")
 
-    def Should_not_main_state(self):
+    def test_Should_not_main_state(self):
         self.validator.rule_for(lambda x: x.Forename).not_null()
         self.validator.validate(Person())
         result = self.validator.validate(Person())
         self.assertEqual(len(result.errors), 1)
 
-    def Should_throw_when_rule_is_null(self):
-        with self.assertRaises(AttributeError):  # TODOL: Verify if it's the correct Error
+    def test_Should_throw_when_rule_is_null(self):
+        with self.assertRaises(TypeError):  # TODOL [x]: Verify if it's the correct Error
             self.validator.rule_for(None)
 
-    # def Should_validate_single_property(self):
-    #     self.validator.rule_for(lambda x: x.Forename).not_null()
-    #     self.validator.rule_for(lambda x: x.Surname).not_null()
-    #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: x.Surname))
-    #     self.assertEqual(len(result.errors), 1)
+    def test_Should_validate_single_property(self):
+        self.validator.rule_for(lambda x: x.Forename).not_null()
+        self.validator.rule_for(lambda x: x.Surname).not_null()
+        result = self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: x.Surname))
+        self.assertEqual(len(result.errors), 1)
 
-    # def Should_validate_single_Field(self):
-    #     self.validator.rule_for(lambda x: x.NameField).not_null()
-    #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: x.NameField))
-    #     self.assertEqual(len(result.errors), 1)
+    def test_Should_validate_single_Field(self):
+        self.validator.rule_for(lambda x: x.NameField).not_null()
+        result = self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: x.NameField))
+        self.assertEqual(len(result.errors), 1)
 
-    # def Should_throw_for_non_member_expression_when_validating_single_property(self):
-    #     Assert.Throws<ArgumentException>((lambda ): self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: "foo")))
+    def test_Should_throw_for_non_member_expression_when_validating_single_property(self):
+        with self.assertRaises(ValueError):
+            self.validator.validate(Person(), lambda v: v.IncludeProperties(lambda x: "foo"))
 
-    # def Should_be_valid_when_there_are_no_failures_for_single_property(self):
-    #     self.validator.rule_for(lambda x: x.Surname).not_null()
-    #     result = self.validator.validate(Person(Surname="foo"), lambda v: v.IncludeProperties(lambda x: x.Surname))
-    #     self.assertTrue(result)
+    def test_Should_be_valid_when_there_are_no_failures_for_single_property(self):
+        self.validator.rule_for(lambda x: x.Surname).not_null()
+        result = self.validator.validate(Person(Surname="foo"), lambda v: v.IncludeProperties(lambda x: x.Surname))
+        self.assertTrue(result)
 
-    # def Should_validate_single_property_where_property_as_string(self):
-    #     self.validator.rule_for(lambda x: x.Forename).not_null()
-    #     self.validator.rule_for(lambda x: x.Surname).not_null()
-    #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties("Surname"))
-    #     self.assertEqual(len(result.errors), 1)
+    def test_Should_validate_single_property_where_property_as_string(self):
+        self.validator.rule_for(lambda x: x.Forename).not_null()
+        self.validator.rule_for(lambda x: x.Surname).not_null()
+        result = self.validator.validate(Person(), lambda v: v.IncludeProperties("Surname"))
+        self.assertEqual(len(result.errors), 1)
 
-    # def Should_validate_single_property_where_invalid_property_as_string(self):
-    #     self.validator.rule_for(lambda x: x.Forename).not_null()
-    #     self.validator.rule_for(lambda x: x.Surname).not_null()
-    #     result = self.validator.validate(Person(), lambda v: v.IncludeProperties("Surname1"))
-    #     self.assertEqual(len(result.errors), 0)
+    def test_Should_validate_single_property_where_invalid_property_as_string(self):
+        self.validator.rule_for(lambda x: x.Forename).not_null()
+        self.validator.rule_for(lambda x: x.Surname).not_null()
+        result = self.validator.validate(Person(), lambda v: v.IncludeProperties("Surname1"))
+        self.assertEqual(len(result.errors), 0)
 
-    # def Validates_single_property_by_path(self):
-    #     addressValidator = InlineValidator < Address > ()
-    #     addressValidator.rule_for(lambda x: x.Line1).not_null()
-    #     addressValidator.rule_for(lambda x: x.Line2).not_null()
+    def test_Validates_single_property_by_path(self):
+        addressValidator = InlineValidator[Address]()
+        addressValidator.rule_for(lambda x: x.Line1).not_null()
+        addressValidator.rule_for(lambda x: x.Line2).not_null()
 
-    #     self.validator.rule_for(lambda x: x.Address).set_validator(addressValidator)
-    #     self.validator.rule_for(lambda x: x.Forename).not_null()
+        self.validator.rule_for(lambda x: x.Address).set_validator(addressValidator)
+        self.validator.rule_for(lambda x: x.Forename).not_null()
 
-    #     result = self.validator.validate(Person(Address=Address()), lambda v: v.IncludeProperties("Address.Line1"))
-    #     self.assertEqual(len(result.errors), 1)
-    #     self.assertEqual(result.errors.Single().PropertyName, "Address.Line1")
+        result = self.validator.validate(Person(Address=Address()), lambda v: v.IncludeProperties("Address[].Line1"))
+        self.assertEqual(len(result.errors), 1)
+        self.assertEqual(result.errors[0].PropertyName, "Address.Line1")
 
     # def CanValidateInstancesOfType_returns_true_when_comparing_against_same_type(self):
     #     self.validator = (IValidator)this.self.validator

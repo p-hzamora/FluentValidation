@@ -1,10 +1,13 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from typing import Iterable, Callable
+from typing import Iterable, Callable, TYPE_CHECKING
 from .internal.IRuleComponent import IRuleComponent
-from .IValidationContext import IValidationContext
-from .internal.MessageBuilderContext import IMessageBuilderContext
-from .validators.IpropertyValidator import IPropertyValidator
+
+if TYPE_CHECKING:
+    from .IValidationContext import IValidationContext
+    from .internal.MessageBuilderContext import IMessageBuilderContext
+    from .validators.IpropertyValidator import IPropertyValidator
 
 
 class IValidatoinRule_no_args(ABC):

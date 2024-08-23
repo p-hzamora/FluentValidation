@@ -1,3 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .Resources.ILanguageManager import ILanguageManager
+
+
 class ExtensionsInternal:
     # @staticmethod
     # def Guard(this object obj, string message, string paramName) {
@@ -54,7 +61,6 @@ class ExtensionsInternal:
 
     @staticmethod
     def ResolveErrorMessageUsingErrorCode(error_code: str, fall_back_Key: str) -> str:
-        from .Resources.ILanguageManager import ILanguageManager  # FIXME [ ]: I don't know how to avoid this import to prevent circular imports
         from .Resources.LanguageManager import LanguageManager  # FIXME [ ]: I don't know how to avoid this import to prevent circular imports
 
         languageManager: ILanguageManager = LanguageManager()

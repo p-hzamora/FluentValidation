@@ -1,7 +1,11 @@
-from abc import abstractmethod, ABC
+from __future__ import annotations
 
-from src.fluent_validation.IValidationContext import IValidationContext
-from src.fluent_validation.IValidationRule import IValidationRule
+from abc import abstractmethod, ABC
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+	from src.fluent_validation.IValidationContext import IValidationContext
+	from src.fluent_validation.IValidationRule import IValidationRule
 
 class IValidatorSelector(ABC):
 	@abstractmethod

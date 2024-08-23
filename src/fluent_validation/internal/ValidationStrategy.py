@@ -1,9 +1,14 @@
-from typing import Callable, Optional, overload
+from __future__ import annotations
+
+from typing import Callable, Optional, overload, TYPE_CHECKING
 
 from src.fluent_validation.IValidationContext import ValidationContext
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from src.fluent_validation.internal.MemberNameValidatorSelector import MemberNameValidatorSelector
+
+if TYPE_CHECKING:
+    from ..IValidationContext import ValidationContext
 
 
 class ValidationStrategy[T]:

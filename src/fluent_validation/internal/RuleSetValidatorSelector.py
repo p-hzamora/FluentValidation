@@ -1,9 +1,11 @@
-from typing import Iterable, override
-from src.fluent_validation.IValidationContext import IValidationContext
+from __future__ import annotations
+from typing import Iterable, override, TYPE_CHECKING
 from src.fluent_validation.IValidationRule import IValidationRule
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from src.fluent_validation.internal.IncludeRule import IIncludeRule
 
+if TYPE_CHECKING:
+    from src.fluent_validation.IValidationContext import IValidationContext
 
 
 def get_or_add(dictionary:dict, key:str, factory)->set:

@@ -18,8 +18,8 @@ class CultureInfo:
 
     def __new__(cls, current_ui_Culture=None) -> "CultureInfo":
         if current_ui_Culture is None:
-            cls.CurrentUICulture, _ = locale.getdefaultlocale()
-        else:
+            cls.CurrentUICulture, _ = locale.getlocale()
+        elif not CultureInfo.CurrentUICulture:
             cls.CurrentUICulture = current_ui_Culture
         return object.__new__(cls)
 

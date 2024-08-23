@@ -20,7 +20,7 @@ class ValidatorSelectorOptions:
         self._compositeValidatorSelectorFactory: Callable[[Iterable[IValidatorSelector]], IValidatorSelector] = lambda selectors: CompositeValidatorSelector(selectors)
 
     @property
-    def DefaultSelector() -> IValidatorSelector:
+    def DefaultSelector(self) -> IValidatorSelector:
         return DefaultValidatorSelector()
 
     @property

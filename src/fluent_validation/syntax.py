@@ -30,20 +30,8 @@ from .validators.PredicateValidator import PredicateValidator
 from .IValidationRule import IValidationRule
 from .IValidationContext import ValidationContext
 
-# from .DefaultValidatorExtensions_Validate import DefaultValidatorExtensions_Validate
 
-from .results import ValidationResult
-from .IValidator import IValidator
-from .internal.ValidationStrategy import ValidationStrategy
-
-
-class DefaultValidatorExtensions_Validate:
-    @staticmethod
-    def validate[T](validator: IValidator[T], instance: T, options: Callable[[ValidationStrategy[T], None]]) -> ValidationResult:
-        validator.Validate(ValidationContext[T].CreateWithOptions(instance, options))
-
-
-class DefaultValidatorExtensions(DefaultValidatorExtensions_Validate):
+class DefaultValidatorExtensions:
     """
     ruleBuilder actua como self, ya que es la instancia padre que se le pasa a traves de la herencia
     """

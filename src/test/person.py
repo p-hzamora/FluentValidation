@@ -47,13 +47,13 @@ class IAddress(ABC):
 class Address(IAddress):
     def __init__(
         self,
-        Line1: str,
-        Line2: str,
-        Town: str,
-        County: str,
-        Postcode: str,
-        Country: Country,
-        Id: int,
+        Line1: str = None,
+        Line2: str = None,
+        Town: str = None,
+        County: str = None,
+        Postcode: str = None,
+        Country: Country = None,
+        Id: int = None,
     ):
         self._Line1: str = Line1
         self._Line2: str = Line2

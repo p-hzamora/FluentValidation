@@ -1,10 +1,12 @@
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Type
 
 from src.fluent_validation.internal.CompositeValidatorSelector import CompositeValidatorSelector
 from src.fluent_validation.internal.DefaultValidatorSelector import DefaultValidatorSelector
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from src.fluent_validation.internal.MemberNameValidatorSelector import MemberNameValidatorSelector
+from src.fluent_validation.internal.MessageFormatter import MessageFormatter
 from src.fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
+from src.fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction
 from .enums import CascadeMode
 from .internal.Resources.LanguageManager import LanguageManager
 from .internal.Resources.ILanguageManager import ILanguageManager
@@ -54,18 +56,20 @@ class ValidatorSelectorOptions:
         self._compositeValidatorSelectorFactory = value if value else lambda selectors: CompositeValidatorSelector(selectors)
 
 
-
 class ValidatorConfiguration:
+    PropertyNameResolver: Type[TreeInstruction] = TreeInstruction
+
     def __init__(self):
-        # private Func<Type, MemberInfo, LambdaExpression, string> _propertyNameResolver = DefaultPropertyNameResolver
+        # private Func<Type, MemberInfo, LambdaExpression, string> _propertyNameResolver Not implemented
         # private Func<Type, MemberInfo, LambdaExpression, string> _displayNameResolver = DefaultDisplayNameResolver
-        # private Func<MessageFormatter> _messageFormatterFactory = () => new MessageFormatter()
+        self._messageFormatterFactory: Callable[[], MessageFormatter] = lambda: MessageFormatter()
         # private Func<IPropertyValidator, string> _errorCodeResolver = DefaultErrorCodeResolver
+        self._PropertyChainSeparator: str = "."
         self._languageManager: ILanguageManager = LanguageManager()
 
-        # original C# Library has this vars as CascadeMode.Continue
+        # COMMENT: original C# Library has this vars as CascadeMode.Continue
         self._defaultClassLevelCascadeMode: CascadeMode = CascadeMode.Continue
-        self._defaultRuleLevelCascadeMode: CascadeMode = CascadeMode.Stop
+        self._defaultRuleLevelCascadeMode: CascadeMode = CascadeMode.Continue
 
     # region Properties
     @property
@@ -85,12 +89,30 @@ class ValidatorConfiguration:
         self._defaultRuleLevelCascadeMode = value
 
     @property
+    def PropertyChainSeparator(self) -> str:
+        return self._PropertyChainSeparator
+
+    @PropertyChainSeparator.setter
+    def PropertyChainSeparator(self, value: str) -> str:
+        self._PropertyChainSeparator = value
+
+    @property
     def LanguageManager(self) -> ILanguageManager:
         return self._languageManager
 
     @LanguageManager.setter
     def LanguageManager(self, value: ILanguageManager):
         self._languageManager = value
+
+    @property
+    def MessageFormatterFactory(self) -> Callable[[], MessageFormatter]:
+        return self._messageFormatterFactory
+
+    @MessageFormatterFactory.setter
+    def MessageFormatterFactory(self, value: None | Callable[[], MessageFormatter]):
+        if not value:
+            value = lambda: MessageFormatter()  # noqa: E731
+        self._messageFormatterFactory = value
 
     # endregion
 
@@ -101,5 +123,3 @@ class ValidatorConfiguration:
 
 class ValidatorOptions:
     Global: ValidatorConfiguration = ValidatorConfiguration()
-
-

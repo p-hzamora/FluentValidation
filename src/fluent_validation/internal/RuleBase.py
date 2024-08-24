@@ -3,7 +3,8 @@ from typing import Callable, List, Optional
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from src.fluent_validation.internal.ExtensionInternal import ExtensionsInternal
 
-from ..IValidationRule import IValidationRule, IRuleComponent
+from ..IValidationRule import IValidationRule
+from ...fluent_validation.internal.IRuleComponent import IRuleComponent
 from ..internal.MessageBuilderContext import IMessageBuilderContext, MessageBuilderContext
 from ..internal.RuleComponent import RuleComponent
 from ..results.ValidationFailure import ValidationFailure

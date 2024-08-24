@@ -50,6 +50,3 @@ class IValidationRule[T, TProperty](IValidatoinRule_no_args):
     @MessageBuilder.setter
     @abstractmethod
     def MessageBuilder(self, value: Callable[[IMessageBuilderContext[T, TProperty]], str]) -> None: ...
-
-
-class IValidationRuleInternal[T, TProperty](IValidationRule[T, TProperty]): ...

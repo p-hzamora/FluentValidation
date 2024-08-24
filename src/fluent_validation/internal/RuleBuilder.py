@@ -1,9 +1,10 @@
 import inspect
 from typing import Callable, TypeVar
 
+from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
 from src.fluent_validation.IValidator import IValidator
 
-from ..IValidationRule import IValidationRule, IValidationRuleInternal
+from ..IValidationRule import IValidationRule
 from ..validators.IpropertyValidator import IPropertyValidator
 from ..syntax import IRuleBuilder, IRuleBuilderInternal, IRuleBuilderOptions
 

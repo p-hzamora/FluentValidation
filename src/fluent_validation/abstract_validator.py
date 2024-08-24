@@ -3,6 +3,7 @@ from typing import Callable, Optional, overload, override, TYPE_CHECKING
 import asyncio
 
 if TYPE_CHECKING:
+    from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
     from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
 
 from ..fluent_validation.IValidator import IValidator  # noqa: F401 We use it in the future

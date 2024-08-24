@@ -16,7 +16,7 @@
 # 	def AssertExecuted(self, result:ValidationResult, *names:str):
 # 		len_names = len(names)
 # 		self.assertEqual(len(result.RuleSetsExecuted), len_names)
-# 		self.assertEqual(len(result.RuleSetsExecuted & set(names)), len_names)
+# 		self.assertEqual(len(result.RuleSetsExecuted and set(names)), len_names)
 
 # 	def test_Executes_rules_in_specified_ruleset(self):
 # 		validator = TestValidator()

@@ -52,7 +52,7 @@ class ValidationStrategy[T]:
         return self
 
     def IncludeRuleSets(self, *ruleSets: str) -> "ValidationStrategy[T]":
-        if ruleSets is not None & len(ruleSets) > 0:
+        if ruleSets is not None and len(ruleSets) > 0:
             if self._ruleSets is None:
                 self._ruleSets = [ruleSets]
             else:

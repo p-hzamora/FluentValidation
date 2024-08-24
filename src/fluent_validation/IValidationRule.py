@@ -17,14 +17,6 @@ class IValidatoinRule_no_args(ABC):
 
     @property
     @abstractmethod
-    def PropertyName(self) -> str: ...
-
-    @property
-    @abstractmethod
-    def TypeToValidate(self) -> type: ...
-
-    @property
-    @abstractmethod
     def RuleSets(self) -> set[str]: ...
 
     @RuleSets.setter
@@ -34,8 +26,14 @@ class IValidatoinRule_no_args(ABC):
     @abstractmethod
     def get_display_name(context: IValidationContext) -> str: ...
 
+    @property
+    @abstractmethod
+    def PropertyName(self) -> str: ...
 
-class IValidationRule[T, TProperty](IValidatoinRule_no_args):
+    @property
+    @abstractmethod
+    def TypeToValidate(self) -> type: ...
+
     @property
     @abstractmethod
     def Current(self) -> IRuleComponent: ...

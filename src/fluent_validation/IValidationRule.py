@@ -1,10 +1,13 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from typing import Iterable, Callable, TYPE_CHECKING
-from .internal.IRuleComponent import IRuleComponent
+from typing import Iterable, Callable, TYPE_CHECKING, TypeVar
+
+# from src.fluent_validation.enums import ApplyConditionTo
 
 if TYPE_CHECKING:
+    # from src.fluent_validation.IValidationContext import ValidationContext
+    from .internal.IRuleComponent import IRuleComponent
     from .IValidationContext import IValidationContext
     from .internal.MessageBuilderContext import IMessageBuilderContext
     from .validators.IpropertyValidator import IPropertyValidator
@@ -34,6 +37,36 @@ class IValidatoinRule_no_args(ABC):
     @abstractmethod
     def TypeToValidate(self) -> type: ...
 
+    # bool HasCondition { get; }
+
+    # bool HasAsyncCondition { get; }
+
+    # LambdaExpression Expression { get; }
+
+    # @property
+    # @abstractmethod
+    # def DependentRules(self) -> Iterable[IValidationRule]: ...
+
+
+CancellationToken = TypeVar("CancellationToken")
+
+
+class IValidationRule_one_arg[T](IValidatoinRule_no_args):
+    ...
+    # @abstractmethod
+    # def ApplyCondition(predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators): ...
+
+    # @abstractmethod
+    # def ApplyAsyncCondition(predicate: Callable[[ValidationContext[T], CancellationToken], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators): ...
+
+    # @abstractmethod
+    # def ApplySharedCondition(condition: Callable[[ValidationContext[T]], bool]): ...
+
+    # @abstractmethod
+    # def ApplySharedAsyncCondition(condition: Callable[[ValidationContext[T], CancellationToken], bool]): ...
+
+
+class IValidationRule[T, TProperty](IValidationRule_one_arg[T]):
     @property
     @abstractmethod
     def Current(self) -> IRuleComponent: ...

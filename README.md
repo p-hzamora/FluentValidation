@@ -1,3 +1,8 @@
+![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)
+![PyPI version](https://img.shields.io/pypi/v/fluent_validation.svg)
+![PyPI downloads](https://img.shields.io/pypi/dm/fluent_validation?label=PyPI%20downloads)
+![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
+
 # Creating your first validator
 
 To define a set of validation rules for a particular object, you will need to create a class that inherits from `AbstractValidator[T]`, where `T` is the type of class that you wish to validate.

@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
     from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
 
+from src.fluent_validation.internal.TrackingCollection import TrackingCollection
 from ..fluent_validation.IValidator import IValidator  # noqa: F401 We use it in the future
 from .results.ValidationResult import ValidationResult
 from .IValidationContext import IValidationContext, ValidationContext
@@ -23,7 +24,7 @@ class AbstractValidator[T](IValidator[T]):
     def __init__(self) -> None:
         self._classLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultClassLevelCascadeMode
         self._ruleLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultRuleLevelCascadeMode
-        self._rules: list[PropertyRule] = []
+        self._rules: TrackingCollection[IValidationRuleInternal] = TrackingCollection()
 
     # endregion
 
@@ -87,8 +88,9 @@ class AbstractValidator[T](IValidator[T]):
 
     # FIXME [ ]: It's wrong implementation
     def rule_set(self, rule_set_name: str, action: Callable[..., None]) -> None:
-        rule_set_names = [name.strip() for name in rule_set_name.split(",;")]
-        setattr(self._rules, lambda r: setattr(r, "RuleSets", rule_set_names))
+        rule_set_names = [name.strip() for name in rule_set_name.split(",")]
+        with self._rules.OnItemAdded(lambda r: setattr(r, "RuleSets", rule_set_names)):
+            action()
         return None
 
     # region Properties

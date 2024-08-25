@@ -60,6 +60,7 @@ class RulesetValidatorSelector(IValidatorSelector):
             return True
         return False
 
+    @staticmethod
     def IsIncludeRule(rule: IValidationRule) -> bool:
         return isinstance(rule, IIncludeRule)
 

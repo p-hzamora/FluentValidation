@@ -52,8 +52,8 @@ class AbstractValidator[T](IValidator[T]):
     def __validate__(self, context: ValidationContext[T]) -> ValidationResult:
         try:
             return asyncio.run(self.ValidateInternalAsync(context, False))
-        except Exception:
-            raise Exception
+        except Exception as e:
+            raise e
 
     async def ValidateInternalAsync(self, context: ValidationContext[T], useAsync: bool) -> ValidationResult:
         result: ValidationResult = ValidationResult(errors=context.Failures)

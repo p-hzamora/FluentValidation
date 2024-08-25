@@ -31,28 +31,28 @@ class RulesetValidatorSelector(IValidatorSelector):
     def CanExecute(self, rule: IValidationRule, propertyPath: str, context: IValidationContext):
         executed: set = get_or_add(context.RootContextData, "_FV_RuleSetsExecuted", lambda: set())
 
-        if (rule.RuleSets is None | len(rule.RuleSets) == 0) and self._rulesetsToExecute:
+        if (rule.RuleSets is None or len(rule.RuleSets) == 0) and self._rulesetsToExecute:
             if self.IsIncludeRule(rule):
                 return True
 
-        if (rule.RuleSets is None | len(rule.RuleSets) == 0) and not self._rulesetsToExecute:
+        if (rule.RuleSets is None or len(rule.RuleSets) == 0) and not self._rulesetsToExecute:
             executed.add(self.DefaultRuleSetName)
             return True
 
         if self.DefaultRuleSetName.lower() in self._rulesetsToExecute:
-            if rule.RuleSets is None | len(rule.RuleSets) == 0 | self.DefaultRuleSetName.lower() in rule.RuleSets:
+            if rule.RuleSets is None or len(rule.RuleSets) == 0 or self.DefaultRuleSetName.lower() in rule.RuleSets:
                 executed.add(self.DefaultRuleSetName)
                 return True
 
         if rule.RuleSets is not None and len(rule.RuleSets) > 0 and self._rulesetsToExecute:
-            intersection = [rule.RuleSets - set([x.lower() for x in self._rulesetsToExecute])]
+            intersection = set(rule.RuleSets) - set([x.lower() for x in self._rulesetsToExecute])
             if intersection:
                 for r in intersection:
                     executed.add(r)
                 return True
 
         if self.WildcardRuleSetName in self._rulesetsToExecute:
-            if rule.RuleSets is None | len(rule.RuleSets) == 0:
+            if rule.RuleSets is None or len(rule.RuleSets) == 0:
                 executed.add(self.DefaultRuleSetName)
             else:
                 for r in rule.RuleSets:

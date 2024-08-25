@@ -45,7 +45,7 @@ class RulesetValidatorSelector(IValidatorSelector):
                 return True
 
         if rule.RuleSets is not None and len(rule.RuleSets) > 0 and self._rulesetsToExecute:
-            intersection = set(rule.RuleSets) - set([x.lower() for x in self._rulesetsToExecute])
+            intersection = set(rule.RuleSets) & set([x.lower() for x in self._rulesetsToExecute])
             if intersection:
                 for r in intersection:
                     executed.add(r)

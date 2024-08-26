@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Any, Callable, Optional, Self, overload, override
 from abc import ABC, abstractmethod
 
@@ -252,9 +253,67 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         validation.IsChildContext = context.IsChildContext
         validation.RootContextData = context.RootContextData
         validation.ThrowOnFailures = context.ThrowOnFailures
-        # validation._parentContext = context.ParentContext
-        # validation.IsAsync = context.IsAsync
+        # # validation._parentContext = context.ParentContext
+        validation._is = context.IsAsync
         return validation
+
+    def CloneForChildValidator[TChild](self, instanceToValidate: TChild, preserveParentContext: bool = False, selector: Optional[IValidatorSelector] = None) -> ValidationContext[TChild]:
+        _selector = self.Selector if not selector else selector
+        res = ValidationContext[TChild](instanceToValidate, PropertyChain, _selector, self.Failures, MessageFormatter)
+        res.IsChildContext = True
+        res.RootContextData = self.RootContextData
+        # res._parentContext = preserveParentContext ? this : null,
+        res._is_async = self.IsAsync
+        return res
+
+    # internal void PrepareForChildCollectionValidator() {
+    # 	_state ??= new();
+    # # 	_state.Push((IsChildContext, IsChildCollectionContext, _parentContext, PropertyChain, _sharedConditionCache));
+    # 	IsChildContext = true;
+    # 	IsChildCollectionContext = true;
+    # 	PropertyChain = new PropertyChain();
+    # }
+
+    # internal void RestoreState() {
+    # 	var state = _state.Pop();
+    # 	IsChildContext = state.IsChildContext;
+    # 	IsChildCollectionContext = state.IsChildCollectionContext;
+    # # 	_parentContext = state.ParentContext;
+    # 	PropertyChain = state.Chain;
+    # 	_sharedConditionCache = state.SharedConditionCache;
+    # }
+
+    # private Stack<(bool IsChildContext, bool IsChildCollectionContext, IValidationContext ParentContext, PropertyChain Chain, Dictionary<string, Dictionary<T, bool>> SharedConditionCache)> _state;
+
+    def AddFailure_validationFailure(self, failure: ValidationFailure) -> None:
+        self.Failures.append(failure)
+
+    def AddFailure_property_errorMssg(self, propertyName: str, errorMessage: str) -> None:
+        errorMessage = MessageFormatter.BuildMessage(errorMessage)
+        prop_name: str = propertyName if propertyName is not None else ""
+        self.AddFailure(ValidationFailure(PropertyChain.BuildPropertyPath(prop_name), errorMessage))
+
+    def AddFailure_errorMssg(self, errorMessage: str) -> None:
+        errorMessage = MessageFormatter.BuildMessage(errorMessage)
+        self.AddFailure(ValidationFailure(self.PropertyPath, errorMessage))
+
+    @overload
+    def AddFailure(self, failure: ValidationFailure) -> None: ...
+    @overload
+    def AddFailure(self, propertyName: str, errorMessage: str) -> None: ...
+    @overload
+    def AddFailure(self, errorMessage: str) -> None: ...
+
+    def AddFailure(self, failure: Optional[ValidationFailure] = None, propertyName: Optional[str] = None, errorMessage: Optional[str] = None) -> None:
+        if failure and not all([propertyName, errorMessage]):
+            self.AddFailure_validationFailure(failure)
+        elif not all([failure, propertyName]) and errorMessage:
+            self.AddFailure_errorMssg(errorMessage)
+        elif not failure and propertyName is not None and errorMessage is not None:
+            self.AddFailure_property_errorMssg(propertyName, errorMessage)
+        else:
+            raise AttributeError
+
     def InitializeForPropertyValidator(self, propertyPath: str, displayNameFunc: Callable[[Self], str], rawPropertyName: str) -> None:
         self._property_path = propertyPath
         self._displayNameFunc = displayNameFunc

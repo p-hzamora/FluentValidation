@@ -113,7 +113,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._RootContextData: dict[str, Any] = {}
         self._IsChildContext: bool = False
         self._IsChildCollectionContext: bool = False
-        self._RawPropertyName:str = None
+        self._RawPropertyName: str = None
 
     @override
     @property

@@ -251,9 +251,9 @@ class ValidationContext[T](IValidationContext, IHasFailures):
 
         failures = context.Failures if isinstance(context, IHasFailures) else []
         validation = ValidationContext[T](context.instance_to_validate, context.PropertyChain, context.Selector, failures, ValidatorOptions.Global.MessageFormatterFactory())
-        validation.IsChildContext = (context.IsChildContext,)
-        validation.RootContextData = (context.RootContextData,)
-        validation.ThrowOnFailures = (context.ThrowOnFailures,)
-        # validation._parentContext = context.ParentContext,
+        validation.IsChildContext = context.IsChildContext
+        validation.RootContextData = context.RootContextData
+        validation.ThrowOnFailures = context.ThrowOnFailures
+        # validation._parentContext = context.ParentContext
         # validation.IsAsync = context.IsAsync
         return validation

@@ -142,12 +142,6 @@ class ValidationContext[T](IValidationContext, IHasFailures):
             return self._displayNameFunc(self)
         return None
 
-    def InitializeForPropertyValidator(self, propertyPath: str, displayNameFunc: Callable[[Self], str], rawPropertyName: str) -> None:
-        self._property_path = propertyPath
-        self._displayNameFunc = displayNameFunc
-        # it used in 'CreateNewValidationContextForChildValidator' method
-        self.RawPropertyName = rawPropertyName
-        return None
 
     @staticmethod
     def CreateWithOptions(instanceToValidate: T, options: Callable[[ValidationStrategy], None]) -> "ValidationContext[T]":
@@ -257,3 +251,9 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         # validation._parentContext = context.ParentContext
         # validation.IsAsync = context.IsAsync
         return validation
+    def InitializeForPropertyValidator(self, propertyPath: str, displayNameFunc: Callable[[Self], str], rawPropertyName: str) -> None:
+        self._property_path = propertyPath
+        self._displayNameFunc = displayNameFunc
+        # it used in 'CreateNewValidationContextForChildValidator' method
+        self.RawPropertyName = rawPropertyName
+        return None

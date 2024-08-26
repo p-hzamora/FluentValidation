@@ -137,8 +137,10 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._RawPropertyName = value
 
     @property
-    def DisplayName(self) -> str:  # FIXME [x]: must be Callable[[self],str]
-        return self._displayNameFunc(self)
+    def DisplayName(self) -> Optional[str]:
+        if self._displayNameFunc:
+            return self._displayNameFunc(self)
+        return None
 
     def InitializeForPropertyValidator(self, propertyPath: str, displayNameFunc: Callable[[Self], str], rawPropertyName: str) -> None:
         self._property_path = propertyPath

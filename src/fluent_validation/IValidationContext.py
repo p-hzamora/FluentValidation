@@ -55,6 +55,22 @@ class IHasFailures(ABC):
 
 
 class ValidationContext[T](IValidationContext, IHasFailures):
+    __slots__ = (
+        "_instance_to_validate",
+        "_PropertyChain",
+        "_Selector",
+        "_failures",
+        "_MessageFormatter",
+        "_messageFormatter",
+        "_property_path",
+        "_displayNameFunc",
+        "_ThrowOnFailures",
+        "_RootContextData",
+        "_IsChildContext",
+        "_IsChildCollectionContext",
+        "_RawPropertyName",
+    )
+
     @overload
     def __init__(self, instanceToValidate: T): ...
     @overload

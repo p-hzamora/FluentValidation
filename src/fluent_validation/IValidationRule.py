@@ -6,11 +6,13 @@ from typing import Iterable, Callable, TYPE_CHECKING, TypeVar
 # from src.fluent_validation.enums import ApplyConditionTo
 
 if TYPE_CHECKING:
+    # from src.fluent_validation.enums import CascadeMode as _CascadeMode
     # from src.fluent_validation.IValidationContext import ValidationContext
     from .internal.IRuleComponent import IRuleComponent
     from .IValidationContext import IValidationContext
     from .internal.MessageBuilderContext import IMessageBuilderContext
     from .validators.IpropertyValidator import IPropertyValidator
+    from src.fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator
 
 
 class IValidatoinRule_no_args(ABC):
@@ -67,12 +69,25 @@ class IValidationRule_one_arg[T](IValidatoinRule_no_args):
 
 
 class IValidationRule[T, TProperty](IValidationRule_one_arg[T]):
+    # @abstractmethod
+    # def SetDisplayName(self, name:str)->None: ...
+
+    # @property
+    # @abstractmethod
+    # def CascadeMode(self)->_CascadeMode: ...
+
+    # @abstractmethod
+    # def SetDisplayName(self, factory:Callable[[ValidationContext[T]], str])->None: ...
+
+    @abstractmethod
+    def AddValidator(self, validator: IPropertyValidator[T, TProperty]): ...
+
+    @abstractmethod
+    def AddAsyncValidator(self, asyncValidator: IAsyncPropertyValidator[T, TProperty], fallback: IPropertyValidator[T, TProperty] = None) -> None: ...
+
     @property
     @abstractmethod
     def Current(self) -> IRuleComponent: ...
-
-    @abstractmethod
-    def AddValidator(validator: IPropertyValidator[T, TProperty]): ...
 
     @property
     @abstractmethod

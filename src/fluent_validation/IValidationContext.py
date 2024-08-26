@@ -93,11 +93,11 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         else:
             self.__init__all_attr(instance_to_validate, propertyChain, validatorSelector, failures, messageFormatter)
 
-    def __init__one_attr(instanceToValidate: T):
-        ValidationContext(instanceToValidate, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory())
+    def __init__one_attr(self, instanceToValidate: T):
+        self.__init__(instanceToValidate, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory())
 
     def __init__three_attr(self, instanceToValidate: T, propertyChain: PropertyChain, validatorSelector: IValidatorSelector):
-        ValidationContext(instanceToValidate, propertyChain, validatorSelector, [], ValidatorOptions.Global.MessageFormatterFactory())
+        self.__init__(instanceToValidate, propertyChain, validatorSelector, [], ValidatorOptions.Global.MessageFormatterFactory())
 
     def __init__all_attr(self, instanceToValidate: T, propertyChain: PropertyChain, validatorSelector: IValidatorSelector, failures: list[ValidationFailure], messageFormatter: MessageFormatter):
         self._instance_to_validate = instanceToValidate

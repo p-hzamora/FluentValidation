@@ -17,7 +17,7 @@ class IValidationContext(ABC):
 
     @property
     @abstractmethod
-    def RootContextData(self) -> dict[str, object]: ...
+    def RootContextData(self) -> dict[str, set[str]]: ...
 
     @property
     @abstractmethod
@@ -148,11 +148,11 @@ class ValidationContext[T](IValidationContext, IHasFailures):
 
     @override
     @property
-    def RootContextData(self) -> dict[str, Any]:
+    def RootContextData(self) -> dict[str, set[str]]:
         return self._RootContextData
 
     @RootContextData.setter
-    def RootContextData(self, value: dict[str, Any]) -> None:
+    def RootContextData(self, value: dict[str, set[str]]) -> None:
         self._RootContextData = value
 
     @property

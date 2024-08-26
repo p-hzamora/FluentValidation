@@ -37,6 +37,10 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         PropertyPath: str = context.PropertyChain.BuildPropertyPath(displayName if not self.PropertyName else self.PropertyName)
         if not context.Selector.CanExecute(self, PropertyPath, context):
             return None
+        
+        if self.Condition:
+            if self.Condition(context) is not None:
+                return None
 
         # if (AsyncCondition != null) {
         #     if (useAsync) {

@@ -1,8 +1,8 @@
-from typing import Callable, List, Optional
+from __future__ import annotations
+from typing import Callable, List, Optional, TYPE_CHECKING
 
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from src.fluent_validation.internal.ExtensionInternal import ExtensionsInternal
-
 from ..IValidationRule import IValidationRule
 from ...fluent_validation.internal.IRuleComponent import IRuleComponent
 from ..internal.MessageBuilderContext import IMessageBuilderContext, MessageBuilderContext
@@ -12,6 +12,9 @@ from ..results.ValidationFailure import ValidationFailure
 
 from ..IValidationContext import ValidationContext
 from ..enums import CascadeMode
+
+if TYPE_CHECKING:
+    from src.fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
 
 
 class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
@@ -36,6 +39,17 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
         self._displayName: str = self._propertyName  # FIXME [x]: This implementation is wrong. It must call the "GetDisplay" method
         self._rule_sets: Optional[list[str]] = None
+
+    def AddValidator(self, validator: IPropertyValidator[T, TValue]) -> None:
+        component = RuleComponent[T, TValue](validator)
+        self._components.append(component)
+
+    def AddAsyncValidator(self, asyncValidator: IAsyncPropertyValidator[T, TValue], fallback: IPropertyValidator[T, TValue] = None) -> None:
+        component = RuleComponent[T, TValue](asyncValidator, fallback)
+        self._components.append(component)
+
+    def ClearValidators(self) -> None:
+        self._components.clear()
 
     def get_display_name(self, context: ValidationContext[T]) -> None | str:
         if self._displayNameFactory is not None and (res := self._displayNameFactory(context)) is not None:

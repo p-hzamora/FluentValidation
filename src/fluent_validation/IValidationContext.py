@@ -39,9 +39,9 @@ class IValidationContext(ABC):
     # @abstractmethod
     # def ParentContext(self)->Self: ...
 
-    # @property
-    # @abstractmethod
-    # def IsAsync(self)->bool: ...
+    @property
+    @abstractmethod
+    def IsAsync(self) -> bool: ...
 
     @property
     @abstractmethod
@@ -114,6 +114,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._IsChildContext: bool = False
         self._IsChildCollectionContext: bool = False
         self._RawPropertyName: str = None
+        self._is_async: bool = False
 
     @override
     @property
@@ -208,10 +209,13 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     # # Explicit implementation so it's not exposed necessarily.
     # IValidationContext IValidationContext.ParentContext => _parentContext;
 
-    # public bool IsAsync {
-    # 	get;
-    # 	internal set;
-    # }
+    @property
+    def IsAsync(self) -> bool:
+        return self._is_async
+
+    @IsAsync.setter
+    def IsAsync(self, value: bool) -> None:
+        self._is_async = value
 
     @override
     @property

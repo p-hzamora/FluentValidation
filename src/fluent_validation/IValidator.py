@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Callable, overload
+from typing import TYPE_CHECKING, Callable, Type, overload
 
 if TYPE_CHECKING:
     from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
@@ -8,7 +8,20 @@ if TYPE_CHECKING:
     from .results.ValidationResult import ValidationResult
 
 
-class IValidator[T](ABC):
+class IValidator_no_generic(ABC):
+    @abstractmethod
+    def validate(self, context:IValidationContext)->ValidationResult: ...
+
+    @abstractmethod
+    async def ValidateAsync(self, context: IValidationContext) -> ValidationResult: ...  # CancellationToken cancellation = new CancellationToken()
+
+    # @abstractmethod
+    # def CreateDescriptor(self,)->IValidatorDescriptor: ...
+    
+    @abstractmethod
+    def CanValidateInstancesOfType(type:Type)->bool: ...
+
+class IValidator[T](IValidator_no_generic):
     @overload
     def validate(validator: "IValidator[T]", instance: T) -> ValidationResult: ...
 
@@ -20,3 +33,7 @@ class IValidator[T](ABC):
 
     @abstractmethod
     def validate(validator, instance, options): ...
+
+    #TODOL: Checked in C#
+    @abstractmethod
+    async def ValidateAsync(validator: "IValidator[T]", instance: T) -> ValidationResult: ...  # CancellationToken cancellation = new CancellationToken()

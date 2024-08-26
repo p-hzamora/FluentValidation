@@ -13,7 +13,7 @@ def get_or_add(dictionary: dict, key: str, factory) -> set:
         dictionary[key] = factory()
     return dictionary[key]
 
-
+#TODOL: Check how to implement 'case insensitive'. Currently it's case sensitive
 class RulesetValidatorSelector(IValidatorSelector):
     DefaultRuleSetName: str = "default"
     WildcardRuleSetName: str = "*"
@@ -25,39 +25,37 @@ class RulesetValidatorSelector(IValidatorSelector):
         return self._rulesetsToExecute
 
     def __init__(self, rulesetsToExecute: Iterable[str]):
-        self._rulesetsToExecute: Iterable[str] = [x.lower() for x in rulesetsToExecute]
+        self._rulesetsToExecute: Iterable[str] = rulesetsToExecute
 
     @override
     def CanExecute(self, rule: IValidationRule, propertyPath: str, context: IValidationContext):
-        executed: set = get_or_add(context.RootContextData, "_FV_RuleSetsExecuted", lambda: set())
+        executed: set[str] = get_or_add(context.RootContextData, "_FV_RuleSetsExecuted", lambda: set())
 
-        RuleSetsLower:None|list[str] = [x.lower() for x in rule.RuleSets] if rule.RuleSets else None
-
-        if (RuleSetsLower is None or len(RuleSetsLower) == 0) and self._rulesetsToExecute:
+        if (rule.RuleSets is None or len(rule.RuleSets) == 0) and self._rulesetsToExecute:
             if self.IsIncludeRule(rule):
                 return True
 
-        if (RuleSetsLower is None or len(RuleSetsLower) == 0) and not self._rulesetsToExecute:
+        if (rule.RuleSets is None or len(rule.RuleSets) == 0) and not self._rulesetsToExecute:
             executed.add(self.DefaultRuleSetName)
             return True
 
         if self.DefaultRuleSetName in self._rulesetsToExecute:
-            if RuleSetsLower is None or len(RuleSetsLower) == 0 or self.DefaultRuleSetName in RuleSetsLower:
+            if rule.RuleSets is None or len(rule.RuleSets) == 0 or self.DefaultRuleSetName in rule.RuleSets:
                 executed.add(self.DefaultRuleSetName)
                 return True
 
-        if RuleSetsLower is not None and len(RuleSetsLower) > 0 and self._rulesetsToExecute:
-            intersection = set(RuleSetsLower) & set(self._rulesetsToExecute)
+        if rule.RuleSets is not None and len(rule.RuleSets) > 0 and self._rulesetsToExecute:
+            intersection = set(rule.RuleSets) & set(self._rulesetsToExecute)
             if intersection:
                 for r in intersection:
                     executed.add(r)
                 return True
 
         if self.WildcardRuleSetName in self._rulesetsToExecute:
-            if RuleSetsLower is None or len(RuleSetsLower) == 0:
+            if rule.RuleSets is None or len(rule.RuleSets) == 0:
                 executed.add(self.DefaultRuleSetName)
             else:
-                for r in RuleSetsLower:
+                for r in rule.RuleSets:
                     executed.add(r)
             return True
         return False

@@ -27,6 +27,8 @@ class ValidationResult:
         failures: Optional[Iterable[ValidationFailure]] = None,
         otherResults: Optional[Iterable["ValidationResult"]] = None,
     ) -> None:
+        
+        self._rule_sets_executed:Optional[list[str]]= None
         if errors is None and failures is None:
             self._errors: list[ValidationFailure] = []
 
@@ -54,11 +56,11 @@ class ValidationResult:
         return self._errors
 
     @property
-    def RuleSetsExecuted(self) -> list[str]:
+    def RuleSetsExecuted(self) -> Optional[list[str]]:
         return self._rule_sets_executed
 
     @RuleSetsExecuted.setter
-    def RuleSetsExecuted(self, value: list[str]) -> list[str]:
+    def RuleSetsExecuted(self, value: Optional[list[str]]) -> None:
         self._rule_sets_executed = value
 
     def to_string(self, separator: str = "\n") -> str:

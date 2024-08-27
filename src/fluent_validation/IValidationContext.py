@@ -36,9 +36,9 @@ class IValidationContext(ABC):
     @abstractmethod
     def IsChildCollectionContext(self) -> bool: ...
 
-    # @property
-    # @abstractmethod
-    # def ParentContext(self)->Self: ...
+    @property
+    @abstractmethod
+    def ParentContext(self) -> Self: ...
 
     @property
     @abstractmethod
@@ -70,6 +70,8 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         "_IsChildContext",
         "_IsChildCollectionContext",
         "_RawPropertyName",
+        "_is_async",
+        "_ParentContext",
     )
 
     @overload
@@ -116,6 +118,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._IsChildCollectionContext: bool = False
         self._RawPropertyName: str = None
         self._is_async: bool = False
+        self._ParentContext: IValidationContext = None
 
     @override
     @property
@@ -143,7 +146,6 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         if self._displayNameFunc:
             return self._displayNameFunc(self)
         return None
-
 
     @staticmethod
     def CreateWithOptions(instanceToValidate: T, options: Callable[[ValidationStrategy], None]) -> "ValidationContext[T]":
@@ -206,9 +208,11 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     def IsChildCollectionContext(self, value: bool) -> None:
         self._IsChildCollectionContext = value
 
-    # # This is the root context so it doesn't have a parent.
-    # # Explicit implementation so it's not exposed necessarily.
-    # IValidationContext IValidationContext.ParentContext => _parentContext;
+    # This is the root context so it doesn't have a parent.
+    # Explicit implementation so it's not exposed necessarily.
+    @property
+    def ParentContext(self) -> IValidationContext:
+        return self._ParentContext
 
     @property
     def IsAsync(self) -> bool:
@@ -253,16 +257,16 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         validation.IsChildContext = context.IsChildContext
         validation.RootContextData = context.RootContextData
         validation.ThrowOnFailures = context.ThrowOnFailures
-        # # validation._parentContext = context.ParentContext
-        validation._is = context.IsAsync
+        validation._ParentContext = context.ParentContext
+        validation._isAsync = context.IsAsync
         return validation
 
     def CloneForChildValidator[TChild](self, instanceToValidate: TChild, preserveParentContext: bool = False, selector: Optional[IValidatorSelector] = None) -> ValidationContext[TChild]:
         _selector = self.Selector if not selector else selector
-        res = ValidationContext[TChild](instanceToValidate, PropertyChain, _selector, self.Failures, MessageFormatter)
+        res = ValidationContext[TChild](instanceToValidate, self.PropertyChain, _selector, self.Failures, self.MessageFormatter)
         res.IsChildContext = True
         res.RootContextData = self.RootContextData
-        # res._parentContext = preserveParentContext ? this : null,
+        res._ParentContext = (self if preserveParentContext else None,)
         res._is_async = self.IsAsync
         return res
 

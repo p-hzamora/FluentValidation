@@ -26,13 +26,13 @@ class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal
             return self.set_validator_IPropertyValidator(validator)
 
         elif isinstance(validator, IValidator):
-            return self.set_validator_IValidator(validator, ruleSets)
+            return self.set_validator_IValidator(validator, *ruleSets)
 
         elif callable(validator) and len(inspect.signature(validator).parameters) == 1:
-            return self.set_validator_Callable_T(validator, ruleSets)
+            return self.set_validator_Callable_T(validator, *ruleSets)
 
         elif callable(validator) and len(inspect.signature(validator).parameters) == 2:
-            return self.set_validator_Callable_T_TProperty(validator, ruleSets)
+            return self.set_validator_Callable_T_TProperty(validator, *ruleSets)
 
         else:
             raise AttributeError(validator)

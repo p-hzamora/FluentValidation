@@ -75,7 +75,10 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
 
             if first:
                 first = False
-                propValue = self.PropertyFunc(context.instance_to_validate)
+                try:
+                    propValue = self.PropertyFunc(context.instance_to_validate)
+                except AttributeError:  # FIXME [ ]: Checked this try/except
+                    AttributeError("NullReferenceException occurred when executing rule for 'self.Expression'. If this property can be null you should add a null check using a When condition")
 
             valid: bool = await component.ValidateAsync(context, propValue, useAsync)
             if not valid:

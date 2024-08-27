@@ -44,8 +44,23 @@ class RuleComponent[T, TProperty](IRuleComponent):
 
     async def ValidateAsync(self, context: ValidationContext[T], value: TProperty, useAsync: bool) -> bool:
         if useAsync:
-            return await self.InvokePropertyValidatorAsync(context, value)
-        return self.InvokePropertyValidator(context, value)
+            # If ValidateAsync has been called on the root validator, then always prefer
+            # the asynchronous property validator (if available).
+            if self.SupportsAsynchronousValidation:
+                return await self.InvokePropertyValidatorAsync(context, value)
+
+            # If it doesn't support Async validation, then this means
+            # the property validator is a Synchronous.
+            # We don't need to explicitly check SupportsSynchronousValidation.
+            return self.InvokePropertyValidator(context, value)
+
+        # If Validate has been called on the root validator, then always prefer
+        # the synchronous property validator.
+        if self.SupportsSynchronousValidation:
+            return self.InvokePropertyValidator(context, value)
+        # Root Validator invoked synchronously, but the property validator
+        # only supports asynchronous invocation.
+        raise AsyncValidatorInvokedSynchronouslyException
 
     async def InvokePropertyValidatorAsync(self, context: ValidationContext[T], value: TProperty):
         return self._asyncPropertyValidator.IsValidAsync(context, value)

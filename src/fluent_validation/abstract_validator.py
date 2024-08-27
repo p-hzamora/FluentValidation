@@ -61,9 +61,10 @@ class AbstractValidator[T](IValidator[T]):
 
         count: int = len(self._rules)
         for i in range(count):
+            totalFailures = len(context.Failures)
             await self._rules[i].ValidateAsync(context, useAsync)
 
-            if self.ClassLevelCascadeMode == CascadeMode.Stop and len(result.errors) > 0:
+            if self.ClassLevelCascadeMode == CascadeMode.Stop and len(result.errors) > totalFailures:
                 break
 
         self.SetExecutedRuleSets(result, context)

@@ -30,7 +30,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
 
     async def ValidateAsync(self, context: ValidationContext[T], useAsync: bool) -> None:
         displayName: None | str = self.get_display_name(context)
-
+        
         if self.PropertyName is None and displayName is None:
             displayName = ""
 

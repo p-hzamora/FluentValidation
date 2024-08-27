@@ -76,12 +76,13 @@ class AbstractValidator[T](IValidator[T]):
 
         # COMMENT: used in private async ValueTask<ValidationResult> ValidateInternalAsync(ValidationContext<T> context, bool useAsync, CancellationToken cancellation) {...}
 
-    def SetExecutedRuleSets(self, result: ValidationResult, context: ValidationContext[T]):
+    def SetExecutedRuleSets(self, result: ValidationResult, context: ValidationContext[T]) -> None:
         obj = context.RootContextData.get("_FV_RuleSetsExecuted", None)
         if obj is not None and isinstance(obj, set):
             result.RuleSetsExecuted = list(obj)
         else:
             result.RuleSetsExecuted = RulesetValidatorSelector.DefaultRuleSetNameInArray
+        return None
 
     # public virtual IValidatorDescriptor CreateDescriptor() => new ValidatorDescriptor<T>(Rules);
 

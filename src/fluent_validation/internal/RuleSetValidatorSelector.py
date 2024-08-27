@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Iterable, override, TYPE_CHECKING
+from typing import Callable, Iterable, override, TYPE_CHECKING
 from src.fluent_validation.IValidationRule import IValidationRule
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from src.fluent_validation.internal.IncludeRule import IIncludeRule
@@ -8,12 +8,13 @@ if TYPE_CHECKING:
     from src.fluent_validation.IValidationContext import IValidationContext
 
 
-def get_or_add(dictionary: dict, key: str, factory) -> set:
+def get_or_add[T](dictionary: dict, key: str, factory: Callable[..., T]) -> set:
     if key not in dictionary:
         dictionary[key] = factory()
     return dictionary[key]
 
-#TODOL: Check how to implement 'case insensitive'. Currently it's case sensitive
+
+# TODOL: Check how to implement 'case insensitive'. Currently it's case sensitive
 class RulesetValidatorSelector(IValidatorSelector):
     DefaultRuleSetName: str = "default"
     WildcardRuleSetName: str = "*"

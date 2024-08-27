@@ -13,7 +13,7 @@ class DefaultValidatorSelector(IValidatorSelector):
     @staticmethod
     def CanExecute(rule:IValidationRule, propertyPath:str,context:IValidationContext):
         #By default we ignore any rules part of a RuleSet.
-        if rule.RuleSets is not None and len(rule.RuleSets) > 0 and RulesetValidatorSelector.DefaultRuleSetName.lower() not in rule.RuleSets:
+        if rule.RuleSets is not None and len(rule.RuleSets) > 0 and RulesetValidatorSelector.DefaultRuleSetName not in tuple(map(str.lower,rule.RuleSets)):
             return False
         return True
     

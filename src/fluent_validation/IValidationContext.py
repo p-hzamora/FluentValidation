@@ -72,6 +72,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         "_RawPropertyName",
         "_is_async",
         "_ParentContext",
+        "_sharedConditionCache"
     )
 
     @overload
@@ -119,6 +120,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._RawPropertyName: str = None
         self._is_async: bool = False
         self._ParentContext: IValidationContext = None
+        self._sharedConditionCache:dict[str,dict[T,bool]] = None
 
     @override
     @property
@@ -232,14 +234,12 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     def ThrowOnFailures(self, value: bool) -> None:
         self._ThrowOnFailures = value
 
-    # private Dictionary<string, Dictionary<T, bool>> _sharedConditionCache;
 
-    # internal Dictionary<string, Dictionary<T, bool>> SharedConditionCache {
-    # 	get {
-    # 		_sharedConditionCache ??= new();
-    # 		return _sharedConditionCache;
-    # 	}
-    # }
+    @property
+    def SharedConditionCache(self)->dict[str,dict[T,bool]]:
+        if self._sharedConditionCache is None:
+            self._sharedConditionCache = {}
+        return self._sharedConditionCache
 
     @staticmethod
     def GetFromNonGenericContext(context: IValidationContext) -> "ValidationContext[T]":

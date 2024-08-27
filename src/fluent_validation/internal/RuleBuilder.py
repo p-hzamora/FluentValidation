@@ -50,10 +50,12 @@ class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal
         self.Rule.AddAsyncValidator(adaptor, adaptor)
         return self
 
-    def set_validator_Callable_T(self, validator: Callable[[T], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: 
-        #TODOH []: We need to implement this method to use set_validator properly
-        ...
+    def set_validator_Callable_T(self, validator: Callable[[T], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
+        # TODOH []: We need to implement this method to use set_validator properly
+        raise Exception
+        return self
 
-    def set_validator_Callable_T_TProperty(self, validator: Callable[[T, TProperty], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: 
-        #TODOH []: We need to implement this method to use set_validator properly
-        ...
+    def set_validator_Callable_T_TProperty(self, validator: Callable[[T, TProperty], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
+        # TODOH []: We need to implement this method to use set_validator properly
+        raise Exception
+        return self

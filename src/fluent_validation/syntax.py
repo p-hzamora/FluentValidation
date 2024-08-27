@@ -243,3 +243,7 @@ class IRuleBuilder[T, TProperty](IRuleBuilderInternal, DefaultValidatorExtension
 class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
     @abstractmethod
     def DependentRules(action) -> Self: ...
+
+
+class IConditionBuilder(ABC):
+    def Otherwise(action:Callable[...,None])->None: ...

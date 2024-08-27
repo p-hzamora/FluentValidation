@@ -66,11 +66,11 @@ class RuleComponent[T, TProperty](IRuleComponent):
         return self._asyncPropertyValidator.IsValidAsync(context, value)
 
     def InvokePropertyValidator(self, context: ValidationContext[T], value: TProperty) -> bool:
-        return self.Validator.is_valid(context, value)
+        return self._property_validator.is_valid(context, value)
 
     def GetErrorMessage(self, context: Optional[ValidationContext[T]], value: TProperty):
         # FIXME [x]: self._error_message has value when it must by empty test "test_When_the_maxlength_validator_fails_the_error_message_should_be_set"
-        rawTemplate:Optional[str] = setattr(self._errorMessageFactory, value) if self._errorMessageFactory else self._error_message
+        rawTemplate: Optional[str] = setattr(self._errorMessageFactory, value) if self._errorMessageFactory else self._error_message
         if rawTemplate is None:
             rawTemplate = self.Validator.get_default_message_template(self.ErrorCode)  # original
 

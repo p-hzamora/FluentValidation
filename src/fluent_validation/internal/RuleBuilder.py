@@ -3,6 +3,7 @@ from typing import Callable, TypeVar
 
 from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
 from src.fluent_validation.IValidator import IValidator
+from src.fluent_validation.validators.ChildValidatorAdaptor import ChildValidatorAdaptor
 
 from ..IValidationRule import IValidationRule
 from ..validators.IpropertyValidator import IPropertyValidator
@@ -42,12 +43,12 @@ class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal
         return self
 
     def set_validator_IValidator(self, validator: IValidator[TProperty], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
-        # TODOH []: Create ChildValidatorAdaptor class ASAP
-        ...
-        # adaptor = ChildValidatorAdaptor[T,TProperty](validator,type(validator))
-        # adaptor.RuleSets = ruleSets
+        # TODOH [x]: Create ChildValidatorAdaptor class ASAP
+        adaptor = ChildValidatorAdaptor[T, TProperty](validator, type(validator))
+        adaptor.RuleSets = ruleSets
 
-        # self.Rule.AddAsyncValidator(adaptor,adaptor)
+        self.Rule.AddAsyncValidator(adaptor, adaptor)
+        return self
 
     def set_validator_Callable_T(self, validator: Callable[[T], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: 
         #TODOH []: We need to implement this method to use set_validator properly

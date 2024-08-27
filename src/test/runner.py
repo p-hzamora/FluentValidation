@@ -8,6 +8,7 @@ import test_LessThanOrEqual
 import test_LessThanValidator
 import test_LengtValidator
 import test_PredicateValidator
+import test_Ruleset
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -24,6 +25,7 @@ suite.addTests(
         *loader.loadTestsFromModule(test_LessThanValidator),
         *loader.loadTestsFromModule(test_LengtValidator),
         *loader.loadTestsFromModule(test_PredicateValidator),
+        *loader.loadTestsFromModule(test_Ruleset),
     ]
 )
 

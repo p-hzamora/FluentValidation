@@ -141,27 +141,25 @@ class AbstractValidatorTester(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
         self.assertEqual(result.errors[0].PropertyName, "Address.Line1")
 
-    # def CanValidateInstancesOfType_returns_true_when_comparing_against_same_type(self):
-    #     self.validator = (IValidator)this.self.validator
-    #     self.validator.CanValidateInstancesOfType(typeof(Person)).ShouldBeTrue()
+    def test_CanValidateInstancesOfType_returns_true_when_comparing_against_same_type(self):
+        self.assertTrue(self.validator.CanValidateInstancesOfType(Person))
 
     # def CanValidateInstancesOfType_returns_true_when_comparing_against_subclass(self):
     #     self.validator = (IValidator)this.self.validator
     #     self.validator.CanValidateInstancesOfType(typeof(DerivedPerson)).ShouldBeTrue()
 
-    # def CanValidateInstancesOfType_returns_false_when_comparing_against_some_other_type(self):
-    #     self.validator = (IValidator)this.self.validator
-    #     self.validator.CanValidateInstancesOfType(typeof(Address)).ShouldBeFalse()
+    def test_CanValidateInstancesOfType_returns_false_when_comparing_against_some_other_type(self):
+        self.assertFalse(self.validator.CanValidateInstancesOfType(Address))
 
-    # def Uses_named_parameters_to_validate_ruleset(self):
-    #     self.validator.RuleSet("Names", (lambda ): {
-    #         self.validator.rule_for(lambda x: x.Surname).not_null()
-    #         self.validator.rule_for(lambda x: x.Forename).not_null()
-    #     )
-    #     self.validator.rule_for(lambda x: x.Id).not_equal(0)
+    def test_Uses_named_parameters_to_validate_ruleset(self):
+        self.validator.rule_set("Names", lambda : (
+            self.validator.rule_for(lambda x: x.Surname).not_null(),
+            self.validator.rule_for(lambda x: x.Forename).not_null(),
+        ))
+        self.validator.rule_for(lambda x: x.Id).not_equal(0)
 
-    #     result = self.validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
-    #     self.assertEqual(len(result.errors),2)
+        result = self.validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
+        self.assertEqual(len(result.errors),2)
 
 
 #     def Validates_type_when_using_non_generic_validate_overload(self):

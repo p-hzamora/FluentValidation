@@ -87,7 +87,7 @@ class AbstractValidator[T](IValidator[T]):
     # public virtual IValidatorDescriptor CreateDescriptor() => new ValidatorDescriptor<T>(Rules);
 
     def CanValidateInstancesOfType(self, _type: Type) -> bool:
-        return issubclass(_type, self.__class__)
+        return issubclass(_type, self.__orig_bases__[0].__args__[0])
 
     def rule_for[TProperty](self, func: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
         rule: PropertyRule[T, TProperty] = PropertyRule.create(func, lambda: self.RuleLevelCascadeMode)

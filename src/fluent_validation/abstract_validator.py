@@ -86,12 +86,90 @@ class AbstractValidator[T](IValidator[T]):
         self._rules.append(rule)
         return RuleBuilder[T, TProperty](rule, self)
 
+    #   public IRuleBuilderInitial<T, TTransformed> Transform<TProperty, TTransformed>(Expression<Func<T, TProperty>> from, Func<TProperty, TTransformed> to) {
+    #         from.Guard("Cannot pass null to Transform", nameof(from));
+    #         var rule = PropertyRule<T, TTransformed>.Create(from, to, () => RuleLevelCascadeMode);
+    #         Rules.Add(rule);
+    #         OnRuleAdded(rule);
+    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #     }
+
+    #     public IRuleBuilderInitial<T, TTransformed> Transform<TProperty, TTransformed>(Expression<Func<T, TProperty>> from, Func<T, TProperty, TTransformed> to) {
+    #         from.Guard("Cannot pass null to Transform", nameof(from));
+    #         var rule = PropertyRule<T, TTransformed>.Create(from, to, () => RuleLevelCascadeMode);
+    #         Rules.Add(rule);
+    #         OnRuleAdded(rule);
+    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #     }
+
+    #     public IRuleBuilderInitialCollection<T, TElement> RuleForEach<TElement>(Expression<Func<T, IEnumerable<TElement>>> expression) {
+    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression));
+    #         var rule = CollectionPropertyRule<T, TElement>.Create(expression, () => RuleLevelCascadeMode);
+    #         Rules.Add(rule);
+    #         OnRuleAdded(rule);
+    #         return new RuleBuilder<T, TElement>(rule, this);
+    #     }
+
+    #     public IRuleBuilderInitialCollection<T, TTransformed> TransformForEach<TElement, TTransformed>(Expression<Func<T, IEnumerable<TElement>>> expression, Func<TElement, TTransformed> to) {
+    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression));
+    #         var rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(expression, to, () => RuleLevelCascadeMode);
+    #         Rules.Add(rule);
+    #         OnRuleAdded(rule);
+    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #     }
+
+    #     public IRuleBuilderInitialCollection<T, TTransformed> TransformForEach<TElement, TTransformed>(Expression<Func<T, IEnumerable<TElement>>> expression, Func<T, TElement, TTransformed> to) {
+    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression));
+    #         var rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(expression, to, () => RuleLevelCascadeMode);
+    #         Rules.Add(rule);
+    #         OnRuleAdded(rule);
+    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #     }
+
     # FIXME [x]: It's wrong implementation
     def rule_set(self, rule_set_name: str, action: Callable[..., None]) -> None:
         rule_set_names = [name.strip() for name in rule_set_name.split(",")]
         with self._rules.OnItemAdded(lambda r: setattr(r, "RuleSets", rule_set_names)):
             action()
         return None
+
+    # public IConditionBuilder When(Func<T, bool> predicate, Action action)
+    #     => When((x, _) => predicate(x), action);
+
+    # public IConditionBuilder When(Func<T, ValidationContext<T>, bool> predicate, Action action)
+    #     => new ConditionBuilder<T>(Rules).When(predicate, action);
+
+    # public IConditionBuilder Unless(Func<T, bool> predicate, Action action)
+    #     => Unless((x, _) => predicate(x), action);
+
+    # public IConditionBuilder Unless(Func<T, ValidationContext<T>, bool> predicate, Action action)
+    #     => new ConditionBuilder<T>(Rules).Unless(predicate, action);
+
+    # public IConditionBuilder WhenAsync(Func<T, CancellationToken, Task<bool>> predicate, Action action)
+    #     => WhenAsync((x, _, cancel) => predicate(x, cancel), action);
+
+    # public IConditionBuilder WhenAsync(Func<T, ValidationContext<T>, CancellationToken, Task<bool>> predicate, Action action)
+    #     => new AsyncConditionBuilder<T>(Rules).WhenAsync(predicate, action);
+
+    # public IConditionBuilder UnlessAsync(Func<T, CancellationToken, Task<bool>> predicate, Action action)
+    #     => UnlessAsync((x, _, cancel) => predicate(x, cancel), action);
+
+    # public IConditionBuilder UnlessAsync(Func<T, ValidationContext<T>, CancellationToken, Task<bool>> predicate, Action action)
+    #     => new AsyncConditionBuilder<T>(Rules).UnlessAsync(predicate, action);
+
+    # public void Include(IValidator<T> rulesToInclude) {
+    #     rulesToInclude.Guard("Cannot pass null to Include", nameof(rulesToInclude));
+    #     var rule = IncludeRule<T>.Create(rulesToInclude, () => RuleLevelCascadeMode);
+    #     Rules.Add(rule);
+    #     OnRuleAdded(rule);
+    # }
+
+    # public void Include<TValidator>(Func<T, TValidator> rulesToInclude) where TValidator : IValidator<T> {
+    #     rulesToInclude.Guard("Cannot pass null to Include", nameof(rulesToInclude));
+    #     var rule = IncludeRule<T>.Create(rulesToInclude, () => RuleLevelCascadeMode);
+    #     Rules.Add(rule);
+    #     OnRuleAdded(rule);
+    # }
 
     # region Properties
     @property

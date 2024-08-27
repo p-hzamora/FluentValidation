@@ -1,14 +1,21 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, overload
+
+from src.fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
 from ..IValidationContext import ValidationContext
 from ..internal.IRuleComponent import IRuleComponent
-from ..validators.IpropertyValidator import IPropertyValidator
+from ..validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
 
 
 class RuleComponent[T, TProperty](IRuleComponent):
-    def __init__(self, property_validator: IPropertyValidator[T, TProperty]) -> None:
+    @overload
+    def __init__(self, property_validator: IPropertyValidator[T, TProperty]) -> None: ...
+    @overload
+    def __init__(self, asyncPropertyValidator: IAsyncPropertyValidator[T, TProperty], propertyValidator: IPropertyValidator[T, TProperty]): ...
+
+    def __init__(self, property_validator=None, asyncPropertyValidator=None) -> None:
         self._property_validator: IPropertyValidator[T, TProperty] = property_validator
-        self._error_message:Optional[str] = None
-        # self._asyncPropertyValidator:IAsyncPropertyValidator[T,TProperty]= None
+        self._error_message: Optional[str] = None
+        self._asyncPropertyValidator: IAsyncPropertyValidator[T, TProperty] = asyncPropertyValidator
         self._errorMessageFactory: Callable[[ValidationContext], T] = None
 
         self._condition: Callable[[ValidationContext[T], bool]] = None
@@ -23,6 +30,14 @@ class RuleComponent[T, TProperty](IRuleComponent):
     @property
     def Validator(self) -> IPropertyValidator:
         return self._property_validator  # falta implementar => (IPropertyValidator) _propertyValidator ?? _asyncPropertyValidator;
+
+    @property
+    def SupportsSynchronousValidation(self) -> bool:
+        return self._property_validator is not None
+
+    @property
+    def SupportsAsynchronousValidation(self) -> bool:
+        return self._asyncPropertyValidator is not None
 
     def set_error_message(self, error_message: str) -> None:
         self._error_message = error_message

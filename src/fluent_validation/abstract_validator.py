@@ -78,7 +78,7 @@ class AbstractValidator[T](IValidator[T]):
 
     def SetExecutedRuleSets(self, result: ValidationResult, context: ValidationContext[T]):
         obj = context.RootContextData.get("_FV_RuleSetsExecuted", None)
-        if obj and isinstance(obj, set):
+        if obj is not None and isinstance(obj, set):
             result.RuleSetsExecuted = list(obj)
         else:
             result.RuleSetsExecuted = RulesetValidatorSelector.DefaultRuleSetNameInArray

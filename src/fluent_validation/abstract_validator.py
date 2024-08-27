@@ -44,11 +44,14 @@ class AbstractValidator[T](IValidator[T]):
         if options:
             return self.validate(ValidationContext[T].CreateWithOptions(instance, options))
 
-        if not options and isinstance(instance,IValidationContext):
+        if not options and isinstance(instance, IValidationContext):
             # instance acts as context, due to does not exists override operator as C#, I need to call context attr as instance
             return self.__validate__(ValidationContext[T].GetFromNonGenericContext(instance))
 
-        return self.__validate__(ValidationContext(instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
+        if not options and type(instance) is ValidationContext:
+            return self.__validate__(instance)
+
+        return self.__validate__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
 
     def __validate__(self, context: ValidationContext[T]) -> ValidationResult:
         try:

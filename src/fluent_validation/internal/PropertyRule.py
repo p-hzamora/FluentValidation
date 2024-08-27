@@ -90,4 +90,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
             #     for dependentRule in self.DependentRules:
             #         await dependentRule.ValidateAsync(context,useAsync)
 
+        # if len(context.Failures) <= total_failures and self.DependentRules is not None:
+        #     for dependentRules in self.DependentRules:
+        #         await dependentRules.ValidateAsync(context,useAsync)
         return None

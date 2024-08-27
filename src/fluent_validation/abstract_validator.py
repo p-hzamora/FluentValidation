@@ -86,7 +86,7 @@ class AbstractValidator[T](IValidator[T]):
         self._rules.append(rule)
         return RuleBuilder[T, TProperty](rule, self)
 
-    # FIXME [ ]: It's wrong implementation
+    # FIXME [x]: It's wrong implementation
     def rule_set(self, rule_set_name: str, action: Callable[..., None]) -> None:
         rule_set_names = [name.strip() for name in rule_set_name.split(",")]
         with self._rules.OnItemAdded(lambda r: setattr(r, "RuleSets", rule_set_names)):

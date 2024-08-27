@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
     from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
 
+from src.fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
 from src.fluent_validation.internal.TrackingCollection import TrackingCollection
 from ..fluent_validation.IValidator import IValidator  # noqa: F401 We use it in the future
 from .results.ValidationResult import ValidationResult
@@ -80,6 +81,11 @@ class AbstractValidator[T](IValidator[T]):
             result.RuleSetsExecuted = list(obj)
         else:
             result.RuleSetsExecuted = RulesetValidatorSelector.DefaultRuleSetNameInArray
+
+    # public virtual IValidatorDescriptor CreateDescriptor() => new ValidatorDescriptor<T>(Rules);
+
+    def CanValidateInstancesOfType(self, _type: Type) -> bool:
+        return issubclass(_type, self.__class__)
 
     def rule_for[TProperty](self, func: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
         rule: PropertyRule[T, TProperty] = PropertyRule.create(func, lambda: self.RuleLevelCascadeMode)

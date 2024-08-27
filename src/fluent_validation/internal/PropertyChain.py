@@ -35,8 +35,10 @@ class PropertyChain:
         if isinstance(member, str):
             if not (member is None or member == ""):
                 self._memberNames.append(member)
+                return None
         if member:
             self._memberNames.append(member.__class__.__name__)
+        return None
 
     # def AddIndexer(self, object indexer, bool surroundWithBrackets = true->None:
     # 	if self._memberNames.Count == 0:

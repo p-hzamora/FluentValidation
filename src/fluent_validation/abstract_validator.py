@@ -54,10 +54,21 @@ class AbstractValidator[T](IValidator[T]):
         return self.__validate__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
 
     def __validate__(self, context: ValidationContext[T]) -> ValidationResult:
-        try:
-            return asyncio.run(self.ValidateInternalAsync(context, False))
-        except Exception as e:
-            raise e
+    @overload
+    async def ValidateAsync(self, instance: IValidationContext) -> ValidationResult: ...
+    @overload
+    async def ValidateAsync(self, instance: T) -> ValidationResult: ...
+
+    @override
+    async def ValidateAsync(self, instance):
+        if isinstance(instance, IValidationContext):
+            return await self.__validate_async__(ValidationContext[T].GetFromNonGenericContext(instance))
+
+        return await self.__validate_async__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
+
+    async def __validate_async__(self, instance: ValidationContext[T]):
+        instance.IsAsync = True
+        return await self.ValidateInternalAsync(instance, useAsync=True)
 
     async def ValidateInternalAsync(self, context: ValidationContext[T], useAsync: bool) -> ValidationResult:
         result: ValidationResult = ValidationResult(errors=context.Failures)

@@ -15,6 +15,7 @@ class RuleComponent[T, TProperty](IRuleComponent):
     def __init__(self, property_validator=None, asyncPropertyValidator=None) -> None:
         self._property_validator: IPropertyValidator[T, TProperty] = property_validator
         self._error_message: Optional[str] = None
+        self._error_code: str = self._property_validator.__class__.__name__
         self._asyncPropertyValidator: IAsyncPropertyValidator[T, TProperty] = asyncPropertyValidator
         self._errorMessageFactory: Callable[[ValidationContext], T] = None
 
@@ -25,11 +26,15 @@ class RuleComponent[T, TProperty](IRuleComponent):
 
     @property
     def ErrorCode(self) -> str:
-        return self._property_validator.__class__.__name__  # Nombre de la clase del validador
+        return self._error_code
+
+    @ErrorCode.setter
+    def ErrorCode(self, value: str) -> str:
+        self._error_code = value
 
     @property
     def Validator(self) -> IPropertyValidator:
-        return self._property_validator  # falta implementar => (IPropertyValidator) _propertyValidator ?? _asyncPropertyValidator;
+        return self._property_validator  # needs to be implemented => (IPropertyValidator) _propertyValidator ?? _asyncPropertyValidator
 
     @property
     def SupportsSynchronousValidation(self) -> bool:

@@ -62,11 +62,16 @@ class RuleComponent[T, TProperty](IRuleComponent):
         # only supports asynchronous invocation.
         raise AsyncValidatorInvokedSynchronouslyException
 
+    def InvokePropertyValidator(self, context: ValidationContext[T], value: TProperty) -> bool:
+        return self._property_validator.is_valid(context, value)
+
     async def InvokePropertyValidatorAsync(self, context: ValidationContext[T], value: TProperty):
         return self._asyncPropertyValidator.IsValidAsync(context, value)
 
-    def InvokePropertyValidator(self, context: ValidationContext[T], value: TProperty) -> bool:
-        return self._property_validator.is_valid(context, value)
+    def InvokeCondition(self, context: ValidationContext[T]) -> bool:
+        if self._condition is not None:
+            return self._condition(context)
+        return True
 
     def GetErrorMessage(self, context: Optional[ValidationContext[T]], value: TProperty):
         # FIXME [x]: self._error_message has value when it must by empty test "test_When_the_maxlength_validator_fails_the_error_message_should_be_set"
@@ -78,8 +83,3 @@ class RuleComponent[T, TProperty](IRuleComponent):
             return rawTemplate
 
         return context.MessageFormatter.BuildMessage(rawTemplate)
-
-    def InvokeCondition(self, context: ValidationContext[T]) -> bool:
-        if self._condition is not None:
-            return self._condition(context)
-        return True

@@ -68,6 +68,13 @@ class RuleComponent[T, TProperty](IRuleComponent):
     async def InvokePropertyValidatorAsync(self, context: ValidationContext[T], value: TProperty):
         return self._asyncPropertyValidator.IsValidAsync(context, value)
 
+    def ApplyCondition(self, condition: Callable[[ValidationContext[T]], bool]) -> None:
+        if self._condition is None:
+            self._condition = condition
+        else:
+            original = self._condition
+            self._condition = lambda ctx: condition(ctx) and original(ctx)
+
     def InvokeCondition(self, context: ValidationContext[T]) -> bool:
         if self._condition is not None:
             return self._condition(context)
@@ -83,3 +90,11 @@ class RuleComponent[T, TProperty](IRuleComponent):
             return rawTemplate
 
         return context.MessageFormatter.BuildMessage(rawTemplate)
+
+    def GetUnformattedErrorMessage(self) -> str:
+        message: str = self._errorMessageFactory(None, None) if self._errorMessageFactory is not None else self._error_message
+
+        # If no custom message has been supplied, use the default.
+        if message is None:
+            message = self.Validator.get_default_message_template(self.ErrorCode)
+        return message

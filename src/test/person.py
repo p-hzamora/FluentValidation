@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import datetime
 from decimal import Decimal
 from enum import Enum
-from typing import override
+from typing import Optional, override
 
 
 class Country:
@@ -127,28 +127,28 @@ class Order(IOrder):
 class Person:
     def __init__(
         self,
-        NameField: str = None,
-        Id: int = None,
-        Surname: str = None,
-        Forename: str = None,
-        NickNames: str = None,
-        DateOfBirth: datetime.datetime = None,
-        Address: Address = None,
-        Email: str = None,
-        Discount: Decimal = None,
-        Age: float = None,
-        AnotherInt: int = None,
-        CreditCard: str = None,
-        Regex: str = None,
-        min_length: int = None,
-        max_length: int = None,
-        Gender: EnumGender = None,
-        Genderstr: str = None,
+        NameField: Optional[str] = None,
+        Id: int = 0,
+        Surname: Optional[str] = None,
+        Forename: Optional[str] = None,
+        NickNames: Optional[str] = None,
+        DateOfBirth: Optional[datetime.datetime] = None,
+        Address: Optional[Address] = None,
+        Email: Optional[str] = None,
+        Discount: Optional[Decimal] = None,
+        Age: Optional[float] = None,
+        AnotherInt: int = 0,
+        CreditCard: Optional[str] = None,
+        Regex: Optional[str] = None,
+        min_length: int = 0,
+        max_length: int = 0,
+        Gender: Optional[EnumGender] = None,
+        Genderstr: Optional[str] = None,
         Children: list["Person"] = [],
         Orders: list[Order] = [],
-        NullableInt: int = None,
-        NullableDiscount: Decimal = None,
-        OtherNullableInt: int = None,
+        NullableInt: Optional[int] = None,
+        NullableDiscount: Optional[Decimal] = None,
+        OtherNullableInt: Optional[int] = None,
     ) -> None:
         self.Children: list[Person] = Children
         self.Orders: list[Order] = Orders
@@ -156,12 +156,10 @@ class Person:
         self.Id: int = Id
         self.Surname: str = Surname
         self.Forename: str = Forename
-        self.Children: list["Person"] = Children
         self.NickNames: str = NickNames
         self.DateOfBirth: datetime.datetime = DateOfBirth
         self.NullableInt: int = NullableInt
         self.Address: Address = Address
-        self.Orders: list[Order] = Orders
         self.Email: str = Email
         self.Discount: Decimal = Discount
         self.NullableDiscount: Decimal = NullableDiscount

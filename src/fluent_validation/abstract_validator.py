@@ -229,6 +229,10 @@ class AbstractValidator[T](IValidator[T]):
 
     # region Properties
     @property
+    def Rules(self) -> TrackingCollection[IValidationRuleInternal[T]]:
+        return self._rules
+
+    @property
     def ClassLevelCascadeMode(self) -> CascadeMode:
         return self._classLevelCascadeMode()
 

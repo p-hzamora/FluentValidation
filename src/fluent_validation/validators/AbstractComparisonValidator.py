@@ -1,10 +1,10 @@
 from abc import abstractmethod
 from enum import Enum, auto
-from typing import Callable, overload, override
+from typing import Any, Callable, overload, override
 from ..IValidationContext import ValidationContext
 
 from ..validators.PropertyValidator import PropertyValidator
-from ..validators.IpropertyValidator import IPropertyValidator
+from ..validators.IpropertyValidator import IPropertyValidator_no_generic
 
 
 class Comparable(object):
@@ -39,7 +39,7 @@ class Comparison(Enum):
     GreaterThanOrEqual = auto()
 
 
-class IComparisonValidator(IPropertyValidator):
+class IComparisonValidator(IPropertyValidator_no_generic):
     @property
     @abstractmethod
     def Comparison(self) -> Comparison:
@@ -47,7 +47,7 @@ class IComparisonValidator(IPropertyValidator):
 
     @property
     @abstractmethod
-    def ValueToCompare(self) -> object:
+    def ValueToCompare(self) -> Any:
         ...
 
 

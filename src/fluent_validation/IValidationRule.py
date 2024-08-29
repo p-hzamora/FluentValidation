@@ -3,11 +3,11 @@ from abc import ABC, abstractmethod
 
 from typing import Iterable, Callable, TYPE_CHECKING, TypeVar
 
-# from src.fluent_validation.enums import ApplyConditionTo
+from src.fluent_validation.enums import ApplyConditionTo
 
 if TYPE_CHECKING:
-    # from src.fluent_validation.enums import CascadeMode as _CascadeMode
-    # from src.fluent_validation.IValidationContext import ValidationContext
+    from src.fluent_validation.enums import CascadeMode as _CascadeMode
+    from src.fluent_validation.IValidationContext import ValidationContext
     from .internal.IRuleComponent import IRuleComponent
     from .IValidationContext import IValidationContext
     from .internal.MessageBuilderContext import IMessageBuilderContext
@@ -45,9 +45,9 @@ class IValidatoinRule_no_args(ABC):
 
     # LambdaExpression Expression { get; }
 
-    # @property
-    # @abstractmethod
-    # def DependentRules(self) -> Iterable[IValidationRule]: ...
+    @property
+    @abstractmethod
+    def DependentRules(self) -> Iterable[IValidationRule]: ...
 
 
 CancellationToken = TypeVar("CancellationToken")
@@ -55,26 +55,26 @@ CancellationToken = TypeVar("CancellationToken")
 
 class IValidationRule_one_arg[T](IValidatoinRule_no_args):
     ...
-    # @abstractmethod
-    # def ApplyCondition(predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators): ...
+    @abstractmethod
+    def ApplyCondition(self, predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators): ...
 
     # @abstractmethod
-    # def ApplyAsyncCondition(predicate: Callable[[ValidationContext[T], CancellationToken], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators): ...
+    # def ApplyAsyncCondition(self, predicate: Callable[[ValidationContext[T], CancellationToken], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators): ...
+
+    @abstractmethod
+    def ApplySharedCondition(self, condition: Callable[[ValidationContext[T]], bool]): ...
 
     # @abstractmethod
-    # def ApplySharedCondition(condition: Callable[[ValidationContext[T]], bool]): ...
-
-    # @abstractmethod
-    # def ApplySharedAsyncCondition(condition: Callable[[ValidationContext[T], CancellationToken], bool]): ...
+    # def ApplySharedAsyncCondition(self, condition: Callable[[ValidationContext[T], CancellationToken], bool]): ...
 
 
 class IValidationRule[T, TProperty](IValidationRule_one_arg[T]):
     # @abstractmethod
     # def SetDisplayName(self, name:str)->None: ...
 
-    # @property
-    # @abstractmethod
-    # def CascadeMode(self)->_CascadeMode: ...
+    @property
+    @abstractmethod
+    def CascadeMode(self)->_CascadeMode: ...
 
     # @abstractmethod
     # def SetDisplayName(self, factory:Callable[[ValidationContext[T]], str])->None: ...

@@ -28,7 +28,7 @@ class IRuleBuilderInternal[T, TProperty](IRuleBuilderInternal_one_generic[T]):
     def Rule(self) -> IValidationRule[T, TProperty]: ...
 
 
-class IRuleBuilder[T, TProperty](IRuleBuilderInternal, DefaultValidatorExtensions):
+class IRuleBuilder[T, TProperty](IRuleBuilderInternal[T, TProperty], DefaultValidatorExtensions[T, TProperty], DefaultValidatorOptions[T, TProperty]):
     @overload
     def set_validator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
@@ -39,10 +39,15 @@ class IRuleBuilder[T, TProperty](IRuleBuilderInternal, DefaultValidatorExtension
     def set_validator(self, validator: Callable[[T, TProperty], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @abstractmethod
-    def set_validator(self, validator, *ruleSets): ...
+    def set_validator(self, validator, *ruleSets) -> IRuleBuilderOptions[T, TProperty]: ...
 
 
-class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
+class IRuleBuilderInitial[T, TProperty](IRuleBuilder[T, TProperty]): ...
+
+
+class IRuleBuilderOptions[T, TProperty](
+    IRuleBuilder[T, TProperty],
+):
     @abstractmethod
     def DependentRules(action) -> Self: ...
 

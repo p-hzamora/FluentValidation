@@ -1,10 +1,13 @@
-from typing import Callable, Self
+from __future__ import annotations
+from typing import Callable, Self, TYPE_CHECKING
 
 from ..enums import CascadeMode
-from ..IValidationContext import ValidationContext
 from ..internal.RuleBase import RuleBase
 from ..internal.RuleComponent import RuleComponent
-from ..validators.IpropertyValidator import IPropertyValidator
+
+if TYPE_CHECKING:
+    from ..validators.IpropertyValidator import IPropertyValidator
+    from ..IValidationContext import ValidationContext
 
 
 class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
@@ -30,14 +33,14 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
 
     async def ValidateAsync(self, context: ValidationContext[T], useAsync: bool) -> None:
         displayName: None | str = self.get_display_name(context)
-        
+
         if self.PropertyName is None and displayName is None:
             displayName = ""
 
         PropertyPath: str = context.PropertyChain.BuildPropertyPath(displayName if not self.PropertyName else self.PropertyName)
         if not context.Selector.CanExecute(self, PropertyPath, context):
             return None
-        
+
         if self.Condition:
             if self.Condition(context) is not None:
                 return None

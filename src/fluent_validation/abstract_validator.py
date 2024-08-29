@@ -189,17 +189,19 @@ class AbstractValidator[T](IValidator[T]):
             action()
         return None
 
-    # public IConditionBuilder When(Func<T, bool> predicate, Action action)
-    #     => When((x, _) => predicate(x), action);
+    @override
+    def When(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
+        return self.__When(lambda x, _: predicate(x), action)
 
-    # public IConditionBuilder When(Func<T, ValidationContext<T>, bool> predicate, Action action)
-    #     => new ConditionBuilder<T>(Rules).When(predicate, action);
+    def __When(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
+        return ConditionBuilder[T](self.Rules).When(predicate, action)
 
-    # public IConditionBuilder Unless(Func<T, bool> predicate, Action action)
-    #     => Unless((x, _) => predicate(x), action);
+    @override
+    def Unless(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
+        return self.__Unless(lambda x, _: predicate(x), action)
 
-    # public IConditionBuilder Unless(Func<T, ValidationContext<T>, bool> predicate, Action action)
-    #     => new ConditionBuilder<T>(Rules).Unless(predicate, action);
+    def __Unless(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
+        return ConditionBuilder[T](self.Rules).Unless(predicate, action)
 
     # public IConditionBuilder WhenAsync(Func<T, CancellationToken, Task<bool>> predicate, Action action)
     #     => WhenAsync((x, _, cancel) => predicate(x, cancel), action);

@@ -222,12 +222,8 @@ class AbstractValidator[T](IValidator[T]):
     #     OnRuleAdded(rule);
     # }
 
-    # public void Include<TValidator>(Func<T, TValidator> rulesToInclude) where TValidator : IValidator<T> {
-    #     rulesToInclude.Guard("Cannot pass null to Include", nameof(rulesToInclude));
-    #     var rule = IncludeRule<T>.Create(rulesToInclude, () => RuleLevelCascadeMode);
-    #     Rules.Add(rule);
-    #     OnRuleAdded(rule);
-    # }
+    def OnRuleAdded(rule: IValidationRule[T]) -> None:
+        return None
 
     # region Properties
     @property

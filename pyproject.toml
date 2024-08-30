@@ -9,7 +9,7 @@ authors = [
     "p-hzamora <p.hzamora@icloud.com>",
     "Jeremy Skinner",
 ]
-license = "MIT"
+license = "Apache"
 readme = "README.md"
 
 [tool.poetry.dependencies]

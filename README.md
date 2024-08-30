@@ -1,7 +1,7 @@
 ![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)
 ![PyPI version](https://img.shields.io/pypi/v/fluent_validation.svg)
 ![PyPI downloads](https://img.shields.io/pypi/dm/fluent_validation?label=PyPI%20downloads)
-![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
+![License: Apache](https://img.shields.io/badge/license-Apache-green.svg)
 
 # Creating your first validator
 

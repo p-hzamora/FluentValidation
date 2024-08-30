@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from src.fluent_validation.IValidationRule import IValidationRule
 
 # from src.fluent_validation.internal.IncludeRule import IncludeRule
+from src.fluent_validation.ValidationException import ValidationException
 from src.fluent_validation.internal.ConditionBuilder import ConditionBuilder
 from src.fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
 from src.fluent_validation.internal.TrackingCollection import TrackingCollection
@@ -109,6 +110,13 @@ class AbstractValidator[T](IValidator[T]):
 
     async def ValidateInternalAsync(self, context: ValidationContext[T], useAsync: bool) -> ValidationResult:
         result: ValidationResult = ValidationResult(errors=context.Failures)
+        shouldContinue: bool = self.PreValidate(context, result)
+
+        if not shouldContinue:
+            if not result.is_valid and context.ThrowOnFailures:
+                self.RaiseValidationException(context, result)
+
+            return result
 
         count: int = len(self._rules)
         for i in range(count):
@@ -120,9 +128,8 @@ class AbstractValidator[T](IValidator[T]):
 
         self.SetExecutedRuleSets(result, context)
 
-        # if (!result.IsValid && context.ThrowOnFailures) {
-        #     RaiseValidationException(context, result);
-        # }
+        if not result.is_valid and context.ThrowOnFailures:
+            self.RaiseValidationException(context, result)
         return result
 
         # COMMENT: used in private async ValueTask<ValidationResult> ValidateInternalAsync(ValidationContext<T> context, bool useAsync, CancellationToken cancellation) {...}
@@ -228,6 +235,12 @@ class AbstractValidator[T](IValidator[T]):
     #     Rules.Add(rule);
     #     OnRuleAdded(rule);
     # }
+
+    def PreValidate(self, context: ValidationContext[T], result: ValidationResult) -> bool:
+        return True
+
+    def RaiseValidationException(self, context: ValidationContext[T], result: ValidationResult) -> None:
+        raise ValidationException(errors=result.errors)
 
     def OnRuleAdded(rule: IValidationRule[T]) -> None:
         return None

@@ -1,5 +1,5 @@
 <p>
-<img src="logo/fluent-validation-python-logo.svg" alt="FluentValidation" width="250px" />
+<img src="https://github.com/p-hzamora/FluentValidation/blob/main/logo/fluent-validation-python-logo.svg" alt="FluentValidation" width="250px" />
 </p>
 
 <!-- ![Unit Tests](https://img.shields.io/badge/Unit%20Tests-95.16%-d9c824.svg) -->
@@ -15,8 +15,8 @@ The original library is written in .NET.
 
 
 ### Table of contents
-- [Installation](docs/installation.md)
-- [Creating your first validator](docs/start.md)
+- [Installation](https://github.com/p-hzamora/FluentValidation/blob/main/docs/installation.md)
+- [Creating your first validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/start.md)
 
 
 

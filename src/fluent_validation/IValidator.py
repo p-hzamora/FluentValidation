@@ -2,6 +2,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Callable, Type, overload
 
+from src.fluent_validation.DefaultValidatorExtensions_Validate import DefaultValidatorExtensions_Validate
+
 if TYPE_CHECKING:
     from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
     from src.fluent_validation.IValidationContext import IValidationContext
@@ -21,7 +23,7 @@ class IValidator_no_generic(ABC):
     @abstractmethod
     def CanValidateInstancesOfType(type:Type)->bool: ...
 
-class IValidator[T](IValidator_no_generic):
+class IValidator[T](IValidator_no_generic, DefaultValidatorExtensions_Validate):
     @overload
     def validate(validator: "IValidator[T]", instance: T) -> ValidationResult: ...
 

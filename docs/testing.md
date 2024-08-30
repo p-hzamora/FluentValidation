@@ -64,13 +64,13 @@ If you have more complex tests, you can use the same technique to perform multip
 var person = new Person { Name = "Jeremy" };
 var result = validator.TestValidate(person);
 
-// Assert that there should be a failure for the Name property.
+# Assert that there should be a failure for the Name property.
 result.ShouldHaveValidationErrorFor(x => x.Name);
 
-// Assert that there are no failures for the age property.
+# Assert that there are no failures for the age property.
 result.ShouldNotHaveValidationErrorFor(x => x.Age);
 
-// You can also use a string name for properties that can't be easily represented with a lambda, eg:
+# You can also use a string name for properties that can't be easily represented with a lambda, eg:
 result.ShouldHaveValidationErrorFor("Addresses[0].Line1");
 ```
 
@@ -90,10 +90,10 @@ If you want to make sure no other validation failures occurred, except specified
 ```csharp
 var result = validator.TestValidate(person);
 
-// Assert that failures only happened for Name property.
+# Assert that failures only happened for Name property.
 result.ShouldHaveValidationErrorFor(person => person.Name).Only();
 
-// Assert that failures only happened for Name property and all have the specified message
+# Assert that failures only happened for Name property and all have the specified message
 result.ShouldHaveValidationErrorFor(person => person.Name)
   .WithErrorMessage("'Name' must not be empty.")
   .Only();
@@ -114,8 +114,8 @@ Mocking validators tends to require that you make assumptions about how the vali
 However if you find yourself in a situation where you absolutely do need to mock a validator, then we suggest using `InlineValidator<T>` to create a stub implementation as this way you can take advantage of re-using FluentValidation's own internal logic for creating validation failures. We _strongly_ recommend not using a mocking library. An example of using `InlineValidator` is shown below:
 
 ```csharp
-// Original validator that relies on an external service.
-// External service is used to check that the customer ID is not already used in the database.
+# Original validator that relies on an external service.
+# External service is used to check that the customer ID is not already used in the database.
 public class CustomerValidator : AbstractValidator<Customer>
 {
   public CustomerValidator(ICustomerRepository customerRepository)
@@ -125,10 +125,10 @@ public class CustomerValidator : AbstractValidator<Customer>
   }
 }
 
-// If you needed to stub this failure in a unit/integration test,
-// you could do the following:
+# If you needed to stub this failure in a unit/integration test,
+# you could do the following:
 var validator = new InlineValidator<Customer>();
 validator.rule_for(x => x.Id).must(id => false);
 
-// This instance could then be passed into anywhere expecting an IValidator<Customer>
+# This instance could then be passed into anywhere expecting an IValidator<Customer>
 ```

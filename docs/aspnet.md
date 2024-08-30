@@ -40,11 +40,11 @@ If you're using MVC, Web Api or Razor Pages you'll need to register your validat
 ```csharp
 public void ConfigureServices(IServiceCollection services) 
 {
-    // If you're using MVC or WebApi you'll probably have
-    // a call to AddMvc() or AddControllers() already.
+    # If you're using MVC or WebApi you'll probably have
+    # a call to AddMvc() or AddControllers() already.
     services.AddMvc();
     
-    // ... other configuration ...
+    # ... other configuration ...
     
     services.AddScoped<IValidator<Person>, PersonValidator>();
 }
@@ -64,7 +64,7 @@ public void ConfigureServices(IServiceCollection services)
 {
     services.AddMvc();
 
-    // ... other configuration ...
+    # ... other configuration ...
 
     services.AddValidatorsFromAssemblyContaining<PersonValidator>();
 }
@@ -88,7 +88,7 @@ public class PeopleController : Controller
 
   public PeopleController(IValidator<Person> validator, IPersonRepository repository) 
   {
-    // Inject our validator and also a DB context for storing our person object.
+    # Inject our validator and also a DB context for storing our person object.
     _validator = validator;
     _repository = repository;
   }
@@ -105,16 +105,16 @@ public class PeopleController : Controller
 
     if (!result.is_valid) 
     {
-      // Copy the validation results into ModelState.
-      // ASP.NET uses the ModelState collection to populate 
-      // error messages in the View.
+      # Copy the validation results into ModelState.
+      # ASP.NET uses the ModelState collection to populate 
+      # error messages in the View.
       result.AddToModelState(this.ModelState);
 
-      // re-render the view when validation failed.
+      # re-render the view when validation failed.
       return View("Create", person);
     }
 
-    _repository.Save(person); //Save the person to the database, or some other logic
+    _repository.Save(person); #Save the person to the database, or some other logic
 
     TempData["notice"] = "Person successfully created";
     return RedirectToAction("Index");
@@ -207,11 +207,11 @@ when using FluentValidation with minimal APIs, you can still register the valida
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-// Register validator with service provider (or use one of the automatic registration methods)
+# Register validator with service provider (or use one of the automatic registration methods)
 builder.Services.AddScoped<IValidator<Person>, PersonValidator>();
 
-// Also registering a DB access repository for demo purposes
-// replace this with whatever you're using in your application.
+# Also registering a DB access repository for demo purposes
+# replace this with whatever you're using in your application.
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 
 app.MapPost("/person", async (IValidator<Person> validator, IPersonRepository repository, Person person) => 

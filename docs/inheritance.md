@@ -5,15 +5,15 @@ As of FluentValidation 9.2, if your object contains a property which is a base c
 For example, imagine the following example:
 
 ```csharp
-// We have an interface that represents a 'contact',
-// for example in a CRM system. All contacts must have a name and email.
+# We have an interface that represents a 'contact',
+# for example in a CRM system. All contacts must have a name and email.
 public interface IContact 
 {
   string Name { get; set; }
   string Email { get; set; }
 }
 
-// A Person is a type of contact, with a name and a DOB.
+# A Person is a type of contact, with a name and a DOB.
 public class Person : IContact 
 {
   public string Name { get; set; }
@@ -22,8 +22,8 @@ public class Person : IContact
   public DateTime DateOfBirth { get; set; }
 }
 
-// An organisation is another type of contact,
-// with a name and the address of their HQ.
+# An organisation is another type of contact,
+# with a name and the address of their HQ.
 public class Organisation : IContact 
 {
   public string Name { get; set; }
@@ -32,8 +32,8 @@ public class Organisation : IContact
   public Address Headquarters { get; set; }
 }
 
-// Our model class that we'll be validating.
-// This might be a request to send a message to a contact.
+# Our model class that we'll be validating.
+# This might be a request to send a message to a contact.
 public class ContactRequest 
 {
   public IContact Contact { get; set; }

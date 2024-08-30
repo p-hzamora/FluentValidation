@@ -38,7 +38,7 @@ var validator = new InlineValidator<Person>();
 validator.rule_for(x => x.Surname).not_null().with_message("required");
 validator.rule_for(x => x.Address.Line1).not_equal("foo");
 
-// New advanced test syntax
+# New advanced test syntax
 var result = validator.TestValidate(new Person { Address = new Address()) };
 result.ShouldHaveValidationErrorFor(x => x.Surname).with_message("required");
 result.ShouldNotHaveValidationErrorFor(x => x.Address.Line1);

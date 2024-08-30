@@ -29,7 +29,7 @@ class CustomerValidator(AbstractValidator[Customer]):
 The validation rules themselves should be defined in the validator class's constructor.
 
 To specify a validation rule for a particular property, call the `rule_for` method, passing a lambda expression
-that indicates the property that you wish to validate. For example, to ensure that the `Surname` property is not null,
+that indicates the property that you wish to validate. For example, to ensure that the `Surname` property is not None,
 the validator class would look like this:
 
 ```python
@@ -71,7 +71,7 @@ You can also call `to_string` on the `ValidationResult` to combine all error mes
 
 ```python
 results = validator.validate(customer)
-allMessages:str = results.to_string("~");     # In this case, each message will be separated with a `~`
+allMessages:str = results.to_string("~")     # In this case, each message will be separated with a `~`
 ```
 
 *Note* : if there are no validation errors, `to_string()` will return an empty string.
@@ -90,42 +90,42 @@ CustomerValidator(AbstractValidator[Customer]):
 
 ```
 
-This would ensure that the surname is not null and is not equal to the string 'foo'.
+This would ensure that the surname is not None and is not equal to the string 'foo'.
 
 # Throwing Exceptions
 
-Instead of returning a `ValidationResult`, you can alternatively tell FluentValidation to throw an exception if validation fails by using the `validate_and_throw` method:
+Instead of returning a `ValidationResult`, you can alternatively tell fluent_validation to throw an exception if validation fails by using the `validate_and_throw` method:
 
 ```python
-Customer customer = new Customer();
-CustomerValidator validator = new CustomerValidator();
+customer = Customer()
+validator = CustomerValidator()
 
-validator.validate_and_throw(customer);
+validator.validate_and_throw(customer)
 ```
 
 This throws a `ValidationException` which contains the error messages in the errors property.
 
-*Note* `validate_and_throw` is an extension method, so you must have the `FluentValidation` namespace imported with a `using` statement at the top of your file in order for this method to be available.
-
 ```python
-from src.fluent_validation.abstract_validator import AbstractValidator
+from fluent_validation import AbstractValidator
 ```
 
-The `validate_and_throw` method is helpful wrapper around FluentValidation's options API, and is the equivalent of doing the following:
+The `validate_and_throw` method is helpful wrapper around fluent_validation's options API, and is the equivalent of doing the following:
 
 ```python
-validator.validate(customer, options => options.ThrowOnFailures());
+validator.validate(customer, lambda options: options.ThrowOnFailures())
 ```
 
 If you need to combine throwing an exception with [Rule Sets](rulesets), or validating individual properties, you can combine both options using this syntax:
 
 ```python
-validator.validate(customer, options => 
-{
-  options.ThrowOnFailures();
-  options.IncludeRuleSets("MyRuleSets");
-  options.IncludeProperties(x => x.Name);
-});
+validator.validate(
+    customer,
+    lambda options: (
+        options.ThrowOnFailures(),
+        options.IncludeRuleSets("MyRuleSets"),
+        options.IncludeProperties(lambda x: x.Name),
+    ),
+)
 ```
 
 <!-- It is also possible to customize type of exception thrown, [which is covered in this section](advanced.html#customizing-the-validation-exception). -->
@@ -135,60 +135,52 @@ validator.validate(customer, options =>
 Validators can be re-used for complex properties. For example, imagine you have two classes, Customer and Address:
 
 ```python
+@dataclass
 class Customer 
-{
-  string Name { get; set; }
-  Address Address { get; set; }
-}
+  Name:str=None
+  Address:Address=None
 
+@dataclass
 class Address 
-{
-  string Line1 { get; set; }
-  string Line2 { get; set; }
-  string Town { get; set; }
-  string Country { get; set; }
-  string Postcode { get; set; }
-}
+  Line1:str = None
+  Line2:str = None
+  Town:str = None
+  Country:str = None
+  Postcode:str = None
 ```
 
 ... and you define an AddressValidator:
 
 ```python
-class AddressValidator : AbstractValidator[Address] 
-{
-  AddressValidator()
-  {
-    rule_for(address => address.Postcode).not_null();
-    //etc
-  }
-}
+class AddressValidator(AbstractValidator[Address]):
+  def __init__(self):
+    super().__init__()
+    self.rule_for(lambda address: address.Postcode).not_null()
+    #etc
 ```
 
 ... you can then re-use the AddressValidator in the CustomerValidator definition:
 
 ```python
-class CustomerValidator : AbstractValidator[Customer] 
-{
-  CustomerValidator()
-  {
-    rule_for(customer => customer.Name).not_null();
-    rule_for(customer => customer.Address).set_validator(new AddressValidator());
-  }
-}
+class CustomerValidator(AbstractValidator[Customer]):
+  def __init__(self):
+    super().__init__()
+    self.rule_for(lambda customer: customer.Name).not_null()
+    rule_for(lambda customer: customer.Address).set_validator(AddressValidator())
 ```
 
 ... so when you call `validate` on the CustomerValidator it will run through the validators defined in both the CustomerValidator and the AddressValidator and combine the results into a single ValidationResult.
 
-If the child property is null, then the child validator will not be executed.
+If the child property is None, then the child validator will not be executed.
 
 Instead of using a child validator, you can define child rules inline, eg:
 
 ```python
-rule_for(customer => customer.Address.Postcode).not_null()
+rule_for(lambda customer: customer.Address.Postcode).not_null()
 ```
 
-In this case, a null check will *not* be performed automatically on `Address`, so you should explicitly add a condition
+In this case, a None check will *not* be performed automatically on `Address`, so you should explicitly add a condition
 
 ```python
-rule_for(customer => customer.Address.Postcode).not_null().when(customer => customer.Address != null)
+rule_for(lambda customer: customer.Address.Postcode).not_null().when(lambda customer: customer.Address != None)
 ```

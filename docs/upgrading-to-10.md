@@ -12,13 +12,13 @@ The `PropertyValidatorContext` class has been deprecated, and various places tha
 
 
 ```csharp
-// Before:
+# Before:
 rule_for(x => x.Foo).must((instance, value, context) => 
 {
   return context.ParentContext.RootContextData.ContainsKey("Something");
 });
 
-// After:
+# After:
 rule_for(x => x.Foo).must((instance, value, context) => 
 {
   return context.RootContextData.ContainsKey("Something");
@@ -38,7 +38,7 @@ The following changes should be made in order to migrate:
 The following example shows a custom property validator before and after migration.
 
 ```csharp
-// Before:
+# Before:
 public class NotNullValidator : PropertyValidator
 {
   protected override bool is_valid(PropertyValidatorContext context)
@@ -50,7 +50,7 @@ public class NotNullValidator : PropertyValidator
     => "A value for {PropertyName} is required";
 }
 
-// After:
+# After:
 public class NotNullValidator<T,TProperty> : PropertyValidator<T, TProperty>
 {
   public override string Name => "NotNullValidator";
@@ -81,14 +81,14 @@ Various methods and properties that previously returned an `IPropertyValidator` 
 when accessing property validators via a rule instance, you must now go via a collection of components:
 
 ```csharp
-// Before:
+# Before:
 IValidationRule rule = ...;
 foreach (IPropertyValidator propertyValidator in rule.Validators) 
 {
-  // ...
+  # ...
 }
 
-// After:
+# After:
 IValidationRule rule = ...;
 foreach (IRuleComponent component in rule.Componetnts) 
 {
@@ -99,11 +99,11 @@ foreach (IRuleComponent component in rule.Componetnts)
 when accessing the current property validator instance on a rule, you must now go via the `Current` property to get the component first.
 
 ```csharp
-// before:
+# before:
 PropertyRule rule = ...;
 IPropertyValidator currentValidator = rule.CurrentValidator;
 
-// after:
+# after:
 IValidationRule<T,TProperty> rule = ...;
 RuleComponent<T, TProperty> component = rule.Current;
 IPropertyValidator currentValidator = component.CurrentValidator;
@@ -128,7 +128,7 @@ The signature for adding an ASP.NET Client Validator factories has changed to re
 
 ```csharp
 
-// Before:
+# Before:
 public class MyCustomClientsideAdaptor : ClientValidatorBase
 {
   public MyCustomClientsideAdaptor(PropertyRule rule, IPropertyValidator validator)
@@ -139,7 +139,7 @@ public class MyCustomClientsideAdaptor : ClientValidatorBase
 
   public override void AddValidation(ClientModelValidationContext context)
   {
-    // ...
+    # ...
   }
 }
 
@@ -152,7 +152,7 @@ services.AddMvc().AddFluentValidation(fv =>
 })
 
 
-// after:
+# after:
 public class MyCustomClientsideAdaptor : ClientValidatorBase
 {
   public MyCustomClientsideAdaptor(IValidationRule rule, IRuleComponent component)
@@ -163,7 +163,7 @@ public class MyCustomClientsideAdaptor : ClientValidatorBase
 
   public override void AddValidation(ClientModelValidationContext context)
   {
-    // ...
+    # ...
   }
 }
 
@@ -222,12 +222,12 @@ The following methods and properties have been removed:
 Several extension methods that provided overloads of the `Validate` method that were previously deprecated have been removed. Replacements are available:
 
 ```csharp
-// Validating only specific properties.
-// Before:
+# Validating only specific properties.
+# Before:
 validator.Validate(instance, x => x.SomeProperty, x => x.SomeOtherProperty);
 validator.Validate(instance, "SomeProperty", "SomeOtherProperty");
 
-// After:
+# After:
 validator.Validate(instance, v =>
 {
   v.IncludeProperties(x => x.SomeProperty, x => x.SomeOtherProperty);
@@ -238,12 +238,12 @@ validator.Validate(instance, v =>
   v.IncludeProperties("SomeProperty", "SomeOtherProperty");
 });
 
-// Validating by ruleset:
-// Before (comma-delmited string to separate multiple rulesets):
+# Validating by ruleset:
+# Before (comma-delmited string to separate multiple rulesets):
 validator.Validate(instance, ruleSet: "SomeRuleSet,AnotherRuleSet");
 
-// After:
-// Separate parameters for each ruleset.
+# After:
+# Separate parameters for each ruleset.
 validator.Validate(instance, v => 
 {
   v.IncludeRuleSets("SomeRuleSet", "AnotherRuleSet")

@@ -36,10 +36,10 @@ Ensures that the value of the specified property is not equal to a particular va
 
 Example:
 ```python
-//Not equal to a particular value
+#Not equal to a particular value
 self.rule_for(lambda customer: customer.Surname).not_equal("Foo")
 
-//Not equal to another property
+#Not equal to another property
 self.rule_for(lambda customer: customer.Surname).not_equal(lambda customer: customer.Forename)
 ```
 Example error: *'Surname' should not be equal to 'Foo'*
@@ -74,10 +74,10 @@ Ensures that the value of the specified property is equal to a particular value 
 
 Example:
 ```python
-//equal to a particular value
+#equal to a particular value
 self.rule_for(lambda customer: customer.Surname).equal("Foo")
 
-//equal to another property
+#equal to another property
 self.rule_for(lambda customer: customer.Password).equal(lambda customer: customer.PasswordConfirmation)
 ```
 Example error: *'Surname' should be equal to 'Foo'*
@@ -110,7 +110,7 @@ Ensures that the length of a particular string property is within the specified 
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Surname).length(1, 250) //must be between 1 and 250 chars (inclusive)
+self.rule_for(lambda customer: customer.Surname).length(1, 250) #must be between 1 and 250 chars (inclusive)
 ```
 Example error: *'Surname' must be between 1 and 250 characters. You entered 251 characters.*
 
@@ -129,7 +129,7 @@ Ensures that the length of a particular string property is no longer than the sp
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Surname).MaximumLength(250) //must be 250 chars or fewer
+self.rule_for(lambda customer: customer.Surname).MaximumLength(250) #must be 250 chars or fewer
 ```
 Example error: *The length of 'Surname' must be 250 characters or fewer. You entered 251 characters.*
 
@@ -147,7 +147,7 @@ Ensures that the length of a particular string property is longer than the speci
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Surname).MinimumLength(10) //must be 10 chars or more
+self.rule_for(lambda customer: customer.Surname).MinimumLength(10) #must be 10 chars or more
 ```
 Example error: *The length of 'Surname' must be at least 10 characters. You entered 5 characters.*
 
@@ -165,10 +165,10 @@ Ensures that the value of the specified property is less than a particular value
 
 Example:
 ```python
-//Less than a particular value
+#Less than a particular value
 self.rule_for(lambda customer: customer.CreditLimit).less_than(100)
 
-//Less than another property
+#Less than another property
 self.rule_for(lambda customer: customer.CreditLimit).less_than(lambda customer: customer.MaxCreditLimit)
 ```
 Example error: *'Credit Limit' must be less than 100.*
@@ -187,10 +187,10 @@ Ensures that the value of the specified property is less than or equal to a part
 
 Example:
 ```python
-//Less than a particular value
+#Less than a particular value
 self.rule_for(lambda customer: customer.CreditLimit).less_than_or_equal_to(100)
 
-//Less than another property
+#Less than another property
 self.rule_for(lambda customer: customer.CreditLimit).less_than_or_equal_to(lambda customer: customer.MaxCreditLimit)
 ```
 Example error: *'Credit Limit' must be less than or equal to 100.*
@@ -206,10 +206,10 @@ Ensures that the value of the specified property is greater than a particular va
 
 Example:
 ```python
-//Greater than a particular value
+#Greater than a particular value
 self.rule_for(lambda customer: customer.CreditLimit).greater_than(0)
 
-//Greater than another property
+#Greater than another property
 self.rule_for(lambda customer: customer.CreditLimit).greater_than(lambda customer: customer.MinimumCreditLimit)
 ```
 Example error: *'Credit Limit' must be greater than 0.*
@@ -225,10 +225,10 @@ Ensures that the value of the specified property is greater than or equal to a p
 
 Example:
 ```python
-//Greater than a particular value
+#Greater than a particular value
 self.rule_for(lambda customer: customer.CreditLimit).greater_than_or_equal_to(1)
 
-//Greater than another property
+#Greater than another property
 rule_for(lambda customer: customer.CreditLimit).greater_than_or_equal_to(lambda customer: customer.self.MinimumCreditLimit)
 ```
 Example error: *'Credit Limit' must be greater than or equal to 1.*
@@ -356,10 +356,10 @@ Checks whether a string is a valid enum name.
 
 Example:
 ```python
-// For a case sensitive comparison
+# For a case sensitive comparison
 self.rule_for(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel))
 
-// For a case-insensitive comparison
+# For a case-insensitive comparison
 self.rule_for(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel), caseSensitive: false)
 ```
 Example error: *'Error Level' has a range of values which does not include 'Foo'.*

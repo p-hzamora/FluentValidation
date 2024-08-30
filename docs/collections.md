@@ -95,11 +95,11 @@ RuleForEach(x => x.Orders)
 As of version 8.2, an alternative to using `RuleForEach` is to call `ForEach` as part of a regular `rule_for`. With this approach you can combine rules that act upon the entire collection with rules which act upon individual elements within the collection. For example, imagine you have the following 2 rules:
 
 ```csharp
-// This rule acts on the whole collection (using rule_for)
+# This rule acts on the whole collection (using rule_for)
 rule_for(x => x.Orders)
   .must(x => x.Count <= 10).with_message("No more than 10 orders are allowed");
 
-// This rule acts on each individual element (using RuleForEach)
+# This rule acts on each individual element (using RuleForEach)
 RuleForEach(x => x.Orders)
   .must(order => order.Total > 0).with_message("Orders must have a total of more than 0")
 ```

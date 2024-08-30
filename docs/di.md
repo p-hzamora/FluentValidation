@@ -34,7 +34,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-      // ...
+      # ...
     }
 }
 ```
@@ -70,10 +70,10 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddValidatorsFromAssemblyContaining<UserValidator>();
-        // ...
+        # ...
     }
 
-    // ...
+    # ...
 }
 ```
 
@@ -96,10 +96,10 @@ when using FluentValidation in an ASP.NET project with auto-validation, the same
 Alternative method overloads that take a type instance and an assembly reference exist too:
 
 ```csharp
-// Load using a type reference rather than the generic.
+# Load using a type reference rather than the generic.
 services.AddValidatorsFromAssemblyContaining(typeof(UserValidator));
 
-// Load an assembly reference rather than using a marker type.
+# Load an assembly reference rather than using a marker type.
 services.AddValidatorsFromAssembly(Assembly.Load("SomeAssembly"));
 ```
 

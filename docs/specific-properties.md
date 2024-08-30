@@ -3,7 +3,7 @@
 If your validator contains rules for several properties you can limit execution to only validate specific properties by using the `IncludeProperties` option:
 
 ```csharp
-// Validator definition
+# Validator definition
 public class CustomerValidator : AbstractValidator<Customer>
 {
   public CustomerValidator()

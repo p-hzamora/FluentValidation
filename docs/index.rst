@@ -44,7 +44,7 @@ Example
 
      private bool BeAValidPostcode(string postcode) 
      {
-       // custom postcode validating logic goes here
+       # custom postcode validating logic goes here
      }
    }
 

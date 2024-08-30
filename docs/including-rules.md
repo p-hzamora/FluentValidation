@@ -12,7 +12,7 @@ public class PersonAgeValidator : AbstractValidator<Person>
 
   protected bool BeOver18(DateTime date) 
   {
-    //...
+    #...
   }
 }
 

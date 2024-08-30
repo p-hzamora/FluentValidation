@@ -54,7 +54,7 @@ ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.<YourCurrentVa
 If you are currently setting it to `StopOnFirstFailure`, replace it with
 
 ```csharp
-ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Continue; // Not actually needed as this is the default. Just here for completeness.
+ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Continue; # Not actually needed as this is the default. Just here for completeness.
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
 ```
 
@@ -98,7 +98,7 @@ return ruleBuilder.Configure(rule => {
   var originalMessageBuilder = rule.MessageBuilder;
   rule.MessageBuilder = context => {
     
-    // ... some custom logic in here.
+    # ... some custom logic in here.
     
     return originalMessageBuilder?.Invoke(context) ?? context.GetDefaultMessage();
   };
@@ -110,7 +110,7 @@ Now as this property is set-only you'll need to update it to remove references t
 ```csharp
 return ruleBuilder.Configure(rule => {
   rule.MessageBuilder = context => {
-    // ... some custom logic in here.
+    # ... some custom logic in here.
     return context.GetDefaultMessage();
   };
 });
@@ -126,12 +126,12 @@ The deprecated property `RunDefaultMvcValidationAfterFluentValidationExecutes` w
 If you were making use of this property, you should use `DisableDataAnnotationsValidation` instead. Note that this property is the inverse of the previous behaviour:
 
 ```csharp
-// Before:
+# Before:
 services.AddFluentValidation(fv => {
   fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
 });
 
-// After:
+# After:
 services.AddFluentValidation(fv => {
   fv.DisableDataAnnotationsValidation = true;
 });

@@ -97,7 +97,7 @@ The advantage of this approach is that it allows you to return multiple errors f
 
 ```csharp
 context.AddFailure("SomeOtherProperty", "The list must contain 10 items or fewer");
-// Or you can instantiate the ValidationFailure directly:
+# Or you can instantiate the ValidationFailure directly:
 context.AddFailure(new ValidationFailure("SomeOtherProperty", "The list must contain 10 items or fewer");
 ```
 

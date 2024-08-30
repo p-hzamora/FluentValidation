@@ -37,17 +37,17 @@ For a complete list of error message placeholders see the [Built in Validators p
 It is also possible to use your own custom arguments in the validation message. These can either be static values or references to other properties on the object being validated. This can be done by using the overload of `with_message` that takes a lambda expression, and then passing the values to `string.Format` or by using string interpolation.
 
 ```csharp
-//Using constant in a custom message:
+#Using constant in a custom message:
 rule_for(customer => customer.Surname)
   .not_null()
   .with_message(customer => string.Format("This message references some constant values: {0} {1}", "hello", 5))
-//Result would be "This message references some constant values: hello 5"
+#Result would be "This message references some constant values: hello 5"
 
-//Referencing other property values:
+#Referencing other property values:
 rule_for(customer => customer.Surname)
   .not_null()
   .with_message(customer => $"This message references some other properties: Forename: {customer.Forename} Discount: {customer.Discount}");
-//Result would be: "This message references some other properties: Forename: Jeremy Discount: 100"
+#Result would be: "This message references some other properties: Forename: Jeremy Discount: 100"
 ```
 
 If you want to override all of FluentValidation's default error messages, check out FluentValidation's support for [Localization](localization).

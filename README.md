@@ -2,12 +2,12 @@
 <img src="logo/fluent-validation-python-logo.svg" alt="FluentValidation" width="250px" />
 </p>
 
-![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)
+<!-- ![Unit Tests](https://img.shields.io/badge/Unit%20Tests-95.16%-d9c824.svg) -->
 ![PyPI version](https://img.shields.io/pypi/v/fluent_validation.svg)
 ![downloads](https://img.shields.io/pypi/dm/fluent_validation?label=downloads)
 ![License: Apache](https://img.shields.io/badge/license-Apache-green.svg)
 
-# fluent_validation
+# FluentValidation
 A validation library for Python that uses a fluent interface
 and lambda expressions for building strongly-typed validation rules.
 

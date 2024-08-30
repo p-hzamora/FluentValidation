@@ -58,7 +58,7 @@ rule_for(x => x.Surname).Custom((x, context) =>
 
 ## Customizing the Validation Exception
 
-If you use the `ValidateAndThrow` method to [throw an exception when validation fails](start.html#throwing-exceptions) FluentValidation will internally throw a `ValidationException`. You can customzie this behaviour so a different exception is thrown by overriding the `RaiseValidationException` in your validator. 
+If you use the `validate_and_throw` method to [throw an exception when validation fails](start.html#throwing-exceptions) FluentValidation will internally throw a `ValidationException`. You can customzie this behaviour so a different exception is thrown by overriding the `RaiseValidationException` in your validator. 
 
 This simplistic example wraps the default `ValidationException` in an `ArgumentException` instead:
 
@@ -70,7 +70,7 @@ protected override void RaiseValidationException(ValidationContext<T> context, V
 }
 ```
 
-This approach is useful if you always want to throw a specific custom exception type every time `ValidateAndThrow` is invoked.
+This approach is useful if you always want to throw a specific custom exception type every time `validate_and_throw` is invoked.
 
 As an alternative you could create your own extension method that calls `Validate` and then throws your own custom exception if there are validation errors. 
 
@@ -91,4 +91,4 @@ public static class FluentValidationExtensions
 }
 ```
 
-This approach is more useful if you only want to throw the custom exception when your specific method is invoked, rather than any time `ValidateAndThrow` is invoked.
+This approach is more useful if you only want to throw the custom exception when your specific method is invoked, rather than any time `validate_and_throw` is invoked.

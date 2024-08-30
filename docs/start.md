@@ -94,24 +94,24 @@ This would ensure that the surname is not null and is not equal to the string 'f
 
 # Throwing Exceptions
 
-Instead of returning a `ValidationResult`, you can alternatively tell FluentValidation to throw an exception if validation fails by using the `ValidateAndThrow` method:
+Instead of returning a `ValidationResult`, you can alternatively tell FluentValidation to throw an exception if validation fails by using the `validate_and_throw` method:
 
 ```python
 Customer customer = new Customer();
 CustomerValidator validator = new CustomerValidator();
 
-validator.ValidateAndThrow(customer);
+validator.validate_and_throw(customer);
 ```
 
 This throws a `ValidationException` which contains the error messages in the errors property.
 
-*Note* `ValidateAndThrow` is an extension method, so you must have the `FluentValidation` namespace imported with a `using` statement at the top of your file in order for this method to be available.
+*Note* `validate_and_throw` is an extension method, so you must have the `FluentValidation` namespace imported with a `using` statement at the top of your file in order for this method to be available.
 
 ```python
 from src.fluent_validation.abstract_validator import AbstractValidator
 ```
 
-The `ValidateAndThrow` method is helpful wrapper around FluentValidation's options API, and is the equivalent of doing the following:
+The `validate_and_throw` method is helpful wrapper around FluentValidation's options API, and is the equivalent of doing the following:
 
 ```python
 validator.validate(customer, options => options.ThrowOnFailures());

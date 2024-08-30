@@ -30,7 +30,7 @@ class ConditionBuilder[T]:
                         return result
 
             executionResult = predicate(actualContext.instance_to_validate, actualContext)
-            if actualContext.instance_to_validate is None:
+            if actualContext.instance_to_validate is not None:
                 if cachedResults := actualContext.SharedConditionCache.get(id, None):
                     cachedResults[actualContext.instance_to_validate] = executionResult
                 else:

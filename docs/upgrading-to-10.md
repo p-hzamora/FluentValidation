@@ -78,7 +78,7 @@ Various methods and properties that previously returned an `IPropertyValidator` 
 - `IValidatorDescriptor.GetMembersWithValidators`
 - `IValidatorDescriptor.GetValidatorsForMember`
 
-When accessing property validators via a rule instance, you must now go via a collection of components:
+when accessing property validators via a rule instance, you must now go via a collection of components:
 
 ```csharp
 // Before:
@@ -96,7 +96,7 @@ foreach (IRuleComponent component in rule.Componetnts)
 }
 ```
 
-When accessing the current property validator instance on a rule, you must now go via the `Current` property to get the component first.
+when accessing the current property validator instance on a rule, you must now go via the `Current` property to get the component first.
 
 ```csharp
 // before:

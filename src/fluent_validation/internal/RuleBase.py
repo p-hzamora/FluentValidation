@@ -39,7 +39,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
         self._displayName: str = self._propertyName  # FIXME [x]: This implementation is wrong. It must call the "GetDisplay" method
         self._rule_sets: Optional[list[str]] = None
-        self._DependentRules:list[IValidationRule] = None
+        self._DependentRules: list[IValidationRule] = None
 
     def AddValidator(self, validator: IPropertyValidator[T, TValue]) -> None:
         component = RuleComponent[T, TValue](validator)
@@ -114,65 +114,61 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._rule_sets = value
 
     @property
-    def DependentRules(self)-> list[IValidationRule]:
+    def DependentRules(self) -> list[IValidationRule]:
         return self._DependentRules
 
     @DependentRules.setter
-    def DependentRules(self, value:list[IValidationRule])->None:
+    def DependentRules(self, value: list[IValidationRule]) -> None:
         self._DependentRules = value
 
-    
-    def ApplyCondition(self, predicate:Callable[[ValidationContext[T]], bool], applyConditionTo:ApplyConditionTo = ApplyConditionTo.AllValidators)->None:
-        # Default behaviour for When/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
-        if (applyConditionTo == ApplyConditionTo.AllValidators):
+    def ApplyCondition(self, predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> None:
+        # Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+        if applyConditionTo == ApplyConditionTo.AllValidators:
             for validator in self._components:
                 validator.ApplyCondition(predicate)
 
-            if (self.DependentRules is not None):
+            if self.DependentRules is not None:
                 for dependentRule in self.DependentRules:
                     dependentRule.ApplyCondition(predicate, applyConditionTo)
         else:
             self.Current.ApplyCondition(predicate)
-        
+
     # public void ApplyAsyncCondition(Func<ValidationContext<T>, CancellationToken, Task<bool>> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) {
-	# 	// Default behaviour for When/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
-	# 	if (applyConditionTo == ApplyConditionTo.AllValidators) {
-	# 		foreach (var validator in _components) {
-	# 			validator.ApplyAsyncCondition(predicate);
-	# 		}
+    # 	// Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+    # 	if (applyConditionTo == ApplyConditionTo.AllValidators) {
+    # 		foreach (var validator in _components) {
+    # 			validator.ApplyAsyncCondition(predicate);
+    # 		}
 
-	# 		if (DependentRules != null) {
-	# 			foreach (var dependentRule in DependentRules) {
-	# 				dependentRule.ApplyAsyncCondition(predicate, applyConditionTo);
-	# 			}
-	# 		}
-	# 	}
-	# 	else {
-	# 		Current.ApplyAsyncCondition(predicate);
-	# 	}
-	# }
-            
+    # 		if (DependentRules != null) {
+    # 			foreach (var dependentRule in DependentRules) {
+    # 				dependentRule.ApplyAsyncCondition(predicate, applyConditionTo);
+    # 			}
+    # 		}
+    # 	}
+    # 	else {
+    # 		Current.ApplyAsyncCondition(predicate);
+    # 	}
+    # }
 
-    def ApplySharedCondition(self, condition:Callable[[ValidationContext[T]], bool])->None:
+    def ApplySharedCondition(self, condition: Callable[[ValidationContext[T]], bool]) -> None:
         if self._condition is None:
             self._condition = condition
         else:
             original = self._condition
             self._condition = lambda ctx: condition(ctx) and original(ctx)
 
-	# public void ApplySharedAsyncCondition(Func<ValidationContext<T>, CancellationToken, Task<bool>> condition) {
-	# 	if (_asyncCondition == null) {
-	# 		_asyncCondition = condition;
-	# 	}
-	# 	else {
-	# 		var original = _asyncCondition;
-	# 		_asyncCondition = async (ctx, ct) => await condition(ctx, ct) && await original(ctx, ct);
-	# 	}
-	# }
+    # public void ApplySharedAsyncCondition(Func<ValidationContext<T>, CancellationToken, Task<bool>> condition) {
+    # 	if (_asyncCondition == null) {
+    # 		_asyncCondition = condition;
+    # 	}
+    # 	else {
+    # 		var original = _asyncCondition;
+    # 		_asyncCondition = async (ctx, ct) => await condition(ctx, ct) && await original(ctx, ct);
+    # 	}
+    # }
 
-	# object IValidationRule<T>.GetPropertyValue(T instance) => PropertyFunc(instance);
-
-
+    # object IValidationRule<T>.GetPropertyValue(T instance) => PropertyFunc(instance);
 
     @staticmethod
     def PrepareMessageFormatterForValidationError(context: ValidationContext[T], value: TValue) -> None:

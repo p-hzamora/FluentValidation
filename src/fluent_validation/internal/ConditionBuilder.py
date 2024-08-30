@@ -12,7 +12,7 @@ class ConditionBuilder[T]:
     def __init__(self, rules: TrackingCollection[IValidationRuleInternal[T]]):
         self._rules: TrackingCollection[IValidationRuleInternal[T]] = rules
 
-    def When(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
+    def when(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
         propertyRules: list[IValidationRuleInternal[T]] = []
 
         with self._rules.OnItemAdded(propertyRules.append):
@@ -43,7 +43,7 @@ class ConditionBuilder[T]:
         return ConditionOtherwiseBuilder[T](self._rules, Condition)
 
     def Unless(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
-        return self.When(lambda x, context: not predicate(x, context), action)
+        return self.when(lambda x, context: not predicate(x, context), action)
 
 
 # internal class AsyncConditionBuilder[T] {

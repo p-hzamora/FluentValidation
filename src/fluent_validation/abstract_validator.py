@@ -200,11 +200,11 @@ class AbstractValidator[T](IValidator[T]):
         return None
 
     @override
-    def When(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
+    def when(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
         return self.__When(lambda x, _: predicate(x), action)
 
     def __When(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
-        return ConditionBuilder[T](self.Rules).When(predicate, action)
+        return ConditionBuilder[T](self.Rules).when(predicate, action)
 
     @override
     def Unless(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:

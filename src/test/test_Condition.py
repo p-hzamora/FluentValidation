@@ -15,7 +15,7 @@ from src.test.person import Order, Person
 class TestConditionValidator(AbstractValidator[Person]):
     def __init__(self):
         super().__init__()
-        self.rule_for(lambda x: x.Forename).not_null().When(lambda x: x.Id == 0)
+        self.rule_for(lambda x: x.Forename).not_null().when(lambda x: x.Id == 0)
 
 
 # class TestConditionAsyncValidator(AbstractValidator[Person]):
@@ -86,7 +86,7 @@ class ConditionTests(unittest.TestCase):
     # 	self.assertFalse(result.is_valid)
 
     def test_Condition_is_applied_to_all_validators_in_the_chain(self) -> None:
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).not_null().not_equal("foo").When(lambda x: x.Id > 0))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).not_null().not_equal("foo").when(lambda x: x.Id > 0))
 
         result = validator.validate(Person())
         self.assertEqual(len(result.errors), 0)
@@ -110,13 +110,13 @@ class ConditionTests(unittest.TestCase):
     # 		lambda v: v.rule_for(lambda x: x.Surname)
     # 			.MustAsync(async (val, token) => val is not None)
     # 			.MustAsync(async (val, token) => val != "foo")
-    # 			.When(lambda x: x.Id > 0)
+    # 			.when(lambda x: x.Id > 0)
 
     # 	result = await validator.ValidateAsync(Person())
     # 	result.Errors.Count.ShouldEqual(0)
 
     def test_Condition_is_applied_to_single_validator_in_the_chain_when_ApplyConditionTo_set_to_CurrentValidator(self) -> None:
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).not_null().not_equal("foo").When(lambda x: x.Id > 0, ApplyConditionTo.CurrentValidator))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).not_null().not_equal("foo").when(lambda x: x.Id > 0, ApplyConditionTo.CurrentValidator))
 
         result = validator.validate(Person())
         self.assertEqual(len(result.errors), 1)

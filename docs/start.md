@@ -92,7 +92,7 @@ CustomerValidator(AbstractValidator[Customer]):
 
 This would ensure that the surname is not null and is not equal to the string 'foo'.
 
-<!-- # Throwing Exceptions
+# Throwing Exceptions
 
 Instead of returning a `ValidationResult`, you can alternatively tell FluentValidation to throw an exception if validation fails by using the `ValidateAndThrow` method:
 
@@ -128,7 +128,7 @@ validator.validate(customer, options =>
 });
 ```
 
-It is also possible to customize type of exception thrown, [which is covered in this section](advanced.html#customizing-the-validation-exception).
+<!-- It is also possible to customize type of exception thrown, [which is covered in this section](advanced.html#customizing-the-validation-exception). -->
 
 # Complex Properties
 
@@ -190,5 +190,5 @@ rule_for(customer => customer.Address.Postcode).not_null()
 In this case, a null check will *not* be performed automatically on `Address`, so you should explicitly add a condition
 
 ```python
-rule_for(customer => customer.Address.Postcode).not_null().When(customer => customer.Address != null)
-``` -->
+rule_for(customer => customer.Address.Postcode).not_null().when(customer => customer.Address != null)
+```

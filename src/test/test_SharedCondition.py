@@ -22,7 +22,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			# void the validation for the entire set when it's
     # 			# predicate is true.
     # 			#
-    # 			When(lambda x: x.Id > 0, lambda: {
+    # 			when(lambda x: x.Id > 0, lambda: {
     # 				rule_for(lambda x: x.Forename).NotEmpty()
     # 				rule_for(lambda x: x.Surname).NotEmpty().Equal("Smith")
     # 			})
@@ -62,7 +62,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			# void the validation for the entire set when it's
     # 			# predicate is true.
     # 			#
-    # 			When((x) => x.Id > 0,
+    # 			when((x) => x.Id > 0,
     # 				lambda: {
     # 					RuleForEach(lambda x: x.NickNames).NotEmpty()
     # 				}
@@ -93,12 +93,12 @@ class SharedConditionTests(unittest.TestCase):
     # 	class SharedConditionWithScopedUnlessValidator : AbstractValidator<Person> {
     # 		public SharedConditionWithScopedUnlessValidator() {
     # 			# inner rule_for() calls can contain their own,
-    # 			# locally scoped When and Unless calls that
+    # 			# locally scoped when and Unless calls that
     # 			# act only on that individual rule_for() yet the
-    # 			# rule_for() respects the grouped When() and
+    # 			# rule_for() respects the grouped when() and
     # 			# Unless() predicates.
     # 			#
-    # 			When(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).Unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == false) })
+    # 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).Unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == false) })
     # 			#.Unless(lambda x: x.Age > 65)
     # 		}
     # 	}
@@ -106,9 +106,9 @@ class SharedConditionTests(unittest.TestCase):
     # 	class SharedAsyncConditionWithScopedUnlessValidator : AbstractValidator<Person> {
     # 		public SharedAsyncConditionWithScopedUnlessValidator() {
     # 			# inner rule_for() calls can contain their own,
-    # 			# locally scoped When and Unless calls that
+    # 			# locally scoped when and Unless calls that
     # 			# act only on that individual rule_for() yet the
-    # 			# rule_for() respects the grouped When() and
+    # 			# rule_for() respects the grouped when() and
     # 			# Unless() predicates.
     # 			#
     # 			WhenAsync(async (x,c) => x.Id > 0 && x.Age <= 65,
@@ -135,7 +135,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	class BadValidatorDisablesNullCheck : AbstractValidator<string> {
     # 		public BadValidatorDisablesNullCheck() {
-    # 			When(lambda x: x != null, lambda: {
+    # 			when(lambda x: x != null, lambda: {
     # 				rule_for(lambda x: x).Must(lambda x: x != "foo")
     # 			})
     # 		}
@@ -148,7 +148,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	class AsyncBadValidatorDisablesNullCheck : AbstractValidator<string> {
     # 		public AsyncBadValidatorDisablesNullCheck() {
-    # 			When(lambda x: x != null, lambda: {
+    # 			when(lambda x: x != null, lambda: {
     # 				rule_for(lambda x: x).Must(lambda x: x != "foo")
     # 			})
 
@@ -165,7 +165,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def void shared_When_not_applied_to_grouped_collection_rules_when_initial_predicate_is_false() {
     # 		validator = SharedCollectionConditionValidator()
-    # 		person = Person() # fails the shared When predicate
+    # 		person = Person() # fails the shared when predicate
 
     # 		result = validator.validate(person)
     # 		result.Errors.Count.ShouldEqual(0)
@@ -173,7 +173,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def async Task shared_async_when_not_applied_to_grouped_collection_rules_when_initial_predicate_is_false() {
     # 		validator = SharedAsyncCollectionConditionValidator()
-    # 		person = Person() # fails the shared When predicate
+    # 		person = Person() # fails the shared when predicate
 
     # 		result = await validator.ValidateAsync(person)
     # 		result.Errors.Count.ShouldEqual(0)
@@ -182,7 +182,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Shared_When_is_applied_to_grouped_collection_rules_when_initial_predicate_is_true() {
     # 		validator = SharedCollectionConditionValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			NickNames = string[] { null },
     # 		}
 
@@ -193,7 +193,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def async Task Shared_async_When_is_applied_to_grouped_collection_rules_when_initial_predicate_is_true() {
     # 		validator = SharedAsyncCollectionConditionValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			NickNames = string[] { null },
     # 		}
 
@@ -204,7 +204,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Shared_When_is_applied_to_grouped_rules_collection_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
     # 		validator = SharedCollectionConditionValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			NickNames = new[] { "Foo"},
     # 		}
 
@@ -215,7 +215,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def async Task Shared_async_When_is_applied_to_grouped_rules_collection_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
     # 		validator = SharedAsyncCollectionConditionValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			NickNames = new[] { "foo" }
     # 		}
 
@@ -227,7 +227,7 @@ class SharedConditionTests(unittest.TestCase):
     # 		Assert.Throws<AsyncValidatorInvokedSynchronouslyException>(lambda: {
     # 			validator = SharedAsyncCollectionConditionValidator()
     # 			person = Person() {
-    # 				Id = 4, # triggers the shared When predicate
+    # 				Id = 4, # triggers the shared when predicate
     # 				NickNames = string[] { null }
     # 			}
 
@@ -237,7 +237,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def void Shared_When_is_not_applied_to_grouped_rules_when_initial_predicate_is_false() {
     # 		validator = SharedConditionValidator()
-    # 		person = Person() # fails the shared When predicate
+    # 		person = Person() # fails the shared when predicate
 
     # 		result = validator.validate(person)
     # 		result.Errors.Count.ShouldEqual(0)
@@ -245,7 +245,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def async Task Shared_async_When_is_not_applied_to_grouped_rules_when_initial_predicate_is_false() {
     # 		validator = SharedAsyncConditionValidator()
-    # 		person = Person() # fails the shared When predicate
+    # 		person = Person() # fails the shared when predicate
 
     # 		result = await validator.ValidateAsync(person)
     # 		result.Errors.Count.ShouldEqual(0)
@@ -254,7 +254,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Shared_When_is_applied_to_grouped_rules_when_initial_predicate_is_true() {
     # 		validator = SharedConditionValidator()
     # 		person = Person() {
-    # 			Id = 4 # triggers the shared When predicate
+    # 			Id = 4 # triggers the shared when predicate
     # 		}
 
     # 		result = validator.validate(person)
@@ -264,7 +264,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def async Task Shared_async_When_is_applied_to_grouped_rules_when_initial_predicate_is_true() {
     # 		validator = SharedAsyncConditionValidator()
     # 		person = Person() {
-    # 			Id = 4 # triggers the shared When predicate
+    # 			Id = 4 # triggers the shared when predicate
     # 		}
 
     # 		result = await validator.ValidateAsync(person)
@@ -274,7 +274,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Shared_When_is_applied_to_groupd_rules_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
     # 		validator = SharedConditionValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			Forename = "Kevin", # satisfies rule_for( lambda x: x.Forename ).NotEmpty()
     # 			Surname = "Smith", # satisfies rule_for( lambda x: x.Surname ).NotEmpty().Equal( "Smith" )
     # 		}
@@ -286,7 +286,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def async Task Shared_async_When_is_applied_to_groupd_rules_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
     # 		validator = SharedAsyncConditionValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			Forename = "Kevin", # satisfies rule_for( lambda x: x.Forename ).NotEmpty()
     # 			Surname = "Smith", # satisfies rule_for( lambda x: x.Surname ).NotEmpty().Equal( "Smith" )
     # 		}
@@ -298,7 +298,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Shared_When_respects_the_smaller_scope_of_an_inner_Unless_when_the_inner_Unless_predicate_is_satisfied() {
     # 		validator = SharedConditionWithScopedUnlessValidator()
     # 		person = Person() {
-    # 			Id = 4 # triggers the shared When predicate
+    # 			Id = 4 # triggers the shared when predicate
     # 		}
 
     # 		person.CreditCard = "1234123412341234" # satisfies the inner Unless predicate
@@ -311,7 +311,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def async Task Shared_async_When_respects_the_smaller_scope_of_an_inner_Unless_when_the_inner_Unless_predicate_is_satisfied() {
     # 		validator = SharedAsyncConditionWithScopedUnlessValidator()
     # 		person = Person() {
-    # 			Id = 4 # triggers the shared When predicate
+    # 			Id = 4 # triggers the shared when predicate
     # 		}
 
     # 		person.CreditCard = "1234123412341234" # satisfies the inner Unless predicate
@@ -324,7 +324,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Shared_When_respects_the_smaller_scope_of_a_inner_Unless_when_the_inner_Unless_predicate_fails() {
     # 		validator = SharedConditionWithScopedUnlessValidator()
     # 		person = Person() {
-    # 			Id = 4 # triggers the shared When predicate
+    # 			Id = 4 # triggers the shared when predicate
     # 		}
 
     # 		person.Orders.Add(Order()) # fails the inner Unless predicate
@@ -336,7 +336,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def async Task Shared_async_When_respects_the_smaller_scope_of_a_inner_Unless_when_the_inner_Unless_predicate_fails() {
     # 		validator = SharedAsyncConditionWithScopedUnlessValidator()
     # 		person = Person() {
-    # 			Id = 4 # triggers the shared When predicate
+    # 			Id = 4 # triggers the shared when predicate
     # 		}
 
     # 		person.Orders.Add(Order()) # fails the inner Unless predicate
@@ -348,7 +348,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Outer_Unless_clause_will_trump_an_inner_Unless_clause_when_inner_fails_but_the_outer_is_satisfied() {
     # 		validator = SharedConditionWithScopedUnlessValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			Age = 70 # satisfies the outer Unless predicate
     # 		}
 
@@ -361,7 +361,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def async Task Outer_async_Unless_clause_will_trump_an_inner_Unless_clause_when_inner_fails_but_the_outer_is_satisfied() {
     # 		validator = SharedAsyncConditionWithScopedUnlessValidator()
     # 		person = Person() {
-    # 			Id = 4, # triggers the shared When predicate
+    # 			Id = 4, # triggers the shared when predicate
     # 			Age = 70 # satisfies the outer Unless predicate
     # 		}
 
@@ -373,7 +373,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def void Condition_can_be_used_inside_ruleset() {
     # 		validator = TestValidator()
-    # 		validator.RuleSet("foo", lambda: { validator.When(lambda x: x.Id > 0, lambda: { validator.rule_for(lambda x: x.Forename).not_null() }) })
+    # 		validator.RuleSet("foo", lambda: { validator.when(lambda x: x.Id > 0, lambda: { validator.rule_for(lambda x: x.Forename).not_null() }) })
     # 		validator.rule_for(lambda x: x.Surname).not_null()
 
     # #pragma warning disable 618
@@ -400,7 +400,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void RuleSet_can_be_used_inside_condition() {
     # 		validator = TestValidator()
 
-    # 		validator.When(lambda x: x.Id > 0, lambda: { validator.RuleSet("foo", lambda: { validator.rule_for(lambda x: x.Forename).not_null() }) })
+    # 		validator.when(lambda x: x.Id > 0, lambda: { validator.RuleSet("foo", lambda: { validator.rule_for(lambda x: x.Forename).not_null() }) })
 
     # 		validator.rule_for(lambda x: x.Surname).not_null()
 
@@ -447,7 +447,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def async Task Does_not_execute_custom_Rule_when_condition_false() {
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: false, lambda: {
+    # 		validator.when(lambda x: false, lambda: {
     # 			validator.rule_for(x=>x).Custom((x,ctx)=> ctx.AddFailure(ValidationFailure("foo", "bar")))
     # 		})
 
@@ -468,7 +468,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Does_not_execute_customasync_Rule_when_condition_false()
     # 	{
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: false, lambda: {
+    # 		validator.when(lambda x: false, lambda: {
 
     # 			validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar")))
     # 		})
@@ -490,7 +490,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def void Executes_custom_rule_when_condition_true() {
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: true, lambda: {
+    # 		validator.when(lambda x: true, lambda: {
     # 			validator.rule_for(x=>x).Custom((x,ctx) => ctx.AddFailure(ValidationFailure("foo", "bar")))
 
     # 		})
@@ -512,7 +512,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def async Task Executes_customasync_rule_when_condition_true() {
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: true, lambda: validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar"))))
+    # 		validator.when(lambda x: true, lambda: validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar"))))
 
     # 		result = await validator.ValidateAsync(Person())
     # 		result.IsValid.ShouldBeFalse()
@@ -528,8 +528,8 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def void Nested_conditions_with_Custom_rule() {
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: true, lambda: {
-    # 			validator.When(lambda x: false, lambda: {
+    # 		validator.when(lambda x: true, lambda: {
+    # 			validator.when(lambda x: false, lambda: {
     # 				validator.rule_for(x=>x).Custom((x,ctx) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
 
     # 			})
@@ -540,7 +540,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def async Task Nested_async_conditions_with_Custom_rule() {
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: true, lambda: {
+    # 		validator.when(lambda x: true, lambda: {
     # 			validator.WhenAsync(async (x,c) =>(false), lambda: {
     # 				validator.rule_for(x=>x).Custom((x,ctx) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
     # 			})
@@ -551,8 +551,8 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def async Task Nested_conditions_with_CustomAsync_rule() {
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: true, lambda: {
-    # 			validator.When(lambda x: false, lambda: {
+    # 		validator.when(lambda x: true, lambda: {
+    # 			validator.when(lambda x: false, lambda: {
     # 				validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
     # 			})
     # 		})
@@ -562,7 +562,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	def async Task Nested_async_conditions_with_CustomAsync_rule() {
     # 		validator = TestValidator()
-    # 		validator.When(lambda x: true, lambda: {
+    # 		validator.when(lambda x: true, lambda: {
     # 			validator.WhenAsync(async (x,c) =>(false), lambda: {
     # 				validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
     # 			})
@@ -574,7 +574,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void When_condition_only_executed_once() {
     # 		validator = TestValidator()
     # 		int executions = 0
-    # 		validator.When(lambda x: {
+    # 		validator.when(lambda x: {
     # 			executions++
     # 			return x.Age > 10
     # 		}, lambda: {
@@ -603,7 +603,7 @@ class SharedConditionTests(unittest.TestCase):
 
     def test_Runs_otherwise_conditions_for_When(self):
         validator = TestValidator()
-        validator.When(
+        validator.when(
             lambda x: x.Age > 10,
             lambda: (validator.rule_for(lambda x: x.Forename).not_null()),
         ).Otherwise(
@@ -662,10 +662,10 @@ class SharedConditionTests(unittest.TestCase):
 
 # 	def void Nested_when_inside_otherwise() {
 # 		validator = InlineValidator<Person>()
-# 		validator.When(lambda x: x.Id == 1, lambda: {
+# 		validator.when(lambda x: x.Id == 1, lambda: {
 # 			validator.rule_for(lambda x: x.Forename).not_null()
 # 		}).Otherwise(lambda: {
-# 			validator.When(lambda x: x.Age > 18, lambda: {
+# 			validator.when(lambda x: x.Age > 18, lambda: {
 # 				validator.rule_for(lambda x: x.Email).not_null()
 # 			})
 # 		})
@@ -690,7 +690,7 @@ class SharedConditionTests(unittest.TestCase):
 # 		childValidator = InlineValidator<Person>()
 # 		int executions = 0
 
-# 		childValidator.When(a => {
+# 		childValidator.when(a => {
 # 			executions++
 # 			return a.Id != 0
 # 		}, lambda: {
@@ -747,10 +747,10 @@ class SharedConditionTests(unittest.TestCase):
 
 
 # 		v = InlineValidator<CollisionBase>()
-# 		v.When(lambda x: x is Collision1, lambda: {
+# 		v.when(lambda x: x is Collision1, lambda: {
 # 			v.rule_for(lambda x: ((Collision1)x).Name).not_null()
 # 		})
-# 		v.When(lambda x: x is Collision2, lambda: {
+# 		v.when(lambda x: x is Collision2, lambda: {
 # 			v.rule_for(lambda x: ((Collision2)x).Name).not_null()
 # 		})
 

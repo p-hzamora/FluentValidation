@@ -201,7 +201,7 @@ Alternatively, instead of using client-side validation you could instead execute
 
 ## Minimal APIs
 
-When using FluentValidation with minimal APIs, you can still register the validators with the service provider, (or you can instantiate them directly if they don't have dependencies) and invoke them inside your API endpoint.
+when using FluentValidation with minimal APIs, you can still register the validators with the service provider, (or you can instantiate them directly if they don't have dependencies) and invoke them inside your API endpoint.
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);

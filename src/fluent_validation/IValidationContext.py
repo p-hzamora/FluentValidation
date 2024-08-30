@@ -266,20 +266,20 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         res = ValidationContext[TChild](instanceToValidate, self.PropertyChain, _selector, self.Failures, self.MessageFormatter)
         res.IsChildContext = True
         res.RootContextData = self.RootContextData
-        res._ParentContext = (self if preserveParentContext else None,)
+        res._parentContext = (self if preserveParentContext else None,)
         res._is_async = self.IsAsync
         return res
 
-    # internal void PrepareForChildCollectionValidator() {
-    # 	_state ??= new();
-    # # 	_state.Push((IsChildContext, IsChildCollectionContext, _parentContext, PropertyChain, _sharedConditionCache));
+    # def PrepareForChildCollectionValidator(self)->None:
+    #     _state ??= new();
+    # 	_state.Push((IsChildContext, IsChildCollectionContext, _parentContext, PropertyChain, _sharedConditionCache));
     # 	IsChildContext = true;
     # 	IsChildCollectionContext = true;
     # 	PropertyChain = new PropertyChain();
     # }
 
-    # internal void RestoreState() {
-    # 	var state = _state.Pop();
+    # def RestoreState(self)->None:
+    #     var state = _state.Pop();
     # 	IsChildContext = state.IsChildContext;
     # 	IsChildCollectionContext = state.IsChildCollectionContext;
     # # 	_parentContext = state.ParentContext;
@@ -287,7 +287,8 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     # 	_sharedConditionCache = state.SharedConditionCache;
     # }
 
-    # private Stack<(bool IsChildContext, bool IsChildCollectionContext, IValidationContext ParentContext, PropertyChain Chain, Dictionary<string, Dictionary<T, bool>> SharedConditionCache)> _state;
+    # self._state:Stack<(bool IsChildContext, bool IsChildCollectionContext, IValidationContext ParentContext, PropertyChain Chain, Dictionary<string, Dictionary<T, bool>> SharedConditionCache)> _state;
+
 
     def AddFailure_validationFailure(self, failure: ValidationFailure) -> None:
         self.Failures.append(failure)

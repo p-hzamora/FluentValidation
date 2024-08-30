@@ -17,13 +17,13 @@ when(customer => customer.IsPreferred, () => {
 });
 ```
 
-This time, the condition will be applied to both rules. You can also chain a call to `Otherwise` which will invoke rules that don't match the condition:
+This time, the condition will be applied to both rules. You can also chain a call to `otherwise` which will invoke rules that don't match the condition:
 
 ```csharp
 when(customer => customer.IsPreferred, () => {
    rule_for(customer => customer.CustomerDiscount).greater_than(0);
    rule_for(customer => customer.CreditCardNumber).not_null();
-}).Otherwise(() => {
+}).otherwise(() => {
   rule_for(customer => customer.CustomerDiscount).equal(0);
 });
 ```

@@ -606,7 +606,7 @@ class SharedConditionTests(unittest.TestCase):
         validator.when(
             lambda x: x.Age > 10,
             lambda: (validator.rule_for(lambda x: x.Forename).not_null()),
-        ).Otherwise(
+        ).otherwise(
             lambda: validator.rule_for(lambda x: x.Surname).not_null(),
         )
 
@@ -622,7 +622,7 @@ class SharedConditionTests(unittest.TestCase):
     #     validator.unless(
     #         lambda x: x.Age > 10,
     #         lambda: validator.rule_for(lambda x: x.Forename).not_null(),
-    #     ).Otherwise(
+    #     ).otherwise(
     #         lambda: validator.rule_for(lambda x: x.Surname).not_null(),
     #     )
 
@@ -636,7 +636,7 @@ class SharedConditionTests(unittest.TestCase):
 # 		validator = TestValidator()
 # 		validator.WhenAsync(async (x, ct) => x.Age > 10, lambda: {
 # 			validator.rule_for(lambda x: x.Forename).not_null()
-# 		}).Otherwise(lambda: {
+# 		}).otherwise(lambda: {
 # 			validator.rule_for(lambda x: x.Surname).not_null()
 # 		})
 
@@ -650,7 +650,7 @@ class SharedConditionTests(unittest.TestCase):
 # 		validator = TestValidator()
 # 		validator.UnlessAsync(async (x, ct) => x.Age > 10, lambda: {
 # 			validator.rule_for(lambda x: x.Forename).not_null()
-# 		}).Otherwise(lambda: {
+# 		}).otherwise(lambda: {
 # 			validator.rule_for(lambda x: x.Surname).not_null()
 # 		})
 
@@ -664,7 +664,7 @@ class SharedConditionTests(unittest.TestCase):
 # 		validator = InlineValidator<Person>()
 # 		validator.when(lambda x: x.Id == 1, lambda: {
 # 			validator.rule_for(lambda x: x.Forename).not_null()
-# 		}).Otherwise(lambda: {
+# 		}).otherwise(lambda: {
 # 			validator.when(lambda x: x.Age > 18, lambda: {
 # 				validator.rule_for(lambda x: x.Email).not_null()
 # 			})

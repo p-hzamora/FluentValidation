@@ -106,7 +106,7 @@ class ConditionOtherwiseBuilder[T](IConditionBuilder):
         self._rules: TrackingCollection[IValidationRuleInternal[T]] = rules
         self._condition: Callable[[IValidationContext], bool] = condition
 
-    def Otherwise(self, action: Callable[..., None]) -> None:
+    def otherwise(self, action: Callable[..., None]) -> None:
         propertyRules: list[IValidationRuleInternal[T]] = []
 
         onRuleAdded: Callable[[IValidationRuleInternal[T]], None] = propertyRules.append
@@ -127,7 +127,7 @@ class ConditionOtherwiseBuilder[T](IConditionBuilder):
 # 		_condition = condition
 # 	}
 
-# 	public virtual void Otherwise(Action action) {
+# 	public virtual void otherwise(Action action) {
 # 		propertyRules = new List[IValidationRuleInternal[T]]()
 
 # 		Action[IValidationRuleInternal[T]] onRuleAdded = propertyRules.Add

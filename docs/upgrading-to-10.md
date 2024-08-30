@@ -11,7 +11,7 @@ The main goals for this release were to improve performance and type safety. To 
 The `PropertyValidatorContext` class has been deprecated, and various places that previously used this now receive a `ValidationContext<T>` instead. Anywhere that previously called `context.ParentContext` to access the `ValidationContext<T>` can now just use `context` instead. For example:
 
 
-```csharp
+```python
 # Before:
 rule_for(x => x.Foo).must((instance, value, context) => 
 {
@@ -37,7 +37,7 @@ The following changes should be made in order to migrate:
 
 The following example shows a custom property validator before and after migration.
 
-```csharp
+```python
 # Before:
 public class NotNullValidator : PropertyValidator
 {
@@ -80,7 +80,7 @@ Various methods and properties that previously returned an `IPropertyValidator` 
 
 when accessing property validators via a rule instance, you must now go via a collection of components:
 
-```csharp
+```python
 # Before:
 IValidationRule rule = ...;
 foreach (IPropertyValidator propertyValidator in rule.Validators) 
@@ -98,7 +98,7 @@ foreach (IRuleComponent component in rule.Componetnts)
 
 when accessing the current property validator instance on a rule, you must now go via the `Current` property to get the component first.
 
-```csharp
+```python
 # before:
 PropertyRule rule = ...;
 IPropertyValidator currentValidator = rule.CurrentValidator;
@@ -126,7 +126,7 @@ The methods in `IValidatorInterceptor` now accept an `ActionContext` as their fi
 
 The signature for adding an ASP.NET Client Validator factories has changed to receive a rule component instead of a property validator. Additionally, as property validator instances are now generic, the lookup key should be a non-generic interface implemented by the property validator.
 
-```csharp
+```python
 
 # Before:
 public class MyCustomClientsideAdaptor : ClientValidatorBase
@@ -221,7 +221,7 @@ The following methods and properties have been removed:
 
 Several extension methods that provided overloads of the `Validate` method that were previously deprecated have been removed. Replacements are available:
 
-```csharp
+```python
 # Validating only specific properties.
 # Before:
 validator.Validate(instance, x => x.SomeProperty, x => x.SomeOtherProperty);

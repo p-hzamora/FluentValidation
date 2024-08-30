@@ -2,7 +2,7 @@
 
 A custom error code can also be associated with validation rules by calling the `WithErrorCode` method:
 
-```csharp
+```python
 public class PersonValidator : AbstractValidator<Person> 
 {
   public PersonValidator() 
@@ -15,7 +15,7 @@ public class PersonValidator : AbstractValidator<Person>
 
 The resulting error code can be obtained from the `ErrorCode` property on the `ValidationFailure`:
 
-```csharp
+```python
 var validator = new PersonValidator();
 var result = validator.Validate(new Person());
 foreach (var failure in result.Errors)

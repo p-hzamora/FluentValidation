@@ -4,7 +4,7 @@ Validators can be used with any dependency injection library, such as `Microsoft
 
 For example, imagine you have the following validator defined in your project:
 
-```csharp
+```python
 public class UserValidator : AbstractValidator<User>
 {
   public UserValidator()
@@ -16,7 +16,7 @@ public class UserValidator : AbstractValidator<User>
 
 This validator can be registered as `IValidator<User>` in your application's startup routine by calling into the .NET service provider. For example, in a Razor pages application the startup routine would look something like this:
 
-```csharp
+```python
 public class Startup
 {
     public Startup(IConfiguration configuration)
@@ -62,7 +62,7 @@ public class UserService
 
 You can also make use of the `FluentValidation.DependencyInjectionExtensions` package which can be used to automatically find all the validators in a specific assembly using an extension method:
 
-```csharp
+```python
 using FluentValidation.DependencyInjectionExtensions;
 
 public class Startup
@@ -79,7 +79,7 @@ public class Startup
 
 This will loop through all public types in the same assembly in which `UserValidator` is defined, find all public non-abstract validators and register them with the service provider. By default, these will be registered as `Scoped`, but you can optionally use `Singleton` or `Transient` instead:
 
-```csharp
+```python
 services.AddValidatorsFromAssemblyContaining<UserValidator>(ServiceLifetime.Transient);
 ```
 
@@ -95,7 +95,7 @@ when using FluentValidation in an ASP.NET project with auto-validation, the same
 
 Alternative method overloads that take a type instance and an assembly reference exist too:
 
-```csharp
+```python
 # Load using a type reference rather than the generic.
 services.AddValidatorsFromAssemblyContaining(typeof(UserValidator));
 
@@ -107,7 +107,7 @@ services.AddValidatorsFromAssembly(Assembly.Load("SomeAssembly"));
 
 You can provide an optional filter function that can be used to exclude some validators from automatic registration. For example, to register all validators *except* the `CustomerValidator` you could write the following:
 
-```csharp
+```python
 services.AddValidatorsFromAssemblyContaining<MyValidator>(ServiceLifetime.Scoped, 
     filter => filter.ValidatorType != typeof(CustomerValidator));
 ```

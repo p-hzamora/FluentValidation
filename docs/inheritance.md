@@ -4,7 +4,7 @@ As of FluentValidation 9.2, if your object contains a property which is a base c
 
 For example, imagine the following example:
 
-```csharp
+```python
 # We have an interface that represents a 'contact',
 # for example in a CRM system. All contacts must have a name and email.
 public interface IContact 
@@ -44,7 +44,7 @@ public class ContactRequest
 
 Next we create validators for Person and Organisation:
 
-```csharp
+```python
 public class PersonValidator : AbstractValidator<Person> 
 {
   public PersonValidator() 
@@ -68,7 +68,7 @@ public class OrganisationValidator : AbstractValidator<Organisation>
 
 Now we create a validator for our `ContactRequest`. We can define specific validators for the `Contact` property, depending on its runtime type. This is done by calling `SetInheritanceValidator`, passing in a function that can be used to define specific child validators:
 
-```csharp
+```python
 public class ContactRequestValidator : AbstractValidator<ContactRequest>
 {
   public ContactRequestValidator()
@@ -88,7 +88,7 @@ There are also overloads of `Add` available that take a callback, which allows f
 
 This method also works with [collections](collections), where each element of the collection may be a different subclass. For example, taking the above example if instead of a single `Contact` property, the `ContactRequest` instead had a collection of contacts:
 
-```csharp
+```python
 public class ContactRequest 
 {
   public List<IContact> Contacts { get; } = new();
@@ -97,7 +97,7 @@ public class ContactRequest
 
 ...then you could define inheritance validation for each item in the collection:
 
-```csharp
+```python
 public class ContactRequestValidator : AbstractValidator<ContactRequest>
 {
   public ContactRequestValidator()

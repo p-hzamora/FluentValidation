@@ -4,7 +4,7 @@ In some situations, you may wish to define asynchronous rules, for example when 
 
 A simplistic solution that checks if a user ID is already in use using an external web API:
 
-```csharp
+```python
 public class CustomerValidator : AbstractValidator<Customer> 
 {
   SomeExternalWebApiClient _client;
@@ -24,7 +24,7 @@ public class CustomerValidator : AbstractValidator<Customer>
 
 Invoking the validator is essentially the same, but you should now invoke it by calling `ValidateAsync`:
 
-```csharp
+```python
 var validator = new CustomerValidator(new SomeExternalWebApiClient());
 var result = await validator.ValidateAsync(customer);
 ```

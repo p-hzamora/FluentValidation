@@ -2,7 +2,7 @@
 
 You can include rules from other validators provided they validate the same type. This allows you to split rules across multiple classes and compose them together (in a similar way to how other languages support traits). For example, imagine you have 2 validators that validate different aspects of a `Person`:
 
-```csharp
+```python
 public class PersonAgeValidator : AbstractValidator<Person>  
 {
   public PersonAgeValidator() 
@@ -28,7 +28,7 @@ public class PersonNameValidator : AbstractValidator<Person>
 
 Because both of these validators are targetting the same model type (`Person`), you can combine them using `Include`:
 
-```csharp
+```python
 public class PersonValidator : AbstractValidator<Person> 
 {
   public PersonValidator()

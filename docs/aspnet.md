@@ -14,7 +14,7 @@ With automatic validation, FluentValidation is invoked automatically by ASP.NET 
 
 The following examples will make use of a `Person` object which is validated using a `PersonValidator`. These classes are defined as follows:
 
-```csharp
+```python
 public class Person 
 {
   public int Id { get; set; }
@@ -37,7 +37,7 @@ public class PersonValidator : AbstractValidator<Person>
 
 If you're using MVC, Web Api or Razor Pages you'll need to register your validator with the Service Provider in the `ConfigureServices` method of your application's `Startup` class. (note that if you're using Minimal APIs, [see the section on Minimal APIs below](aspnet.html#minimal-apis)). 
 
-```csharp
+```python
 public void ConfigureServices(IServiceCollection services) 
 {
     # If you're using MVC or WebApi you'll probably have
@@ -59,7 +59,7 @@ Here we register our `PersonValidator` with the service provider by calling `Add
 
 Alternatively you can register all validators in a specific assembly by using our Service Collection extensions. To do this you'll need to install the `FluentValidation.DependencyInjectionExtensions` package and then call the appropriate `AddValidators...` extension method on the services collection. [See this page for more details](di.html#automatic-registration)
 
-```csharp
+```python
 public void ConfigureServices(IServiceCollection services) 
 {
     services.AddMvc();
@@ -80,7 +80,7 @@ With the manual validation approach, you'll inject the validator into your contr
 
 For example, you might have a controller that looks like this:
 
-```csharp
+```python
 public class PeopleController : Controller 
 {
   private IValidator<Person> _validator;
@@ -126,7 +126,7 @@ Because our validator is registered with the Service Provider, it will be inject
 
 If validation fails, we need to pass the error messages back down to the view so they can be displayed to the end user. We can do this by defining an extension method for FluentValidation's `ValidationResult` type that copies the error messages into ASP.NET's `ModelState` dictionary:
 
-```csharp
+```python
 public static class Extensions 
 {
   public static void AddToModelState(this ValidationResult result, ModelStateDictionary modelState) 
@@ -203,7 +203,7 @@ Alternatively, instead of using client-side validation you could instead execute
 
 when using FluentValidation with minimal APIs, you can still register the validators with the service provider, (or you can instantiate them directly if they don't have dependencies) and invoke them inside your API endpoint.
 
-```csharp
+```python
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
@@ -230,7 +230,7 @@ app.MapPost("/person", async (IValidator<Person> validator, IPersonRepository re
 
 Note the `ToDictionary` method on the `ValidationResult` is only available from fluent_validation 11.1 and newer. In older versions you will need to implement this as an extension method:
 
-```csharp
+```python
 public static class FluentValidationExtensions
 {
   public static IDictionary<string, string[]> ToDictionary(this ValidationResult validationResult)

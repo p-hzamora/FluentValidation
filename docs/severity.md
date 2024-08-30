@@ -2,7 +2,7 @@
 
 Given the following example that validates a `Person` object:
 
-```csharp
+```python
 public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator()
@@ -27,7 +27,7 @@ rule_for(person => person.Surname).not_null().WithSeverity(person => Severity.Wa
 
 In this case, the `ValidationResult` would still have an `is_valid` result of `false`. However, in the list of `Errors`, the `ValidationFailure` associated with this field will have its `Severity` property set to `Warning`:
 
-```csharp
+```python
 var validator = new PersonValidator();
 var result = validator.Validate(new Person());
 foreach (var failure in result.Errors) 
@@ -47,7 +47,7 @@ By default, the severity level of every validation rule is `Error`. Available op
 
 To set the severity level globally, you can set the `Severity` property on the static `ValidatorOptions` class during your application's startup routine:
 
-```csharp
+```python
 ValidatorOptions.Global.Severity = Severity.Info;
 ```
 

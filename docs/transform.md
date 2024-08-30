@@ -8,7 +8,7 @@
 As of FluentValidation 9.5, you can apply a transformation to a property value prior to validation being performed against it. For example, if you have property of type `string` that actually contains numeric input, you could apply a transformation to convert the string value to a number.
 
 
-```csharp
+```python
 Transform(from: x => x.SomeStringProperty, to: value => int.TryParse(value, out int val) ? (int?) val : null)
     .greater_than(10);
 ```
@@ -17,7 +17,7 @@ This rule transforms the value from a `string` to a nullable `int` (returning `n
 
 Syntactically this is not particularly nice to read, so the logic for the transformation can optionally be moved into a separate method:
 
-```csharp
+```python
 Transform(x => x.SomeStringProperty, StringToNullableInt)
     .greater_than(10);
 

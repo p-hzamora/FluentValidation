@@ -10,7 +10,7 @@ You can use the `TestValidate` extension method to invoke a validator for testin
 
 For example, imagine the following validator is defined:
 
-```csharp
+```python
 public class PersonValidator : AbstractValidator<Person>
 {
    public PersonValidator()
@@ -22,7 +22,7 @@ public class PersonValidator : AbstractValidator<Person>
 
 You could ensure that this validator works correctly by writing the following tests (using NUnit):
 
-```csharp
+```python
 using NUnit.Framework;
 using FluentValidation;
 using FluentValidation.TestHelper;
@@ -60,7 +60,7 @@ If the assertion fails, then a `ValidationTestException` will be thrown.
 
 If you have more complex tests, you can use the same technique to perform multiple assertions on a single validation result. For example:
 
-```csharp
+```python
 var person = new Person { Name = "Jeremy" };
 var result = validator.TestValidate(person);
 
@@ -76,7 +76,7 @@ result.ShouldHaveValidationErrorFor("Addresses[0].Line1");
 
 You can also chain additional method calls to the result of `ShouldHaveValidationErrorFor` that test individual components of the validation failure including the error message, severity, error code and custom state:
 
-```csharp
+```python
 var result = validator.TestValidate(person);
 
 result.ShouldHaveValidationErrorFor(person => person.Name)
@@ -87,7 +87,7 @@ result.ShouldHaveValidationErrorFor(person => person.Name)
 
 If you want to make sure no other validation failures occurred, except specified by conditions, use method `Only` after the conditions:
 
-```csharp
+```python
 var result = validator.TestValidate(person);
 
 # Assert that failures only happened for Name property.
@@ -113,7 +113,7 @@ Mocking validators tends to require that you make assumptions about how the vali
 
 However if you find yourself in a situation where you absolutely do need to mock a validator, then we suggest using `InlineValidator<T>` to create a stub implementation as this way you can take advantage of re-using FluentValidation's own internal logic for creating validation failures. We _strongly_ recommend not using a mocking library. An example of using `InlineValidator` is shown below:
 
-```csharp
+```python
 # Original validator that relies on an external service.
 # External service is used to check that the customer ID is not already used in the database.
 public class CustomerValidator : AbstractValidator<Customer>

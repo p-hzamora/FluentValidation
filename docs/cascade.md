@@ -5,7 +5,7 @@ You can set the cascade mode to customise how FluentValidation executes rules an
 ## Rule-Level Cascade Modes
 Imagine you have two validators defined as part of a single rule definition, a `not_null` validator and a `not_equal` validator:
 
-```csharp
+```python
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
     rule_for(x => x.Surname).not_null().not_equal("foo");
@@ -15,7 +15,7 @@ public class PersonValidator : AbstractValidator<Person> {
 
 This will first check whether the Surname property is not null and then will check if it's not equal to the string "foo". If the first validator (`not_null`) fails, then by default, the call to `not_equal` will still be invoked. This can be changed for this specific rule only by specifying a cascade mode of `Stop` (omitting the class and constructor definition from now on; assume that they are still present as above):
 
-```csharp
+```python
 rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
 ```
 
@@ -31,13 +31,13 @@ The two cascade modes are:
 ```
 
 If you have a validator class with multiple rules, and would like this `Stop` behaviour to be set for all of your rules, you could do e.g.:
-```csharp
+```python
 rule_for(x => x.Forename).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
 rule_for(x => x.MiddleNames).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
 rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
 ```
 To avoid repeating `Cascade(CascadeMode.Stop)`, you can set a default value for the rule-level cascade mode by setting the `AbstractValidator.RuleLevelCascadeMode` property, resulting in
-```csharp
+```python
 RuleLevelCascadeMode = CascadeMode.Stop;
 
 rule_for(x => x.Forename).not_null().not_equal("foo");
@@ -83,7 +83,7 @@ In FluentValidation 9.0 and older, the `CascadeMode.StopOnFirstFailure` option w
 
 With `StopOnFirstFailure`,  the following would provide the example behavior described previously (stop any rule if it fails, but then continue executing at validator class-level, so that all rules are executed):
 
-```csharp
+```python
 CascadeMode = CascadeMode.StopOnFirstFailure;
 
 rule_for(x => x.Forename).not_null().not_equal("foo");
@@ -92,7 +92,7 @@ rule_for(x => x.Surname).not_null().not_equal("foo");
 ```
 If they all fail, you will get three validation errors. That is the equivalent of doing
 
-```csharp
+```python
 rule_for(x => x.Forename).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
 rule_for(x => x.MiddleNames).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
 rule_for(x => x.Surname).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");

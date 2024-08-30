@@ -46,28 +46,28 @@ The `CascadeMode` properties on `AbstractValidator` and `ValidatorOptions.Global
 
 If you are currently setting `ValidatorOptions.Global.CascadeMode` to `Continue` or `Stop`, you can simply replace this with
 
-```csharp
+```python
 ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.<YourCurrentValue>;
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.<YourCurrentValue>;
 ```
 
 If you are currently setting it to `StopOnFirstFailure`, replace it with
 
-```csharp
+```python
 ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Continue; # Not actually needed as this is the default. Just here for completeness.
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
 ```
 
 Similarly, if you are currently setting `AbstractValidator.CascadeMode` to `Continue` or `Stop`, replace this with
 
-```csharp
+```python
 ClassLevelCascadeMode = CascadeMode.<YourCurrentValue>;
 RuleLevelCascadeMode = CascadeMode.<YourCurrentValue>;
 ```
 
 If you are currently setting it to `StopOnFirstFailure`, replace it with
 
-```csharp
+```python
 ClassLevelCascadeMode = CascadeMode.Continue;
 RuleLevelCascadeMode = CascadeMode.Stop;
 ```
@@ -78,7 +78,7 @@ All of the changes described above are exactly what the code does now anyway - e
 
 You may also be able to remove some now-unneeded calls to `.Cascade` at rule-level. For example, if you have the cascade mode at validator class-level set to `Continue`, and are repeating `.Cascade(CascadeMode.Stop[/StopOnFirstFailure])` for each rule, you can now replace this with
 
-```csharp
+```python
 ClassLevelCascadeMode = CascadeMode.Continue;
 RuleLevelCascadeMode = CascadeMode.Stop;
 ```
@@ -93,7 +93,7 @@ As `StopOnFirstFailure` is deprecated and scheduled for removal, it cannot be as
 
 If you use the `MessageBuilder` functionality to provide custom logic for error message creation then please note that as of 11.0 you can only have a single `MessageBuilder` associated with a rule chain. This property is also now set-only. In previous versions you may have had code like this:
 
-```csharp
+```python
 return ruleBuilder.Configure(rule => {
   var originalMessageBuilder = rule.MessageBuilder;
   rule.MessageBuilder = context => {
@@ -107,7 +107,7 @@ return ruleBuilder.Configure(rule => {
 
 Now as this property is set-only you'll need to update it to remove references to `originalMessageBuilder`:
 
-```csharp
+```python
 return ruleBuilder.Configure(rule => {
   rule.MessageBuilder = context => {
     # ... some custom logic in here.
@@ -125,7 +125,7 @@ The deprecated property `RunDefaultMvcValidationAfterFluentValidationExecutes` w
 
 If you were making use of this property, you should use `DisableDataAnnotationsValidation` instead. Note that this property is the inverse of the previous behaviour:
 
-```csharp
+```python
 # Before:
 services.AddFluentValidation(fv => {
   fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;

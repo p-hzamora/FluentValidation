@@ -15,12 +15,12 @@ These changes were made to remove the internal dependency on the old Microsoft `
 Instead of using `SetCollectionValidator` you should use FluentValidation's `RuleForEach` support instead:
 
 FluentValidation 7:
-```csharp
+```python
 rule_for(x => x.AddressLines).SetCollectionValidator(new AddressLineValidator());
 ```
 
 FluentValidation 8:
-```csharp
+```python
 RuleForEach(x => x.AddressLines).set_validator(new AddressLineValidator());
 ```
 
@@ -48,7 +48,7 @@ Use of the `ValidatorAttribute` to wire up validators is no longer recommended a
 
 You can now validate specific properties using a full path, eg:
 
-```csharp
+```python
 validator.Validate(customer, "Address.Line1", "Address.Line2");
 ```
 
@@ -57,7 +57,7 @@ validator.Validate(customer, "Address.Line1", "Address.Line2");
 Previously, if you defined a child validator with `set_validator`, then whichever ruleset you invoked on the parent validator will cascade to the child validator.
 Now you can explicitly define which ruleset will run on the child:
 
-```csharp
+```python
 rule_for(x => x.Address).set_validator(new AddressValidator(), "myRuleset");
 ```
 

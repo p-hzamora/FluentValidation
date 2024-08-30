@@ -2,7 +2,7 @@
 
 If your validator contains rules for several properties you can limit execution to only validate specific properties by using the `IncludeProperties` option:
 
-```csharp
+```python
 # Validator definition
 public class CustomerValidator : AbstractValidator<Customer>
 {
@@ -15,7 +15,7 @@ public class CustomerValidator : AbstractValidator<Customer>
 }
 ```
 
-```csharp
+```python
 var validator = new CustomerValidator();
 validator.Validate(customer, options => 
 {
@@ -27,7 +27,7 @@ In the above example only the rule for the `Surname` property will be executed.
 
 when working with sub-properties of collections, you can use a wildcard indexer (`[]`) to indicate all items of a collection. For example, if you wanted to validate the `Cost` property of every order, you could use the following:
 
-```csharp
+```python
 var validator = new CustomerValidator();
 validator.Validate(customer, options => 
 {

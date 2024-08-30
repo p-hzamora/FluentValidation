@@ -10,7 +10,7 @@ The method should return `true` if validation should continue, or `false` to imm
 
 Note that this method is called before FluentValidation performs its standard null-check against the model being validated, so you can use this to generate an error if the whole model is null, rather than relying on FluentValidation's standard behaviour in this case (which is to throw an exception):
 
-```csharp
+```python
 public class MyValidator : AbstractValidator<Person> 
 {
   public MyValidator() 
@@ -36,7 +36,7 @@ For advanced users, it's possible to pass arbitrary data into the validation pip
 
 The `RootContextData` property is a `Dictionary<string, object>` available on the `ValidationContext`.:
 
-```csharp
+```python
 var person = new Person();
 var context = new ValidationContext<Person>(person);
 context.RootContextData["MyCustomData"] = "Test";
@@ -46,7 +46,7 @@ validator.Validate(context);
 
 The RootContextData can then be accessed inside any custom property validators, as well as calls to `Custom`:
 
-```csharp
+```python
 rule_for(x => x.Surname).Custom((x, context) => 
 {
   if(context.RootContextData.ContainsKey("MyCustomData")) 
@@ -62,7 +62,7 @@ If you use the `validate_and_throw` method to [throw an exception when validatio
 
 This simplistic example wraps the default `ValidationException` in an `ArgumentException` instead:
 
-```csharp
+```python
 protected override void RaiseValidationException(ValidationContext<T> context, ValidationResult result)
 {
     var ex = new ValidationException(result.Errors);
@@ -75,7 +75,7 @@ This approach is useful if you always want to throw a specific custom exception 
 As an alternative you could create your own extension method that calls `Validate` and then throws your own custom exception if there are validation errors. 
 
 
-```csharp
+```python
 public static class FluentValidationExtensions
 {
     public static void ValidateAndThrowArgumentException<T>(this IValidator<T> validator, T instance)

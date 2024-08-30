@@ -142,7 +142,7 @@ class AbstractValidator[T](IValidator[T]):
             result.RuleSetsExecuted = RulesetValidatorSelector.DefaultRuleSetNameInArray
         return None
 
-    # public virtual IValidatorDescriptor CreateDescriptor() => new ValidatorDescriptor<T>(Rules);
+    # public virtual IValidatorDescriptor CreateDescriptor() => new ValidatorDescriptor<T>(Rules)
 
     def CanValidateInstancesOfType(self, _type: Type) -> bool:
         return issubclass(_type, self.__orig_bases__[0].__args__[0])
@@ -153,43 +153,43 @@ class AbstractValidator[T](IValidator[T]):
         return RuleBuilder[T, TProperty](rule, self)
 
     #   public IRuleBuilderInitial<T, TTransformed> Transform<TProperty, TTransformed>(Expression<Func<T, TProperty>> from, Func<TProperty, TTransformed> to) {
-    #         from.Guard("Cannot pass null to Transform", nameof(from));
-    #         rule = PropertyRule<T, TTransformed>.Create(lambda: to,() => RuleLevelCascadeMode);
-    #         Rules.Add(rule);
-    #         OnRuleAdded(rule);
-    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #         from.Guard("Cannot pass null to Transform", nameof(from))
+    #         rule = PropertyRule<T, TTransformed>.Create(lambda: to,() => RuleLevelCascadeMode)
+    #         Rules.Add(rule)
+    #         OnRuleAdded(rule)
+    #         return new RuleBuilder<T, TTransformed>(rule, this)
     #     }
 
     #     public IRuleBuilderInitial<T, TTransformed> Transform<TProperty, TTransformed>(Expression<Func<T, TProperty>> from, Func<T, TProperty, TTransformed> to) {
-    #         from.Guard("Cannot pass null to Transform", nameof(from));
-    #         rule = PropertyRule<T, TTransformed>.Create(lambda: to,() => RuleLevelCascadeMode);
-    #         Rules.Add(rule);
-    #         OnRuleAdded(rule);
-    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #         from.Guard("Cannot pass null to Transform", nameof(from))
+    #         rule = PropertyRule<T, TTransformed>.Create(lambda: to,() => RuleLevelCascadeMode)
+    #         Rules.Add(rule)
+    #         OnRuleAdded(rule)
+    #         return new RuleBuilder<T, TTransformed>(rule, this)
     #     }
 
     #     public IRuleBuilderInitialCollection<T, TElement> RuleForEach<TElement>(Expression<Func<T, IEnumerable<TElement>>> expression) {
-    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression));
-    #         rule = CollectionPropertyRule<T, TElement>.Create(lambda: () > RuleLevelCascadeMode);
-    #         Rules.Add(rule);
-    #         OnRuleAdded(rule);
-    #         return new RuleBuilder<T, TElement>(rule, this);
+    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression))
+    #         rule = CollectionPropertyRule<T, TElement>.Create(lambda: () > RuleLevelCascadeMode)
+    #         Rules.Add(rule)
+    #         OnRuleAdded(rule)
+    #         return new RuleBuilder<T, TElement>(rule, this)
     #     }
 
     #     public IRuleBuilderInitialCollection<T, TTransformed> TransformForEach<TElement, TTransformed>(Expression<Func<T, IEnumerable<TElement>>> expression, Func<TElement, TTransformed> to) {
-    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression));
-    #         rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(lambda: to,() => RuleLevelCascadeMode);
-    #         Rules.Add(rule);
-    #         OnRuleAdded(rule);
-    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression))
+    #         rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(lambda: to,() => RuleLevelCascadeMode)
+    #         Rules.Add(rule)
+    #         OnRuleAdded(rule)
+    #         return new RuleBuilder<T, TTransformed>(rule, this)
     #     }
 
     #     public IRuleBuilderInitialCollection<T, TTransformed> TransformForEach<TElement, TTransformed>(Expression<Func<T, IEnumerable<TElement>>> expression, Func<T, TElement, TTransformed> to) {
-    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression));
-    #         rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(lambda: to,() => RuleLevelCascadeMode);
-    #         Rules.Add(rule);
-    #         OnRuleAdded(rule);
-    #         return new RuleBuilder<T, TTransformed>(rule, this);
+    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression))
+    #         rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(lambda: to,() => RuleLevelCascadeMode)
+    #         Rules.Add(rule)
+    #         OnRuleAdded(rule)
+    #         return new RuleBuilder<T, TTransformed>(rule, this)
     #     }
 
     # FIXME [x]: It's wrong implementation
@@ -214,16 +214,16 @@ class AbstractValidator[T](IValidator[T]):
         return ConditionBuilder[T](self.Rules).Unless(predicate, action)
 
     # def WhenAsync(Func<T, CancellationToken, Task<bool>> predicate, Action action)->IConditionBuilder:
-    #     return WhenAsync((x, _, cancel) => predicate(x, cancel), action);
+    #     return WhenAsync((x, _, cancel) => predicate(x, cancel), action)
 
     # def WhenAsync(Func<T, ValidationContext<T>, CancellationToken, Task<bool>> predicate, Action action)->IConditionBuilder:
-    #     return new AsyncConditionBuilder<T>(Rules).WhenAsync(predicate, action);
+    #     return new AsyncConditionBuilder<T>(Rules).WhenAsync(predicate, action)
 
     # def UnlessAsync(Func<T, CancellationToken, Task<bool>> predicate, Action action)->IConditionBuilder:
-    #     return UnlessAsync((x, _, cancel) => predicate(x, cancel), action);
+    #     return UnlessAsync((x, _, cancel) => predicate(x, cancel), action)
 
     # def UnlessAsync(Func<T, ValidationContext<T>, CancellationToken, Task<bool>> predicate, Action action)->IConditionBuilder:
-    #     return new AsyncConditionBuilder<T>(Rules).UnlessAsync(predicate, action);
+    #     return new AsyncConditionBuilder<T>(Rules).UnlessAsync(predicate, action)
 
     # def Include(self, rulesToInclude:IValidator[T])->None:
     #     rule = IncludeRule[T].Create(rulesToInclude, lambda: self.RuleLevelCascadeMode)
@@ -232,9 +232,13 @@ class AbstractValidator[T](IValidator[T]):
 
     # public void Include<TValidator>(Func<T, TValidator> rulesToInclude) where TValidator : IValidator[T] {
     #     rule = IncludeRule[T].Create(rulesToInclude, lambda: RuleLevelCascadeMode)
-    #     Rules.Add(rule);
-    #     OnRuleAdded(rule);
+    #     Rules.Add(rule)
+    #     OnRuleAdded(rule)
     # }
+
+    # public IEnumerator<IValidationRule> GetEnumerator() => Rules.GetEnumerator()
+
+    # IEnumerator IEnumerable.GetEnumerator() => GetEnumerator()
 
     def PreValidate(self, context: ValidationContext[T], result: ValidationResult) -> bool:
         return True

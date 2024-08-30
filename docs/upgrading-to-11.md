@@ -47,29 +47,29 @@ The `CascadeMode` properties on `AbstractValidator` and `ValidatorOptions.Global
 If you are currently setting `ValidatorOptions.Global.CascadeMode` to `Continue` or `Stop`, you can simply replace this with
 
 ```python
-ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.<YourCurrentValue>;
-ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.<YourCurrentValue>;
+ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.<YourCurrentValue>
+ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.<YourCurrentValue>
 ```
 
 If you are currently setting it to `StopOnFirstFailure`, replace it with
 
 ```python
-ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Continue; # Not actually needed as this is the default. Just here for completeness.
-ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Continue # Not actually needed as this is the default. Just here for completeness.
+ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop
 ```
 
 Similarly, if you are currently setting `AbstractValidator.CascadeMode` to `Continue` or `Stop`, replace this with
 
 ```python
-ClassLevelCascadeMode = CascadeMode.<YourCurrentValue>;
-RuleLevelCascadeMode = CascadeMode.<YourCurrentValue>;
+ClassLevelCascadeMode = CascadeMode.<YourCurrentValue>
+RuleLevelCascadeMode = CascadeMode.<YourCurrentValue>
 ```
 
 If you are currently setting it to `StopOnFirstFailure`, replace it with
 
 ```python
-ClassLevelCascadeMode = CascadeMode.Continue;
-RuleLevelCascadeMode = CascadeMode.Stop;
+ClassLevelCascadeMode = CascadeMode.Continue
+RuleLevelCascadeMode = CascadeMode.Stop
 ```
 
 If you are calling `.Cascade(CascadeMode.StopOnFirstFailure)` in a rule chain, replace `StopOnFirstFailure` with `Stop` (this has always had the same behavior at rule-level since `Stop` was introduced anyway).
@@ -79,8 +79,8 @@ All of the changes described above are exactly what the code does now anyway - e
 You may also be able to remove some now-unneeded calls to `.Cascade` at rule-level. For example, if you have the cascade mode at validator class-level set to `Continue`, and are repeating `.Cascade(CascadeMode.Stop[/StopOnFirstFailure])` for each rule, you can now replace this with
 
 ```python
-ClassLevelCascadeMode = CascadeMode.Continue;
-RuleLevelCascadeMode = CascadeMode.Stop;
+ClassLevelCascadeMode = CascadeMode.Continue
+RuleLevelCascadeMode = CascadeMode.Stop
 ```
 
 ...or their global default equivalents. 
@@ -95,14 +95,14 @@ If you use the `MessageBuilder` functionality to provide custom logic for error 
 
 ```python
 return ruleBuilder.Configure(rule => {
-  var originalMessageBuilder = rule.MessageBuilder;
+  var originalMessageBuilder = rule.MessageBuilder
   rule.MessageBuilder = context => {
     
     # ... some custom logic in here.
     
-    return originalMessageBuilder?.Invoke(context) ?? context.GetDefaultMessage();
-  };
-});
+    return originalMessageBuilder?.Invoke(context) ?? context.GetDefaultMessage()
+  }
+})
 ```
 
 Now as this property is set-only you'll need to update it to remove references to `originalMessageBuilder`:
@@ -111,9 +111,9 @@ Now as this property is set-only you'll need to update it to remove references t
 return ruleBuilder.Configure(rule => {
   rule.MessageBuilder = context => {
     # ... some custom logic in here.
-    return context.GetDefaultMessage();
-  };
-});
+    return context.GetDefaultMessage()
+  }
+})
 ```
 
 This means you can no longer chain MessageBuilders together, and whichever one is set last will be the only one associated with the rule, so please confirm that you aren't relying on the previous behaviour before making this change. 
@@ -128,13 +128,13 @@ If you were making use of this property, you should use `DisableDataAnnotationsV
 ```python
 # Before:
 services.AddFluentValidation(fv => {
-  fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-});
+  fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false
+})
 
 # After:
 services.AddFluentValidation(fv => {
-  fv.DisableDataAnnotationsValidation = true;
-});
+  fv.DisableDataAnnotationsValidation = true
+})
 
 ```
 

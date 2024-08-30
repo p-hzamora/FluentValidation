@@ -10,7 +10,7 @@ The simplest way to implement a custom validator is by using the `must` method, 
 Imagine we have the following class:
 ```python
 public class Person {
-  public IList<Pet> Pets {get;set;} = new List<Pet>();
+  public IList<Pet> Pets {getset} = new List<Pet>()
 }
 ```
 
@@ -20,7 +20,7 @@ To ensure our list property contains fewer than 10 items, we could do this:
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
     rule_for(x => x.Pets).must(list => list.Count < 10)
-      .with_message("The list must contain fewer than 10 items");
+      .with_message("The list must contain fewer than 10 items")
   }
 }
 ```
@@ -30,7 +30,7 @@ To make this logic reusable, we can wrap it an extension method that acts upon a
 ```python
 public static class MyCustomValidators {
   public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
-	return ruleBuilder.must(list => list.Count < num).with_message("The list contains too many items");
+	return ruleBuilder.must(list => list.Count < num).with_message("The list contains too many items")
   }
 }
 ```
@@ -38,7 +38,7 @@ public static class MyCustomValidators {
 Here we create an extension method on `IRuleBuilder<T,TProperty>`, and we use a generic type constraint to ensure this method only appears in intellisense for List types. Inside the method, we call the must method in the same way as before but this time we call it on the passed-in `RuleBuilder` instance. We also pass in the number of items for comparison as a parameter. Our rule definition can now be rewritten to use this method:
 
 ```python
-rule_for(x => x.Pets).ListMustContainFewerThan(10);
+rule_for(x => x.Pets).ListMustContainFewerThan(10)
 ```
 
 ## Custom message placeholders
@@ -51,10 +51,10 @@ We need to modify our extension method slightly to use a different overload of t
 public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
 
   return ruleBuilder.must((rootObject, list, context) => {
-    context.MessageFormatter.AppendArgument("MaxElements", num);
-    return list.Count < num;
+    context.MessageFormatter.AppendArgument("MaxElements", num)
+    return list.Count < num
   })
-  .with_message("{PropertyName} must contain fewer than {MaxElements} items.");
+  .with_message("{PropertyName} must contain fewer than {MaxElements} items.")
 }
 ```
 
@@ -68,11 +68,11 @@ public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T
   return ruleBuilder.must((rootObject, list, context) => {
     context.MessageFormatter
       .AppendArgument("MaxElements", num)
-      .AppendArgument("TotalElements", list.Count);
+      .AppendArgument("TotalElements", list.Count)
 
-    return list.Count < num;
+    return list.Count < num
   })
-  .with_message("{PropertyName} must contain fewer than {MaxElements} items. The list contains {TotalElements} element");
+  .with_message("{PropertyName} must contain fewer than {MaxElements} items. The list contains {TotalElements} element")
 }
 ```
 
@@ -86,9 +86,9 @@ public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
    rule_for(x => x.Pets).Custom((list, context) => {
      if(list.Count > 10) {
-       context.AddFailure("The list must contain 10 items or fewer");
+       context.AddFailure("The list must contain 10 items or fewer")
      }
-   });
+   })
   }
 }
 ```
@@ -96,9 +96,9 @@ public class PersonValidator : AbstractValidator<Person> {
 The advantage of this approach is that it allows you to return multiple errors for the same rule (by calling the `context.AddFailure` method multiple times). In the above example, the property name in the generated error will be inferred as "Pets", although this could be overridden by calling a different overload of `AddFailure`:
 
 ```python
-context.AddFailure("SomeOtherProperty", "The list must contain 10 items or fewer");
+context.AddFailure("SomeOtherProperty", "The list must contain 10 items or fewer")
 # Or you can instantiate the ValidationFailure directly:
-context.AddFailure(new ValidationFailure("SomeOtherProperty", "The list must contain 10 items or fewer");
+context.AddFailure(new ValidationFailure("SomeOtherProperty", "The list must contain 10 items or fewer")
 ```
 
 As before, this could be wrapped in an extension method to simplify the consuming code.
@@ -108,9 +108,9 @@ public static IRuleBuilderOptionsConditions<T, IList<TElement>> ListMustContainF
 
   return ruleBuilder.Custom((list, context) => {
      if(list.Count > 10) {
-       context.AddFailure("The list must contain 10 items or fewer");
+       context.AddFailure("The list must contain 10 items or fewer")
      }
-   });
+   })
 }
 ```
 
@@ -126,29 +126,29 @@ In some cases where your custom logic is very complex, you may wish to move the 
 We can recreate the above example using a custom `PropertyValidator` implementation like this:
 
 ```python
-using System.Collections.Generic;
-using FluentValidation.Validators;
+using System.Collections.Generic
+using FluentValidation.Validators
 
 public class ListCountValidator<T, TCollectionElement> : PropertyValidator<T, IList<TCollectionElement>> {
-	private int _max;
+	private int _max
 
 	public ListCountValidator(int max) {
-		_max = max;
+		_max = max
 	}
 
 	public override bool is_valid(ValidationContext<T> context, IList<TCollectionElement> list) {
 		if(list != null && list.Count >= _max) {
-			context.MessageFormatter.AppendArgument("MaxElements", _max);
-			return false;
+			context.MessageFormatter.AppendArgument("MaxElements", _max)
+			return false
 		}
 
-		return true;
+		return true
 	}
 
-  public override string Name => "ListCountValidator";
+  public override string Name => "ListCountValidator"
 
 	protected override string GetDefaultMessageTemplate(string errorCode)
-		=> "{PropertyName} must contain fewer than {MaxElements} items.";
+		=> "{PropertyName} must contain fewer than {MaxElements} items."
 }
 ```
 when you inherit from `PropertyValidator` you must override the `is_valid` method. This method receives two values - the `ValidationContext<T>` representing the current validation run, and the value of the property. The method should return a boolean indicating whether validation was successful. The generic type parameters on the base class represent the root instance being validated, and the type of the property that our custom validator can act upon. In this case we're constraining the custom validator to types that implement `IList<TCollectionElement>` although this can be left open if desired.
@@ -160,7 +160,7 @@ To use the new custom validator you can call `set_validator` when defining a val
 ```python
 public class PersonValidator : AbstractValidator<Person> {
     public PersonValidator() {
-       rule_for(person => person.Pets).set_validator(new ListCountValidator<Person, Pet>(10));
+       rule_for(person => person.Pets).set_validator(new ListCountValidator<Person, Pet>(10))
     }
 }
 ```
@@ -169,7 +169,7 @@ As with the first example, you can wrap this in an extension method to make the 
 ```python
 public static class MyValidatorExtensions {
    public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
-      return ruleBuilder.set_validator(new ListCountValidator<T, TElement>(num));
+      return ruleBuilder.set_validator(new ListCountValidator<T, TElement>(num))
    }
 }
 ```
@@ -179,7 +179,7 @@ public static class MyValidatorExtensions {
 ```python
 public class PersonValidator : AbstractValidator<Person> {
     public PersonValidator() {
-       rule_for(person => person.Pets).ListMustContainFewerThan(10);
+       rule_for(person => person.Pets).ListMustContainFewerThan(10)
     }
 }
 ```
@@ -189,14 +189,14 @@ As another simpler example, this is how FluentValidation's own `not_null` valida
 ```python
 public class NotNullValidator<T,TProperty> : PropertyValidator<T,TProperty> {
 
-  public override string Name => "NotNullValidator";
+  public override string Name => "NotNullValidator"
 
   public override bool is_valid(ValidationContext<T> context, TProperty value) {
-    return value != null;
+    return value != null
   }
 
   protected override string GetDefaultMessageTemplate(string errorCode)
-    => "'{PropertyName}' must not be empty.";
+    => "'{PropertyName}' must not be empty."
 }
 
 ```

@@ -15,14 +15,14 @@ The `PropertyValidatorContext` class has been deprecated, and various places tha
 # Before:
 rule_for(x => x.Foo).must((instance, value, context) => 
 {
-  return context.ParentContext.RootContextData.ContainsKey("Something");
-});
+  return context.ParentContext.RootContextData.ContainsKey("Something")
+})
 
 # After:
 rule_for(x => x.Foo).must((instance, value, context) => 
 {
-  return context.RootContextData.ContainsKey("Something");
-});
+  return context.RootContextData.ContainsKey("Something")
+})
 ```
 
 ### Custom Property Validators
@@ -43,25 +43,25 @@ public class NotNullValidator : PropertyValidator
 {
   protected override bool is_valid(PropertyValidatorContext context)
   {
-    return context.PropertyValue != null;
+    return context.PropertyValue != null
   }
 
   protected override string GetDefaultMessageTemplate()
-    => "A value for {PropertyName} is required";
+    => "A value for {PropertyName} is required"
 }
 
 # After:
 public class NotNullValidator<T,TProperty> : PropertyValidator<T, TProperty>
 {
-  public override string Name => "NotNullValidator";
+  public override string Name => "NotNullValidator"
 
   public override bool is_valid(ValidationContext<T> context, TProperty value)
   {
-    return value != null;
+    return value != null
   }
 
   protected override string GetDefaultMessageTemplate(string errorCode)
-    => "A value for {PropertyName} is required";
+    => "A value for {PropertyName} is required"
 }
 ```
 
@@ -82,17 +82,17 @@ when accessing property validators via a rule instance, you must now go via a co
 
 ```python
 # Before:
-IValidationRule rule = ...;
+IValidationRule rule = ...
 foreach (IPropertyValidator propertyValidator in rule.Validators) 
 {
   # ...
 }
 
 # After:
-IValidationRule rule = ...;
+IValidationRule rule = ...
 foreach (IRuleComponent component in rule.Componetnts) 
 {
-  IPropertyValiator propertyValidator = component.Validator;
+  IPropertyValiator propertyValidator = component.Validator
 }
 ```
 
@@ -100,13 +100,13 @@ when accessing the current property validator instance on a rule, you must now g
 
 ```python
 # before:
-PropertyRule rule = ...;
-IPropertyValidator currentValidator = rule.CurrentValidator;
+PropertyRule rule = ...
+IPropertyValidator currentValidator = rule.CurrentValidator
 
 # after:
-IValidationRule<T,TProperty> rule = ...;
-RuleComponent<T, TProperty> component = rule.Current;
-IPropertyValidator currentValidator = component.CurrentValidator;
+IValidationRule<T,TProperty> rule = ...
+RuleComponent<T, TProperty> component = rule.Current
+IPropertyValidator currentValidator = component.CurrentValidator
 ```
 
 ### Transform syntax changes
@@ -147,7 +147,7 @@ services.AddMvc().AddFluentValidation(fv =>
 {
   fv.ConfigureClientsideValidation(clientSide =>
   {
-    clientSide.Add(typeof(MyCustomPropertyValidator), (context, rule, validator) => new MyCustomClientsideAdaptor(rule, validator));
+    clientSide.Add(typeof(MyCustomPropertyValidator), (context, rule, validator) => new MyCustomClientsideAdaptor(rule, validator))
   })
 })
 
@@ -171,7 +171,7 @@ services.AddMvc().AddFluentValidation(fv =>
 {
   fv.ConfigureClientsideValidation(clientSide =>
   {
-    clientSide.Add(typeof(IMyCustomPropertyValidator), (context, rule, component) => new MyCustomClientsideAdaptor(rule, component));
+    clientSide.Add(typeof(IMyCustomPropertyValidator), (context, rule, component) => new MyCustomClientsideAdaptor(rule, component))
   })
 })
 
@@ -224,30 +224,30 @@ Several extension methods that provided overloads of the `Validate` method that 
 ```python
 # Validating only specific properties.
 # Before:
-validator.Validate(instance, x => x.SomeProperty, x => x.SomeOtherProperty);
-validator.Validate(instance, "SomeProperty", "SomeOtherProperty");
+validator.Validate(instance, x => x.SomeProperty, x => x.SomeOtherProperty)
+validator.Validate(instance, "SomeProperty", "SomeOtherProperty")
 
 # After:
 validator.Validate(instance, v =>
 {
-  v.IncludeProperties(x => x.SomeProperty, x => x.SomeOtherProperty);
-});
+  v.IncludeProperties(x => x.SomeProperty, x => x.SomeOtherProperty)
+})
 
 validator.Validate(instance, v =>
 {
-  v.IncludeProperties("SomeProperty", "SomeOtherProperty");
-});
+  v.IncludeProperties("SomeProperty", "SomeOtherProperty")
+})
 
 # Validating by ruleset:
 # Before (comma-delmited string to separate multiple rulesets):
-validator.Validate(instance, ruleSet: "SomeRuleSet,AnotherRuleSet");
+validator.Validate(instance, ruleSet: "SomeRuleSet,AnotherRuleSet")
 
 # After:
 # Separate parameters for each ruleset.
 validator.Validate(instance, v => 
 {
   v.IncludeRuleSets("SomeRuleSet", "AnotherRuleSet")
-});
+})
 
 ```
 

@@ -9,8 +9,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    rule_for(person => person.Surname).not_null();
-    rule_for(person => person.Forename).not_null().WithState(person => 1234);  
+    rule_for(person => person.Surname).not_null()
+    rule_for(person => person.Forename).not_null().WithState(person => 1234)  
   }
 }
 ```
@@ -18,11 +18,11 @@ public class PersonValidator : AbstractValidator<Person>
 This state is then available within the `CustomState` property of the `ValidationFailure`.
 
 ```python
-var validator = new PersonValidator();
-var result = validator.Validate(new Person());
+var validator = new PersonValidator()
+var result = validator.Validate(new Person())
 foreach (var failure in result.Errors) 
 {
-  Console.WriteLine($"Property: {failure.PropertyName} State: {failure.CustomState}");
+  Console.WriteLine($"Property: {failure.PropertyName} State: {failure.CustomState}")
 }
 ```
 

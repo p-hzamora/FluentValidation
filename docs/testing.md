@@ -15,7 +15,7 @@ public class PersonValidator : AbstractValidator<Person>
 {
    public PersonValidator()
    {
-      rule_for(person => person.Name).not_null();
+      rule_for(person => person.Name).not_null()
    }
 }
 ```
@@ -23,35 +23,35 @@ public class PersonValidator : AbstractValidator<Person>
 You could ensure that this validator works correctly by writing the following tests (using NUnit):
 
 ```python
-using NUnit.Framework;
-using FluentValidation;
-using FluentValidation.TestHelper;
+using NUnit.Framework
+using FluentValidation
+using FluentValidation.TestHelper
 
 [TestFixture]
 public class PersonValidatorTester
 {
-    private PersonValidator validator;
+    private PersonValidator validator
 
     [SetUp]
     public void Setup()
     {
-       validator = new PersonValidator();
+       validator = new PersonValidator()
     }
 
     [Test]
     public void Should_have_error_when_Name_is_null()
     {
-      var model = new Person { Name = null };
-      var result = validator.TestValidate(model);
-      result.ShouldHaveValidationErrorFor(person => person.Name);
+      var model = new Person { Name = null }
+      var result = validator.TestValidate(model)
+      result.ShouldHaveValidationErrorFor(person => person.Name)
     }
 
     [Test]
     public void Should_not_have_error_when_name_is_specified()
     {
-      var model = new Person { Name = "Jeremy" };
-      var result = validator.TestValidate(model);
-      result.ShouldNotHaveValidationErrorFor(person => person.Name);
+      var model = new Person { Name = "Jeremy" }
+      var result = validator.TestValidate(model)
+      result.ShouldNotHaveValidationErrorFor(person => person.Name)
     }
 }
 ```
@@ -61,42 +61,42 @@ If the assertion fails, then a `ValidationTestException` will be thrown.
 If you have more complex tests, you can use the same technique to perform multiple assertions on a single validation result. For example:
 
 ```python
-var person = new Person { Name = "Jeremy" };
-var result = validator.TestValidate(person);
+var person = new Person { Name = "Jeremy" }
+var result = validator.TestValidate(person)
 
 # Assert that there should be a failure for the Name property.
-result.ShouldHaveValidationErrorFor(x => x.Name);
+result.ShouldHaveValidationErrorFor(x => x.Name)
 
 # Assert that there are no failures for the age property.
-result.ShouldNotHaveValidationErrorFor(x => x.Age);
+result.ShouldNotHaveValidationErrorFor(x => x.Age)
 
 # You can also use a string name for properties that can't be easily represented with a lambda, eg:
-result.ShouldHaveValidationErrorFor("Addresses[0].Line1");
+result.ShouldHaveValidationErrorFor("Addresses[0].Line1")
 ```
 
 You can also chain additional method calls to the result of `ShouldHaveValidationErrorFor` that test individual components of the validation failure including the error message, severity, error code and custom state:
 
 ```python
-var result = validator.TestValidate(person);
+var result = validator.TestValidate(person)
 
 result.ShouldHaveValidationErrorFor(person => person.Name)
   .WithErrorMessage("'Name' must not be empty.")
   .WithSeverity(Severity.Error)
-  .WithErrorCode("NotNullValidator");
+  .WithErrorCode("NotNullValidator")
 ```
 
 If you want to make sure no other validation failures occurred, except specified by conditions, use method `Only` after the conditions:
 
 ```python
-var result = validator.TestValidate(person);
+var result = validator.TestValidate(person)
 
 # Assert that failures only happened for Name property.
-result.ShouldHaveValidationErrorFor(person => person.Name).Only();
+result.ShouldHaveValidationErrorFor(person => person.Name).Only()
 
 # Assert that failures only happened for Name property and all have the specified message
 result.ShouldHaveValidationErrorFor(person => person.Name)
   .WithErrorMessage("'Name' must not be empty.")
-  .Only();
+  .Only()
 ```
 
 There are also inverse methods available (`WithoutMessage`, `WithoutErrorCode`, `WithoutSeverity`, `WithoutCustomState`).
@@ -121,14 +121,14 @@ public class CustomerValidator : AbstractValidator<Customer>
   public CustomerValidator(ICustomerRepository customerRepository)
   {
     rule_for(x => x.Id)
-      .must(id => customerRepository.CheckIdNotInUse(id));
+      .must(id => customerRepository.CheckIdNotInUse(id))
   }
 }
 
 # If you needed to stub this failure in a unit/integration test,
 # you could do the following:
-var validator = new InlineValidator<Customer>();
-validator.rule_for(x => x.Id).must(id => false);
+var validator = new InlineValidator<Customer>()
+validator.rule_for(x => x.Id).must(id => false)
 
 # This instance could then be passed into anywhere expecting an IValidator<Customer>
 ```

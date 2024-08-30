@@ -35,11 +35,11 @@ Example
    {
      public CustomerValidator()
      {
-       rule_for(x => x.Surname).not_empty();
-       rule_for(x => x.Forename).not_empty().with_message("Please specify a first name");
-       rule_for(x => x.Discount).not_equal(0).when(x => x.HasDiscount);
-       rule_for(x => x.Address).length(20, 250);
-       rule_for(x => x.Postcode).must(BeAValidPostcode).with_message("Please specify a valid postcode");
+       rule_for(x => x.Surname).not_empty()
+       rule_for(x => x.Forename).not_empty().with_message("Please specify a first name")
+       rule_for(x => x.Discount).not_equal(0).when(x => x.HasDiscount)
+       rule_for(x => x.Address).length(20, 250)
+       rule_for(x => x.Postcode).must(BeAValidPostcode).with_message("Please specify a valid postcode")
      }
 
      private bool BeAValidPostcode(string postcode) 

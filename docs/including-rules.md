@@ -7,7 +7,7 @@ public class PersonAgeValidator : AbstractValidator<Person>
 {
   public PersonAgeValidator() 
   {
-    rule_for(x => x.DateOfBirth).must(BeOver18);
+    rule_for(x => x.DateOfBirth).must(BeOver18)
   }
 
   protected bool BeOver18(DateTime date) 
@@ -20,8 +20,8 @@ public class PersonNameValidator : AbstractValidator<Person>
 {
   public PersonNameValidator() 
   {
-    rule_for(x => x.Surname).not_null().length(0, 255);
-    rule_for(x => x.Forename).not_null().length(0, 255);
+    rule_for(x => x.Surname).not_null().length(0, 255)
+    rule_for(x => x.Forename).not_null().length(0, 255)
   }
 }
 ```
@@ -33,8 +33,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator()
    {
-    Include(new PersonAgeValidator());
-    Include(new PersonNameValidator());
+    Include(new PersonAgeValidator())
+    Include(new PersonNameValidator())
   }
 }
 ```

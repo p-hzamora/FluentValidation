@@ -7,8 +7,8 @@ To use dependent rules, call the `DependentRules` method at the end of the rule 
 
 ```python
 rule_for(x => x.Surname).not_null().DependentRules(() => {
-  rule_for(x => x.Forename).not_null();
-});
+  rule_for(x => x.Forename).not_null()
+})
 ```
 
 Here the rule against Forename will only be run if the Surname rule passes.

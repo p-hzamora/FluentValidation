@@ -7,8 +7,8 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    rule_for(person => person.Surname).not_null().WithErrorCode("ERR1234");        
-    rule_for(person => person.Forename).not_null();
+    rule_for(person => person.Surname).not_null().WithErrorCode("ERR1234")        
+    rule_for(person => person.Forename).not_null()
   }
 }
 ```
@@ -16,11 +16,11 @@ public class PersonValidator : AbstractValidator<Person>
 The resulting error code can be obtained from the `ErrorCode` property on the `ValidationFailure`:
 
 ```python
-var validator = new PersonValidator();
-var result = validator.Validate(new Person());
+var validator = new PersonValidator()
+var result = validator.Validate(new Person())
 foreach (var failure in result.Errors)
 {
-  Console.WriteLine($"Property: {failure.PropertyName} Error Code: {failure.ErrorCode}");
+  Console.WriteLine($"Property: {failure.PropertyName} Error Code: {failure.ErrorCode}")
 }
 ```
 

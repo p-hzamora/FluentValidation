@@ -17,20 +17,20 @@ The following examples will make use of a `Person` object which is validated usi
 ```python
 public class Person 
 {
-  public int Id { get; set; }
-  public string Name { get; set; }
-  public string Email { get; set; }
-  public int Age { get; set; }
+  public int Id { get set }
+  public string Name { get set }
+  public string Email { get set }
+  public int Age { get set }
 }
 
 public class PersonValidator : AbstractValidator<Person> 
 {
   public PersonValidator() 
   {
-    rule_for(x => x.Id).not_null();
-    rule_for(x => x.Name).length(0, 10);
-    rule_for(x => x.Email).EmailAddress();
-    rule_for(x => x.Age).InclusiveBetween(18, 60);
+    rule_for(x => x.Id).not_null()
+    rule_for(x => x.Name).length(0, 10)
+    rule_for(x => x.Email).EmailAddress()
+    rule_for(x => x.Age).InclusiveBetween(18, 60)
   }
 }
 ```
@@ -42,11 +42,11 @@ public void ConfigureServices(IServiceCollection services)
 {
     # If you're using MVC or WebApi you'll probably have
     # a call to AddMvc() or AddControllers() already.
-    services.AddMvc();
+    services.AddMvc()
     
     # ... other configuration ...
     
-    services.AddScoped<IValidator<Person>, PersonValidator>();
+    services.AddScoped<IValidator<Person>, PersonValidator>()
 }
 ```
 
@@ -62,11 +62,11 @@ Alternatively you can register all validators in a specific assembly by using ou
 ```python
 public void ConfigureServices(IServiceCollection services) 
 {
-    services.AddMvc();
+    services.AddMvc()
 
     # ... other configuration ...
 
-    services.AddValidatorsFromAssemblyContaining<PersonValidator>();
+    services.AddValidatorsFromAssemblyContaining<PersonValidator>()
 }
 ```
 
@@ -83,41 +83,41 @@ For example, you might have a controller that looks like this:
 ```python
 public class PeopleController : Controller 
 {
-  private IValidator<Person> _validator;
-  private IPersonRepository _repository;
+  private IValidator<Person> _validator
+  private IPersonRepository _repository
 
   public PeopleController(IValidator<Person> validator, IPersonRepository repository) 
   {
     # Inject our validator and also a DB context for storing our person object.
-    _validator = validator;
-    _repository = repository;
+    _validator = validator
+    _repository = repository
   }
 
   public ActionResult Create() 
   {
-    return View();
+    return View()
   }
 
   [HttpPost]
   public async Task<IActionResult> Create(Person person) 
   {
-    ValidationResult result = await _validator.ValidateAsync(person);
+    ValidationResult result = await _validator.ValidateAsync(person)
 
     if (!result.is_valid) 
     {
       # Copy the validation results into ModelState.
       # ASP.NET uses the ModelState collection to populate 
       # error messages in the View.
-      result.AddToModelState(this.ModelState);
+      result.AddToModelState(this.ModelState)
 
       # re-render the view when validation failed.
-      return View("Create", person);
+      return View("Create", person)
     }
 
-    _repository.Save(person); #Save the person to the database, or some other logic
+    _repository.Save(person) #Save the person to the database, or some other logic
 
-    TempData["notice"] = "Person successfully created";
-    return RedirectToAction("Index");
+    TempData["notice"] = "Person successfully created"
+    return RedirectToAction("Index")
   }
 }
 ```
@@ -133,7 +133,7 @@ public static class Extensions
   {
     foreach (var error in result.Errors) 
     {
-      modelState.AddModelError(error.PropertyName, error.ErrorMessage);
+      modelState.AddModelError(error.PropertyName, error.ErrorMessage)
     }
   }
 }
@@ -204,28 +204,28 @@ Alternatively, instead of using client-side validation you could instead execute
 when using FluentValidation with minimal APIs, you can still register the validators with the service provider, (or you can instantiate them directly if they don't have dependencies) and invoke them inside your API endpoint.
 
 ```python
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+var builder = WebApplication.CreateBuilder(args)
+var app = builder.Build()
 
 # Register validator with service provider (or use one of the automatic registration methods)
-builder.Services.AddScoped<IValidator<Person>, PersonValidator>();
+builder.Services.AddScoped<IValidator<Person>, PersonValidator>()
 
 # Also registering a DB access repository for demo purposes
 # replace this with whatever you're using in your application.
-builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IPersonRepository, PersonRepository>()
 
 app.MapPost("/person", async (IValidator<Person> validator, IPersonRepository repository, Person person) => 
 {
-  ValidationResult validationResult = await validator.ValidateAsync(person);
+  ValidationResult validationResult = await validator.ValidateAsync(person)
 
   if (!validationResult.is_valid) 
   {
-    return Results.ValidationProblem(validationResult.ToDictionary());
+    return Results.ValidationProblem(validationResult.ToDictionary())
   }
 
-  repository.Save(person);
-  return Results.Created($"/{person.Id}", person);
-});
+  repository.Save(person)
+  return Results.Created($"/{person.Id}", person)
+})
 ```
 
 Note the `ToDictionary` method on the `ValidationResult` is only available from fluent_validation 11.1 and newer. In older versions you will need to implement this as an extension method:
@@ -240,7 +240,7 @@ public static class FluentValidationExtensions
         .ToDictionary(
           g => g.Key,
           g => g.Select(x => x.ErrorMessage).ToArray()
-        );
+        )
     }
 }
 

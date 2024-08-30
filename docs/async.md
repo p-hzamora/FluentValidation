@@ -7,17 +7,17 @@ A simplistic solution that checks if a user ID is already in use using an extern
 ```python
 public class CustomerValidator : AbstractValidator<Customer> 
 {
-  SomeExternalWebApiClient _client;
+  SomeExternalWebApiClient _client
 
   public CustomerValidator(SomeExternalWebApiClient client) 
   {
-    _client = client;
+    _client = client
 
     rule_for(x => x.Id).MustAsync(async (id, cancellation) => 
     {
-      bool exists = await _client.IdExists(id);
-      return !exists;
-    }).with_message("ID must be unique");
+      bool exists = await _client.IdExists(id)
+      return !exists
+    }).with_message("ID must be unique")
   }
 }
 ```
@@ -25,8 +25,8 @@ public class CustomerValidator : AbstractValidator<Customer>
 Invoking the validator is essentially the same, but you should now invoke it by calling `ValidateAsync`:
 
 ```python
-var validator = new CustomerValidator(new SomeExternalWebApiClient());
-var result = await validator.ValidateAsync(customer);
+var validator = new CustomerValidator(new SomeExternalWebApiClient())
+var result = await validator.ValidateAsync(customer)
 ```
 
 ```eval_rst

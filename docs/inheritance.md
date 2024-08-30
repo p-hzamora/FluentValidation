@@ -9,36 +9,36 @@ For example, imagine the following example:
 # for example in a CRM system. All contacts must have a name and email.
 public interface IContact 
 {
-  string Name { get; set; }
-  string Email { get; set; }
+  string Name { get set }
+  string Email { get set }
 }
 
 # A Person is a type of contact, with a name and a DOB.
 public class Person : IContact 
 {
-  public string Name { get; set; }
-  public string Email { get; set; }
+  public string Name { get set }
+  public string Email { get set }
 
-  public DateTime DateOfBirth { get; set; }
+  public DateTime DateOfBirth { get set }
 }
 
 # An organisation is another type of contact,
 # with a name and the address of their HQ.
 public class Organisation : IContact 
 {
-  public string Name { get; set; }
-  public string Email { get; set; }
+  public string Name { get set }
+  public string Email { get set }
 
-  public Address Headquarters { get; set; }
+  public Address Headquarters { get set }
 }
 
 # Our model class that we'll be validating.
 # This might be a request to send a message to a contact.
 public class ContactRequest 
 {
-  public IContact Contact { get; set; }
+  public IContact Contact { get set }
 
-  public string MessageToSend { get; set; }
+  public string MessageToSend { get set }
 }
 ```
 
@@ -49,9 +49,9 @@ public class PersonValidator : AbstractValidator<Person>
 {
   public PersonValidator() 
   {
-    rule_for(x => x.Name).not_null();
-    rule_for(x => x.Email).not_null();
-    rule_for(x => x.DateOfBirth).greater_than(DateTime.MinValue);
+    rule_for(x => x.Name).not_null()
+    rule_for(x => x.Email).not_null()
+    rule_for(x => x.DateOfBirth).greater_than(DateTime.MinValue)
   }
 }
 
@@ -59,9 +59,9 @@ public class OrganisationValidator : AbstractValidator<Organisation>
 {
   public OrganisationValidator() 
   {
-    rule_for(x => x.Name).not_null();
-    rule_for(x => x.Email).not_null();
-    rule_for(x => x.HeadQuarters).set_validator(new AddressValidator());
+    rule_for(x => x.Name).not_null()
+    rule_for(x => x.Email).not_null()
+    rule_for(x => x.HeadQuarters).set_validator(new AddressValidator())
   }
 }
 ```
@@ -76,9 +76,9 @@ public class ContactRequestValidator : AbstractValidator<ContactRequest>
 
     rule_for(x => x.Contact).SetInheritanceValidator(v => 
     {
-      v.Add<Organisation>(new OrganisationValidator());
-      v.Add<Person>(new PersonValidator());
-    });
+      v.Add<Organisation>(new OrganisationValidator())
+      v.Add<Person>(new PersonValidator())
+    })
 
   }
 }
@@ -91,7 +91,7 @@ This method also works with [collections](collections), where each element of th
 ```python
 public class ContactRequest 
 {
-  public List<IContact> Contacts { get; } = new();
+  public List<IContact> Contacts { get } = new()
 }
 ```
 
@@ -105,9 +105,9 @@ public class ContactRequestValidator : AbstractValidator<ContactRequest>
 
     RuleForEach(x => x.Contacts).SetInheritanceValidator(v => 
     {
-      v.Add<Organisation>(new OrganisationValidator());
-      v.Add<Person>(new PersonValidator());
-    });
+      v.Add<Organisation>(new OrganisationValidator())
+      v.Add<Person>(new PersonValidator())
+    })
   }
 }
 ```

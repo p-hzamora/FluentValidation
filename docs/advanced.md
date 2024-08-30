@@ -15,17 +15,17 @@ public class MyValidator : AbstractValidator<Person>
 {
   public MyValidator() 
   {
-    rule_for(x => x.Name).not_null();
+    rule_for(x => x.Name).not_null()
   }
 
   protected override bool PreValidate(ValidationContext<Person> context, ValidationResult result) 
   {
     if (context.InstanceToValidate == null) 
     {
-      result.Errors.Add(new ValidationFailure("", "Please ensure a model was supplied."));
-      return false;
+      result.Errors.Add(new ValidationFailure("", "Please ensure a model was supplied."))
+      return false
     }
-    return true;
+    return true
   }
 }
 ```
@@ -37,11 +37,11 @@ For advanced users, it's possible to pass arbitrary data into the validation pip
 The `RootContextData` property is a `Dictionary<string, object>` available on the `ValidationContext`.:
 
 ```python
-var person = new Person();
-var context = new ValidationContext<Person>(person);
-context.RootContextData["MyCustomData"] = "Test";
-var validator = new PersonValidator();
-validator.Validate(context);
+var person = new Person()
+var context = new ValidationContext<Person>(person)
+context.RootContextData["MyCustomData"] = "Test"
+var validator = new PersonValidator()
+validator.Validate(context)
 ```
 
 The RootContextData can then be accessed inside any custom property validators, as well as calls to `Custom`:
@@ -51,9 +51,9 @@ rule_for(x => x.Surname).Custom((x, context) =>
 {
   if(context.RootContextData.ContainsKey("MyCustomData")) 
   {
-    context.AddFailure("My error message");
+    context.AddFailure("My error message")
   }
-});
+})
 ```
 
 ## Customizing the Validation Exception
@@ -65,8 +65,8 @@ This simplistic example wraps the default `ValidationException` in an `ArgumentE
 ```python
 protected override void RaiseValidationException(ValidationContext<T> context, ValidationResult result)
 {
-    var ex = new ValidationException(result.Errors);
-    throw new ArgumentException(ex.Message, ex);
+    var ex = new ValidationException(result.Errors)
+    throw new ArgumentException(ex.Message, ex)
 }
 ```
 
@@ -80,12 +80,12 @@ public static class FluentValidationExtensions
 {
     public static void ValidateAndThrowArgumentException<T>(this IValidator<T> validator, T instance)
     {
-        var res = validator.Validate(instance);
+        var res = validator.Validate(instance)
 
         if (!res.is_valid)
         {
-            var ex = new ValidationException(res.Errors);
-            throw new ArgumentException(ex.Message, ex);
+            var ex = new ValidationException(res.Errors)
+            throw new ArgumentException(ex.Message, ex)
         }
     }
 }

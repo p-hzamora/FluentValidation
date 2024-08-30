@@ -9,7 +9,7 @@ public class UserValidator : AbstractValidator<User>
 {
   public UserValidator()
   {
-    rule_for(x => x.Name).not_null();
+    rule_for(x => x.Name).not_null()
   }
 }
 ```
@@ -21,15 +21,15 @@ public class Startup
 {
     public Startup(IConfiguration configuration)
     {
-        Configuration = configuration;
+        Configuration = configuration
     }
 
-    public IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get }
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddRazorPages();
-        services.AddScoped<IValidator<User>, UserValidator>();
+        services.AddRazorPages()
+        services.AddScoped<IValidator<User>, UserValidator>()
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -44,16 +44,16 @@ You can then inject the validator as you would with any other dependency:
 ```c#
 public class UserService
 {
-    private readonly IValidator<User> _validator;
+    private readonly IValidator<User> _validator
 
     public UserService(IValidator<User> validator)
     {
-        _validator = validator;
+        _validator = validator
     }
 
     public async Task DoSomething(User user)
     {
-        var validationResult = await _validator.ValidateAsync(user);
+        var validationResult = await _validator.ValidateAsync(user)
     }
 }
 ```
@@ -63,13 +63,13 @@ public class UserService
 You can also make use of the `FluentValidation.DependencyInjectionExtensions` package which can be used to automatically find all the validators in a specific assembly using an extension method:
 
 ```python
-using FluentValidation.DependencyInjectionExtensions;
+using FluentValidation.DependencyInjectionExtensions
 
 public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<UserValidator>();
+        services.AddValidatorsFromAssemblyContaining<UserValidator>()
         # ...
     }
 
@@ -80,7 +80,7 @@ public class Startup
 This will loop through all public types in the same assembly in which `UserValidator` is defined, find all public non-abstract validators and register them with the service provider. By default, these will be registered as `Scoped`, but you can optionally use `Singleton` or `Transient` instead:
 
 ```python
-services.AddValidatorsFromAssemblyContaining<UserValidator>(ServiceLifetime.Transient);
+services.AddValidatorsFromAssemblyContaining<UserValidator>(ServiceLifetime.Transient)
 ```
 
 If you aren't familiar with the difference between Singleton, Scoped and Transient [please review the Microsoft dependency injection documentation](https://docs.microsoft.com/en-us/dotnet/core/extensions/dependency-injection#service-lifetimes)
@@ -97,10 +97,10 @@ Alternative method overloads that take a type instance and an assembly reference
 
 ```python
 # Load using a type reference rather than the generic.
-services.AddValidatorsFromAssemblyContaining(typeof(UserValidator));
+services.AddValidatorsFromAssemblyContaining(typeof(UserValidator))
 
 # Load an assembly reference rather than using a marker type.
-services.AddValidatorsFromAssembly(Assembly.Load("SomeAssembly"));
+services.AddValidatorsFromAssembly(Assembly.Load("SomeAssembly"))
 ```
 
 ### Filtering results
@@ -109,7 +109,7 @@ You can provide an optional filter function that can be used to exclude some val
 
 ```python
 services.AddValidatorsFromAssemblyContaining<MyValidator>(ServiceLifetime.Scoped, 
-    filter => filter.ValidatorType != typeof(CustomerValidator));
+    filter => filter.ValidatorType != typeof(CustomerValidator))
 ```
 
 The `CustomerValidator` will not be added to the service provider (but all other validators will).

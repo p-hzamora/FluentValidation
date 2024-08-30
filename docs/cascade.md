@@ -8,15 +8,15 @@ Imagine you have two validators defined as part of a single rule definition, a `
 ```python
 public class PersonValidator : AbstractValidator<Person> {
   public PersonValidator() {
-    rule_for(x => x.Surname).not_null().not_equal("foo");
+    rule_for(x => x.Surname).not_null().not_equal("foo")
   }
 }
 ```
 
-This will first check whether the Surname property is not null and then will check if it's not equal to the string "foo". If the first validator (`not_null`) fails, then by default, the call to `not_equal` will still be invoked. This can be changed for this specific rule only by specifying a cascade mode of `Stop` (omitting the class and constructor definition from now on; assume that they are still present as above):
+This will first check whether the Surname property is not null and then will check if it's not equal to the string "foo". If the first validator (`not_null`) fails, then by default, the call to `not_equal` will still be invoked. This can be changed for this specific rule only by specifying a cascade mode of `Stop` (omitting the class and constructor definition from now on assume that they are still present as above):
 
 ```python
-rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
+rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo")
 ```
 
 Now, if the `not_null` validator fails then the `not_equal` validator will not be executed. This is particularly useful if you have a complex chain where each validator depends on the previous validator to succeed.
@@ -32,17 +32,17 @@ The two cascade modes are:
 
 If you have a validator class with multiple rules, and would like this `Stop` behaviour to be set for all of your rules, you could do e.g.:
 ```python
-rule_for(x => x.Forename).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
-rule_for(x => x.MiddleNames).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
-rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo");
+rule_for(x => x.Forename).Cascade(CascadeMode.Stop).not_null().not_equal("foo")
+rule_for(x => x.MiddleNames).Cascade(CascadeMode.Stop).not_null().not_equal("foo")
+rule_for(x => x.Surname).Cascade(CascadeMode.Stop).not_null().not_equal("foo")
 ```
 To avoid repeating `Cascade(CascadeMode.Stop)`, you can set a default value for the rule-level cascade mode by setting the `AbstractValidator.RuleLevelCascadeMode` property, resulting in
 ```python
-RuleLevelCascadeMode = CascadeMode.Stop;
+RuleLevelCascadeMode = CascadeMode.Stop
 
-rule_for(x => x.Forename).not_null().not_equal("foo");
-rule_for(x => x.MiddleNames).not_null().not_equal("foo");
-rule_for(x => x.Surname).not_null().not_equal("foo");
+rule_for(x => x.Forename).not_null().not_equal("foo")
+rule_for(x => x.MiddleNames).not_null().not_equal("foo")
+rule_for(x => x.Surname).not_null().not_equal("foo")
 ```
 With default global settings, this code will stop executing any rule whose `not_null` call fails, and not call `not_equal`, but it will then continue to the next rule, and always execute all three, regardless of failures. See "Validator Class-Level Cascade Modes" for how to control this behavior. This particular behaviour is useful if you want to create a list of all validation failures, as opposed to only returning the first one.
 
@@ -66,7 +66,7 @@ To set the default cascade modes at rule-level and/or validator class-level glob
 ## Introduction of RuleLevelCascadeMode and ClassLevelCascadeMode (and deprecation of CascadeMode)
 The `AbstractValidator.RuleLevelCascadeMode`, `AbstractValidator.ClassLevelCascadeMode`, and their global defaults were introduced in FluentValidation 11
 
-In older versions, there was only one property controlling cascade modes: `AbstractValidator.CascadeMode`. Changing this value would set the cascade mode at both validator class-level and rule-level. Therefore, for example, if you wanted to have the above-described functionality where you create a list of validation errors, by stopping on failure at rule-level to avoid crashes, but continuing at validator class-level, you would need to set `AbstractValidator.CascadeMode` to `Continue`, and then repeat `Cascade(CascadeMode.Stop)` on every rule chain (or use the deprecated `StopOnFirstFailure` with a warning; see "Stop vs StopOnFirstFailure").
+In older versions, there was only one property controlling cascade modes: `AbstractValidator.CascadeMode`. Changing this value would set the cascade mode at both validator class-level and rule-level. Therefore, for example, if you wanted to have the above-described functionality where you create a list of validation errors, by stopping on failure at rule-level to avoid crashes, but continuing at validator class-level, you would need to set `AbstractValidator.CascadeMode` to `Continue`, and then repeat `Cascade(CascadeMode.Stop)` on every rule chain (or use the deprecated `StopOnFirstFailure` with a warning see "Stop vs StopOnFirstFailure").
 
 The new properties enable finer control of the cascade mode at the different levels, with less repetition.
 
@@ -84,18 +84,18 @@ In FluentValidation 9.0 and older, the `CascadeMode.StopOnFirstFailure` option w
 With `StopOnFirstFailure`,  the following would provide the example behavior described previously (stop any rule if it fails, but then continue executing at validator class-level, so that all rules are executed):
 
 ```python
-CascadeMode = CascadeMode.StopOnFirstFailure;
+CascadeMode = CascadeMode.StopOnFirstFailure
 
-rule_for(x => x.Forename).not_null().not_equal("foo");
-rule_for(x => x.MiddleNames).not_null().not_equal("foo");
-rule_for(x => x.Surname).not_null().not_equal("foo");
+rule_for(x => x.Forename).not_null().not_equal("foo")
+rule_for(x => x.MiddleNames).not_null().not_equal("foo")
+rule_for(x => x.Surname).not_null().not_equal("foo")
 ```
 If they all fail, you will get three validation errors. That is the equivalent of doing
 
 ```python
-rule_for(x => x.Forename).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
-rule_for(x => x.MiddleNames).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
-rule_for(x => x.Surname).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo");
+rule_for(x => x.Forename).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo")
+rule_for(x => x.MiddleNames).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo")
+rule_for(x => x.Surname).Cascade(CascadeMode.StopOnFirstFailure).not_null().not_equal("foo")
 ```
 This behaviour caused a lot of confusion over the years, so the `Stop` option was introduced in FluentValidation 9.1. Using `Stop` instead of `StopOnFirstFailure`, _any_ failure at all would stop execution, so only the first failure result would be returned.
 

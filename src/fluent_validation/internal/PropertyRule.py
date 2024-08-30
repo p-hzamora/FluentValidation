@@ -57,7 +57,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         # }
 
         first = True
-
+        propValue = None
         cascade = self.CascadeMode
         total_failures = len(context.Failures)
 

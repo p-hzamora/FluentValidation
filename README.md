@@ -1,5 +1,5 @@
 <p>
-<img src="https://github.com/p-hzamora/FluentValidation/blob/main/logo/fluent-validation-python-logo.png" alt="FluentValidation" width="250px" />
+<img src="https://raw.githubusercontent.com/p-hzamora/FluentValidation/main/logo/fluent-validation-python-logo.png" alt="FluentValidation" width="250px" />
 </p>
 
 <!-- ![Unit Tests](https://img.shields.io/badge/Unit%20Tests-95.16%-d9c824.svg) -->

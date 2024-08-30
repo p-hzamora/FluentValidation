@@ -5,6 +5,7 @@ from pathlib import Path
 
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
+from src.fluent_validation.enums import StringComparer
 from TestValidator import TestValidator  # noqa: E402
 from person import Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402
@@ -69,17 +70,17 @@ class EqualValidatorTests(unittest.TestCase):
     #     pass
     # ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
-    # def test_Should_succeed_on_case_insensitive_comparison(self):
-    # 	validator =TestValidator(lambda v: v.rule_for(lambda x: x.Surname).equal("FOO", StringComparerOrdinalIgnoreCase))
-    # 	result = validator.validate(Person(Surname = "foo" ))
+    def test_Should_succeed_on_case_insensitive_comparison(self):
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).equal("FOO", StringComparer.OrdinalIgnoreCase))
+        result = validator.validate(Person(Surname="foo"))
 
-    # 	self.assertTrue(result.is_valid)
+        self.assertTrue(result.is_valid)
 
-    # def test_Should_succeed_on_case_insensitive_comparison_using_expression(self):
-    # 	validator =TestValidator(lambda v: v.rule_for(lambda x: x.Surname).equal(lambda x: x.Forename, StringComparer.OrdinalIgnoreCase))
-    # 	result = validator.validate(Person(Surname = "foo", Forename = "FOO"))
+    def test_Should_succeed_on_case_insensitive_comparison_using_expression(self):
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).equal(lambda x: x.Forename, StringComparer.OrdinalIgnoreCase))
+        result = validator.validate(Person(Surname="foo", Forename="FOO"))
 
-    # 	self.assertTrue(result.is_valid)
+        self.assertTrue(result.is_valid)
 
     def test_Should_use_ordinal_comparison_by_default(self):
         validator = TestValidator()

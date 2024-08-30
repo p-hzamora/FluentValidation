@@ -3,7 +3,6 @@ import unittest
 from pathlib import Path
 
 
-
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
 
@@ -11,6 +10,11 @@ from src.fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
 from person import Address, Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402
+
+
+class DerivedPerson(Person): 
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
 
 
 class AbstractValidatorTester(unittest.TestCase):
@@ -56,16 +60,16 @@ class AbstractValidatorTester(unittest.TestCase):
     #     ValidatorOptions.Global.ErrorCodeResolver = None
     #     self.assertEqual(result.errors[0].ErrorCode, "NotNullValidator_foo")
 
-    # def WithErrorCode_should_override_error_code(self):
-    #     self.validator.rule_for(lambda x: x.Forename).not_null().WithErrorCode("ErrCode101")
-    #     result = self.validator.validate(Person())
-    #     self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
+    def test_WithErrorCode_should_override_error_code(self):
+        self.validator.rule_for(lambda x: x.Forename).not_null().WithErrorCode("ErrCode101")
+        result = self.validator.validate(Person())
+        self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
 
-    # def WithMessage_and_WithErrorCode_should_override_error_message_and_error_code(self):
-    #     self.validator.rule_for(lambda x: x.Forename).not_null().with_message("Foo").WithErrorCode("ErrCode101")
-    #     result = self.validator.validate(Person())
-    #     self.assertEqual(result.errors[0].ErrorMessage, "Foo")
-    #     self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
+    def test_WithMessage_and_WithErrorCode_should_override_error_message_and_error_code(self):
+        self.validator.rule_for(lambda x: x.Forename).not_null().with_message("Foo").WithErrorCode("ErrCode101")
+        result = self.validator.validate(Person())
+        self.assertEqual(result.errors[0].ErrorMessage, "Foo")
+        self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
 
     # def WithName_should_override_field_name(self):
     #     self.validator.rule_for(lambda x: x.Forename).not_null().WithName("First Name")
@@ -144,22 +148,24 @@ class AbstractValidatorTester(unittest.TestCase):
     def test_CanValidateInstancesOfType_returns_true_when_comparing_against_same_type(self):
         self.assertTrue(self.validator.CanValidateInstancesOfType(Person))
 
-    # def CanValidateInstancesOfType_returns_true_when_comparing_against_subclass(self):
-    #     self.validator = (IValidator)this.self.validator
-    #     self.validator.CanValidateInstancesOfType(typeof(DerivedPerson)).ShouldBeTrue()
+    def test_CanValidateInstancesOfType_returns_true_when_comparing_against_subclass(self):
+        self.assertTrue(self.validator.CanValidateInstancesOfType(DerivedPerson))
 
     def test_CanValidateInstancesOfType_returns_false_when_comparing_against_some_other_type(self):
         self.assertFalse(self.validator.CanValidateInstancesOfType(Address))
 
     def test_Uses_named_parameters_to_validate_ruleset(self):
-        self.validator.rule_set("Names", lambda : (
-            self.validator.rule_for(lambda x: x.Surname).not_null(),
-            self.validator.rule_for(lambda x: x.Forename).not_null(),
-        ))
+        self.validator.rule_set(
+            "Names",
+            lambda: (
+                self.validator.rule_for(lambda x: x.Surname).not_null(),
+                self.validator.rule_for(lambda x: x.Forename).not_null(),
+            ),
+        )
         self.validator.rule_for(lambda x: x.Id).not_equal(0)
 
         result = self.validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
-        self.assertEqual(len(result.errors),2)
+        self.assertEqual(len(result.errors), 2)
 
 
 #     def Validates_type_when_using_non_generic_validate_overload(self):

@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Any, Callable, Optional, Self, overload, override
+from typing import Any, Callable, NamedTuple, Optional, Self, overload, override
 from abc import ABC, abstractmethod
+from collections import deque
 
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
@@ -9,6 +10,13 @@ from .internal.MessageFormatter import MessageFormatter
 from .internal.PropertyChain import PropertyChain
 from .results.ValidationFailure import ValidationFailure
 from .internal.ValidationStrategy import ValidationStrategy
+
+class StackParams[T](NamedTuple):
+    IsChildContext:bool
+    IsChildCollectionContext:bool
+    ParentContext:IValidationContext
+    Chain:PropertyChain
+    SharedConditionCache:dict[str,dict[T,bool]]
 
 
 class IValidationContext(ABC):
@@ -121,6 +129,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._is_async: bool = False
         self._parentContext: IValidationContext = None
         self._sharedConditionCache:dict[str,dict[T,bool]] = None
+        self._state:deque[StackParams] = None
 
     @override
     @property
@@ -270,24 +279,20 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         res._is_async = self.IsAsync
         return res
 
-    # def PrepareForChildCollectionValidator(self)->None:
-    #     _state ??= new();
-    # 	_state.Push((IsChildContext, IsChildCollectionContext, _parentContext, PropertyChain, _sharedConditionCache));
-    # 	IsChildContext = true;
-    # 	IsChildCollectionContext = true;
-    # 	PropertyChain = new PropertyChain();
-    # }
+    def PrepareForChildCollectionValidator(self)->None:
+        if not self._state:
+            self._state = deque()
 
-    # def RestoreState(self)->None:
-    #     var state = _state.Pop();
-    # 	IsChildContext = state.IsChildContext;
-    # 	IsChildCollectionContext = state.IsChildCollectionContext;
-    # # 	_parentContext = state.ParentContext;
-    # 	PropertyChain = state.Chain;
-    # 	_sharedConditionCache = state.SharedConditionCache;
-    # }
+        self._state.append(StackParams(True,True,self._parentContext,PropertyChain(),self._sharedConditionCache))
 
-    # self._state:Stack<(bool IsChildContext, bool IsChildCollectionContext, IValidationContext ParentContext, PropertyChain Chain, Dictionary<string, Dictionary<T, bool>> SharedConditionCache)> _state;
+    def RestoreState(self)->None:
+        state = self._state.pop()
+        self.IsChildContext = state.IsChildContext
+        self.IsChildCollectionContext = state.IsChildCollectionContext
+        self._parentContext = state.ParentContext
+        self.PropertyChain = state.Chain
+        self._sharedConditionCache = state.SharedConditionCache
+
 
 
     def AddFailure_validationFailure(self, failure: ValidationFailure) -> None:

@@ -12,7 +12,7 @@ import test_Ruleset
 import test_NotNull
 import test_Condition
 import test_SharedCondition
-
+import test_ValidateAndThrow
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -33,6 +33,7 @@ suite.addTests(
         *loader.loadTestsFromModule(test_NotNull),
         *loader.loadTestsFromModule(test_Condition),
         *loader.loadTestsFromModule(test_SharedCondition),
+        *loader.loadTestsFromModule(test_ValidateAndThrow),
     ]
 )
 

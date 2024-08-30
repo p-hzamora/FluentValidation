@@ -31,7 +31,7 @@ class TestConditionValidator(AbstractValidator[Person]):
 class InverseConditionValidator(AbstractValidator[Person]):
     def __init__(self):
         super().__init__()
-        self.rule_for(lambda x: x.Forename).not_null().Unless(lambda x: x.Id == 0)
+        self.rule_for(lambda x: x.Forename).not_null().unless(lambda x: x.Id == 0)
 
 
 # class InverseConditionAsyncValidator(AbstractValidator[Person]):

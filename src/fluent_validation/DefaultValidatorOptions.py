@@ -89,21 +89,21 @@ class DefaultValidatorOptions[T, TProperty]:
         predicate: Callable[[T, ValidationContext[T]], bool],
         applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators,
     ) -> IRuleBuilderOptions[T, TProperty]:
-        # Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+        # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
         rule.configurable(rule).ApplyCondition(lambda ctx: predicate(ctx.instance_to_validate, ValidationContext[T].GetFromNonGenericContext(ctx)), applyConditionTo)
         return rule
 
     # def when(rule:IRuleBuilderOptionsConditions[T, TProperty], predicate:Callable[[T, ValidationContext[T]], bool], applyConditionTo:ApplyConditionTo = ApplyConditionTo.AllValidators)->IRuleBuilderOptionsConditions[T, TProperty]:
-    #     # Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+    #     # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
     #     rule.Configurable(rule).ApplyCondition(lambda ctx: predicate((T)ctx.InstanceToValidate, ValidationContext[T].GetFromNonGenericContext(ctx)), applyConditionTo)
     #     return rule
 
     # FIXME [ ]: the type of 'rule' used to be 'IRuleBuilderOptions' and it should return the same
-    def Unless(rule: IRuleBuilder[T, TProperty], predicate: Callable[[T], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> IRuleBuilder[T, TProperty]:
+    def unless(rule: IRuleBuilder[T, TProperty], predicate: Callable[[T], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> IRuleBuilder[T, TProperty]:
         return rule._Unless(lambda x, _: predicate(x), applyConditionTo)
 
-    # def Unless(rule:IRuleBuilderOptionsConditions[T, TProperty], predicate:Callable[[T],bool], applyConditionTo:ApplyConditionTo = ApplyConditionTo.AllValidators)->IRuleBuilderOptionsConditions[T, TProperty]:
-    #     return rule.Unless(lambda x, ctx: predicate(x), applyConditionTo)
+    # def unless(rule:IRuleBuilderOptionsConditions[T, TProperty], predicate:Callable[[T],bool], applyConditionTo:ApplyConditionTo = ApplyConditionTo.AllValidators)->IRuleBuilderOptionsConditions[T, TProperty]:
+    #     return rule.unless(lambda x, ctx: predicate(x), applyConditionTo)
 
     # FIXME [ ]: the type of 'rule' used to be 'IRuleBuilder' and it should return the same
     def _Unless(
@@ -111,7 +111,7 @@ class DefaultValidatorOptions[T, TProperty]:
     ) -> IRuleBuilderOptions[T, TProperty]:
         return rule._When(lambda x, ctx: not predicate(x, ctx), applyConditionTo)
 
-    # def Unless(
+    # def unless(
     #     rule: IRuleBuilderOptionsConditions[T, TProperty], predicate: Callable[[T, ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators
     # ) -> IRuleBuilderOptionsConditions[T, TProperty]:
     #     return rule.when(lambda x, ctx: not predicate(x, ctx), applyConditionTo)
@@ -126,13 +126,13 @@ class DefaultValidatorOptions[T, TProperty]:
 #     }
 
 #     public static IRuleBuilderOptions[T, TProperty] WhenAsync(rule:IRuleBuilderOptions[T, TProperty], Callable<T, ValidationContext[T], CancellationToken, Task<bool>> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) {
-#         # Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+#         # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
 #         Configurable(rule).ApplyAsyncCondition((ctx, ct) => predicate((T)ctx.InstanceToValidate, ValidationContext[T].GetFromNonGenericContext(ctx), ct), applyConditionTo);
 #         return rule;
 #     }
 
 #     public static IRuleBuilderOptionsConditions[T, TProperty] WhenAsync(rule:IRuleBuilderOptionsConditions[T, TProperty], Callable<T, ValidationContext[T], CancellationToken, Task<bool>> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) {
-#         # Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+#         # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
 #         Configurable(rule).ApplyAsyncCondition((ctx, ct) => predicate((T)ctx.InstanceToValidate, ValidationContext[T].GetFromNonGenericContext(ctx), ct), applyConditionTo);
 #         return rule;
 #     }

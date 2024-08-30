@@ -42,7 +42,7 @@ class ConditionBuilder[T]:
 
         return ConditionOtherwiseBuilder[T](self._rules, Condition)
 
-    def Unless(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
+    def unless(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
         return self.when(lambda x, context: not predicate(x, context), action)
 
 

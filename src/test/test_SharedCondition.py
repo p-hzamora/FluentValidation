@@ -18,7 +18,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			# to each inner rule_for so you only need write,
     # 			# maintain, and think about it in one place.
     # 			#
-    # 			# You can finish with an Unless clause that will
+    # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
     # 			# predicate is true.
     # 			#
@@ -37,7 +37,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			# to each inner rule_for so you only need write,
     # 			# maintain, and think about it in one place.
     # 			#
-    # 			# You can finish with an Unless clause that will
+    # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
     # 			# predicate is true.
     # 			#
@@ -58,7 +58,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			# to each inner rule_for so you only need write,
     # 			# maintain, and think about it in one place.
     # 			#
-    # 			# You can finish with an Unless clause that will
+    # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
     # 			# predicate is true.
     # 			#
@@ -78,7 +78,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			# to each inner rule_for so you only need write,
     # 			# maintain, and think about it in one place.
     # 			#
-    # 			# You can finish with an Unless clause that will
+    # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
     # 			# predicate is true.
     # 			#
@@ -93,23 +93,23 @@ class SharedConditionTests(unittest.TestCase):
     # 	class SharedConditionWithScopedUnlessValidator : AbstractValidator<Person> {
     # 		public SharedConditionWithScopedUnlessValidator() {
     # 			# inner rule_for() calls can contain their own,
-    # 			# locally scoped when and Unless calls that
+    # 			# locally scoped when and unless calls that
     # 			# act only on that individual rule_for() yet the
     # 			# rule_for() respects the grouped when() and
-    # 			# Unless() predicates.
+    # 			# unless() predicates.
     # 			#
-    # 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).Unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == false) })
-    # 			#.Unless(lambda x: x.Age > 65)
+    # 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == false) })
+    # 			#.unless(lambda x: x.Age > 65)
     # 		}
     # 	}
 
     # 	class SharedAsyncConditionWithScopedUnlessValidator : AbstractValidator<Person> {
     # 		public SharedAsyncConditionWithScopedUnlessValidator() {
     # 			# inner rule_for() calls can contain their own,
-    # 			# locally scoped when and Unless calls that
+    # 			# locally scoped when and unless calls that
     # 			# act only on that individual rule_for() yet the
     # 			# rule_for() respects the grouped when() and
-    # 			# Unless() predicates.
+    # 			# unless() predicates.
     # 			#
     # 			WhenAsync(async (x,c) => x.Id > 0 && x.Age <= 65,
     # 				lambda: {
@@ -121,7 +121,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # 	class SharedConditionInverseValidator : AbstractValidator<Person> {
     # 		public SharedConditionInverseValidator() {
-    # 			Unless(lambda x: x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
+    # 			unless(lambda x: x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
     # 		}
     # 	}
 
@@ -301,7 +301,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			Id = 4 # triggers the shared when predicate
     # 		}
 
-    # 		person.CreditCard = "1234123412341234" # satisfies the inner Unless predicate
+    # 		person.CreditCard = "1234123412341234" # satisfies the inner unless predicate
     # 		person.Orders.Add(Order())
 
     # 		result = validator.validate(person)
@@ -314,7 +314,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			Id = 4 # triggers the shared when predicate
     # 		}
 
-    # 		person.CreditCard = "1234123412341234" # satisfies the inner Unless predicate
+    # 		person.CreditCard = "1234123412341234" # satisfies the inner unless predicate
     # 		person.Orders.Add(Order())
 
     # 		result = await validator.ValidateAsync(person)
@@ -327,7 +327,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			Id = 4 # triggers the shared when predicate
     # 		}
 
-    # 		person.Orders.Add(Order()) # fails the inner Unless predicate
+    # 		person.Orders.Add(Order()) # fails the inner unless predicate
 
     # 		result = validator.validate(person)
     # 		result.Errors.Count.ShouldEqual(1)
@@ -339,7 +339,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			Id = 4 # triggers the shared when predicate
     # 		}
 
-    # 		person.Orders.Add(Order()) # fails the inner Unless predicate
+    # 		person.Orders.Add(Order()) # fails the inner unless predicate
 
     # 		result = await validator.ValidateAsync(person)
     # 		result.Errors.Count.ShouldEqual(1)
@@ -349,10 +349,10 @@ class SharedConditionTests(unittest.TestCase):
     # 		validator = SharedConditionWithScopedUnlessValidator()
     # 		person = Person() {
     # 			Id = 4, # triggers the shared when predicate
-    # 			Age = 70 # satisfies the outer Unless predicate
+    # 			Age = 70 # satisfies the outer unless predicate
     # 		}
 
-    # 		person.Orders.Add(Order()) # fails the inner Unless predicate
+    # 		person.Orders.Add(Order()) # fails the inner unless predicate
 
     # 		result = validator.validate(person)
     # 		result.Errors.Count.ShouldEqual(0)
@@ -362,10 +362,10 @@ class SharedConditionTests(unittest.TestCase):
     # 		validator = SharedAsyncConditionWithScopedUnlessValidator()
     # 		person = Person() {
     # 			Id = 4, # triggers the shared when predicate
-    # 			Age = 70 # satisfies the outer Unless predicate
+    # 			Age = 70 # satisfies the outer unless predicate
     # 		}
 
-    # 		person.Orders.Add(Order()) # fails the inner Unless predicate
+    # 		person.Orders.Add(Order()) # fails the inner unless predicate
 
     # 		result = await validator.ValidateAsync(person)
     # 		result.Errors.Count.ShouldEqual(0)
@@ -619,7 +619,7 @@ class SharedConditionTests(unittest.TestCase):
 
     # def test_Runs_otherwise_conditons_for_Unless(self):
     #     validator = TestValidator()
-    #     validator.Unless(
+    #     validator.unless(
     #         lambda x: x.Age > 10,
     #         lambda: validator.rule_for(lambda x: x.Forename).not_null(),
     #     ).Otherwise(

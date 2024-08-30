@@ -122,7 +122,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._DependentRules = value
 
     def ApplyCondition(self, predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> None:
-        # Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+        # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
         if applyConditionTo == ApplyConditionTo.AllValidators:
             for validator in self._components:
                 validator.ApplyCondition(predicate)
@@ -134,7 +134,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
             self.Current.ApplyCondition(predicate)
 
     # public void ApplyAsyncCondition(Func<ValidationContext<T>, CancellationToken, Task<bool>> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) {
-    # 	// Default behaviour for when/Unless as of v1.3 is to apply the condition to all previous validators in the chain.
+    # 	// Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
     # 	if (applyConditionTo == ApplyConditionTo.AllValidators) {
     # 		foreach (var validator in _components) {
     # 			validator.ApplyAsyncCondition(predicate);

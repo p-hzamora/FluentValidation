@@ -207,11 +207,11 @@ class AbstractValidator[T](IValidator[T]):
         return ConditionBuilder[T](self.Rules).when(predicate, action)
 
     @override
-    def Unless(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
+    def unless(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
         return self.__Unless(lambda x, _: predicate(x), action)
 
     def __Unless(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
-        return ConditionBuilder[T](self.Rules).Unless(predicate, action)
+        return ConditionBuilder[T](self.Rules).unless(predicate, action)
 
     # def WhenAsync(Func<T, CancellationToken, Task<bool>> predicate, Action action)->IConditionBuilder:
     #     return WhenAsync((x, _, cancel) => predicate(x, cancel), action)

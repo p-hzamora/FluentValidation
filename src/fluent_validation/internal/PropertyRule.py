@@ -42,7 +42,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
             return None
 
         if self.Condition:
-            if self.Condition(context) is not None:
+            if not self.Condition(context):
                 return None
 
         # if (AsyncCondition != null) {

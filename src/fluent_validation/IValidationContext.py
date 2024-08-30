@@ -119,7 +119,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._IsChildCollectionContext: bool = False
         self._RawPropertyName: str = None
         self._is_async: bool = False
-        self._ParentContext: IValidationContext = None
+        self._parentContext: IValidationContext = None
         self._sharedConditionCache:dict[str,dict[T,bool]] = None
 
     @override
@@ -214,7 +214,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     # Explicit implementation so it's not exposed necessarily.
     @property
     def ParentContext(self) -> IValidationContext:
-        return self._ParentContext
+        return self._parentContext
 
     @property
     def IsAsync(self) -> bool:
@@ -257,8 +257,8 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         validation.IsChildContext = context.IsChildContext
         validation.RootContextData = context.RootContextData
         validation.ThrowOnFailures = context.ThrowOnFailures
-        validation._ParentContext = context.ParentContext
-        validation._isAsync = context.IsAsync
+        validation._parentContext = context.ParentContext
+        validation._is_async = context.IsAsync
         return validation
 
     def CloneForChildValidator[TChild](self, instanceToValidate: TChild, preserveParentContext: bool = False, selector: Optional[IValidatorSelector] = None) -> ValidationContext[TChild]:

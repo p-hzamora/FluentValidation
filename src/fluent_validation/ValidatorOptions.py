@@ -1,12 +1,14 @@
-from typing import Callable, Iterable, Type
+from typing import Any, Callable, Iterable, Type
 
+from src.fluent_validation.MemberInfo import MemberInfo
 from src.fluent_validation.internal.CompositeValidatorSelector import CompositeValidatorSelector
 from src.fluent_validation.internal.DefaultValidatorSelector import DefaultValidatorSelector
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from src.fluent_validation.internal.MemberNameValidatorSelector import MemberNameValidatorSelector
 from src.fluent_validation.internal.MessageFormatter import MessageFormatter
+
 from src.fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
-from src.fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction
+from src.fluent_validation.validators.IpropertyValidator import IPropertyValidator
 from .enums import CascadeMode
 from .internal.Resources.LanguageManager import LanguageManager
 from .internal.Resources.ILanguageManager import ILanguageManager
@@ -57,15 +59,14 @@ class ValidatorSelectorOptions:
 
 
 class ValidatorConfiguration:
-    PropertyNameResolver: Type[TreeInstruction] = TreeInstruction
 
     def __init__(self):
-        # private Func<Type, MemberInfo, LambdaExpression, string> _propertyNameResolver Not implemented
-        # private Func<Type, MemberInfo, LambdaExpression, string> _displayNameResolver = DefaultDisplayNameResolver
+        self._propertyNameResolver: Callable[[Type, MemberInfo, Callable[..., Any]], str] = self.DefaultPropertyNameResolver
+        self._displayNameResolver: Callable[[Type, MemberInfo, Callable[..., Any]], str] = self.DefaultDisplayNameResolver
         self._messageFormatterFactory: Callable[[], MessageFormatter] = lambda: MessageFormatter()
-        # private Func<IPropertyValidator, string> _errorCodeResolver = DefaultErrorCodeResolver
-        self._PropertyChainSeparator: str = "."
+        self._errorCodeResolver: Callable[[IPropertyValidator], str] = self.DefaultErrorCodeResolver
         self._languageManager: ILanguageManager = LanguageManager()
+        self._PropertyChainSeparator: str = "."
 
         # COMMENT: original C# Library has this vars as CascadeMode.Continue
         self._defaultClassLevelCascadeMode: CascadeMode = CascadeMode.Continue
@@ -105,6 +106,10 @@ class ValidatorConfiguration:
         self._languageManager = value
 
     @property
+    def ValidatorSelectors(self) -> ValidatorSelectorOptions:
+        return ValidatorSelectorOptions()
+
+    @property
     def MessageFormatterFactory(self) -> Callable[[], MessageFormatter]:
         return self._messageFormatterFactory
 
@@ -114,11 +119,52 @@ class ValidatorConfiguration:
             value = lambda: MessageFormatter()  # noqa: E731
         self._messageFormatterFactory = value
 
+    @property
+    def PropertyNameResolver(self) -> Callable[[Type, MemberInfo, Callable[..., Any]], str]:
+        return self._propertyNameResolver
+
+    @PropertyNameResolver.setter
+    def PropertyNameResolver(self, value: None | Callable[[Type, MemberInfo, Callable[..., Any]], str]) -> None:
+        self._propertyNameResolver = value if value is not None else self.DefaultPropertyNameResolver
+
+    @property
+    def DisplayNameResolver(self) -> Callable[[Type, MemberInfo, Callable[..., Any]], str]:
+        return self._displayNameResolver
+
+    @DisplayNameResolver.setter
+    def DisplayNameResolver(self, value: None | Callable[[Type, MemberInfo, Callable[..., Any]], str]) -> None:
+        self._displayNameResolver = value if value is not None else self.DefaultDisplayNameResolver
+
+    # public bool DisableAccessorCache { get; set; }
     # endregion
 
     @property
-    def ValidatorSelectors(self) -> ValidatorSelectorOptions:
-        return ValidatorSelectorOptions()
+    def ErrorCodeResolver(self) -> Callable[[IPropertyValidator], str]:
+        return self._errorCodeResolver
+
+    @ErrorCodeResolver.setter
+    def ErrorCodeResolver(self, value: Callable[[IPropertyValidator], str]) -> None:
+        self._errorCodeResolver = value if value is not None else self.DefaultErrorCodeResolver
+
+    # public Func<ValidationFailure, IValidationContext, object, IValidationRule, IRuleComponent, ValidationFailure> OnFailureCreated { get; set; }
+
+    @staticmethod
+    def DefaultPropertyNameResolver(_type: Type, memberInfo: MemberInfo, expression: Callable[..., str]):
+        from src.fluent_validation.internal.PropertyChain import PropertyChain
+
+        if expression is not None:
+            chain = PropertyChain.FromExpression(expression)
+            if len(chain) >0:
+                return chain.ToString()
+        return memberInfo.Name
+
+    @staticmethod
+    def DefaultDisplayNameResolver(_type: Type, memberInfo: MemberInfo, expression: Callable[..., str]):
+        return None
+
+    @staticmethod
+    def DefaultErrorCodeResolver(validator: IPropertyValidator):
+        return validator.Name
 
 
 class ValidatorOptions:

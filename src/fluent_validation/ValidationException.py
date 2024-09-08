@@ -30,7 +30,7 @@ class ValidationException(Exception):
 
 	@staticmethod
 	def BuildErrorMessage(errors: list[ValidationFailure]) -> str:
-		arr = [f"\n-- {x.PropertyName}: {x.ErrorMessage} Severity: {x.Severity.name}" for x in errors]
+		arr = [f"\n -- {x.PropertyName}: {x.ErrorMessage} Severity: {x.Severity.name}" for x in errors]
 		return "Validation failed: " + "".join(arr)
 
 

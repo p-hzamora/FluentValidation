@@ -157,7 +157,7 @@ class RulesetTests(unittest.TestCase):
         self.assertEqual(len(result.errors), 0)
         self.AssertExecuted(result, "default")
 
-    def test_AAExecutes_in_rule_in_ruleset_and_default(self):
+    def test_Executes_in_rule_in_ruleset_and_default(self):
         validator = InlineValidator[Person]()
         validator.rule_set("First, Default", lambda: {validator.rule_for(lambda x: x.Forename).not_null()})
 

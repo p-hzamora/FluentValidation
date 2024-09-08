@@ -9,12 +9,13 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_val
 from src.fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
 from person import _Address as Address  # noqa: E402
+from person import Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402
 
 
-class DerivedPerson(Person): 
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args,**kwargs)
+class DerivedPerson(Person):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class AbstractValidatorTester(unittest.TestCase):
@@ -167,111 +168,106 @@ class AbstractValidatorTester(unittest.TestCase):
         result = self.validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
         self.assertEqual(len(result.errors), 2)
 
+    #     def Validates_type_when_using_non_generic_validate_overload(self):
+    #         IValidator nonGenericValidator = self.validator
 
-#     def Validates_type_when_using_non_generic_validate_overload(self):
-#         IValidator nonGenericValidator = self.validator
+    #         Assert.Throws<InvalidOperationException>(() =>
+    #             nonGenericValidator.validate(ValidationContext<string>("foo")))
 
-#         Assert.Throws<InvalidOperationException>(() =>
-#             nonGenericValidator.validate(ValidationContext<string>("foo")))
+    #     def RuleForeach_with_null_instances(self):
+    #         model = Person(
+    #             NickNames = string[] { None }
 
-#     def RuleForeach_with_null_instances(self):
-#         model = Person(
-#             NickNames = string[] { None }
+    #         self.validator.RuleForEach(lambda x: x.NickNames).not_null()
+    #         result = self.validator.validate(model)
+    #         Console.WriteLine(result.errors[0].ErrorMessage)
+    #         self.assertFalse(result)
 
+    #     private class DerivedPerson : Person( }
 
-#         self.validator.RuleForEach(lambda x: x.NickNames).not_null()
-#         result = self.validator.validate(model)
-#         Console.WriteLine(result.errors[0].ErrorMessage)
-#         self.assertFalse(result)
+    #     [MemberData(nameof(PreValidationReturnValueTheoryData))]
+    #     def WhenPreValidationReturnsFalse_ResultReturnToUserImmediatly_Validate(selfV: preValidationResult) {
+    #         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
+    #             foreach (ValidationFailure validationFailure in preValidationResult.errors) {
+    #                 validationResult.errors.Add(validationFailure)
 
-#     private class DerivedPerson : Person( }
+    #             return false
 
+    #         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).greater_than_or_equal_to(0)
 
-#     [MemberData(nameof(PreValidationReturnValueTheoryData))]
-#     def WhenPreValidationReturnsFalse_ResultReturnToUserImmediatly_Validate(selfV: preValidationResult) {
-#         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
-#             foreach (ValidationFailure validationFailure in preValidationResult.errors) {
-#                 validationResult.errors.Add(validationFailure)
+    #         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
 
+    #         Assert.equal(preValidationResult.errors.Count, result.errors.Count)
+    #         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
 
-#             return false
+    #     [MemberData(nameof(PreValidationReturnValueTheoryData))]
+    #     async Task WhenPreValidationReturnsFalse_ResultReturnToUserImmediatly_ValidateAsync(ValidationResult preValidationResult) {
+    #         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
+    #             foreach (ValidationFailure validationFailure in preValidationResult.errors) {
+    #                 validationResult.errors.Add(validationFailure)
 
-#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).greater_than_or_equal_to(0)
+    #             return false
 
-#         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
+    #         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).MustAsync((age, tokenlambda ): Task.FromResult(age >= 0))
 
-#         Assert.equal(preValidationResult.errors.Count, result.errors.Count)
-#         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
+    #         result = await testValidatorWithPreValidate.ValidateAsync(Person() { Age = -1 })
 
-#     [MemberData(nameof(PreValidationReturnValueTheoryData))]
-#     async Task WhenPreValidationReturnsFalse_ResultReturnToUserImmediatly_ValidateAsync(ValidationResult preValidationResult) {
-#         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
-#             foreach (ValidationFailure validationFailure in preValidationResult.errors) {
-#                 validationResult.errors.Add(validationFailure)
+    #         Assert.equal(preValidationResult.errors.Count, result.errors.Count)
+    #         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
 
+    #     def PreValidate_bypasses_nullcheck_on_instance(self):
+    #         testValidatorWithPreValidate.rule_for(lambda x: x.Surname).not_null()
+    #         testValidatorWithPreValidate.PreValidateMethod = (ctx, rlambda ): false
 
-#             return false
+    #         result = testValidatorWithPreValidate.validate((Person)None)
+    #         self.assertTrue(result)
 
-#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).MustAsync((age, tokenlambda ): Task.FromResult(age >= 0))
+    #     def WhenPreValidationReturnsTrue_ValidatorsGetHit_Validate(self):
+    #         const string testProperty = "TestProperty"
+    #         const string testMessage = "Test Message"
+    #         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
+    #             validationResult.errors.Add(ValidationFailure(testProperty, testMessage))
+    #             return true
 
-#         result = await testValidatorWithPreValidate.ValidateAsync(Person() { Age = -1 })
+    #         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).greater_than_or_equal_to(0)
 
-#         Assert.equal(preValidationResult.errors.Count, result.errors.Count)
-#         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
+    #         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
 
-#     def PreValidate_bypasses_nullcheck_on_instance(self):
-#         testValidatorWithPreValidate.rule_for(lambda x: x.Surname).not_null()
-#         testValidatorWithPreValidate.PreValidateMethod = (ctx, rlambda ): false
+    #         Assert.Contains(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
+    #         Assert.Contains(testProperty, result.errors.Select(failurlambda e: failure.PropertyName))
+    #         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
 
-#         result = testValidatorWithPreValidate.validate((Person)None)
-#         self.assertTrue(result)
+    #     async Task WhenPreValidationReturnsTrue_ValidatorsGetHit_ValidateAsync() {
+    #         const string testProperty = "TestProperty"
+    #         const string testMessage = "Test Message"
+    #         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
+    #             validationResult.errors.Add(ValidationFailure(testProperty, testMessage))
+    #             return true
 
+    #         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).MustAsync((age, tokenlambda ): Task.FromResult(age >= 0))
 
-#     def WhenPreValidationReturnsTrue_ValidatorsGetHit_Validate(self):
-#         const string testProperty = "TestProperty"
-#         const string testMessage = "Test Message"
-#         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
-#             validationResult.errors.Add(ValidationFailure(testProperty, testMessage))
-#             return true
+    #         result = await testValidatorWithPreValidate.ValidateAsync(Person() { Age = -1 })
 
-#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).greater_than_or_equal_to(0)
+    #         Assert.Contains(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
+    #         Assert.Contains(testProperty, result.errors.Select(failurlambda e: failure.PropertyName))
+    #         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
 
-#         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
+    #     def PropertyName_With_Periods_Displays_Correctly_In_Messages(self):
+    #         self.validator.rule_for(lambda x: x.Address.Line1).not_null().with_message("{PropertyName}")
 
-#         Assert.Contains(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
-#         Assert.Contains(testProperty, result.errors.Select(failurlambda e: failure.PropertyName))
-#         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
+    #         validationResult = self.validator.validate(Person( Address = Address() })
 
-#     async Task WhenPreValidationReturnsTrue_ValidatorsGetHit_ValidateAsync() {
-#         const string testProperty = "TestProperty"
-#         const string testMessage = "Test Message"
-#         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
-#             validationResult.errors.Add(ValidationFailure(testProperty, testMessage))
-#             return true
+    #         self.assertEqual(validationResult.errors.First().ErrorMessage, "Address Line1")
 
-#         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).MustAsync((age, tokenlambda ): Task.FromResult(age >= 0))
+    def test_Message_arguments_should_be_updated_on_failure_instances(self):
+        self.validator.rule_for(lambda x: x.Surname).not_empty()
+        self.validator.rule_for(lambda x: x.Forename).not_empty()
 
-#         result = await testValidatorWithPreValidate.ValidateAsync(Person() { Age = -1 })
+        # Failure instances should have different placeholders
+        result = self.validator.validate(Person())
+        self.assertEqual(result.errors[0].FormattedMessagePlaceholderValues["PropertyName"], "Surname")
+        self.assertEqual(result.errors[1].FormattedMessagePlaceholderValues["PropertyName"], "Forename")
 
-#         Assert.Contains(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
-#         Assert.Contains(testProperty, result.errors.Select(failurlambda e: failure.PropertyName))
-#         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
-
-#     def PropertyName_With_Periods_Displays_Correctly_In_Messages(self):
-#         self.validator.rule_for(lambda x: x.Address.Line1).not_null().with_message("{PropertyName}")
-
-#         validationResult = self.validator.validate(Person( Address = Address() })
-
-#         self.assertEqual(validationResult.errors.First().ErrorMessage, "Address Line1")
-
-#     def Message_arguments_should_be_updated_on_failure_instances(self):
-#         self.validator.rule_for(lambda x: x.Surname).not_empty()
-#         self.validator.rule_for(lambda x: x.Forename).not_empty()
-
-#         // Failure instances should have different placeholders
-#         result = self.validator.validate(Person())
-#         self.assertEqual(result.errors[0].FormattedMessagePlaceholderValues["PropertyName"], "Surname")
-#         self.assertEqual(result.errors[1].FormattedMessagePlaceholderValues["PropertyName"], "Forename")
 
 #     static TheoryData<ValidationResult> PreValidationReturnValueTheoryData = TheoryData<ValidationResult> {
 #         ValidationResult(),

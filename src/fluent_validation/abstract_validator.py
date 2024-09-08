@@ -151,7 +151,9 @@ class AbstractValidator[T](IValidator[T]):
 
     def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
         ExtensionsInternal.Guard(expression,"Cannot pass null to RuleFor","expression")
+        rule: PropertyRule[T, TProperty] = PropertyRule[T,TProperty].create(expression, lambda: self.RuleLevelCascadeMode)
         self._rules.append(rule)
+        self.OnRuleAdded(rule)
         return RuleBuilder[T, TProperty](rule, self)
 
     #   public IRuleBuilderInitial<T, TTransformed> Transform<TProperty, TTransformed>(Expression<Func<T, TProperty>> from, Func<TProperty, TTransformed> to) {
@@ -248,7 +250,7 @@ class AbstractValidator[T](IValidator[T]):
     def RaiseValidationException(self, context: ValidationContext[T], result: ValidationResult) -> None:
         raise ValidationException(errors=result.errors)
 
-    def OnRuleAdded(rule: IValidationRule[T]) -> None:
+    def OnRuleAdded(self, rule: IValidationRule[T]) -> None:
         return None
 
     # region Properties

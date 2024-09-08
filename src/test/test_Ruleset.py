@@ -13,7 +13,7 @@ from src.fluent_validation.abstract_validator import AbstractValidator
 from src.fluent_validation.internal.PropertyChain import PropertyChain
 from src.fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
 from src.fluent_validation.results.ValidationResult import ValidationResult
-from src.test.person import Address
+from src.test.person import _Address as Address
 from src.test.person import Person
 
 

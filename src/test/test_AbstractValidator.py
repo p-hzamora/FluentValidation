@@ -8,7 +8,7 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_val
 
 from src.fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
-from person import Address, Person  # noqa: E402
+from person import _Address as Address  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402
 
 

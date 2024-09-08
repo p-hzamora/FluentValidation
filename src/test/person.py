@@ -44,7 +44,7 @@ class IAddress(ABC):
     def Country(self) -> Country: ...
 
 
-class Address(IAddress):
+class _Address(IAddress):
     def __init__(
         self,
         Line1: str = None,
@@ -133,7 +133,7 @@ class Person:
         Forename: Optional[str] = None,
         NickNames: Optional[str] = None,
         DateOfBirth: Optional[datetime.datetime] = None,
-        Address: Optional[Address] = None,
+        Address: Optional[_Address] = None,
         Email: Optional[str] = None,
         Discount: Optional[Decimal] = None,
         Age: Optional[float] = None,
@@ -159,7 +159,7 @@ class Person:
         self.NickNames: str = NickNames
         self.DateOfBirth: datetime.datetime = DateOfBirth
         self.NullableInt: int = NullableInt
-        self.Address: Address = Address
+        self.Address: _Address = Address
         self.Email: str = Email
         self.Discount: Decimal = Discount
         self.NullableDiscount: Decimal = NullableDiscount

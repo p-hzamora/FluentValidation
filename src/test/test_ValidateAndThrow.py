@@ -9,7 +9,7 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_val
 from src.fluent_validation.ValidationException import ValidationException
 from src.fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
-from person import Address, Person  # noqa: E402
+from person import _Address as Address, Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402
 
 
@@ -103,6 +103,7 @@ class ValidateAndThrowTester(unittest.TestCase):
                 validator.validate_and_throw(Person())
             except ValidationException as ex:
                 self.assertEqual(len(ex.Errors), 1)
+                raise ValidationException
 
     def test_ToString_provides_error_details(self) -> None:
         validator = TestValidator(
@@ -116,6 +117,7 @@ class ValidateAndThrowTester(unittest.TestCase):
             except ValidationException as ex:
                 expected: str = "Validation failed: \n -- Surname: 'Surname' must not be empty. Severity: Error\n -- Forename: 'Forename' must not be empty."
                 self.assertTrue(ex.message, expected)
+                raise ValidationException
 
     # 	def test_Serializes_exception(self)->None:
     # 		v = ValidationException(List<ValidationFailure> {ValidationFailure("test", "test")})

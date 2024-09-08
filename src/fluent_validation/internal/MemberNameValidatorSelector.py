@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Iterable, Optional, override, Callable, Any, TYPE_CHECKING
 import re
 
+from src.fluent_validation.MemberInfo import MemberInfo
 from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
 
 from src.fluent_validation.internal.IncludeRule import IIncludeRule
@@ -83,9 +84,9 @@ class MemberNameValidatorSelector(IValidatorSelector):
         from src.fluent_validation.ValidatorOptions import ValidatorOptions
 
         # get list of all values in expression (one is expected) and get first
-        propertyName = ValidatorOptions.Global.PropertyNameResolver(expression).to_list()
+        propertyName = ValidatorOptions.Global.PropertyNameResolver(type(T), MemberInfo(expression), expression)
 
         if not propertyName:
             raise ValueError(f"Expression '{expression}' does not specify a valid property or field.")
 
-        return propertyName[0].nested_element.name
+        return propertyName

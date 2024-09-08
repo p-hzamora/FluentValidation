@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Callable, overload, TYPE_CHECKING
 import inspect
 
+from src.fluent_validation.MemberInfo import MemberInfo
 from src.fluent_validation.internal.AccessorCache import AccessorCache
 
 
@@ -77,7 +78,9 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilder[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
-            name = DefaultValidatorExtensions.get_display_name(valueToCompare)
+            member = MemberInfo(valueToCompare)
+
+            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(LessThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(LessThanValidator(value=valueToCompare))
@@ -96,7 +99,8 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilder[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
-            name = DefaultValidatorExtensions.get_display_name(valueToCompare)
+            member = MemberInfo(valueToCompare)
+            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(LessThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(LessThanOrEqualValidator(value=valueToCompare))
@@ -121,9 +125,9 @@ class DefaultValidatorExtensions[T, TProperty]:
         if not callable(toCompare):
             return ruleBuilder.set_validator(EqualValidator[T, TProperty](toCompare, comparer))
 
-        member = expression.__name__  # TODOH: Checked if it's correct
+        member = MemberInfo(expression)
         func = AccessorCache[T].GetCachedAccessor(member, expression)
-        name = ruleBuilder.get_display_name(expression)
+        name = ruleBuilder.get_display_name(member, expression)
         return ruleBuilder.set_validator(
             EqualValidator[T, TProperty](
                 comparisonProperty=func,
@@ -180,7 +184,8 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilder[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
-            name = DefaultValidatorExtensions.get_display_name(valueToCompare)
+            member = MemberInfo(valueToCompare)
+            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(NotEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(NotEqualValidator(value=valueToCompare))
@@ -199,7 +204,8 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilder[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
-            name = DefaultValidatorExtensions.get_display_name(valueToCompare)
+            member = MemberInfo(valueToCompare)
+            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(GreaterThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(GreaterThanValidator(value=valueToCompare))
@@ -218,14 +224,17 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilder[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
-            name = DefaultValidatorExtensions.get_display_name(valueToCompare)
+            member = MemberInfo(valueToCompare)
+            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(GreaterThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(GreaterThanOrEqualValidator(value=valueToCompare))
 
     @staticmethod
-    def get_display_name(expression: Callable[[T], TProperty]) -> str:
-        name = ValidatorOptions.Global.PropertyNameResolver(expression).to_list()[0].nested_element.name
+    def get_display_name(member:MemberInfo, expression: Callable[[T], TProperty]) -> str:
+        name = ValidatorOptions.Global.PropertyNameResolver(type(T),member, expression)
+        if name is None:
+            return name
         return ExtensionsInternal.split_pascal_case(name)
 
     # endregion

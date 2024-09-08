@@ -1,5 +1,8 @@
 from __future__ import annotations
-from typing import Callable, Self, TYPE_CHECKING
+from typing import Any, Callable, Self, TYPE_CHECKING
+
+from src.fluent_validation.MemberInfo import MemberInfo
+from src.fluent_validation.internal.AccessorCache import AccessorCache
 
 from ..enums import CascadeMode
 from ..internal.RuleBase import RuleBase
@@ -13,18 +16,22 @@ if TYPE_CHECKING:
 class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
     def __init__(
         self,
-        func: Callable[[T], TProperty],
+        member: MemberInfo,
+        propertyFunc: Callable[[T], TProperty],
+        expression:Callable[...,Any],
         cascadeModeThunk: Callable[[], CascadeMode],
-        type_to_validate: type,
+        typeToValidate: type,
     ) -> None:
-        super().__init__(func, cascadeModeThunk, type_to_validate)
+        super().__init__(member, propertyFunc,expression, cascadeModeThunk, typeToValidate)
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} from '{self.PropertyName}' at {hex(id(self))}>"
 
     @classmethod
-    def create(cls, func: Callable[[T], TProperty], cascadeModeThunk: Callable[[], CascadeMode]) -> Self:
-        return PropertyRule(func, cascadeModeThunk, type(TProperty))
+    def create(cls, expression: Callable[[T], TProperty], cascadeModeThunk: Callable[[], CascadeMode], bypassCache: bool = False) -> Self:
+        member = MemberInfo(expression)
+        compiled = AccessorCache[T].GetCachedAccessor(member, expression, bypassCache)
+        return PropertyRule[T, TProperty](member, lambda x: compiled(x), expression, cascadeModeThunk, type(TProperty))
 
     def AddValidator(self, validator: IPropertyValidator[T, TProperty]) -> None:
         component: RuleComponent = RuleComponent[T, TProperty](validator)

@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Callable, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, List, Optional, TYPE_CHECKING
 
+from src.fluent_validation.MemberInfo import MemberInfo
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from src.fluent_validation.internal.ExtensionInternal import ExtensionsInternal
 from ..IValidationRule import IValidationRule
@@ -20,19 +21,24 @@ if TYPE_CHECKING:
 class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
     def __init__(
         self,
+        member: MemberInfo,
         propertyFunc: Callable[[T], TProperty],
+        expression: Callable[..., Any],
         cascadeModeThunk: Callable[[], CascadeMode],
-        type_to_validate: type,
+        typeToValidate: type,
     ):
+        self._member: MemberInfo = member
         self._PropertyFunc = propertyFunc
+        self._expression: Callable[..., Any] = expression
         self._cascadeModeThunk: Callable[[], CascadeMode] = cascadeModeThunk
-        # TODOL: Check if I've to use the same code for 'self._propertyName' and 'self.displayNameFastory'
-        self._propertyName: Optional[str] = ValidatorOptions.Global.PropertyNameResolver(propertyFunc).to_list()[0].nested_element.name
-        self._displayNameFactory: Callable[[ValidationContext[T], str]] = lambda context: ValidatorOptions.Global.PropertyNameResolver(propertyFunc).to_list()[0].nested_element.name
+
+        containerType = type(T)
+        self._propertyName: Optional[str] = ValidatorOptions.Global.PropertyNameResolver(containerType, member, expression)
+        self._displayNameFactory: Callable[[ValidationContext[T], str]] = lambda context: ValidatorOptions.Global.DisplayNameResolver(containerType, member, expression)
 
         self._displayNameFunc: Callable[[ValidationContext[T], str]] = self.get_display_name
 
-        self._type_to_validate = type_to_validate
+        self._typeToValidate = typeToValidate
         self._components: List[RuleComponent[T, TProperty]] = []
         self._condition: Optional[Callable[[ValidationContext[T]], bool]] = None
         self._propertyDisplayName: Optional[str] = None
@@ -56,9 +62,13 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         if self._displayNameFactory is not None and (res := self._displayNameFactory(context)) is not None:
             return res
         elif self._displayName:
-            return self.displayName
+            return self._displayName
         else:
             return self._propertyDisplayName
+
+    @property
+    def Member(self) -> MemberInfo:
+        return self._member
 
     @property
     def PropertyFunc(self) -> Callable[[T], TProperty]:
@@ -66,7 +76,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
     @property
     def TypeToValidate(self):
-        return self._type_to_validate
+        return self._typeToValidate
 
     @property
     def Components(self):

@@ -1,17 +1,15 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from .Resources.ILanguageManager import ILanguageManager
 
 
 class ExtensionsInternal:
-    # @staticmethod
-    # def Guard(this object obj, string message, string paramName) {
-    # 	if (obj == null) {
-    # 		throw new ArgumentNullException(paramName, message);
-    # 	}
-    # }
+    @staticmethod
+    def Guard(obj: Any, message: str, paramName: str):
+        if obj is None:
+            raise AttributeError(message, name=paramName)
 
     # @staticmethod
     # def Guard(this string str, string message, string paramName) {

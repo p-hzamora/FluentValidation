@@ -4,6 +4,8 @@ from typing import Any, Callable, Coroutine, Optional, Type, overload, override,
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
+from src.fluent_validation.internal.ExtensionInternal import ExtensionsInternal
+
 if TYPE_CHECKING:
     from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
     from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
@@ -147,8 +149,8 @@ class AbstractValidator[T](IValidator[T]):
     def CanValidateInstancesOfType(self, _type: Type) -> bool:
         return issubclass(_type, self.__orig_bases__[0].__args__[0])
 
-    def rule_for[TProperty](self, func: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
-        rule: PropertyRule[T, TProperty] = PropertyRule.create(func, lambda: self.RuleLevelCascadeMode)
+    def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
+        ExtensionsInternal.Guard(expression,"Cannot pass null to RuleFor","expression")
         self._rules.append(rule)
         return RuleBuilder[T, TProperty](rule, self)
 

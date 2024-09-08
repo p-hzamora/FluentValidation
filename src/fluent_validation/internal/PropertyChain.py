@@ -1,6 +1,7 @@
-from typing import Iterable, Any, Optional, override
+from typing import Callable, Iterable, Any, Optional, override
 
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
+from src.fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction
 
 
 class PropertyChain:
@@ -12,6 +13,7 @@ class PropertyChain:
         elif not parent and memberNames:
             self._memberNames.extend(memberNames)
 
+    # Original method
     # @staticmethod
     # def FromExpression(expression:Callable[...,Any])->"PropertyChain":
     # 	memberName:list[str] = []
@@ -29,6 +31,16 @@ class PropertyChain:
     # 		memberExp = getMemberExp(memberExp.Expression)
 
     # 	return new PropertyChain(memberNames)
+
+    @staticmethod
+    def FromExpression(expression: Callable[..., Any]) -> "PropertyChain":
+        #COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has. Since we always pass one attr, we only need to access the first position of the list
+        #COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
+        memberNames = TreeInstruction(expression).to_list()
+        if not memberNames:
+            raise ValueError
+        memberNames = memberNames[0].nested_element.parents[1:]
+        return PropertyChain(None, memberNames)
 
     # TODOM: Checked if the MemberInfo class from C# is registering the same value in python using __class__.__name__
     def Add(self, member: Any) -> None:
@@ -50,7 +62,7 @@ class PropertyChain:
     # 	self._memberNames[self._memberNames.Count - 1] = last
 
     @override
-    def ToString(self)->str:
+    def ToString(self) -> str:
         match len(self._memberNames):
             case 0:
                 return ""
@@ -66,7 +78,7 @@ class PropertyChain:
     # string BuildPropertyName(string propertyName)
     # 	=> BuildPropertyPath(propertyName)
 
-    def BuildPropertyPath(self, propertyName:str)->str:
+    def BuildPropertyPath(self, propertyName: str) -> str:
         if len(self._memberNames) == 0:
             return propertyName
 
@@ -75,5 +87,8 @@ class PropertyChain:
         return chain.ToString()
 
     @property
-    def Count(self)->int:
+    def Count(self) -> int:
+        return len(self._memberNames)
+
+    def __len__(self):
         return len(self._memberNames)

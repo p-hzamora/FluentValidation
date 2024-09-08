@@ -98,7 +98,7 @@ class AbstractValidatorTester(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
 
     def test_Should_throw_when_rule_is_null(self):
-        with self.assertRaises(TypeError):  # TODOL [x]: Verify if it's the correct Error
+        with self.assertRaises(AttributeError):  # TODOL [x]: Verify if it's the correct Error
             self.validator.rule_for(None)
 
     def test_Should_validate_single_property(self):

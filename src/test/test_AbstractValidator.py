@@ -142,7 +142,7 @@ class AbstractValidatorTester(unittest.TestCase):
         self.validator.rule_for(lambda x: x.Address).set_validator(addressValidator)
         self.validator.rule_for(lambda x: x.Forename).not_null()
 
-        result = self.validator.validate(Person(Address=Address()), lambda v: v.IncludeProperties("Address[].Line1"))
+        result = self.validator.validate(Person(Address=Address()), lambda v: v.IncludeProperties("Address.Line1"))
         self.assertEqual(len(result.errors), 1)
         self.assertEqual(result.errors[0].PropertyName, "Address.Line1")
 

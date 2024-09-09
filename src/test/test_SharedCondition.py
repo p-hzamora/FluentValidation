@@ -5,6 +5,8 @@ from pathlib import Path
 
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
+# from src.fluent_validation.results.ValidationFailure import ValidationFailure
+from src.fluent_validation.InlineValidator import InlineValidator
 from src.test.TestValidator import TestValidator
 from src.test.person import Person
 
@@ -20,7 +22,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			#
     # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
-    # 			# predicate is true.
+    # 			# predicate is True.
     # 			#
     # 			when(lambda x: x.Id > 0, lambda: {
     # 				rule_for(lambda x: x.Forename).NotEmpty()
@@ -39,7 +41,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			#
     # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
-    # 			# predicate is true.
+    # 			# predicate is True.
     # 			#
     # 			WhenAsync(async (x,c) => x.Id > 0,
     # 				lambda: {
@@ -60,7 +62,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			#
     # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
-    # 			# predicate is true.
+    # 			# predicate is True.
     # 			#
     # 			when((x) => x.Id > 0,
     # 				lambda: {
@@ -80,7 +82,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			#
     # 			# You can finish with an unless clause that will
     # 			# void the validation for the entire set when it's
-    # 			# predicate is true.
+    # 			# predicate is True.
     # 			#
     # 			WhenAsync(async (x,c) => x.Id > 0,
     # 				lambda: {
@@ -98,7 +100,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			# rule_for() respects the grouped when() and
     # 			# unless() predicates.
     # 			#
-    # 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == false) })
+    # 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == False) })
     # 			#.unless(lambda x: x.Age > 65)
     # 		}
     # 	}
@@ -113,7 +115,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			#
     # 			WhenAsync(async (x,c) => x.Id > 0 && x.Age <= 65,
     # 				lambda: {
-    # 					rule_for(lambda x: x.Orders.Count).Equal(0).UnlessAsync(async (x,c) => String.IsNullOrWhiteSpace(x.CreditCard) == false)
+    # 					rule_for(lambda x: x.Orders.Count).Equal(0).UnlessAsync(async (x,c) => String.IsNullOrWhiteSpace(x.CreditCard) == False)
     # 				}
     # 			)
     # 		}
@@ -424,151 +426,145 @@ class SharedConditionTests(unittest.TestCase):
     # 	def void Rules_invoke_when_inverse_shared_condition_matches() {
     # 		validator = SharedConditionInverseValidator()
     # 		result = validator.validate(Person {Id = 1})
-    # 		result.IsValid.ShouldBeFalse()
+    # 		result.is_valid.ShouldBeFalse()
     # 	}
 
     # 	def async Task Rules_invoke_when_inverse_shared_async_condition_matches() {
     # 		validator = SharedAsyncConditionInverseValidator()
     # 		result = await validator.ValidateAsync(Person {Id = 1})
-    # 		result.IsValid.ShouldBeFalse()
+    # 		result.is_valid.ShouldBeFalse()
     # 	}
 
     # 	def void Rules_not_invoked_when_inverse_shared_condition_does_not_match() {
     # 		validator = SharedConditionInverseValidator()
     # 		result = validator.validate(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def async Task Rules_not_invoked_when_inverse_shared_async_condition_does_not_match() {
     # 		validator = SharedAsyncConditionInverseValidator()
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def async Task Does_not_execute_custom_Rule_when_condition_false() {
     # 		validator = TestValidator()
-    # 		validator.when(lambda x: false, lambda: {
-    # 			validator.rule_for(x=>x).Custom((x,ctx)=> ctx.AddFailure(ValidationFailure("foo", "bar")))
+    # 		validator.when(lambda x: False, lambda: {
+    # 			validator.rule_for(lambda x: x).Custom(lambda x,ctx:ctx.AddFailure(ValidationFailure("foo", "bar")))
     # 		})
 
     # 		result = validator.validate(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def async Task Does_not_execute_custom_Rule_when_async_condition_false() {
     # 		validator = TestValidator()
-    # 		validator.WhenAsync(async (x,c) =>(false), lambda: {
-    # 			validator.rule_for(x=>x).Custom((x,ctx)=> ctx.AddFailure(ValidationFailure("foo", "bar")))
+    # 		validator.WhenAsync(async (x,c) =>(False), lambda: {
+    # 			validator.rule_for(lambda x: x).Custom(lambda x,ctx:ctx.AddFailure(ValidationFailure("foo", "bar")))
     # 		})
 
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def void Does_not_execute_customasync_Rule_when_condition_false()
     # 	{
     # 		validator = TestValidator()
-    # 		validator.when(lambda x: false, lambda: {
+    # 		validator.when(lambda x: False, lambda: {
 
-    # 			validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar")))
+    # 			validator.rule_for(lambda x: x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar")))
     # 		})
 
     # 		result = validator.validate(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def async Task Does_not_execute_customasync_Rule_when_async_condition_false() {
     # 		validator = TestValidator()
-    # 		validator.WhenAsync(async (x,c) =>(false), lambda: {
+    # 		validator.WhenAsync(async (x,c) =>(False), lambda: {
 
-    # 			validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar")))
+    # 			validator.rule_for(lambda x: x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar")))
     # 		})
 
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def void Executes_custom_rule_when_condition_true() {
     # 		validator = TestValidator()
-    # 		validator.when(lambda x: true, lambda: {
-    # 			validator.rule_for(x=>x).Custom((x,ctx) => ctx.AddFailure(ValidationFailure("foo", "bar")))
+    # 		validator.when(lambda x: True, lambda: {
+    # 			validator.rule_for(lambda x: x).Custom(lambda x,ctx: ctx.AddFailure(ValidationFailure("foo", "bar")))
 
     # 		})
 
     # 		result = validator.validate(Person())
-    # 		result.IsValid.ShouldBeFalse()
+    # 		result.is_valid.ShouldBeFalse()
     # 	}
 
     # 	def async Task Executes_custom_rule_when_async_condition_true() {
     # 		validator = TestValidator()
-    # 		validator.WhenAsync(async (x,c) =>(true), lambda: {
-    # 			validator.rule_for(x=>x).Custom((x,ctx) => ctx.AddFailure(ValidationFailure("foo", "bar")))
+    # 		validator.WhenAsync(async (x,c) =>(True), lambda: {
+    # 			validator.rule_for(lambda x: x).Custom(lambda x,ctx: ctx.AddFailure(ValidationFailure("foo", "bar")))
 
     # 		})
 
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeFalse()
+    # 		result.is_valid.ShouldBeFalse()
     # 	}
 
     # 	def async Task Executes_customasync_rule_when_condition_true() {
     # 		validator = TestValidator()
-    # 		validator.when(lambda x: true, lambda: validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar"))))
+    # 		validator.when(lambda x: True, lambda: validator.rule_for(lambda x: x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar"))))
 
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeFalse()
+    # 		result.is_valid.ShouldBeFalse()
     # 	}
 
     # 	def async Task Executes_customasync_rule_when_async_condition_true() {
     # 		validator = TestValidator()
-    # 		validator.WhenAsync(async (x,c) =>(true), lambda: validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar"))))
+    # 		validator.WhenAsync(async (x,c) =>(True), lambda: validator.rule_for(lambda x: x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar"))))
 
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeFalse()
+    # 		result.is_valid.ShouldBeFalse()
     # 	}
 
-    # 	def void Nested_conditions_with_Custom_rule() {
-    # 		validator = TestValidator()
-    # 		validator.when(lambda x: true, lambda: {
-    # 			validator.when(lambda x: false, lambda: {
-    # 				validator.rule_for(x=>x).Custom((x,ctx) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
-
-    # 			})
-    # 		})
-    # 		result = validator.validate(Person())
-    # 		result.IsValid.ShouldBeTrue()
-    # 	}
+    # def test_Nested_conditions_with_Custom_rule(self):
+    #     validator = TestValidator()
+    #     validator.when(lambda x: True, lambda: validator.when(lambda x: False, lambda: validator.rule_for(lambda x: x).Custom(lambda x,ctx: ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))))
+    #     result = validator.validate(Person())
+    #     self.assertTrue(result.is_valid)
 
     # 	def async Task Nested_async_conditions_with_Custom_rule() {
     # 		validator = TestValidator()
-    # 		validator.when(lambda x: true, lambda: {
-    # 			validator.WhenAsync(async (x,c) =>(false), lambda: {
-    # 				validator.rule_for(x=>x).Custom((x,ctx) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
+    # 		validator.when(lambda x: True, lambda: {
+    # 			validator.WhenAsync(async (x,c) =>(False), lambda: {
+    # 				validator.rule_for(lambda x: x).Custom(lambda x,ctx: ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
     # 			})
     # 		})
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def async Task Nested_conditions_with_CustomAsync_rule() {
     # 		validator = TestValidator()
-    # 		validator.when(lambda x: true, lambda: {
-    # 			validator.when(lambda x: false, lambda: {
-    # 				validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
+    # 		validator.when(lambda x: True, lambda: {
+    # 			validator.when(lambda x: False, lambda: {
+    # 				validator.rule_for(lambda x: x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
     # 			})
     # 		})
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def async Task Nested_async_conditions_with_CustomAsync_rule() {
     # 		validator = TestValidator()
-    # 		validator.when(lambda x: true, lambda: {
-    # 			validator.WhenAsync(async (x,c) =>(false), lambda: {
-    # 				validator.rule_for(x=>x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
+    # 		validator.when(lambda x: True, lambda: {
+    # 			validator.WhenAsync(async (x,c) =>(False), lambda: {
+    # 				validator.rule_for(lambda x: x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("Custom", "The validation failed")))
     # 			})
     # 		})
     # 		result = await validator.ValidateAsync(Person())
-    # 		result.IsValid.ShouldBeTrue()
+    # 		self.assertTrue(result.is_valid)
     # 	}
 
     # 	def void When_condition_only_executed_once() {
@@ -617,71 +613,69 @@ class SharedConditionTests(unittest.TestCase):
         self.assertFalse(result2.is_valid)
         self.assertEqual(result2.errors[0].PropertyName, "Surname")
 
-    # def test_Runs_otherwise_conditons_for_Unless(self):
-    #     validator = TestValidator()
-    #     validator.unless(
-    #         lambda x: x.Age > 10,
-    #         lambda: validator.rule_for(lambda x: x.Forename).not_null(),
-    #     ).otherwise(
-    #         lambda: validator.rule_for(lambda x: x.Surname).not_null(),
-    #     )
+    def test_Runs_otherwise_conditons_for_Unless(self):
+        validator = TestValidator()
+        validator.unless(
+            lambda x: x.Age > 10,
+            lambda: validator.rule_for(lambda x: x.Forename).not_null(),
+        ).otherwise(
+            lambda: validator.rule_for(lambda x: x.Surname).not_null(),
+        )
 
-    #     result1 = validator.validate(Person(Age=11))
-    #     self.assertEqual(result1.errors[0].PropertyName, "Surname")
-    #     result2 = validator.validate(Person(Age=9))
-    #     self.assertAlmostEqual(result2.errors[0].PropertyName, "Forename")
+        result1 = validator.validate(Person(Age=11))
+        self.assertEqual(result1.errors[0].PropertyName, "Surname")
+        result2 = validator.validate(Person(Age=9))
+        self.assertAlmostEqual(result2.errors[0].PropertyName, "Forename")
 
+    # 	def async Task Runs_otherwise_conditions_for_WhenAsync() {
+    # 		validator = TestValidator()
+    # 		validator.WhenAsync(async (x, ct) => x.Age > 10, lambda: {
+    # 			validator.rule_for(lambda x: x.Forename).not_null()
+    # 		}).otherwise(lambda: {
+    # 			validator.rule_for(lambda x: x.Surname).not_null()
+    # 		})
 
-# 	def async Task Runs_otherwise_conditions_for_WhenAsync() {
-# 		validator = TestValidator()
-# 		validator.WhenAsync(async (x, ct) => x.Age > 10, lambda: {
-# 			validator.rule_for(lambda x: x.Forename).not_null()
-# 		}).otherwise(lambda: {
-# 			validator.rule_for(lambda x: x.Surname).not_null()
-# 		})
+    # 		result1 = await validator.ValidateAsync(Person(Age = 11))
+    # 		result1.errors[0].PropertyName.ShouldEqual("Forename")
+    # 		result2 = await validator.ValidateAsync(Person(Age=9))
+    # 		result2.errors[0].PropertyName.ShouldEqual("Surname")
+    # 	}
 
-# 		result1 = await validator.ValidateAsync(Person(Age = 11))
-# 		result1.errors[0].PropertyName.ShouldEqual("Forename")
-# 		result2 = await validator.ValidateAsync(Person(Age=9))
-# 		result2.errors[0].PropertyName.ShouldEqual("Surname")
-# 	}
+    # 	def async Task Runs_otherwise_conditions_for_UnlessAsync() {
+    # 		validator = TestValidator()
+    # 		validator.UnlessAsync(async (x, ct) => x.Age > 10, lambda: {
+    # 			validator.rule_for(lambda x: x.Forename).not_null()
+    # 		}).otherwise(lambda: {
+    # 			validator.rule_for(lambda x: x.Surname).not_null()
+    # 		})
 
-# 	def async Task Runs_otherwise_conditions_for_UnlessAsync() {
-# 		validator = TestValidator()
-# 		validator.UnlessAsync(async (x, ct) => x.Age > 10, lambda: {
-# 			validator.rule_for(lambda x: x.Forename).not_null()
-# 		}).otherwise(lambda: {
-# 			validator.rule_for(lambda x: x.Surname).not_null()
-# 		})
+    # 		result1 = await validator.ValidateAsync(Person(Age = 11))
+    # 		self.assertEqual(result1.errors[0].PropertyName,"Surname")
+    # 		result2 = await validator.ValidateAsync(Person(Age=9))
+    # 		self.assertAlmostEqual(result2.errors[0].PropertyName, "Forename")
+    # 	}
 
-# 		result1 = await validator.ValidateAsync(Person(Age = 11))
-# 		self.assertEqual(result1.errors[0].PropertyName,"Surname")
-# 		result2 = await validator.ValidateAsync(Person(Age=9))
-# 		self.assertAlmostEqual(result2.errors[0].PropertyName, "Forename")
-# 	}
+    def test_Nested_when_inside_otherwise(self):
+        validator = InlineValidator[Person]()
+        validator.when(lambda x: x.Id == 1, lambda: validator.rule_for(lambda x: x.Forename).not_null()).otherwise(
+            lambda: validator.when(
+                lambda x: x.Age > 18,
+                lambda: validator.rule_for(lambda x: x.Email).not_null(),
+            )
+        )
 
-# 	def void Nested_when_inside_otherwise() {
-# 		validator = InlineValidator<Person>()
-# 		validator.when(lambda x: x.Id == 1, lambda: {
-# 			validator.rule_for(lambda x: x.Forename).not_null()
-# 		}).otherwise(lambda: {
-# 			validator.when(lambda x: x.Age > 18, lambda: {
-# 				validator.rule_for(lambda x: x.Email).not_null()
-# 			})
-# 		})
+        result = validator.validate(Person(Id=1))
+        self.assertEqual(len(result.errors), 1)
+        self.assertEqual(result.errors[0].PropertyName, "Forename")
 
-# 		result = validator.validate(Person() {Id = 1})
-# 		result.Errors.Count.ShouldEqual(1)
-# 		result.Errors[0].PropertyName.ShouldEqual("Forename")
+        result = validator.validate(Person(Id=2, Age=20))
+        self.assertEqual(len(result.errors), 1)
+        self.assertEqual(result.errors[0].PropertyName, "Email")
 
-# 		result = validator.validate(Person() {Id = 2, Age = 20})
-# 		result.Errors.Count.ShouldEqual(1)
-# 		result.Errors[0].PropertyName.ShouldEqual("Email")
-# 	}
 
 # 	def void When_condition_executed_for_each_instance_of_RuleForEach_condition_should_not_be_cached() {
 # 		person = Person {
-# 			Children = List<Person> {
+# 			Children = list<Person> {
 # 				Person { Id = 1},
 # 				Person { Id = 0}
 # 			}
@@ -700,13 +694,13 @@ class SharedConditionTests(unittest.TestCase):
 # 		personValidator.RuleForEach(p => p.Children).SetValidator(childValidator)
 
 # 		validationResult = personValidator.validate(person)
-# 		validationResult.IsValid.ShouldBeTrue()
+# 		validationResult.is_valid.ShouldBeTrue()
 # 		executions.ShouldEqual(2)
 # 	}
 
 # 	def async Task When_async_condition_executed_for_each_instance_of_RuleForEach_condition_should_not_be_cached() {
 # 		person = Person {
-# 			Children = List<Person> {
+# 			Children = list<Person> {
 # 				Person { Id = 1},
 # 				Person { Id = 0}
 # 			}
@@ -725,48 +719,44 @@ class SharedConditionTests(unittest.TestCase):
 # 		personValidator.RuleForEach(p => p.Children).SetValidator(childValidator)
 
 # 		validationResult = await personValidator.ValidateAsync(person)
-# 		validationResult.IsValid.ShouldBeTrue()
+# 		validationResult.is_valid.ShouldBeTrue()
 # 		executions.ShouldEqual(2)
 # 	}
 
 # 	def void Doesnt_throw_NullReferenceException_when_instance_not_null() {
 # 		v = BadValidatorDisablesNullCheck()
 # 		result = v.validate((string) null)
-# 		result.IsValid.ShouldBeTrue()
+# 		self.assertTrue(result.is_valid)
 # 	}
 
 # 	def async Task Doesnt_throw_NullReferenceException_when_instance_not_null_async() {
 # 		v = AsyncBadValidatorDisablesNullCheck()
 # 		result = await v.ValidateAsync((string) null)
-# 		result.IsValid.ShouldBeTrue()
+# 		self.assertTrue(result.is_valid)
 # 	}
 
-# 	def void Shouldnt_break_with_hashcode_collision() {
-# 		v1 = InlineValidator<Collision1>()
-# 		v2 = InlineValidator<Collision2>()
+# def test_Shouldnt_break_with_hashcode_collision(self):
+#     v1 = InlineValidator[Collision1]()
+#     v2 = InlineValidator[Collision2]()
 
 
-# 		v = InlineValidator<CollisionBase>()
-# 		v.when(lambda x: x is Collision1, lambda: {
-# 			v.rule_for(lambda x: ((Collision1)x).Name).not_null()
-# 		})
-# 		v.when(lambda x: x is Collision2, lambda: {
-# 			v.rule_for(lambda x: ((Collision2)x).Name).not_null()
-# 		})
+#     v = InlineValidator[CollisionBase]()
+#     v.when(lambda x: x is Collision1, lambda: (v.rule_for(lambda x: x.Name).not_null()))
 
-# 		# shouldn't throw an InvalidCastException.
-# 		containerValidator = InlineValidator<List<CollisionBase>>()
-# 		containerValidator.RuleForEach(lambda x: x).SetValidator(v)
-# 		containerValidator.validate(List<CollisionBase> {
-# 			Collision1(), Collision2()
-# 		})
-# 	}
+#     v.when(lambda x: x is Collision2, lambda: v.rule_for(lambda x: x.Name).not_null())
+
+#     # shouldn't throw an InvalidCastException.
+#     containerValidator = InlineValidator[list[CollisionBase]]()
+#     containerValidator.RuleForEach(lambda x: x).SetValidator(v)
+#     containerValidator.validate(list[CollisionBase] {
+#         Collision1(), Collision2()
+#     })
 
 # 	def async Task Shouldnt_break_with_hashcode_collision_async() {
-# 		v1 = InlineValidator<Collision1>()
-# 		v2 = InlineValidator<Collision2>()
+# 		v1 = InlineValidator[Collision1]()
+# 		v2 = InlineValidator[Collision2]()
 
-# 		v = InlineValidator<CollisionBase>()
+# 		v = InlineValidator[CollisionBase]()
 # 		v.WhenAsync((x, ct) => Task.FromResult(x is Collision1), lambda: {
 # 			v.rule_for(lambda x: ((Collision1)x).Name).not_null()
 # 		})
@@ -774,29 +764,39 @@ class SharedConditionTests(unittest.TestCase):
 # 			v.rule_for(lambda x: ((Collision2)x).Name).not_null()
 # 		})
 
-# 		containerValidator = InlineValidator<List<CollisionBase>>()
+# 		containerValidator = InlineValidator<list[CollisionBase]>()
 # 		containerValidator.RuleForEach(lambda x: x).SetValidator(v)
 
 # 		# shouldn't throw an InvalidCastException.
-# 		await containerValidator.ValidateAsync(List<CollisionBase> {
+# 		await containerValidator.ValidateAsync(list[CollisionBase] {
 # 			Collision1(), Collision2()
 # 		})
 # 	}
 
 
-# 	class CollisionBase { }
+class CollisionBase: ...
 
-# 	class Collision1 : CollisionBase {
 
-# 		public string Name { get set }
-# 		public override int GetHashCodelambda: 1
-# 	}
+class Collision1(CollisionBase):
+    def __init__(self, Name: str) -> None:
+        self._Name: str = Name
 
-# 	class Collision2 : CollisionBase {
-# 		public string Name { get set }
-# 		public override int GetHashCodelambda: 1
-# 	}
-# }
+    @property
+    def Name(self) -> str:
+        return self._Name
+
+    @Name.setter
+    def Name(self, value: str) -> None:
+        self._Name = value
+
+    def __hash__(self) -> int:
+        return 1
+
+
+class Collision2(CollisionBase):
+    def __init__(self) -> None:
+        super().__init__()
+
 
 if __name__ == "__main__":
     unittest.main()

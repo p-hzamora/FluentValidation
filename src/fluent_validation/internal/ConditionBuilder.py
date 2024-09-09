@@ -35,6 +35,7 @@ class ConditionBuilder[T]:
                     cachedResults[actualContext.instance_to_validate] = executionResult
                 else:
                     actualContext.SharedConditionCache[id] = {actualContext.instance_to_validate: executionResult}
+            return executionResult
 
         # Must apply the predicate after the rule has been fully created to ensure any rules-specific conditions have already been applied.
         for rule in propertyRules:

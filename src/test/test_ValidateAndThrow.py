@@ -159,6 +159,7 @@ class ValidateAndThrowTester(unittest.TestCase):
                 validator.validate_and_throw(Person(Address=Address()))
             except ValidationException as e:
                 self.assertEqual(len(e.Errors), 2)
+                raise ValidationException
 
 
 # 	def test_Throws_exception_when_preValidate_fails_and_continueValidation_true(self)->None:

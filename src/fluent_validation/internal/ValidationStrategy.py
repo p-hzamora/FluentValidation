@@ -20,11 +20,11 @@ class ValidationStrategy[T]:
         self._customSelector: Optional[MemberNameValidatorSelector] = None
 
     @overload
-    def IncludeProperties(self, *properties: str) -> "ValidationStrategy[T]": ...
+    def IncludeProperties(self, *properties: str) -> ValidationStrategy[T]: ...
     @overload
-    def IncludeProperties(self, *properties: Callable[[T, object]]) -> "ValidationStrategy[T]": ...
+    def IncludeProperties(self, *properties: Callable[[T, object]]) -> ValidationStrategy[T]: ...
 
-    def IncludeProperties(self, *properties) -> "ValidationStrategy[T]":
+    def IncludeProperties(self, *properties) -> ValidationStrategy[T]:
         if isinstance(properties[0], str):
             if self._properties is None:
                 self._properties = list(properties)
@@ -39,19 +39,19 @@ class ValidationStrategy[T]:
 
         return self
 
-    def IncludeRulesNotInRuleSet(self) -> "ValidationStrategy[T]":
+    def IncludeRulesNotInRuleSet(self) -> ValidationStrategy[T]:
         if not self._ruleSets:
             self._ruleSets = []
         self._ruleSets.append(RulesetValidatorSelector.DefaultRuleSetName)
         return self
 
-    def IncludeAllRuleSets(self) -> "ValidationStrategy[T]":
+    def IncludeAllRuleSets(self) -> ValidationStrategy[T]:
         if not self._ruleSets:
             self._ruleSets = []
         self._ruleSets.append(RulesetValidatorSelector.WildcardRuleSetName)
         return self
 
-    def IncludeRuleSets(self, *ruleSets: str) -> "ValidationStrategy[T]":
+    def IncludeRuleSets(self, *ruleSets: str) -> ValidationStrategy[T]:
         if ruleSets is not None and len(ruleSets) > 0:
             if self._ruleSets is None:
                 self._ruleSets = list(ruleSets)
@@ -59,11 +59,11 @@ class ValidationStrategy[T]:
                 self._ruleSets.extend(ruleSets)
         return self
 
-    def UseCustomSelector(self, selector: IValidatorSelector) -> "ValidationStrategy[T]":
+    def UseCustomSelector(self, selector: IValidatorSelector) -> ValidationStrategy[T]:
         self._customSelector = selector
         return self
 
-    def ThrowOnFailures(self) -> "ValidationStrategy[T]":
+    def ThrowOnFailures(self) -> ValidationStrategy[T]:
         self._throw = True
         return self
 
@@ -88,7 +88,7 @@ class ValidationStrategy[T]:
 
         return selector
 
-    def BuildContext(self, instance: T) -> "ValidationContext[T]":
+    def BuildContext(self, instance: T) -> ValidationContext[T]:
         from ..IValidationContext import ValidationContext
 
         validation = ValidationContext[T](instance, None, self.GetSelector())

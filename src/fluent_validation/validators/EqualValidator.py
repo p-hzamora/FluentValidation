@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable, Optional, override
 
 from src.fluent_validation.IValidationContext import ValidationContext
+from src.fluent_validation.MemberInfo import MemberInfo
 from src.fluent_validation.validators.PropertyValidator import PropertyValidator
 from ..validators.AbstractComparisonValidator import Comparison, IComparisonValidator
 
@@ -20,12 +21,12 @@ class EqualValidator[T, TProperty](PropertyValidator[T, TProperty], IEqualValida
         valueToCompare: TProperty = None,
         comparer: IEqualityComparer[TProperty] = None,
         comparisonProperty: Callable[[T], TProperty] = None,
-        member: str = None,
+        member: MemberInfo = None,
         memberDisplayName: str = None,
     ):
         self._func = comparisonProperty
         self._memberDisplayName = memberDisplayName
-        self.MemberToCompare = member
+        self._MemberToCompare:MemberInfo = member
         self._ValueToCompare = valueToCompare
         self._comparer = comparer
 
@@ -51,6 +52,11 @@ class EqualValidator[T, TProperty](PropertyValidator[T, TProperty], IEqualValida
     @property
     def ValueToCompare(self) -> Any:
         return self._ValueToCompare
+
+    @override
+    @property
+    def MemberToCompare(self) -> MemberInfo:
+        return self._MemberToCompare
 
     @override
     @property

@@ -1,6 +1,8 @@
 from abc import abstractmethod
 from enum import Enum, auto
 from typing import Any, Callable, overload, override
+
+from src.fluent_validation.MemberInfo import MemberInfo
 from ..IValidationContext import ValidationContext
 
 from ..validators.PropertyValidator import PropertyValidator
@@ -44,6 +46,9 @@ class IComparisonValidator(IPropertyValidator_no_generic):
     @abstractmethod
     def Comparison(self) -> Comparison: ...
 
+    @property
+    @abstractmethod
+    def MemberToCompare(self) -> MemberInfo: ...
 
     @property
     @abstractmethod
@@ -55,21 +60,16 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
     def __init__(self, value: TProperty): ...
 
     @overload
-    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):
-        ...
+    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], member: MemberInfo, memberDisplayName: str): ...
 
     @overload
-    def __init__(
-        self,
-        valueToCompareFunc: Callable[[T], tuple[bool, TProperty]],
-        memberDisplayName: str,
-    ):
-        ...
+    def __init__(self, valueToCompareFunc: Callable[[T], tuple[bool, TProperty]], member: MemberInfo, memberDisplayName: str): ...
 
-    def __init__(self, valueToCompareFunc=None, memberDisplayName=None, value=None):
+    def __init__(self, valueToCompareFunc=None, member=None, memberDisplayName=None, value=None):
         self._valueToCompareFuncForNullables: Callable[[T], tuple[bool, TProperty]] = None
         self._valueToCompareFunc: Callable[[T], TProperty] = None
         self._comparisonMemberDisplayName: str = None
+        self._MemberToCompare:MemberInfo = member
 
         if valueToCompareFunc is None and memberDisplayName is None and value is not None:
             self._valueToCompare = value
@@ -143,3 +143,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
     @ValueToCompare.setter
     def ValueToCompare(self, value):
         self._valueToCompareFunc = lambda _: value
+
+    @property
+    def MemberToCompare(self) -> MemberInfo:
+        return self._MemberToCompare

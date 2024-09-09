@@ -605,7 +605,7 @@ class SharedConditionTests(unittest.TestCase):
         validator = TestValidator()
         validator.when(
             lambda x: x.Age > 10,
-            lambda: (validator.rule_for(lambda x: x.Forename).not_null()),
+            lambda: validator.rule_for(lambda x: x.Forename).not_null(),
         ).otherwise(
             lambda: validator.rule_for(lambda x: x.Surname).not_null(),
         )

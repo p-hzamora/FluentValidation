@@ -1,5 +1,6 @@
 from typing import Callable, Iterable, Any, Optional, override
 
+from src.fluent_validation.MemberInfo import MemberInfo
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
 from src.fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction
 
@@ -34,8 +35,8 @@ class PropertyChain:
 
     @staticmethod
     def FromExpression(expression: Callable[..., Any]) -> "PropertyChain":
-        #COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has. Since we always pass one attr, we only need to access the first position of the list
-        #COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
+        # COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has. Since we always pass one attr, we only need to access the first position of the list
+        # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
             raise ValueError
@@ -43,13 +44,13 @@ class PropertyChain:
         return PropertyChain(None, memberNames)
 
     # TODOM: Checked if the MemberInfo class from C# is registering the same value in python using __class__.__name__
-    def Add(self, member: Any) -> None:
+    def Add(self, member: MemberInfo) -> None:
         if isinstance(member, str):
             if not (member is None or member == ""):
                 self._memberNames.append(member)
                 return None
         if member:
-            self._memberNames.append(member.__class__.__name__)
+            self._memberNames.append(member.Name)
         return None
 
     # def AddIndexer(self, object indexer, bool surroundWithBrackets = true->None:

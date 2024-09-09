@@ -1,12 +1,15 @@
+from typing import Callable, Optional
+from src.fluent_validation.MemberInfo import MemberInfo
+
 
 class AccessorCache[T]:
     _cache = {}
 
     @staticmethod
-    def GetCachedAccessor(member, expression, bypass_cache=False, cache_prefix=None):
+    def GetCachedAccessor[TProperty](member: Optional[MemberInfo], expression: Callable[[T], TProperty], bypass_cache: bool = False, cache_prefix=None) -> Callable[[T], TProperty]:
         if bypass_cache:
             return expression
-        
+
         if member is None:
             if isinstance(expression, str):  # Python equivalent to "ParameterExpression"
                 key = Key(None, expression, f"{type(expression).__name__}:{cache_prefix}")
@@ -26,7 +29,7 @@ class AccessorCache[T]:
 
 
 class Key:
-    def __init__(self, member, expression, cache_prefix):
+    def __init__(self, member:MemberInfo, expression, cache_prefix):
         self._member_info = member
         self._expression_debug_view = f"{cache_prefix}{expression}" if cache_prefix else str(expression)
 

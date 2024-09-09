@@ -42,19 +42,17 @@ class Comparison(Enum):
 class IComparisonValidator(IPropertyValidator_no_generic):
     @property
     @abstractmethod
-    def Comparison(self) -> Comparison:
-        ...
+    def Comparison(self) -> Comparison: ...
+
 
     @property
     @abstractmethod
-    def ValueToCompare(self) -> Any:
-        ...
+    def ValueToCompare(self) -> Any: ...
 
 
 class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty], IComparisonValidator):
     @overload
-    def __init__(self, value: TProperty):
-        ...
+    def __init__(self, value: TProperty): ...
 
     @overload
     def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):

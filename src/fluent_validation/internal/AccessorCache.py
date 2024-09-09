@@ -24,6 +24,7 @@ class AccessorCache[T]:
     def clear():
         AccessorCache._cache.clear()
 
+
 class Key:
     def __init__(self, member, expression, cache_prefix):
         self._member_info = member

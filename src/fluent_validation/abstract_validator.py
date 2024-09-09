@@ -150,8 +150,8 @@ class AbstractValidator[T](IValidator[T]):
         return issubclass(_type, self.__orig_bases__[0].__args__[0])
 
     def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
-        ExtensionsInternal.Guard(expression,"Cannot pass null to RuleFor","expression")
-        rule: PropertyRule[T, TProperty] = PropertyRule[T,TProperty].create(expression, lambda: self.RuleLevelCascadeMode)
+        ExtensionsInternal.Guard(expression, "Cannot pass None to rule_for", "expression")
+        rule: PropertyRule[T, TProperty] = PropertyRule[T, TProperty].create(expression, lambda: self.RuleLevelCascadeMode)
         self._rules.append(rule)
         self.OnRuleAdded(rule)
         return RuleBuilder[T, TProperty](rule, self)

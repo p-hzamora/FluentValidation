@@ -205,6 +205,15 @@ class AbstractValidator[T](IValidator[T]):
 
     @override
     def when(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
+        """
+        Defines a condition that applies to several rules
+
+        Attributes
+        -
+        - predicate: The condition that should apply to multiple rules
+        - action: Action that encapsulates the rules.
+        
+        """
         return self.__When(lambda x, _: predicate(x), action)
 
     def __When(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:

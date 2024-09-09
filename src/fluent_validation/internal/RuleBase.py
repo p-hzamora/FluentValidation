@@ -84,6 +84,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
     @property
     def Condition(self) -> Optional[Callable[[ValidationContext[T]], bool]]:
+        """Condition for all validators in this rule."""
         return self._condition
 
     @property

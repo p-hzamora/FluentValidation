@@ -49,16 +49,22 @@ class IRuleBuilderOptions[T, TProperty](
     IRuleBuilder[T, TProperty],
 ):
     @abstractmethod
-    def DependentRules(action) -> Self: ...
+    def DependentRules(action) -> Self:
+        """Creates a scope for declaring dependent rules."""
+        ...
 
 
-class IRuleBuilderOptionsConditions[T, TProperty](
-    IRuleBuilder[T, TProperty],
-): ...
+class IRuleBuilderOptionsConditions[T, TProperty](IRuleBuilder[T, TProperty]):
+    """Rule builder that starts the chain for a child collection"""
+
+    ...
 
 
 class IRuleBuilderInitialCollection[T, TElement](IRuleBuilder[T, TElement]): ...
 
 
 class IConditionBuilder(ABC):
-    def otherwise(action: Callable[..., None]) -> None: ...
+    def otherwise(action: Callable[..., None]) -> None:
+        """Rules to be invoked if the condition fails."""
+
+    ...

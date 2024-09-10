@@ -106,7 +106,12 @@ class IOrder(ABC):
 
 
 class Order(IOrder):
-    def __init__(self, Amount: Decimal, ProductName: str, Payments: list["Payment"]):
+    def __init__(
+        self,
+        Amount: Decimal=Decimal("0"),
+        ProductName: str=None,
+        Payments: list["Payment"]=None,
+    ):
         self._Amount: Decimal = Amount
         self._ProductName: str = ProductName
         self._Payments: list["Payment"] = Payments
@@ -131,7 +136,7 @@ class Person:
         Id: int = 0,
         Surname: Optional[str] = None,
         Forename: Optional[str] = None,
-        NickNames: Optional[str] = None,
+        NickNames: Optional[list[str]] = None,
         DateOfBirth: Optional[datetime.datetime] = None,
         Address: Optional[_Address] = None,
         Email: Optional[str] = None,
@@ -145,7 +150,7 @@ class Person:
         Gender: Optional[EnumGender] = None,
         Genderstr: Optional[str] = None,
         Children: list["Person"] = [],
-        Orders: list[Order] = [],
+        Orders: list[Optional[Order]] = [],
         NullableInt: Optional[int] = None,
         NullableDiscount: Optional[Decimal] = None,
         OtherNullableInt: Optional[int] = None,

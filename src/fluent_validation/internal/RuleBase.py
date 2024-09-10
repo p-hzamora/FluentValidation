@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, List, Optional, TYPE_CHECKING
+from typing import Any, Callable, Type, Optional, TYPE_CHECKING
 
 from src.fluent_validation.MemberInfo import MemberInfo
 from src.fluent_validation.ValidatorOptions import ValidatorOptions
@@ -26,11 +26,12 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         propertyFunc: Callable[[T], TProperty],
         expression: Callable[..., Any],
         cascadeModeThunk: Callable[[], CascadeMode],
-        typeToValidate: type,
+        typeToValidate: Type,
     ):
         self._member: MemberInfo = member
         self._PropertyFunc = propertyFunc
         self._expression: Callable[..., Any] = expression
+        self._typeToValidate: Type = typeToValidate
         self._cascadeModeThunk: Callable[[], CascadeMode] = cascadeModeThunk
 
         containerType = type(T)
@@ -39,8 +40,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
         self._displayNameFunc: Callable[[ValidationContext[T], str]] = self.get_display_name
 
-        self._typeToValidate = typeToValidate
-        self._components: List[RuleComponent[T, TProperty]] = []
+        self._components: list[RuleComponent[T, TProperty]] = []
         self._condition: Optional[Callable[[ValidationContext[T]], bool]] = None
         self._propertyDisplayName: Optional[str] = None
 
@@ -80,7 +80,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         return self._expression
 
     @property
-    def TypeToValidate(self):
+    def TypeToValidate(self) -> Type:
         return self._typeToValidate
 
     @property
@@ -93,7 +93,8 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         return False
         # return self._asyncCondition is not None
 
-    def Components(self):
+    @property
+    def Components(self) -> list[RuleComponent[T, TProperty]]:
         return self._components
 
     @property

@@ -29,7 +29,7 @@ class AccessorCache[T]:
 
 
 class Key:
-    def __init__(self, member:MemberInfo, expression, cache_prefix):
+    def __init__(self, member: MemberInfo, expression, cache_prefix):
         self._member_info = member
         self._expression_debug_view = f"{cache_prefix}{expression}" if cache_prefix else str(expression)
 

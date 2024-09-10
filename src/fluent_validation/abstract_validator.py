@@ -212,7 +212,7 @@ class AbstractValidator[T](IValidator[T]):
         -
         - predicate: The condition that should apply to multiple rules
         - action: Action that encapsulates the rules.
-        
+
         """
         return self.__When(lambda x, _: predicate(x), action)
 

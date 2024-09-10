@@ -29,8 +29,7 @@ class IComparer[T](ABC):
     """
 
     @abstractmethod
-    def Compare(x: T = None, y: T = None) -> int:
-        ...
+    def Compare(x: T = None, y: T = None) -> int: ...
 
 
 class IBetweenValidator(IPropertyValidator):
@@ -58,8 +57,7 @@ class RangeValidator[T, TProperty](PropertyValidator[T, TProperty], IBetweenVali
     def To(self):
         return self._to
 
-    def HasError(self, value: TProperty) -> bool:
-        ...
+    def HasError(self, value: TProperty) -> bool: ...
 
     @override
     def is_valid(self, context: ValidationContext[T], value: TProperty):

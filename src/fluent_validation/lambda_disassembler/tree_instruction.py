@@ -48,7 +48,7 @@ class TreeInstruction:
     def __init__[T, *Ts](self, lambda_: Callable[[T, *Ts], None]):
         self._root: Node[Instruction] = Node[Instruction](None)
 
-        self._bytecode: Bytecode = Bytecode(lambda_) #FIXME [ ]: don't know how to disassemble NoneType objects
+        self._bytecode: Bytecode = Bytecode(lambda_)  # FIXME [ ]: don't know how to disassemble NoneType objects
         self._compare_op: Optional[list[str]] = []
         self._set_root()
 

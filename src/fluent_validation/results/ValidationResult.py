@@ -27,8 +27,7 @@ class ValidationResult:
         failures: Optional[Iterable[ValidationFailure]] = None,
         otherResults: Optional[Iterable["ValidationResult"]] = None,
     ) -> None:
-        
-        self._rule_sets_executed:Optional[list[str]]= None
+        self._rule_sets_executed: Optional[list[str]] = None
         if errors is None and failures is None:
             self._errors: list[ValidationFailure] = []
 

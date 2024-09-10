@@ -1,6 +1,7 @@
 from typing import Any
 from src.fluent_validation.enums import Severity as _Severity
 
+
 class ValidationFailure:
     def __init__(
         self,
@@ -15,7 +16,7 @@ class ValidationFailure:
 
         self._CustomState: object = None
         self._ErrorCode: str = ErrorCode
-        self._severity:_Severity = _Severity.Error
+        self._severity: _Severity = _Severity.Error
         self._FormattedMessagePlaceholderValues: dict[str, object] = None
 
     def __repr__(self) -> str:
@@ -36,13 +37,13 @@ class ValidationFailure:
     @property
     def CustomState(self) -> object:
         return self._CustomState
-    
+
     @property
-    def Severity(self)->_Severity:
+    def Severity(self) -> _Severity:
         return self._severity
-    
+
     @Severity.setter
-    def Severity(self,value:_Severity)->None:
+    def Severity(self, value: _Severity) -> None:
         self._severity = value
 
     @property

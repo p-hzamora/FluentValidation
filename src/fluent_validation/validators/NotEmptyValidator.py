@@ -4,8 +4,7 @@ from ..validators.PropertyValidator import PropertyValidator
 from ..validators.IpropertyValidator import IPropertyValidator
 
 
-class INotEmptyValidator(IPropertyValidator):
-    ...
+class INotEmptyValidator(IPropertyValidator): ...
 
 
 class NotEmptyValidator[T, TProperty](PropertyValidator, INotEmptyValidator):

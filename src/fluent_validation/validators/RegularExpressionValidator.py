@@ -15,16 +15,13 @@ class IRegularExpressionValidator:
 @dataclass
 class RegularExpressionValidator[T](PropertyValidator[T, str], IRegularExpressionValidator):
     @overload
-    def __init__(self, expression: str):
-        ...
+    def __init__(self, expression: str): ...
 
     @overload
-    def __init__(self, expression: re.Pattern):
-        ...
+    def __init__(self, expression: re.Pattern): ...
 
     @overload
-    def __init__(self, expression: str, options: re.RegexFlag):
-        ...
+    def __init__(self, expression: str, options: re.RegexFlag): ...
 
     def __init__(self, expression: str | re.Pattern, options: re.RegexFlag = None):
         if isinstance(expression, str) and options is None:

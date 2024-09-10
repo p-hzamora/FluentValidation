@@ -12,16 +12,17 @@ if TYPE_CHECKING:
 
 class IValidator_no_generic(ABC):
     @abstractmethod
-    def validate(self, context:IValidationContext)->ValidationResult: ...
+    def validate(self, context: IValidationContext) -> ValidationResult: ...
 
     @abstractmethod
     async def ValidateAsync(self, context: IValidationContext) -> ValidationResult: ...  # CancellationToken cancellation = new CancellationToken()
 
     # @abstractmethod
     # def CreateDescriptor(self,)->IValidatorDescriptor: ...
-    
+
     @abstractmethod
-    def CanValidateInstancesOfType(type:Type)->bool: ...
+    def CanValidateInstancesOfType(type: Type) -> bool: ...
+
 
 class IValidator[T](IValidator_no_generic, DefaultValidatorExtensions_Validate):
     @overload
@@ -36,6 +37,6 @@ class IValidator[T](IValidator_no_generic, DefaultValidatorExtensions_Validate):
     @abstractmethod
     def validate(validator, instance, options): ...
 
-    #TODOL: Checked in C#
+    # TODOL: Checked in C#
     @abstractmethod
     async def ValidateAsync(validator: "IValidator[T]", instance: T) -> ValidationResult: ...  # CancellationToken cancellation = new CancellationToken()

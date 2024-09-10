@@ -14,8 +14,7 @@ class PropertyValidator[T, TProperty](IPropertyValidator[T, TProperty]):
         return "No default error message has been specified"
 
     @abstractmethod
-    def is_valid(self, context: ValidationContext[T], value: TProperty) -> bool:
-        ...
+    def is_valid(self, context: ValidationContext[T], value: TProperty) -> bool: ...
 
     def Localized(self, error_code: str, fall_back_Key: str):
         return ValidatorOptions.Global.LanguageManager.ResolveErrorMessageUsingErrorCode(error_code, fall_back_Key)

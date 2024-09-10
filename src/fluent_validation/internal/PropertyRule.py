@@ -18,11 +18,11 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         self,
         member: MemberInfo,
         propertyFunc: Callable[[T], TProperty],
-        expression:Callable[...,Any],
+        expression: Callable[..., Any],
         cascadeModeThunk: Callable[[], CascadeMode],
         typeToValidate: type,
     ) -> None:
-        super().__init__(member, propertyFunc,expression, cascadeModeThunk, typeToValidate)
+        super().__init__(member, propertyFunc, expression, cascadeModeThunk, typeToValidate)
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} from '{self.PropertyName}' at {hex(id(self))}>"

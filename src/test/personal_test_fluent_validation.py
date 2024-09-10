@@ -106,4 +106,3 @@ result = validator.validate(
 )
 if not result.is_valid:
     print(result.to_string())
-

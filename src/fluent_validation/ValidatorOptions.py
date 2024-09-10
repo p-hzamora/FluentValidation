@@ -59,7 +59,6 @@ class ValidatorSelectorOptions:
 
 
 class ValidatorConfiguration:
-
     def __init__(self):
         self._propertyNameResolver: Callable[[Type, MemberInfo, Callable[..., Any]], str] = self.DefaultPropertyNameResolver
         self._displayNameResolver: Callable[[Type, MemberInfo, Callable[..., Any]], str] = self.DefaultDisplayNameResolver
@@ -154,7 +153,7 @@ class ValidatorConfiguration:
 
         if expression is not None:
             chain = PropertyChain.FromExpression(expression)
-            if len(chain) >0:
+            if len(chain) > 0:
                 return chain.ToString()
         return memberInfo.Name
 

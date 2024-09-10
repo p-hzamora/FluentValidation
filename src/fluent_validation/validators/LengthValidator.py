@@ -7,23 +7,19 @@ from ..validators.PropertyValidator import PropertyValidator
 class ILengthValidator(ABC):
     @property
     @abstractmethod
-    def Min(self) -> int:
-        ...
+    def Min(self) -> int: ...
 
     @property
     @abstractmethod
-    def Max(self) -> int:
-        ...
+    def Max(self) -> int: ...
 
 
 class LengthValidator[T](PropertyValidator[T, str], ILengthValidator):
     @overload
-    def __init__(min: int, max: int):
-        ...
+    def __init__(min: int, max: int): ...
 
     @overload
-    def __init__(min: Callable[[T], int], max: Callable[[T], int]):
-        ...
+    def __init__(min: Callable[[T], int], max: Callable[[T], int]): ...
 
     def __init__(self, min: int | Callable[[T], int], max: int | Callable[[T], int]):
         def _init_int(min: int, max: int):

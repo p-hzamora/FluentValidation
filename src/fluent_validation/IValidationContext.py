@@ -11,12 +11,13 @@ from .internal.PropertyChain import PropertyChain
 from .results.ValidationFailure import ValidationFailure
 from .internal.ValidationStrategy import ValidationStrategy
 
+
 class StackParams[T](NamedTuple):
-    IsChildContext:bool
-    IsChildCollectionContext:bool
-    ParentContext:IValidationContext
-    Chain:PropertyChain
-    SharedConditionCache:dict[str,dict[T,bool]]
+    IsChildContext: bool
+    IsChildCollectionContext: bool
+    ParentContext: IValidationContext
+    Chain: PropertyChain
+    SharedConditionCache: dict[str, dict[T, bool]]
 
 
 class IValidationContext(ABC):
@@ -79,7 +80,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         "_RawPropertyName",
         "_is_async",
         "_parentContext",
-        "_sharedConditionCache"
+        "_sharedConditionCache",
     )
 
     @overload
@@ -115,10 +116,10 @@ class ValidationContext[T](IValidationContext, IHasFailures):
 
         self._PropertyChain = PropertyChain(propertyChain)
         self._Selector = validatorSelector
-        #COMMENT!!: I added 'is not None' to the 'failures if failures else []' conditional because the 'failures' variable could be an empty list, and otherwise, it could return False.
+        # COMMENT!!: I added 'is not None' to the 'failures if failures else []' conditional because the 'failures' variable could be an empty list, and otherwise, it could return False.
         # It was creating an empty list instead of assigning the original list when 'failures' was an empty list.
         # That's the reason why failures was not passed by reference and the information was not propagated properly.
-        self._failures: list[ValidationFailure] = failures if failures is not None else [] 
+        self._failures: list[ValidationFailure] = failures if failures is not None else []
         self._messageFormatter: MessageFormatter = messageFormatter if messageFormatter is not None else MessageFormatter()
         self._property_path: Optional[str] = None
         self._displayNameFunc: Optional[str] = None
@@ -129,8 +130,8 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self._RawPropertyName: str = None
         self._is_async: bool = False
         self._parentContext: IValidationContext = None
-        self._sharedConditionCache:dict[str,dict[T,bool]] = None
-        self._state:deque[StackParams] = None
+        self._sharedConditionCache: dict[str, dict[T, bool]] = None
+        self._state: deque[StackParams] = None
 
     @override
     @property
@@ -244,9 +245,8 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     def ThrowOnFailures(self, value: bool) -> None:
         self._ThrowOnFailures = value
 
-
     @property
-    def SharedConditionCache(self)->dict[str,dict[T,bool]]:
+    def SharedConditionCache(self) -> dict[str, dict[T, bool]]:
         if self._sharedConditionCache is None:
             self._sharedConditionCache = {}
         return self._sharedConditionCache
@@ -254,7 +254,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     @staticmethod
     def GetFromNonGenericContext(context: IValidationContext) -> "ValidationContext[T]":
         # Already of the correct type.
-        #FIXME [ ]: this conditional is not working properly. The original is '(context is ValidationContext<T> c)'
+        # FIXME [ ]: this conditional is not working properly. The original is '(context is ValidationContext<T> c)'
         if isinstance(context, ValidationContext):
             return context
 
@@ -281,21 +281,19 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         res._is_async = self.IsAsync
         return res
 
-    def PrepareForChildCollectionValidator(self)->None:
+    def PrepareForChildCollectionValidator(self) -> None:
         if not self._state:
             self._state = deque()
 
-        self._state.append(StackParams(True,True,self._parentContext,PropertyChain(),self._sharedConditionCache))
+        self._state.append(StackParams(True, True, self._parentContext, PropertyChain(), self._sharedConditionCache))
 
-    def RestoreState(self)->None:
+    def RestoreState(self) -> None:
         state = self._state.pop()
         self.IsChildContext = state.IsChildContext
         self.IsChildCollectionContext = state.IsChildCollectionContext
         self._parentContext = state.ParentContext
         self.PropertyChain = state.Chain
         self._sharedConditionCache = state.SharedConditionCache
-
-
 
     def AddFailure_validationFailure(self, failure: ValidationFailure) -> None:
         self.Failures.append(failure)

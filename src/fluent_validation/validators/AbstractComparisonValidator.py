@@ -69,7 +69,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
         self._valueToCompareFuncForNullables: Callable[[T], tuple[bool, TProperty]] = None
         self._valueToCompareFunc: Callable[[T], TProperty] = None
         self._comparisonMemberDisplayName: str = None
-        self._MemberToCompare:MemberInfo = member
+        self._MemberToCompare: MemberInfo = member
 
         if valueToCompareFunc is None and memberDisplayName is None and value is not None:
             self._valueToCompare = value

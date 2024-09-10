@@ -7,20 +7,17 @@ from ..validators.AbstractComparisonValidator import (
 
 class LessThanValidator[T, TProperty](AbstractComparisonValidator[T, TProperty]):
     @overload
-    def __init__(self, value: TProperty):
-        ...
+    def __init__(self, value: TProperty): ...
 
     @overload
-    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str):
-        ...
+    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str): ...
 
     @overload
     def __init__(
         self,
         valueToCompareFunc: Callable[[T], tuple[bool, TProperty]],
         memberDisplayName: str,
-    ):
-        ...
+    ): ...
 
     def __init__(self, value=None, valueToCompareFunc=None, memberDisplayName=None):
         super().__init__(

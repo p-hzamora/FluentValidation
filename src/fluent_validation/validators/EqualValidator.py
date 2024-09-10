@@ -26,7 +26,7 @@ class EqualValidator[T, TProperty](PropertyValidator[T, TProperty], IEqualValida
     ):
         self._func = comparisonProperty
         self._memberDisplayName = memberDisplayName
-        self._MemberToCompare:MemberInfo = member
+        self._MemberToCompare: MemberInfo = member
         self._ValueToCompare = valueToCompare
         self._comparer = comparer
 

@@ -55,6 +55,7 @@ CancellationToken = TypeVar("CancellationToken")
 
 class IValidationRule_one_arg[T](IValidatoinRule_no_args):
     ...
+
     @abstractmethod
     def ApplyCondition(self, predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators): ...
 
@@ -74,7 +75,7 @@ class IValidationRule[T, TProperty](IValidationRule_one_arg[T]):
 
     @property
     @abstractmethod
-    def CascadeMode(self)->_CascadeMode: ...
+    def CascadeMode(self) -> _CascadeMode: ...
 
     # @abstractmethod
     # def SetDisplayName(self, factory:Callable[[ValidationContext[T]], str])->None: ...

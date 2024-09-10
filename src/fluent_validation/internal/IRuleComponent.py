@@ -46,6 +46,7 @@ class IRuleComponent[T, TProperty](IRuleComponent_no_args):
 
     @abstractmethod
     def ApplyCondition(self, condition: Callable[[ValidationContext[T]], bool]) -> None: ...
+
     # @abstractmethod
     # def ApplyAsyncCondition(condition: Callable[[ValidationContext[T]], bool]) -> None: ...  # void ApplyAsyncCondition(Func<ValidationContext<T>, CancellationToken, Task<bool>> condition);
 

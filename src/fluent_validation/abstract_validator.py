@@ -175,14 +175,14 @@ class AbstractValidator[T](IValidator[T]):
     #     }
 
     def rule_for_each[TElement](self, expression: Callable[[T], list[TElement]]) -> IRuleBuilder[T, TElement]:  # IRuleBuilderInitialCollection[T, TElement]:
-        ExtensionsInternal.Guard(expression, "Cannot pass null to RuleForEach", "expression")
+        ExtensionsInternal.Guard(expression, "Cannot pass null to rule_for_each", "expression")
         rule = CollectionPropertyRule[T, TElement].Create(expression, lambda: self.RuleLevelCascadeMode)
         self._rules.append(rule)
         self.OnRuleAdded(rule)
         return RuleBuilder[T, TElement](rule, self)
 
     #     public IRuleBuilderInitialCollection<T, TTransformed> TransformForEach<TElement, TTransformed>(Expression<Func<T, IEnumerable[TElement]>> expression, Func<TElement, TTransformed> to) {
-    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression))
+    #         expression.Guard("Cannot pass null to rule_for_each", nameof(expression))
     #         rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(lambda: to,() => RuleLevelCascadeMode)
     #         Rules.Add(rule)
     #         OnRuleAdded(rule)
@@ -190,7 +190,7 @@ class AbstractValidator[T](IValidator[T]):
     #     }
 
     #     public IRuleBuilderInitialCollection<T, TTransformed> TransformForEach<TElement, TTransformed>(Expression<Func<T, IEnumerable[TElement]>> expression, Func<T, TElement, TTransformed> to) {
-    #         expression.Guard("Cannot pass null to RuleForEach", nameof(expression))
+    #         expression.Guard("Cannot pass null to rule_for_each", nameof(expression))
     #         rule = CollectionPropertyRule<T, TTransformed>.CreateTransformed(lambda: to,() => RuleLevelCascadeMode)
     #         Rules.Add(rule)
     #         OnRuleAdded(rule)

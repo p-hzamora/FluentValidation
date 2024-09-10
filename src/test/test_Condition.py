@@ -146,14 +146,14 @@ class ConditionTests(unittest.TestCase):
 
     # def test_Async_condition_throws_when_executed_synchronosuly_with_synchronous_collection_role(self)->None:
     # 	validator = TestValidator()
-    # 	validator.RuleForEach(lambda x: x.NickNames).not_null()
+    # 	validator.rule_for_each(lambda x: x.NickNames).not_null()
     # 		.WhenAsync((x, token) => Task.FromResult(False))
     # 	Assert.Throws<AsyncValidatorInvokedSynchronouslyException>(() =>
     # 		validator.validate(Person {NickNames = string[0]}))
 
     # def test_Async_condition_throws_when_invoked_synchronosuly_with_asynchronous_collection_rule(self)->None:
     # 	validator = TestValidator()
-    # 	validator.RuleForEach(lambda x: x.NickNames)
+    # 	validator.rule_for_each(lambda x: x.NickNames)
     # 		.MustAsync((n, c) => Task.FromResult(n is not None))
     # 		.WhenAsync((x, token) => Task.FromResult(False))
 

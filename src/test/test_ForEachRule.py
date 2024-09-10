@@ -152,7 +152,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 	)
     # 		catch (System.InvalidOperationException ex) {
     # 			thrown = true
-    # 			ex.Message.ShouldEqual("Could not infer property name for expression: lambda x: x.NickNames.AsEnumerable(). Please explicitly specify a property name by calling OverridePropertyName as part of the rule chain. Eg: RuleForEach(lambda x: x).not_null().OverridePropertyName(\"MyProperty\")")
+    # 			ex.Message.ShouldEqual("Could not infer property name for expression: lambda x: x.NickNames.AsEnumerable(). Please explicitly specify a property name by calling OverridePropertyName as part of the rule chain. Eg: rule_for_each(lambda x: x).not_null().OverridePropertyName(\"MyProperty\")")
     # 	)
 
     # 		thrown.ShouldBeTrue()
@@ -205,7 +205,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 			validator.when(r => r.person?.NickNames?.Any() == true, () => {
     # 				validator.rule_for_each(lambda x: x.person.NickNames)
     # 					.must(nn => true)
-    # 					.with_message("Failed RuleForEach")
+    # 					.with_message("Failed rule_for_each")
     # 		))
     # 	))
 
@@ -239,7 +239,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		# The ValidationContext is reinitialized for each item in the collection
     # 		# Specifically, the PropertyChain is reset and modified.
     # 		# After the collection has been validated, the PropertyChain should be reset to its original value.
-    # 		# We can test this by checking the final output of the property names for subsequent rules after the RuleForEach.
+    # 		# We can test this by checking the final output of the property names for subsequent rules after the rule_for_each.
     # 		result = v.validate(Person() {NickNames = new[] {null, "Foo", None}, Forename = None})
     # 		result.errors.Count.ShouldEqual(3)
     # 		result.errors[0].PropertyName.ShouldEqual("NickNames[0]")
@@ -254,7 +254,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		# The ValidationContext is reinitialized for each item in the collection
     # 		# Specifically, the PropertyChain is reset and modified.
     # 		# After the collection has been validated, the PropertyChain should be reset to its original value.
-    # 		# We can test this by checking the final output of the property names for subsequent rules after the RuleForEach.
+    # 		# We can test this by checking the final output of the property names for subsequent rules after the rule_for_each.
     # 		result = await v.ValidateAsync(Person() {NickNames = new[] {null, "Foo", None}, Forename = None})
     # 		result.errors.Count.ShouldEqual(3)
     # 		result.errors[0].PropertyName.ShouldEqual("NickNames[0]")
@@ -293,13 +293,13 @@ class ForEachRuleTests(unittest.TestCase):
 
     # 	public class ApplicationViewModelValidator : AbstractValidator<ApplicationViewModel> {
     # 		public ApplicationViewModelValidator() {
-    # 			RuleForEach(lambda x: x.TradingExperience)
+    # 			rule_for_each(lambda x: x.TradingExperience)
     # 				.set_validator(AppropriatenessGroupViewModelValidator())
     # 	)
 
     # 	public class AppropriatenessGroupViewModelValidator : AbstractValidator<ApplicationGroup> {
     # 		public AppropriatenessGroupViewModelValidator() {
-    # 			RuleForEach(m => m.Questions)
+    # 			rule_for_each(m => m.Questions)
     # 				.set_validator(AppropriatenessQuestionViewModelValidator())
     # 	)
 

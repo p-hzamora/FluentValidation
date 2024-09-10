@@ -7,7 +7,7 @@ from src.fluent_validation.IValidationRule import IValidationRule
 
 class ICollectionRule[T, TElement](IValidationRule[T, TElement]):
     """
-    Represents a rule defined against a collection with RuleForEach.
+    Represents a rule defined against a collection with rule_for_each.
     : T -> Root object
     : TElement -> Type of each element in the collection
     """

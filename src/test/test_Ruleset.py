@@ -61,7 +61,7 @@ class RulesetTests(unittest.TestCase):
     #         validator = TestValidator()
 
     #         validator.rule_set("Test", lambda: {
-    #             validator.RuleForEach(lambda x: x.Orders).set_validator(orderValidator)
+    #             validator.rule_for_each(lambda x: x.Orders).set_validator(orderValidator)
     #         })
 
     #         person = Person {

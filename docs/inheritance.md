@@ -103,7 +103,7 @@ public class ContactRequestValidator : AbstractValidator<ContactRequest>
   public ContactRequestValidator()
   {
 
-    RuleForEach(x => x.Contacts).SetInheritanceValidator(v => 
+    rule_for_each(x => x.Contacts).SetInheritanceValidator(v => 
     {
       v.Add<Organisation>(new OrganisationValidator())
       v.Add<Person>(new PersonValidator())

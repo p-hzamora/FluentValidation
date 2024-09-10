@@ -66,7 +66,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			#
     # 			when((x) => x.Id > 0,
     # 				lambda: {
-    # 					RuleForEach(lambda x: x.NickNames).NotEmpty()
+    # 					rule_for_each(lambda x: x.NickNames).NotEmpty()
     # 				}
     # 			)
     # 		}
@@ -86,7 +86,7 @@ class SharedConditionTests(unittest.TestCase):
     # 			#
     # 			WhenAsync(async (x,c) => x.Id > 0,
     # 				lambda: {
-    # 					RuleForEach(lambda x: x.NickNames).NotEmpty()
+    # 					rule_for_each(lambda x: x.NickNames).NotEmpty()
     # 				}
     # 			)
     # 		}
@@ -691,7 +691,7 @@ class SharedConditionTests(unittest.TestCase):
 # 			childValidator.rule_for(a => a.Id).Equal(1)
 # 		})
 # 		personValidator = InlineValidator<Person>()
-# 		personValidator.RuleForEach(p => p.Children).SetValidator(childValidator)
+# 		personValidator.rule_for_each(p => p.Children).SetValidator(childValidator)
 
 # 		validationResult = personValidator.validate(person)
 # 		validationResult.is_valid.ShouldBeTrue()
@@ -716,7 +716,7 @@ class SharedConditionTests(unittest.TestCase):
 # 			childValidator.rule_for(a => a.Id).Equal(1)
 # 		})
 # 		personValidator = InlineValidator<Person>()
-# 		personValidator.RuleForEach(p => p.Children).SetValidator(childValidator)
+# 		personValidator.rule_for_each(p => p.Children).SetValidator(childValidator)
 
 # 		validationResult = await personValidator.ValidateAsync(person)
 # 		validationResult.is_valid.ShouldBeTrue()
@@ -747,7 +747,7 @@ class SharedConditionTests(unittest.TestCase):
 
 #     # shouldn't throw an InvalidCastException.
 #     containerValidator = InlineValidator[list[CollisionBase]]()
-#     containerValidator.RuleForEach(lambda x: x).SetValidator(v)
+#     containerValidator.rule_for_each(lambda x: x).SetValidator(v)
 #     containerValidator.validate(list[CollisionBase] {
 #         Collision1(), Collision2()
 #     })
@@ -765,7 +765,7 @@ class SharedConditionTests(unittest.TestCase):
 # 		})
 
 # 		containerValidator = InlineValidator<list[CollisionBase]>()
-# 		containerValidator.RuleForEach(lambda x: x).SetValidator(v)
+# 		containerValidator.rule_for_each(lambda x: x).SetValidator(v)
 
 # 		# shouldn't throw an InvalidCastException.
 # 		await containerValidator.ValidateAsync(list[CollisionBase] {

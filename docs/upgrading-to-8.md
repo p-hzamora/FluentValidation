@@ -12,7 +12,7 @@ These changes were made to remove the internal dependency on the old Microsoft `
 
 ### SetCollectionValidator is deprecated
 
-Instead of using `SetCollectionValidator` you should use FluentValidation's `RuleForEach` support instead:
+Instead of using `SetCollectionValidator` you should use FluentValidation's `rule_for_each` support instead:
 
 FluentValidation 7:
 ```python
@@ -21,12 +21,12 @@ rule_for(x => x.AddressLines).SetCollectionValidator(new AddressLineValidator())
 
 FluentValidation 8:
 ```python
-RuleForEach(x => x.AddressLines).set_validator(new AddressLineValidator())
+rule_for_each(x => x.AddressLines).set_validator(new AddressLineValidator())
 ```
 
 #### Why was this done?
 
-`SetCollectionValidator` was added to FluentValidation in its initial versions to provide a way to use a child validator against each element in a collection. `RuleForEach` was added later and provides a more comprehensive way of validating collections (as you can define in-line rules with RuleForEach too). It doesn't make sense to provide 2 ways to do the same thing.
+`SetCollectionValidator` was added to FluentValidation in its initial versions to provide a way to use a child validator against each element in a collection. `rule_for_each` was added later and provides a more comprehensive way of validating collections (as you can define in-line rules with rule_for_each too). It doesn't make sense to provide 2 ways to do the same thing.
 
 ### Several properties have been removed from PropertyValidator
 

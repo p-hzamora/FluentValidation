@@ -14,6 +14,7 @@ import test_Condition
 import test_SharedCondition
 import test_ValidateAndThrow
 import test_NameResolutionPluggability
+import test_ForEachRule
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -36,6 +37,7 @@ suite.addTests(
         *loader.loadTestsFromModule(test_SharedCondition),
         *loader.loadTestsFromModule(test_ValidateAndThrow),
         *loader.loadTestsFromModule(test_NameResolutionPluggability),
+        *loader.loadTestsFromModule(test_ForEachRule)
     ]
 )
 

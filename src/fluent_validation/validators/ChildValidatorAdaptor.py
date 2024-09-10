@@ -107,7 +107,7 @@ class ChildValidatorAdaptor[T, TProperty](NoopPropertyValidator[T, TProperty], I
 
     def HandleCollectionIndex(self, context: ValidationContext[T]) -> tuple[Optional[Any], Optional[Any]]:
         originalIndex = None
-        if index := context.MessageFormatter.PlaceholderValues.get("CollectionIndex", None):
+        if (index := context.MessageFormatter.PlaceholderValues.get("CollectionIndex", None)) is not None:
             originalIndex = context.RootContextData.get("__FV_CollectionIndex", None)
             context.RootContextData["__FV_CollectionIndex"] = index
         return originalIndex, index

@@ -69,7 +69,6 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         "_PropertyChain",
         "_Selector",
         "_failures",
-        "_MessageFormatter",
         "_messageFormatter",
         "_property_path",
         "_displayNameFunc",
@@ -79,7 +78,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         "_IsChildCollectionContext",
         "_RawPropertyName",
         "_is_async",
-        "_ParentContext",
+        "_parentContext",
         "_sharedConditionCache"
     )
 

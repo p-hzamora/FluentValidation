@@ -130,7 +130,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
     @CascadeMode.setter
     def CascadeMode(self, value):
-        lambda: value
+        self._cascadeModeThunk = lambda: value
 
     @property
     def RuleSets(self) -> list[str]:

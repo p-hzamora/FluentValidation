@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
 
-from src.fluent_validation.enums import ApplyConditionTo, CascadeMode
+from src.fluent_validation.enums import ApplyConditionTo
 from src.fluent_validation.abstract_validator import AbstractValidator
 from src.test.TestValidator import TestValidator
 from src.test.person import Order, Person
@@ -171,7 +171,7 @@ class ConditionTests(unittest.TestCase):
 
     # def test_Can_access_property_value_in_custom_condition_foreach(self)->None:
     #     validator = TestValidator()
-    #     validator.RuleForEach(lambda x: x.Orders).must(lambda v: False).Configure(lambda cfg: cfg.ApplyCondition(context => cfg.GetPropertyValue(context.InstanceToValidate) is not None))
+    #     validator.rule_for_each(lambda x: x.Orders).must(lambda v: False).Configure(lambda cfg: cfg.ApplyCondition(context => cfg.GetPropertyValue(context.InstanceToValidate) is not None))
 
     #     result = validator.validate(Person())
     #     self.assertTrue(result.is_valid)

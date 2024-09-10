@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
 
+from src.fluent_validation.enums import CascadeMode
 from src.fluent_validation.IValidationContext import ValidationContext
 from src.fluent_validation.IValidator import IValidator
 from src.fluent_validation.InlineValidator import InlineValidator
@@ -176,16 +177,12 @@ class AbstractValidatorTester(unittest.TestCase):
         with self.assertRaises(ValueError):
             nonGenericValidator.validate(ValidationContext[str]("foo"))
 
-    #     def RuleForeach_with_null_instances(self):
-    #         model = Person(
-    #             NickNames = string[] { None }
+    def test_RuleForeach_with_null_instances(self):
+        model = Person(NickNames=[None])
 
-    #         self.validator.RuleForEach(lambda x: x.NickNames).not_null()
-    #         result = self.validator.validate(model)
-    #         Console.WriteLine(result.errors[0].ErrorMessage)
-    #         self.assertFalse(result)
-
-    #     private class DerivedPerson : Person( }
+        self.validator.rule_for_each(lambda x: x.NickNames).not_null()
+        result = self.validator.validate(model)
+        self.assertFalse(result.is_valid)
 
     #     [MemberData(nameof(PreValidationReturnValueTheoryData))]
     #     def WhenPreValidationReturnsFalse_ResultReturnToUserImmediatly_Validate(selfV: preValidationResult) {

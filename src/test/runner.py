@@ -22,7 +22,8 @@ suite = unittest.TestSuite()
 
 # add tests to the test suite
 suite.addTests(
-    [
+    (
+        *loader.loadTestsFromModule(test_ForEachRule), #FIXME [ ]: If I add this module at the end of the tuple, then I get 6 errors like '- foo[0].foo + Orders[0].ProductName'
         *loader.loadTestsFromModule(test_AbstractValidator),
         *loader.loadTestsFromModule(test_Equal),
         *loader.loadTestsFromModule(test_GreaterThanOrEqual),
@@ -37,8 +38,7 @@ suite.addTests(
         *loader.loadTestsFromModule(test_SharedCondition),
         *loader.loadTestsFromModule(test_ValidateAndThrow),
         *loader.loadTestsFromModule(test_NameResolutionPluggability),
-        *loader.loadTestsFromModule(test_ForEachRule)
-    ]
+    )
 )
 
 # initialize a runner, pass it your suite and run it

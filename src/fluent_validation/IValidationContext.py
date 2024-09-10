@@ -116,9 +116,10 @@ class ValidationContext[T](IValidationContext, IHasFailures):
 
         self._PropertyChain = PropertyChain(propertyChain)
         self._Selector = validatorSelector
-        self._failures: list[ValidationFailure] = failures if failures else []
-        self._MessageFormatter = messageFormatter
-        self._messageFormatter: MessageFormatter = messageFormatter if messageFormatter else MessageFormatter()
+        #COMMENT!!: I added 'is not None' to the 'failures if failures else []' conditional because the 'failures' variable could be an empty list, and otherwise, it could return False.
+        # It was creating an empty list instead of assigning the original list when 'failures' was an empty list.
+        # That's the reason why failures was not passed by reference and the information was not propagated properly.
+        self._failures: list[ValidationFailure] = failures if failures is not None else [] 
         self._property_path: Optional[str] = None
         self._displayNameFunc: Optional[str] = None
         self._ThrowOnFailures: bool = False

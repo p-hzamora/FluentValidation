@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from typing import Iterable, Callable, TYPE_CHECKING, TypeVar
+from typing import Any, Iterable, Callable, TYPE_CHECKING, TypeVar
 
 from src.fluent_validation.enums import ApplyConditionTo
 
@@ -43,7 +43,9 @@ class IValidatoinRule_no_args(ABC):
 
     # bool HasAsyncCondition { get; }
 
-    # LambdaExpression Expression { get; }
+    @property
+    @abstractmethod
+    def Expression(self) -> Callable[..., Any]: ...
 
     @property
     @abstractmethod

@@ -75,6 +75,10 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         return self._PropertyFunc
 
     @property
+    def Expression(self) -> Callable[..., Any]:
+        return self._expression
+
+    @property
     def TypeToValidate(self):
         return self._typeToValidate
 

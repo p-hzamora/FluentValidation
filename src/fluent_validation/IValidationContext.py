@@ -119,6 +119,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         # It was creating an empty list instead of assigning the original list when 'failures' was an empty list.
         # That's the reason why failures was not passed by reference and the information was not propagated properly.
         self._failures: list[ValidationFailure] = failures if failures is not None else [] 
+        self._messageFormatter: MessageFormatter = messageFormatter if messageFormatter is not None else MessageFormatter()
         self._property_path: Optional[str] = None
         self._displayNameFunc: Optional[str] = None
         self._ThrowOnFailures: bool = False

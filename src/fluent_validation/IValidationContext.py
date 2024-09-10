@@ -285,7 +285,12 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         if not self._state:
             self._state = deque()
 
-        self._state.append(StackParams(True, True, self._parentContext, PropertyChain(), self._sharedConditionCache))
+        self._state.append(StackParams(self.IsChildContext, self.IsChildCollectionContext, self._parentContext, self.PropertyChain, self._sharedConditionCache))
+        self.IsChildContext = True
+        self.IsChildCollectionContext = True
+        self._parentContext = self._parentContext
+        self.PropertyChain = PropertyChain()
+        self._sharedConditionCache = self._sharedConditionCache
 
     def RestoreState(self) -> None:
         state = self._state.pop()

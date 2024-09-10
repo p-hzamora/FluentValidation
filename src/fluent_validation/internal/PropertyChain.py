@@ -40,7 +40,10 @@ class PropertyChain:
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
             raise ValueError
-        memberNames = memberNames[0].nested_element.parents[1:]
+        
+        var, *memberNames = memberNames[0].nested_element.parents
+        if not memberNames:
+            return PropertyChain(None, var)
         return PropertyChain(None, memberNames)
 
     # TODOM: Checked if the MemberInfo class from C# is registering the same value in python using __class__.__name__

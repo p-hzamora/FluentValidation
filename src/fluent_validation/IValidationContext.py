@@ -254,6 +254,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
     @staticmethod
     def GetFromNonGenericContext(context: IValidationContext) -> "ValidationContext[T]":
         # Already of the correct type.
+        #FIXME [ ]: this conditional is not working properly. The original is '(context is ValidationContext<T> c)'
         if isinstance(context, ValidationContext):
             return context
 

@@ -6,6 +6,8 @@ from pathlib import Path
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
 
 
+from src.fluent_validation.IValidationContext import ValidationContext
+from src.fluent_validation.IValidator import IValidator
 from src.fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
 from person import _Address as Address  # noqa: E402
@@ -168,11 +170,11 @@ class AbstractValidatorTester(unittest.TestCase):
         result = self.validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
         self.assertEqual(len(result.errors), 2)
 
-    #     def Validates_type_when_using_non_generic_validate_overload(self):
-    #         IValidator nonGenericValidator = self.validator
+    def test_Validates_type_when_using_non_generic_validate_overload(self):
+        nonGenericValidator: IValidator = self.validator
 
-    #         Assert.Throws<InvalidOperationException>(() =>
-    #             nonGenericValidator.validate(ValidationContext<string>("foo")))
+        with self.assertRaises(ValueError):
+            nonGenericValidator.validate(ValidationContext[str]("foo"))
 
     #     def RuleForeach_with_null_instances(self):
     #         model = Person(

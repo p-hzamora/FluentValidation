@@ -53,14 +53,15 @@ class PropertyChain:
             self._memberNames.append(member.Name)
         return None
 
-    # def AddIndexer(self, object indexer, bool surroundWithBrackets = true->None:
-    # 	if self._memberNames.Count == 0:
-    # 		throw new InvalidOperationException("Could not apply an Indexer because the property chain is empty.")
+    def AddIndexer(self, indexer: Any, surroundWithBrackets: bool = True) -> None:
+        if len(self._memberNames) == 0:
+            raise AttributeError("Could not apply an Indexer because the property chain is empty.")
 
-    # 	string last = self._memberNames[self._memberNames.Count - 1]
-    # 	last += surroundWithBrackets ? "[" + indexer + "]" : indexer
+        last: str = self._memberNames[len(self._memberNames) - 1]
+        last += f"[{indexer}]" if surroundWithBrackets else indexer
 
-    # 	self._memberNames[self._memberNames.Count - 1] = last
+        self._memberNames[len(self._memberNames) - 1] = last
+        return None
 
     @override
     def ToString(self) -> str:

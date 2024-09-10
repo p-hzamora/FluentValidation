@@ -48,7 +48,7 @@ class PropertyChain:
         if isinstance(member, str):
             if not (member is None or member == ""):
                 self._memberNames.append(member)
-                return None
+            return None
         if member:
             self._memberNames.append(member.Name)
         return None

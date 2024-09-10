@@ -24,6 +24,17 @@ class RuleComponent[T, TProperty](IRuleComponent):
     def __repr__(self) -> str:
         return f"<RuleComponent validator: {self.ErrorCode}>"
 
+
+    @property
+    def HasCondition(self)->bool:
+        return self._condition is not None
+    
+    @property
+    def HasAsyncCondition(self)->bool:
+        #TODOL: Checked
+        return False
+        # return self._asyncCondition is not None
+
     @property
     def ErrorCode(self) -> str:
         return self._error_code

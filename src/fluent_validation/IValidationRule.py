@@ -39,9 +39,13 @@ class IValidatoinRule_no_args(ABC):
     @abstractmethod
     def TypeToValidate(self) -> type: ...
 
-    # bool HasCondition { get; }
+    @property
+    @abstractmethod
+    def HasCondition(self) -> bool: ...
 
-    # bool HasAsyncCondition { get; }
+    @property
+    @abstractmethod
+    def HasAsyncCondition(self) -> bool: ...
 
     @property
     @abstractmethod

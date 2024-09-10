@@ -83,6 +83,15 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         return self._typeToValidate
 
     @property
+    def HasCondition(self) -> bool:
+        return self._condition is not None
+
+    @property
+    def HasAsyncCondition(self) -> bool:
+        # TODOL: Checked
+        return False
+        # return self._asyncCondition is not None
+
     def Components(self):
         return self._components
 

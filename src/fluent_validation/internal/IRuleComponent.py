@@ -8,13 +8,13 @@ from ..validators.IpropertyValidator import IPropertyValidator
 
 
 class IRuleComponent_no_args(ABC):
-    # @property
-    # @abstractmethod
-    # def HasCondition(self) -> bool: ...
+    @property
+    @abstractmethod
+    def HasCondition(self) -> bool: ...
 
-    # @property
-    # @abstractmethod
-    # def HasAsyncCondition(self) -> bool: ...
+    @property
+    @abstractmethod
+    def HasAsyncCondition(self) -> bool: ...
 
     @property
     @abstractmethod

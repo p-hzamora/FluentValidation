@@ -260,7 +260,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         # Use None in isinstance because 'default' does not exist in python
         # Parameters match
         if not isinstance(context.instance_to_validate, ValidationContext):
-            ValueError(f"Cannot validate instances of type '{type(context.instance_to_validate)}' This validator can only validate instances of type '{ValidationContext.__name__}'.")
+            raise ValueError(f"Cannot validate instances of type '{type(context.instance_to_validate)}' This validator can only validate instances of type '{ValidationContext.__name__}'.")
 
         failures = context.Failures if isinstance(context, IHasFailures) else []
         validation = ValidationContext[T](context.instance_to_validate, context.PropertyChain, context.Selector, failures, ValidatorOptions.Global.MessageFormatterFactory())

@@ -116,6 +116,8 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
     @property
     def Current(self) -> IRuleComponent:
+        if not self._components:
+            return None
         return self._components[-1]
 
     @property

@@ -5,20 +5,18 @@
 You can use the `rule_for_each` method to apply the same rule to multiple items in a collection:
 
 ```python
-public class Person 
-{
-  public List<string> AddressLines { get set } = new List<string>()
-}
+from dataclasses import dataclass
+
+@dataclass
+class Person:
+    AddressLines:list[str]
 ```
 
 ```python
-public class PersonValidator : AbstractValidator<Person> 
-{
-  public PersonValidator() 
-  {
-    rule_for_each(x => x.AddressLines).not_null()
-  }
-}
+class PersonValidator(AbstractValidator[Person]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for_each(lambda x: x.AddressLines).not_null()
 ```
 
 The above rule will run a not_null check against each item in the `AddressLines` collection.
@@ -26,13 +24,10 @@ The above rule will run a not_null check against each item in the `AddressLines`
 As of version 8.5, if you want to access the index of the collection element that caused the validation failure, you can use the special `{CollectionIndex}` placeholder:
 
 ```python
-public class PersonValidator : AbstractValidator<Person> 
-{
-  public PersonValidator() 
-  {
-    rule_for_each(x => x.AddressLines).not_null().with_message("Address {CollectionIndex} is required.")
-  }
-}
+class PersonValidator(AbstractValidator[Person]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for_each(lambda x: x.AddressLines).not_null().with_message("Address {CollectionIndex} is required.")
 ```
 
 ## Collections of Complex Types
@@ -40,36 +35,31 @@ public class PersonValidator : AbstractValidator<Person>
 You can also combine `rule_for_each` with `set_validator` when the collection is of another complex objects. For example:
 
 ```python
-public class Customer 
-{
-  public List<Order> Orders { get set } = new List<Order>()
-}
+from decimal import Decimal
 
-public class Order 
-{
-  public double Total { get set }
-}
+@dataclass
+class Order:
+    Total:Decimal
+
+@dataclass
+class Customer:
+    Orders:list[Order]
 ```
 
 ```python
-public class OrderValidator : AbstractValidator<Order> 
-{
-  public OrderValidator() 
-  {
-    rule_for(x => x.Total).greater_than(0)
-  }
-}
+class OrderValidator(AbstractValidator[Order]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for(lambda x: x.Total).greater_than(0)
 
-public class CustomerValidator : AbstractValidator<Customer> 
-{
-  public CustomerValidator() 
-  {
-    rule_for_each(x => x.Orders).set_validator(new OrderValidator())
-  }
-}
+
+class CustomerValidator(AbstractValidator[Customer]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator())
 ```
 
-Alternatively, as of FluentValidation 8.5, you can also define rules for child collection elements in-line using the `ChildRules` method:
+<!-- Alternatively, as of FluentValidation 8.5, you can also define rules for child collection elements in-line using the `ChildRules` method:
 
 ```python
 public class CustomerValidator : AbstractValidator<Customer> 
@@ -115,4 +105,4 @@ rule_for(x => x.Orders)
   })
 ```
 
-We recommend using 2 separate rules as this is clearer and easier to read, but the option of combining them is available with the `ForEach` method.
+We recommend using 2 separate rules as this is clearer and easier to read, but the option of combining them is available with the `ForEach` method. -->

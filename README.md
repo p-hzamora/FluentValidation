@@ -27,8 +27,8 @@ If you use FluentValidation in a commercial project, please sponsor the project 
 - [Creating your first validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/start.md)
 - [Chaining Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/start.md#chaining-validators)
 - [Throwing Exceptions](https://github.com/p-hzamora/FluentValidation/blob/main/docs/start.md#Throwing-Exceptions)
-- [Complex Properties](https://github.com/p-hzamora/FluentValidation/blob/main/docs/start.md#complex-properties) (With errors)
-- [Collections](https://github.com/p-hzamora/FluentValidation/blob/main/docs/collections.md) (Not available)
+- [Complex Properties](https://github.com/p-hzamora/FluentValidation/blob/main/docs/start.md#complex-properties)
+- [Collections](https://github.com/p-hzamora/FluentValidation/blob/main/docs/collections.md)
 
 
 

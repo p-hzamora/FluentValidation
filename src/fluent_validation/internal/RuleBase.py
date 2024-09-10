@@ -15,6 +15,7 @@ from ..IValidationContext import ValidationContext
 from ..enums import ApplyConditionTo, CascadeMode
 
 if TYPE_CHECKING:
+    from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
     from src.fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
 
 
@@ -45,7 +46,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
         self._displayName: str = self._propertyName  # FIXME [x]: This implementation is wrong. It must call the "GetDisplay" method
         self._rule_sets: Optional[list[str]] = None
-        self._DependentRules: list[IValidationRule] = None
+        self._DependentRules: list[IValidationRuleInternal[T]] = None
 
     def AddValidator(self, validator: IPropertyValidator[T, TValue]) -> None:
         component = RuleComponent[T, TValue](validator)
@@ -138,11 +139,11 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._rule_sets = value
 
     @property
-    def DependentRules(self) -> list[IValidationRule]:
+    def DependentRules(self) -> list[IValidationRuleInternal[T]]:
         return self._DependentRules
 
     @DependentRules.setter
-    def DependentRules(self, value: list[IValidationRule]) -> None:
+    def DependentRules(self, value: list[IValidationRuleInternal[T]]) -> None:
         self._DependentRules = value
 
     def ApplyCondition(self, predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> None:

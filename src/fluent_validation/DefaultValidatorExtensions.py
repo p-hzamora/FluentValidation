@@ -81,7 +81,7 @@ class DefaultValidatorExtensions[T, TProperty]:
             func = valueToCompare
             member = MemberInfo(valueToCompare)
 
-            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
+            name = ruleBuilder.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(LessThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(LessThanValidator(value=valueToCompare))
@@ -101,7 +101,7 @@ class DefaultValidatorExtensions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
-            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
+            name = ruleBuilder.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(LessThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(LessThanOrEqualValidator(value=valueToCompare))
@@ -186,7 +186,7 @@ class DefaultValidatorExtensions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
-            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
+            name = ruleBuilder.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(NotEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(NotEqualValidator(value=valueToCompare))
@@ -206,7 +206,7 @@ class DefaultValidatorExtensions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
-            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
+            name = ruleBuilder.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(GreaterThanValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(GreaterThanValidator(value=valueToCompare))
@@ -226,7 +226,7 @@ class DefaultValidatorExtensions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
-            name = DefaultValidatorExtensions.get_display_name(member, valueToCompare)
+            name = ruleBuilder.get_display_name(member, valueToCompare)
             return ruleBuilder.set_validator(GreaterThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(GreaterThanOrEqualValidator(value=valueToCompare))
@@ -348,4 +348,3 @@ class DefaultValidatorExtensions[T, TProperty]:
         if name is None:
             return name
         return ExtensionsInternal.split_pascal_case(name)
-

@@ -37,6 +37,9 @@ class AbstractValidator[T](IValidator[T]):
         self._ruleLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultRuleLevelCascadeMode
         self._rules: TrackingCollection[IValidationRuleInternal] = TrackingCollection()
 
+    def __getitem__(self, _index: int):
+        return self._rules.__getitem__(_index)
+
     # endregion
 
     @overload

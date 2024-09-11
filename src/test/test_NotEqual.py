@@ -1,5 +1,10 @@
+import sys
 import unittest
+from pathlib import Path
 
+
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
+from CultureScope import CultureScope
 from person import Person
 from TestValidator import TestValidator
 
@@ -7,6 +12,7 @@ from TestValidator import TestValidator
 class NotEqualValidatorTests(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        CultureScope.SetDefaultCulture()
 
     def test_When_the_objects_are_equal_then_the_validator_should_fail(self):
         validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).not_equal("Foo"))

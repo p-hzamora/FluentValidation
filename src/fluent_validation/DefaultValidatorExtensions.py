@@ -1,4 +1,5 @@
 from __future__ import annotations
+from decimal import Decimal
 from typing import Callable, overload, TYPE_CHECKING
 import inspect
 
@@ -30,6 +31,8 @@ from .validators.NotEqualValidator import NotEqualValidator
 from .validators.GreaterThanValidator import GreaterThanValidator
 from .validators.GreaterThanOrEqualValidator import GreaterThanOrEqualValidator
 from .validators.PredicateValidator import PredicateValidator
+from .validators.ScalePrecisionValidator import ScalePrecisionValidator
+
 
 from .IValidationContext import ValidationContext
 
@@ -259,11 +262,16 @@ class DefaultValidatorExtensions[T, TProperty]:
     # def IsInEnum(ruleBuilder: IRuleBuilder[T,TProperty] )->IRuleBuilder[T,TProperty]: # IRuleBuilderOptions[T,TProperty]
     #     return ruleBuilder.set_validator(EnumValidator[T,TProperty]())
 
-# 	static IRuleBuilderOptions<T, decimal> PrecisionScale<T>(IRuleBuilder<T, decimal> ruleBuilder, int precision, int scale, bool ignoreTrailingZeros)
-# 		=> ruleBuilder.set_validator(ScalePrecisionValidator<T>(scale, precision) { IgnoreTrailingZeros = ignoreTrailingZeros })
+    # region precision_scale
+    @overload
+    def precision_scale(ruleBuilder: IRuleBuilder[T, Decimal], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilder[T, Decimal]: ...  # IRuleBuilderOptions<T, Decimal>: ...
+    @overload
+    def precision_scale(ruleBuilder: IRuleBuilder[T, None], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilder[T, None]: ...  # IRuleBuilderOptions<T, None>: ...
 
-# 	static IRuleBuilderOptions<T, decimal?> PrecisionScale<T>(IRuleBuilder<T, decimal?> ruleBuilder, int precision, int scale, bool ignoreTrailingZeros)
-# 		=> ruleBuilder.set_validator(ScalePrecisionValidator<T>(scale, precision) { IgnoreTrailingZeros = ignoreTrailingZeros })
+    def precision_scale[TPrecision](ruleBuilder: IRuleBuilder[T, TPrecision], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilder[T, TPrecision]:  # IRuleBuilderOptions<T, Decimal?>
+        return ruleBuilder.set_validator(ScalePrecisionValidator[T](scale, precision, ignoreTrailingZeros))
+
+    # endregion
 
 # 	static IRuleBuilderOptionsConditions[T,TProperty] Custom[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<TProperty, ValidationContext<T>> action) {
 # 		if (action == null) throw ArgumentNullException(nameof(action))

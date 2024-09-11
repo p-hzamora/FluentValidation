@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from typing import Any, Iterable, Callable, TYPE_CHECKING, TypeVar
+from typing import Any, Callable, TYPE_CHECKING, TypeVar
 
 from fluent_validation.enums import ApplyConditionTo
 
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class IValidatoinRule_no_args(ABC):
     @property
     @abstractmethod
-    def Components(self) -> Iterable[IRuleComponent]: ...
+    def Components(self) -> list[IRuleComponent]: ...
 
     @property
     @abstractmethod
@@ -53,7 +53,7 @@ class IValidatoinRule_no_args(ABC):
 
     @property
     @abstractmethod
-    def DependentRules(self) -> Iterable[IValidationRule]: ...
+    def DependentRules(self) -> list[IValidationRule]: ...
 
 
 CancellationToken = TypeVar("CancellationToken")

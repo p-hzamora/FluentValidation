@@ -15,6 +15,7 @@ import test_SharedCondition
 import test_ValidateAndThrow
 import test_NameResolutionPluggability
 import test_ForEachRule
+import test_DefaultValidatorExtension
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -23,6 +24,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_DefaultValidatorExtension),
         *loader.loadTestsFromModule(test_ForEachRule), #FIXME [ ]: If I add this module at the end of the tuple, then I get 6 errors like '- foo[0].foo + Orders[0].ProductName'
         *loader.loadTestsFromModule(test_AbstractValidator),
         *loader.loadTestsFromModule(test_Equal),

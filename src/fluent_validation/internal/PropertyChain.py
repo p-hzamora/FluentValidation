@@ -36,11 +36,11 @@ class PropertyChain:
     @staticmethod
     def FromExpression(expression: Callable[..., Any]) -> "PropertyChain":
         # COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has. Since we always pass one attr, we only need to access the first position of the list
-        # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
             raise ValueError
 
+        # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
         var, *memberNames = memberNames[0].nested_element.parents
         if not memberNames:
             return PropertyChain(None, var)

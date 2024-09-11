@@ -5,8 +5,6 @@ import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.AccessorCache import AccessorCache
-from fluent_validation.validators.CreditCardValidator import CreditCardValidator
-
 
 if TYPE_CHECKING:
     from fluent_validation.syntax import IRuleBuilder
@@ -31,6 +29,7 @@ from .validators.NotEqualValidator import NotEqualValidator
 from .validators.GreaterThanValidator import GreaterThanValidator
 from .validators.GreaterThanOrEqualValidator import GreaterThanOrEqualValidator
 from .validators.PredicateValidator import PredicateValidator
+from .validators.CreditCardValidator import CreditCardValidator
 from .validators.ScalePrecisionValidator import ScalePrecisionValidator
 
 
@@ -68,6 +67,9 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     def not_empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
         return ruleBuilder.set_validator(NotEmptyValidator[T, TProperty]())
+
+    # def empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
+    #     return ruleBuilder.set_validator(EmptyValidator[T, TProperty]())
 
     # region less_than
     @overload
@@ -233,30 +235,30 @@ class DefaultValidatorExtensions[T, TProperty]:
             return ruleBuilder.set_validator(GreaterThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(GreaterThanOrEqualValidator(value=valueToCompare))
+
     # endregion
 
+    # static IRuleBuilderOptions[T,TProperty] InclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to) where TProperty : IComparable<TProperty>, IComparable {
+    # 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween[T,TProperty](from, to))
+    # 	}
+    # 	static IRuleBuilderOptions[T,TProperty] InclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to, IComparer<TProperty> comparer) {
+    # 		return ruleBuilder.set_validator(InclusiveBetweenValidator[T,TProperty](from, to, comparer))
+    # 	}
+    # 	static IRuleBuilderOptions<T, TProperty?> InclusiveBetween[T,TProperty](IRuleBuilder<T, TProperty?> ruleBuilder, TProperty from, TProperty to) where TProperty : struct, IComparable<TProperty>, IComparable {
+    # 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween[T,TProperty](from, to))
+    # 	}
 
-# static IRuleBuilderOptions[T,TProperty] InclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to) where TProperty : IComparable<TProperty>, IComparable {
-# 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween[T,TProperty](from, to))
-# 	}
-# 	static IRuleBuilderOptions[T,TProperty] InclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to, IComparer<TProperty> comparer) {
-# 		return ruleBuilder.set_validator(InclusiveBetweenValidator[T,TProperty](from, to, comparer))
-# 	}
-# 	static IRuleBuilderOptions<T, TProperty?> InclusiveBetween[T,TProperty](IRuleBuilder<T, TProperty?> ruleBuilder, TProperty from, TProperty to) where TProperty : struct, IComparable<TProperty>, IComparable {
-# 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween[T,TProperty](from, to))
-# 	}
+    # 	static IRuleBuilderOptions[T,TProperty] ExclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to) where TProperty : IComparable<TProperty>, IComparable {
+    # 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween[T,TProperty](from, to))
+    # 	}
 
-# 	static IRuleBuilderOptions[T,TProperty] ExclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to) where TProperty : IComparable<TProperty>, IComparable {
-# 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween[T,TProperty](from, to))
-# 	}
+    # 	static IRuleBuilderOptions[T,TProperty] ExclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to, IComparer<TProperty> comparer)
+    # 		=> ruleBuilder.set_validator(ExclusiveBetweenValidator[T,TProperty](from, to, comparer))
 
-# 	static IRuleBuilderOptions[T,TProperty] ExclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to, IComparer<TProperty> comparer)
-# 		=> ruleBuilder.set_validator(ExclusiveBetweenValidator[T,TProperty](from, to, comparer))
+    # 	static IRuleBuilderOptions<T, TProperty?> ExclusiveBetween[T,TProperty](IRuleBuilder<T, TProperty?> ruleBuilder, TProperty from, TProperty to) where TProperty : struct, IComparable<TProperty>, IComparable
+    # 		=> ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween[T,TProperty](from, to))
 
-# 	static IRuleBuilderOptions<T, TProperty?> ExclusiveBetween[T,TProperty](IRuleBuilder<T, TProperty?> ruleBuilder, TProperty from, TProperty to) where TProperty : struct, IComparable<TProperty>, IComparable
-# 		=> ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween[T,TProperty](from, to))
-
-    def credit_card(ruleBuilder:IRuleBuilder[T,str])->IRuleBuilder[T,str]: # IRuleBuilderOptions[T, str]
+    def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions[T, str]
         return ruleBuilder.set_validator(CreditCardValidator[T]())
 
     # def IsInEnum(ruleBuilder: IRuleBuilder[T,TProperty] )->IRuleBuilder[T,TProperty]: # IRuleBuilderOptions[T,TProperty]
@@ -273,82 +275,81 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     # endregion
 
-# 	static IRuleBuilderOptionsConditions[T,TProperty] Custom[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<TProperty, ValidationContext<T>> action) {
-# 		if (action == null) throw ArgumentNullException(nameof(action))
-# 		return (IRuleBuilderOptionsConditions[T,TProperty])ruleBuilder.Must((parent, value, context) => {
-# 			action(value, context)
-# 			return true
-# 		})
-# 	}
+    # 	static IRuleBuilderOptionsConditions[T,TProperty] Custom[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<TProperty, ValidationContext<T>> action) {
+    # 		if (action == null) throw ArgumentNullException(nameof(action))
+    # 		return (IRuleBuilderOptionsConditions[T,TProperty])ruleBuilder.Must((parent, value, context) => {
+    # 			action(value, context)
+    # 			return true
+    # 		})
+    # 	}
 
-# 	static IRuleBuilderOptionsConditions[T,TProperty] CustomAsync[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Func<TProperty, ValidationContext<T>, CancellationToken, Task> action) {
-# 		if (action == null) throw ArgumentNullException(nameof(action))
-# 		return (IRuleBuilderOptionsConditions[T,TProperty])ruleBuilder.MustAsync(async (parent, value, context, cancel) => {
-# 			await action(value, context, cancel)
-# 			return true
-# 		})
-# 	}
+    # 	static IRuleBuilderOptionsConditions[T,TProperty] CustomAsync[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Func<TProperty, ValidationContext<T>, CancellationToken, Task> action) {
+    # 		if (action == null) throw ArgumentNullException(nameof(action))
+    # 		return (IRuleBuilderOptionsConditions[T,TProperty])ruleBuilder.MustAsync(async (parent, value, context, cancel) => {
+    # 			await action(value, context, cancel)
+    # 			return true
+    # 		})
+    # 	}
 
-# 	static IRuleBuilderOptions<T, IEnumerable<TElement>> ForEach<T, TElement>(IRuleBuilder<T, IEnumerable<TElement>> ruleBuilder,
-# 		Action<IRuleBuilderInitialCollection<IEnumerable<TElement>, TElement>> action) {
-# 		var innerValidator = InlineValidator<IEnumerable<TElement>>()
+    # 	static IRuleBuilderOptions<T, IEnumerable<TElement>> ForEach<T, TElement>(IRuleBuilder<T, IEnumerable<TElement>> ruleBuilder,
+    # 		Action<IRuleBuilderInitialCollection<IEnumerable<TElement>, TElement>> action) {
+    # 		var innerValidator = InlineValidator<IEnumerable<TElement>>()
 
-# 		# https://github.com/FluentValidation/FluentValidation/issues/1231
-# 		# We need to explicitly set a display name override on the nested validator
-# 		# so that it matches what would happen if the user had called RuleForEach initially.
-# 		var originalRule = DefaultValidatorOptions.Configurable(ruleBuilder)
-# 		var collectionRuleBuilder = innerValidator.RuleForEach(x => x)
-# 		var collectionRule = DefaultValidatorOptions.Configurable(collectionRuleBuilder)
+    # 		# https://github.com/FluentValidation/FluentValidation/issues/1231
+    # 		# We need to explicitly set a display name override on the nested validator
+    # 		# so that it matches what would happen if the user had called RuleForEach initially.
+    # 		var originalRule = DefaultValidatorOptions.Configurable(ruleBuilder)
+    # 		var collectionRuleBuilder = innerValidator.RuleForEach(x => x)
+    # 		var collectionRule = DefaultValidatorOptions.Configurable(collectionRuleBuilder)
 
-# 		collectionRule.PropertyName = str.Empty
+    # 		collectionRule.PropertyName = str.Empty
 
-# 		collectionRule.SetDisplayName(context => {
-# 			return originalRule.GetDisplayName(((IValidationContext) context).ParentContext)
-# 		})
+    # 		collectionRule.SetDisplayName(context => {
+    # 			return originalRule.GetDisplayName(((IValidationContext) context).ParentContext)
+    # 		})
 
-# 		action(collectionRuleBuilder)
-# 		return ruleBuilder.set_validator(innerValidator)
-# 	}
+    # 		action(collectionRuleBuilder)
+    # 		return ruleBuilder.set_validator(innerValidator)
+    # 	}
 
-# 	static IRuleBuilderOptions<T, str> IsEnumName<T>(IRuleBuilder<T, str> ruleBuilder, Type enumType, bool caseSensitive = true)
-# 		=> ruleBuilder.set_validator(StringEnumValidator<T>(enumType, caseSensitive))
+    # 	static IRuleBuilderOptions<T, str> IsEnumName<T>(IRuleBuilder<T, str> ruleBuilder, Type enumType, bool caseSensitive = true)
+    # 		=> ruleBuilder.set_validator(StringEnumValidator<T>(enumType, caseSensitive))
 
-# 	static IRuleBuilderOptions[T,TProperty] ChildRules[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<InlineValidator<TProperty>> action) {
-# 		if (action == null) throw ArgumentNullException(nameof(action))
-# 		var validator = ChildRulesContainer<TProperty>()
-# 		var parentValidator = ((IRuleBuilderInternal<T>) ruleBuilder).ParentValidator
+    # 	static IRuleBuilderOptions[T,TProperty] ChildRules[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<InlineValidator<TProperty>> action) {
+    # 		if (action == null) throw ArgumentNullException(nameof(action))
+    # 		var validator = ChildRulesContainer<TProperty>()
+    # 		var parentValidator = ((IRuleBuilderInternal<T>) ruleBuilder).ParentValidator
 
-# 		str[] ruleSets
+    # 		str[] ruleSets
 
-# 		if (parentValidator is ChildRulesContainer<T> container && container.RuleSetsToApplyToChildRules != null) {
-# 			ruleSets = container.RuleSetsToApplyToChildRules
-# 		}
-# 		else {
-# 			ruleSets = DefaultValidatorOptions.Configurable(ruleBuilder).RuleSets
-# 		}
+    # 		if (parentValidator is ChildRulesContainer<T> container && container.RuleSetsToApplyToChildRules != null) {
+    # 			ruleSets = container.RuleSetsToApplyToChildRules
+    # 		}
+    # 		else {
+    # 			ruleSets = DefaultValidatorOptions.Configurable(ruleBuilder).RuleSets
+    # 		}
 
-# 		# Store the correct rulesets on the child validator in case
-# 		# we have nested calls to ChildRules, which can then pick up from
-# 		# the parent validator.
-# 		validator.RuleSetsToApplyToChildRules = ruleSets
+    # 		# Store the correct rulesets on the child validator in case
+    # 		# we have nested calls to ChildRules, which can then pick up from
+    # 		# the parent validator.
+    # 		validator.RuleSetsToApplyToChildRules = ruleSets
 
-# 		action(validator)
+    # 		action(validator)
 
-# 		foreach(var rule in validator.Rules) {
-# 			if (rule.RuleSets == null) {
-# 				rule.RuleSets = ruleSets
-# 			}
-# 		}
-# 		return ruleBuilder.set_validator(validator)
-# 	}
+    # 		foreach(var rule in validator.Rules) {
+    # 			if (rule.RuleSets == null) {
+    # 				rule.RuleSets = ruleSets
+    # 			}
+    # 		}
+    # 		return ruleBuilder.set_validator(validator)
+    # 	}
 
-# 	static IRuleBuilderOptions[T,TProperty] SetInheritanceValidator[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<PolymorphicValidator[T,TProperty]> validatorConfiguration) {
-# 		if (validatorConfiguration == null) throw ArgumentNullException(nameof(validatorConfiguration))
-# 		var validator = PolymorphicValidator[T,TProperty]()
-# 		validatorConfiguration(validator)
-# 		return ruleBuilder.SetAsyncValidator((IAsyncPropertyValidator[T,TProperty]) validator)
-# 	}
-
+    # 	static IRuleBuilderOptions[T,TProperty] SetInheritanceValidator[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<PolymorphicValidator[T,TProperty]> validatorConfiguration) {
+    # 		if (validatorConfiguration == null) throw ArgumentNullException(nameof(validatorConfiguration))
+    # 		var validator = PolymorphicValidator[T,TProperty]()
+    # 		validatorConfiguration(validator)
+    # 		return ruleBuilder.SetAsyncValidator((IAsyncPropertyValidator[T,TProperty]) validator)
+    # 	}
 
     @staticmethod
     def get_display_name(member: MemberInfo, expression: Callable[[T], TProperty]) -> str:

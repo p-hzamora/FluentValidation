@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 import locale
 from typing import overload
 
-from ..ExtensionInternal import ExtensionsInternal
+from fluent_validation.internal.ExtensionInternal import ExtensionsInternal
+
 
 
 class CultureInfo:

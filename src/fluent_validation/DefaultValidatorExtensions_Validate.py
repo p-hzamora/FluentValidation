@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Callable
 
-from src.fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.IValidationContext import ValidationContext
 
 if TYPE_CHECKING:
-    from src.fluent_validation.IValidator import IValidator
-    from src.fluent_validation.results.ValidationResult import ValidationResult
-    from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
+    from fluent_validation.IValidator import IValidator
+    from fluent_validation.results.ValidationResult import ValidationResult
+    from fluent_validation.internal.ValidationStrategy import ValidationStrategy
 
 
 class DefaultValidatorExtensions_Validate:

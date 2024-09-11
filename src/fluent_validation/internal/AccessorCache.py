@@ -1,5 +1,5 @@
 from typing import Callable, Optional
-from src.fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.MemberInfo import MemberInfo
 
 
 class AccessorCache[T]:

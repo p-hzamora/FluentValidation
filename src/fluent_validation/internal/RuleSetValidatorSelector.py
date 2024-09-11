@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import Callable, Iterable, override, TYPE_CHECKING
-from src.fluent_validation.IValidationRule import IValidationRule
-from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
-from src.fluent_validation.internal.IncludeRule import IIncludeRule
+from fluent_validation.IValidationRule import IValidationRule
+from fluent_validation.internal.IValidatorSelector import IValidatorSelector
+from fluent_validation.internal.IncludeRule import IIncludeRule
 
 if TYPE_CHECKING:
-    from src.fluent_validation.IValidationContext import IValidationContext
+    from fluent_validation.IValidationContext import IValidationContext
 
 
 def get_or_add[T](dictionary: dict, key: str, factory: Callable[..., T]) -> set:

@@ -2,12 +2,12 @@ from __future__ import annotations
 from abc import abstractmethod, ABC
 from typing import Self, Callable, overload, TYPE_CHECKING
 
-from src.fluent_validation.DefaultValidatorExtensions import DefaultValidatorExtensions
-from src.fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
+from fluent_validation.DefaultValidatorExtensions import DefaultValidatorExtensions
+from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
 
 if TYPE_CHECKING:
-    from src.fluent_validation.IValidator import IValidator
-    # from src.fluent_validation.abstract_validator import AbstractValidator
+    from fluent_validation.IValidator import IValidator
+    # from fluent_validation.abstract_validator import AbstractValidator
 
 from .validators.IpropertyValidator import IPropertyValidator
 

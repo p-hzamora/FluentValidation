@@ -2,11 +2,11 @@ from abc import abstractmethod
 from enum import Enum, auto
 from typing import Any, Callable, overload, override
 
-from src.fluent_validation.MemberInfo import MemberInfo
-from ..IValidationContext import ValidationContext
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.IValidationContext import ValidationContext
 
-from ..validators.PropertyValidator import PropertyValidator
-from ..validators.IpropertyValidator import IPropertyValidator_no_generic
+from fluent_validation.validators.PropertyValidator import PropertyValidator
+from fluent_validation.validators.IpropertyValidator import IPropertyValidator_no_generic
 
 
 class Comparable(object):

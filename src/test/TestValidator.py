@@ -4,8 +4,8 @@ from pathlib import Path
 from person import Person
 
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
-from src.fluent_validation.InlineValidator import InlineValidator  # noqa: E402
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
+from fluent_validation.InlineValidator import InlineValidator  # noqa: E402
 
 
 class TestValidator(InlineValidator[Person]):

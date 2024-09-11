@@ -3,14 +3,14 @@ from typing import override
 import unittest
 from pathlib import Path
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 
 from TestValidator import TestValidator
 from person import Person, _Address as Address
-from src.fluent_validation.ValidatorOptions import ValidatorOptions
+from fluent_validation.ValidatorOptions import ValidatorOptions
 
-from src.fluent_validation.internal.TrackingCollection import IDisposable
+from fluent_validation.internal.TrackingCollection import IDisposable
 
 
 class NameResolutionPluggabilityTester(unittest.TestCase, IDisposable):

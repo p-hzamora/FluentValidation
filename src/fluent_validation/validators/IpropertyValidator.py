@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..IValidationContext import ValidationContext
+    from fluent_validation.IValidationContext import ValidationContext
 
 
 class IPropertyValidator_no_generic(ABC):

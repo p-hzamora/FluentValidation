@@ -3,13 +3,13 @@ import sys
 from pathlib import Path
 
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 
-from src.fluent_validation.enums import ApplyConditionTo
-from src.fluent_validation.abstract_validator import AbstractValidator
-from src.test.TestValidator import TestValidator
-from src.test.person import Order, Person
+from fluent_validation.enums import ApplyConditionTo
+from fluent_validation.abstract_validator import AbstractValidator
+from TestValidator import TestValidator
+from person import Order, Person
 
 
 class TestConditionValidator(AbstractValidator[Person]):

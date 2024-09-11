@@ -6,9 +6,9 @@ from CultureScope import CultureScope
 import sys
 from pathlib import Path
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
-from src.fluent_validation.validators.LengthValidator import LengthValidator  # noqa: E402
+from fluent_validation.validators.LengthValidator import LengthValidator  # noqa: E402
 
 
 class LengthValidatorTests(unittest.TestCase):

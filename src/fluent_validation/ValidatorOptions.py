@@ -1,14 +1,14 @@
 from typing import Any, Callable, Iterable, Type
 
-from src.fluent_validation.MemberInfo import MemberInfo
-from src.fluent_validation.internal.CompositeValidatorSelector import CompositeValidatorSelector
-from src.fluent_validation.internal.DefaultValidatorSelector import DefaultValidatorSelector
-from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
-from src.fluent_validation.internal.MemberNameValidatorSelector import MemberNameValidatorSelector
-from src.fluent_validation.internal.MessageFormatter import MessageFormatter
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.internal.CompositeValidatorSelector import CompositeValidatorSelector
+from fluent_validation.internal.DefaultValidatorSelector import DefaultValidatorSelector
+from fluent_validation.internal.IValidatorSelector import IValidatorSelector
+from fluent_validation.internal.MemberNameValidatorSelector import MemberNameValidatorSelector
+from fluent_validation.internal.MessageFormatter import MessageFormatter
 
-from src.fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
-from src.fluent_validation.validators.IpropertyValidator import IPropertyValidator
+from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
+from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 from .enums import CascadeMode
 from .internal.Resources.LanguageManager import LanguageManager
 from .internal.Resources.ILanguageManager import ILanguageManager
@@ -149,7 +149,7 @@ class ValidatorConfiguration:
 
     @staticmethod
     def DefaultPropertyNameResolver(_type: Type, memberInfo: MemberInfo, expression: Callable[..., str]):
-        from src.fluent_validation.internal.PropertyChain import PropertyChain
+        from fluent_validation.internal.PropertyChain import PropertyChain
 
         if expression is not None:
             chain = PropertyChain.FromExpression(expression)

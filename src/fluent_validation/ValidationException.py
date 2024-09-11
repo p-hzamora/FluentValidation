@@ -1,4 +1,4 @@
-from src.fluent_validation.results.ValidationFailure import ValidationFailure
+from fluent_validation.results.ValidationFailure import ValidationFailure
 
 
 class ValidationException(Exception):

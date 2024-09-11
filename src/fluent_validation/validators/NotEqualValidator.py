@@ -1,5 +1,5 @@
 from typing import Callable, overload, override
-from ..validators.AbstractComparisonValidator import (
+from fluent_validation.validators.AbstractComparisonValidator import (
     AbstractComparisonValidator,
     Comparison,
 )

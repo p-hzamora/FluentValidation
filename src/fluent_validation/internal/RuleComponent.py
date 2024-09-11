@@ -1,9 +1,9 @@
 from typing import Callable, Optional, overload
 
-from src.fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
-from ..IValidationContext import ValidationContext
-from ..internal.IRuleComponent import IRuleComponent
-from ..validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
+from fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.internal.IRuleComponent import IRuleComponent
+from fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
 
 
 class RuleComponent[T, TProperty](IRuleComponent):
@@ -24,14 +24,13 @@ class RuleComponent[T, TProperty](IRuleComponent):
     def __repr__(self) -> str:
         return f"<RuleComponent validator: {self.ErrorCode}>"
 
+    @property
+    def HasCondition(self) -> bool:
+        return self._condition is not None
 
     @property
-    def HasCondition(self)->bool:
-        return self._condition is not None
-    
-    @property
-    def HasAsyncCondition(self)->bool:
-        #TODOL: Checked
+    def HasAsyncCondition(self) -> bool:
+        # TODOL: Checked
         return False
         # return self._asyncCondition is not None
 

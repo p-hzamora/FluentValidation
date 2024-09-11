@@ -3,12 +3,12 @@ from __future__ import annotations
 import inspect
 from typing import Callable, TYPE_CHECKING, overload
 
-from src.fluent_validation.enums import ApplyConditionTo, CascadeMode
-from src.fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.enums import ApplyConditionTo, CascadeMode
+from fluent_validation.IValidationContext import ValidationContext
 
 
 if TYPE_CHECKING:
-    from src.fluent_validation.syntax import (  # noqa: F401
+    from fluent_validation.syntax import (  # noqa: F401
         IRuleBuilderOptions,
         IRuleBuilderInitial,
         IRuleBuilder,

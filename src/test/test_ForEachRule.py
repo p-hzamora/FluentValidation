@@ -4,13 +4,13 @@ import unittest
 from pathlib import Path
 
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
-from src.fluent_validation.InlineValidator import InlineValidator
-from src.fluent_validation.IValidationContext import ValidationContext
-from src.fluent_validation.abstract_validator import AbstractValidator
-from src.fluent_validation.validators.NotNullValidator import NotNullValidator
-from src.fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
+from fluent_validation.InlineValidator import InlineValidator
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.abstract_validator import AbstractValidator
+from fluent_validation.validators.NotNullValidator import NotNullValidator
+from fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
 from TestValidator import TestValidator  # noqa: E402
 from person import IOrder, Person, Order  # noqa: E402
 

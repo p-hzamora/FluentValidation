@@ -4,17 +4,17 @@ import unittest
 import sys
 from pathlib import Path
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 
-from src.fluent_validation.IValidationContext import ValidationContext
-from src.fluent_validation.InlineValidator import InlineValidator
-from src.fluent_validation.abstract_validator import AbstractValidator
-from src.fluent_validation.internal.PropertyChain import PropertyChain
-from src.fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
-from src.fluent_validation.results.ValidationResult import ValidationResult
-from src.test.person import _Address as Address
-from src.test.person import Person
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.InlineValidator import InlineValidator
+from fluent_validation.abstract_validator import AbstractValidator
+from fluent_validation.internal.PropertyChain import PropertyChain
+from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
+from fluent_validation.results.ValidationResult import ValidationResult
+from person import _Address as Address
+from person import Person
 
 
 class RulesetTests(unittest.TestCase):

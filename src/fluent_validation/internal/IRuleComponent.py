@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, overload
 
-from src.fluent_validation.IValidationContext import ValidationContext
-from src.fluent_validation.enums import Severity
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.enums import Severity
 
-from ..validators.IpropertyValidator import IPropertyValidator
+from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 
 
 class IRuleComponent_no_args(ABC):

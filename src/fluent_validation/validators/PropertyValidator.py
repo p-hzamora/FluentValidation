@@ -1,8 +1,8 @@
 from abc import abstractmethod
 
-from ..IValidationContext import ValidationContext
-from ..validators.IpropertyValidator import IPropertyValidator
-from ..ValidatorOptions import ValidatorOptions
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.validators.IpropertyValidator import IPropertyValidator
+from fluent_validation.ValidatorOptions import ValidatorOptions
 
 
 class PropertyValidator[T, TProperty](IPropertyValidator[T, TProperty]):

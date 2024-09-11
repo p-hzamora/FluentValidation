@@ -2,14 +2,14 @@ from __future__ import annotations
 from typing import Iterable, Optional, override, Callable, Any, TYPE_CHECKING
 import re
 
-from src.fluent_validation.MemberInfo import MemberInfo
-from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.internal.IValidatorSelector import IValidatorSelector
 
-from src.fluent_validation.internal.IncludeRule import IIncludeRule
+from fluent_validation.internal.IncludeRule import IIncludeRule
 
 if TYPE_CHECKING:
-    from src.fluent_validation.IValidationRule import IValidationRule
-    from src.fluent_validation.IValidationContext import IValidationContext
+    from fluent_validation.IValidationRule import IValidationRule
+    from fluent_validation.IValidationContext import IValidationContext
 
 
 class MemberNameValidatorSelector(IValidatorSelector):
@@ -81,7 +81,7 @@ class MemberNameValidatorSelector(IValidatorSelector):
 
     @staticmethod
     def MemberFromExpression[T](expression: Callable[[T], Any]) -> str:
-        from src.fluent_validation.ValidatorOptions import ValidatorOptions
+        from fluent_validation.ValidatorOptions import ValidatorOptions
 
         # get list of all values in expression (one is expected) and get first
         propertyName = ValidatorOptions.Global.PropertyNameResolver(type(T), MemberInfo(expression), expression)

@@ -1,13 +1,13 @@
 import inspect
 from typing import Callable, TypeVar
 
-from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
-from src.fluent_validation.IValidator import IValidator
-from src.fluent_validation.validators.ChildValidatorAdaptor import ChildValidatorAdaptor
+from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
+from fluent_validation.IValidator import IValidator
+from fluent_validation.validators.ChildValidatorAdaptor import ChildValidatorAdaptor
 
-from ..IValidationRule import IValidationRule
-from ..validators.IpropertyValidator import IPropertyValidator
-from ..syntax import IRuleBuilder, IRuleBuilderInternal, IRuleBuilderOptions
+from fluent_validation.IValidationRule import IValidationRule
+from fluent_validation.validators.IpropertyValidator import IPropertyValidator
+from fluent_validation.syntax import IRuleBuilder, IRuleBuilderInternal, IRuleBuilderOptions
 
 
 TAbstractValidator = TypeVar("TAbstractValidator")

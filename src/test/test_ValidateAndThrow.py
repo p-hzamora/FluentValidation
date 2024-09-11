@@ -3,11 +3,11 @@ import unittest
 from pathlib import Path
 
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 
-from src.fluent_validation.ValidationException import ValidationException
-from src.fluent_validation.InlineValidator import InlineValidator
+from fluent_validation.ValidationException import ValidationException
+from fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
 from person import _Address as Address, Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402

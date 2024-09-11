@@ -2,10 +2,10 @@ from __future__ import annotations
 import uuid
 from typing import Callable
 
-from src.fluent_validation.IValidationContext import IValidationContext, ValidationContext
-from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
-from src.fluent_validation.internal.TrackingCollection import TrackingCollection
-from src.fluent_validation.syntax import IConditionBuilder
+from fluent_validation.IValidationContext import IValidationContext, ValidationContext
+from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
+from fluent_validation.internal.TrackingCollection import TrackingCollection
+from fluent_validation.syntax import IConditionBuilder
 
 
 class ConditionBuilder[T]:

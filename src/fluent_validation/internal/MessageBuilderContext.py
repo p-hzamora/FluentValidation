@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import override
-from ..IValidationContext import IValidationContext, ValidationContext
-from ..internal.RuleComponent import RuleComponent
+from fluent_validation.IValidationContext import IValidationContext, ValidationContext
+from fluent_validation.internal.RuleComponent import RuleComponent
 
-from ..internal.IRuleComponent import IRuleComponent
-from ..validators.IpropertyValidator import IPropertyValidator
+from fluent_validation.internal.IRuleComponent import IRuleComponent
+from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 
-from ..internal.MessageFormatter import MessageFormatter
+from fluent_validation.internal.MessageFormatter import MessageFormatter
 
 
 class IMessageBuilderContext[T, TProperty](ABC):

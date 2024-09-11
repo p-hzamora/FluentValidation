@@ -1,16 +1,16 @@
 from __future__ import annotations
 from typing import Any, Callable, Self, TYPE_CHECKING
 
-from src.fluent_validation.MemberInfo import MemberInfo
-from src.fluent_validation.internal.AccessorCache import AccessorCache
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.internal.AccessorCache import AccessorCache
 
-from ..enums import CascadeMode
-from ..internal.RuleBase import RuleBase
-from ..internal.RuleComponent import RuleComponent
+from fluent_validation.enums import CascadeMode
+from fluent_validation.internal.RuleBase import RuleBase
+from fluent_validation.internal.RuleComponent import RuleComponent
 
 if TYPE_CHECKING:
-    from ..validators.IpropertyValidator import IPropertyValidator
-    from ..IValidationContext import ValidationContext
+    from fluent_validation.validators.IpropertyValidator import IPropertyValidator
+    from fluent_validation.IValidationContext import ValidationContext
 
 
 class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):

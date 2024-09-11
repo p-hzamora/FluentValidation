@@ -3,9 +3,9 @@ import unittest
 from pathlib import Path
 
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
-from src.fluent_validation.enums import StringComparer
+from fluent_validation.enums import StringComparer
 from TestValidator import TestValidator  # noqa: E402
 from person import Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402

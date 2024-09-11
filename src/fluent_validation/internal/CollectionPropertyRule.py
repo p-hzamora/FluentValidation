@@ -1,17 +1,17 @@
 ﻿from __future__ import annotations
 from typing import Any, Callable, Type, TYPE_CHECKING
-from src.fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
-from src.fluent_validation.ICollectionRule import ICollectionRule
-from src.fluent_validation.IValidationRuleInternal import IValidationRuleInternal
-from src.fluent_validation.MemberInfo import MemberInfo
-from src.fluent_validation.enums import CascadeMode
-from src.fluent_validation.internal.AccessorCache import AccessorCache
-from src.fluent_validation.internal.RuleBase import RuleBase
-from src.fluent_validation.internal.RuleComponent import RuleComponent
+from fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
+from fluent_validation.ICollectionRule import ICollectionRule
+from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.enums import CascadeMode
+from fluent_validation.internal.AccessorCache import AccessorCache
+from fluent_validation.internal.RuleBase import RuleBase
+from fluent_validation.internal.RuleComponent import RuleComponent
 
 
 if TYPE_CHECKING:
-    from src.fluent_validation.IValidationContext import ValidationContext
+    from fluent_validation.IValidationContext import ValidationContext
 
 
 class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement], ICollectionRule[T, TElement], IValidationRuleInternal[T, TElement]):

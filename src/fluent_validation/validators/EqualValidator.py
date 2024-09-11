@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Optional, override
 
-from src.fluent_validation.IValidationContext import ValidationContext
-from src.fluent_validation.MemberInfo import MemberInfo
-from src.fluent_validation.validators.PropertyValidator import PropertyValidator
-from ..validators.AbstractComparisonValidator import Comparison, IComparisonValidator
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.validators.PropertyValidator import PropertyValidator
+from fluent_validation.validators.AbstractComparisonValidator import Comparison, IComparisonValidator
 
 
 class IEqualValidator(IComparisonValidator): ...

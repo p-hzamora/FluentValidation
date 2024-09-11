@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from typing import Callable
 
-from src.fluent_validation.IValidationRule import IValidationRule
+from fluent_validation.IValidationRule import IValidationRule
 
 
 class ICollectionRule[T, TElement](IValidationRule[T, TElement]):

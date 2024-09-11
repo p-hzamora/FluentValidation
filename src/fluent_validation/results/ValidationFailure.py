@@ -1,5 +1,5 @@
 from typing import Any
-from src.fluent_validation.enums import Severity as _Severity
+from fluent_validation.enums import Severity as _Severity
 
 
 class ValidationFailure:

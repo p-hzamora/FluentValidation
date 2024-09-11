@@ -1,8 +1,8 @@
 from typing import Callable, Iterable, Any, Optional, override
 
-from src.fluent_validation.MemberInfo import MemberInfo
-from src.fluent_validation.ValidatorOptions import ValidatorOptions
-from src.fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.ValidatorOptions import ValidatorOptions
+from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction
 
 
 class PropertyChain:
@@ -40,7 +40,7 @@ class PropertyChain:
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
             raise ValueError
-        
+
         var, *memberNames = memberNames[0].nested_element.parents
         if not memberNames:
             return PropertyChain(None, var)

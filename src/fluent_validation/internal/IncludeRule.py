@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC
 # from typing import Callable, Type, TYPE_CHECKING
 
-# from src.fluent_validation.internal.PropertyRule import PropertyRule
+# from fluent_validation.internal.PropertyRule import PropertyRule
 
 
 class IIncludeRule(ABC): ...

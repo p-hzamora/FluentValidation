@@ -3,8 +3,8 @@ from typing import Any, Callable, NamedTuple, Optional, Self, overload, override
 from abc import ABC, abstractmethod
 from collections import deque
 
-from src.fluent_validation.ValidatorOptions import ValidatorOptions
-from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
+from fluent_validation.ValidatorOptions import ValidatorOptions
+from fluent_validation.internal.IValidatorSelector import IValidatorSelector
 
 from .internal.MessageFormatter import MessageFormatter
 from .internal.PropertyChain import PropertyChain

@@ -3,12 +3,12 @@ import sys
 from pathlib import Path
 
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
-# from src.fluent_validation.results.ValidationFailure import ValidationFailure
-from src.fluent_validation.InlineValidator import InlineValidator
-from src.test.TestValidator import TestValidator
-from src.test.person import Person
+# from fluent_validation.results.ValidationFailure import ValidationFailure
+from fluent_validation.InlineValidator import InlineValidator
+from TestValidator import TestValidator
+from person import Person
 
 
 class SharedConditionTests(unittest.TestCase):

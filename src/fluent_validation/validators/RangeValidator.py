@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import override
-from ..IValidationContext import ValidationContext
+from fluent_validation.IValidationContext import ValidationContext
 
-from ..validators import PropertyValidator
-from ..validators.IpropertyValidator import IPropertyValidator
+from fluent_validation.validators import PropertyValidator
+from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 
 
 class IComparer[T](ABC):

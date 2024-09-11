@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import override, TYPE_CHECKING
 
-from src.fluent_validation.internal.IValidatorSelector import IValidatorSelector
-from src.fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
+from fluent_validation.internal.IValidatorSelector import IValidatorSelector
+from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
 
 if TYPE_CHECKING:
-    from src.fluent_validation.IValidationContext import IValidationContext
-    from src.fluent_validation.IValidationRule import IValidationRule
+    from fluent_validation.IValidationContext import IValidationContext
+    from fluent_validation.IValidationRule import IValidationRule
 
 
 class DefaultValidatorSelector(IValidatorSelector):

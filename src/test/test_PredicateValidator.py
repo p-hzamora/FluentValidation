@@ -1,7 +1,7 @@
 import unittest
 from TestValidator import TestValidator
 from person import Person
-from src.test.CultureScope import CultureScope
+from CultureScope import CultureScope
 
 
 class PredicateValidatorTester(unittest.TestCase):

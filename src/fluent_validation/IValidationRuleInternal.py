@@ -3,10 +3,10 @@ from abc import abstractmethod
 from typing import Iterable, TYPE_CHECKING
 
 
-from src.fluent_validation.IValidationRule import IValidationRule
+from fluent_validation.IValidationRule import IValidationRule
 
 if TYPE_CHECKING:
-    from src.fluent_validation.IValidationContext import ValidationContext
+    from fluent_validation.IValidationContext import ValidationContext
 
 
 class IValidationRuleInternal[T, TProperty](IValidationRule[T, TProperty]):

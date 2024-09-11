@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import Callable, Optional, overload, TYPE_CHECKING
 
 from .IValidatorSelector import IValidatorSelector
-from ..ValidatorOptions import ValidatorOptions
+from fluent_validation.ValidatorOptions import ValidatorOptions
 from .MemberNameValidatorSelector import MemberNameValidatorSelector
 from .RuleSetValidatorSelector import RulesetValidatorSelector
 
 
 if TYPE_CHECKING:
-    from ..IValidationContext import ValidationContext
+    from fluent_validation.IValidationContext import ValidationContext
 
 
 class ValidationStrategy[T]:
@@ -89,7 +89,7 @@ class ValidationStrategy[T]:
         return selector
 
     def BuildContext(self, instance: T) -> ValidationContext[T]:
-        from ..IValidationContext import ValidationContext
+        from fluent_validation.IValidationContext import ValidationContext
 
         validation = ValidationContext[T](instance, None, self.GetSelector())
         validation.ThrowOnFailures = self._throw

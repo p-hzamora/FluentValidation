@@ -1,7 +1,7 @@
 from typing import Callable, override
 
-from ..IValidationContext import ValidationContext
-from ..validators.PropertyValidator import PropertyValidator
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.validators.PropertyValidator import PropertyValidator
 from .IpropertyValidator import IPropertyValidator
 
 # 	public delegate bool Predicate(T instanceToValidate, TProperty propertyValue, ValidationContext<T> propertyValidatorContext);

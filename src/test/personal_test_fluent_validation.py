@@ -4,11 +4,11 @@ from pathlib import Path
 import sys
 from typing import Optional
 
-sys.path.append([str(x) for x in Path(__file__).parents if x.name == "fluent_validation"].pop())
+sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 from dataclasses import dataclass  # noqa: E402
-from src.fluent_validation.abstract_validator import AbstractValidator  # noqa: E402
-from src.fluent_validation.enums import CascadeMode  # noqa: E402
+from fluent_validation.abstract_validator import AbstractValidator  # noqa: E402
+from fluent_validation.enums import CascadeMode  # noqa: E402
 
 
 class RegexPattern:

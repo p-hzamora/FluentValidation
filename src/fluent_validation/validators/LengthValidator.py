@@ -1,7 +1,7 @@
 from typing import Callable, overload, override
 from abc import ABC, abstractmethod
-from ..IValidationContext import ValidationContext
-from ..validators.PropertyValidator import PropertyValidator
+from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.validators.PropertyValidator import PropertyValidator
 
 
 class ILengthValidator(ABC):

@@ -2,11 +2,11 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Callable, Type, overload
 
-from src.fluent_validation.DefaultValidatorExtensions_Validate import DefaultValidatorExtensions_Validate
+from fluent_validation.DefaultValidatorExtensions_Validate import DefaultValidatorExtensions_Validate
 
 if TYPE_CHECKING:
-    from src.fluent_validation.internal.ValidationStrategy import ValidationStrategy
-    from src.fluent_validation.IValidationContext import IValidationContext
+    from fluent_validation.internal.ValidationStrategy import ValidationStrategy
+    from fluent_validation.IValidationContext import IValidationContext
     from .results.ValidationResult import ValidationResult
 
 

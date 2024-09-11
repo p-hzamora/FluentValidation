@@ -93,10 +93,7 @@ class AbstractComparisonValidator[T, TProperty](PropertyValidator[T, TProperty],
 
         if not valueToCompare[0] or not self._is_valid(propertyValue, valueToCompare[1]):
             context.MessageFormatter.AppendArgument("ComparisonValue", valueToCompare[1] if valueToCompare[0] else "")
-            context.MessageFormatter.AppendArgument(
-                "ComparisonProperty",
-                self._comparisonMemberDisplayName if self._comparisonMemberDisplayName is not None else "",
-            )
+            context.MessageFormatter.AppendArgument("ComparisonProperty", self._comparisonMemberDisplayName if self._comparisonMemberDisplayName is not None else "")
             return False
         return True
 

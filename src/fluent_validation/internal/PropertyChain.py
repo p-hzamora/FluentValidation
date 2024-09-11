@@ -38,7 +38,9 @@ class PropertyChain:
         # COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has. Since we always pass one attr, we only need to access the first position of the list
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
+            #FIXME [ ]: Checked who to resovle with original code
             raise ValueError
+            return None
 
         # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
         var, *memberNames = memberNames[0].nested_element.parents

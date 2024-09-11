@@ -61,7 +61,7 @@ class ChildValidatorAdaptor[T, TProperty](NoopPropertyValidator[T, TProperty], I
 
         originalIndex, currentIndex = self.HandleCollectionIndex(context)
 
-        # FIXME [ ]!: Due to the asynchronous nested loop, the 'context' var does not update with the newContext validation, although the method works properly
+        # FIXME [x]!: Due to the asynchronous nested loop, the 'context' var does not update with the newContext validation, although the method works properly
         validator.validate(newContext)
 
         self.ResetCollectionIndex(context, originalIndex, currentIndex)

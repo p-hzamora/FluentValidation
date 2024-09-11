@@ -35,7 +35,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._cascadeModeThunk: Callable[[], CascadeMode] = cascadeModeThunk
 
         containerType = type(T)
-        self._propertyName: Optional[str] = ValidatorOptions.Global.PropertyNameResolver(containerType, member, expression)
+        self.PropertyName: Optional[str] = ValidatorOptions.Global.PropertyNameResolver(containerType, member, expression)
         self._displayNameFactory: Callable[[ValidationContext[T], str]] = lambda context: ValidatorOptions.Global.DisplayNameResolver(containerType, member, expression)
 
         self._displayNameFunc: Callable[[ValidationContext[T], str]] = self.get_display_name
@@ -107,13 +107,13 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         return self._propertyName
 
     @PropertyName.setter
-    def PropertyName(self) -> Optional[str]:
-        return self._propertyName
-
-    @property
-    def displayName(self, value: str):
-        self._displayName = value
+    def PropertyName(self, value: Optional[str]) -> None:
+        self._propertyName = value
         self._propertyDisplayName = ExtensionsInternal.split_pascal_case(self._propertyName)
+
+    def SetDisplayName(self, name: str):
+        self._displayName = name
+        self._displayNameFactory = None
 
     @property
     def Current(self) -> IRuleComponent:

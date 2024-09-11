@@ -4,6 +4,7 @@ import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.AccessorCache import AccessorCache
+from fluent_validation.validators.CreditCardValidator import CreditCardValidator
 
 
 if TYPE_CHECKING:
@@ -229,6 +230,9 @@ class DefaultValidatorExtensions[T, TProperty]:
             return ruleBuilder.set_validator(GreaterThanOrEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
 
         return ruleBuilder.set_validator(GreaterThanOrEqualValidator(value=valueToCompare))
+
+    def credit_card(ruleBuilder:IRuleBuilder[T,str])->IRuleBuilder[T,str]: # IRuleBuilderOptions[T, str]
+        return ruleBuilder.set_validator(CreditCardValidator[T]())
 
     @staticmethod
     def get_display_name(member: MemberInfo, expression: Callable[[T], TProperty]) -> str:

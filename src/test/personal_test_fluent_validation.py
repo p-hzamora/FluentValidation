@@ -49,6 +49,7 @@ class Person:
     edad_min: int = None
     edad_max: int = None
     ppto: int | float | Decimal = None
+    credit_card: str = None
 
 
 class PersonValidator(AbstractValidator[Person]):
@@ -60,12 +61,12 @@ class PersonValidator(AbstractValidator[Person]):
         self.rule_for(lambda x: x.edad).not_null().must(lambda obj, value: obj.edad_min == value)
         self.rule_for(lambda x: x.fecha_ini).not_null().less_than_or_equal_to(lambda x: x.fecha_fin)
         self.rule_for(lambda x: x.edad).not_null().greater_than_or_equal_to(lambda x: x.edad_min).less_than_or_equal_to(lambda x: x.edad_max)
-        self.rule_for(lambda x: x.ppto).not_null().must(lambda x: isinstance(x, (int, float, Decimal))).greater_than_or_equal_to(0)
+        self.rule_for(lambda x: x.ppto).precision_scale(5, 2, True)
         self.rule_for(lambda x: x.fecha_ini).not_null().less_than_or_equal_to(datetime.today())
         self.rule_for(lambda x: x.dni).not_null().must(lambda x: isinstance(x, str)).with_message("Custom message of IsInstance method").matches(RegexPattern.Dni)
         self.rule_for(lambda x: x.email).not_null().matches(RegexPattern.Email).with_message("The entered mail does not comply with the specific regex rules").max_length(15)
         # self.rule_for(lambda x: x.orders).set_validator(OrdersValidator())
-        self.rule_for(lambda x: x.orders.name).not_equal("pablo")
+        self.rule_for(lambda x: x.credit_card).not_empty().credit_card()
 
 
 # person = Person(
@@ -89,20 +90,18 @@ person = Person(
     name="",
     dni="___",
     email="pablo.org",
+    credit_card="",
+    ppto=Decimal("12.55000000")
 )
 
 validator = PersonValidator()
-validator.validate_and_throw(person)
+# validator.validate_and_throw(person)
 
 
 print("\n" * 5)
 result = validator.validate(
     person,
-    lambda v: v.IncludeProperties(
-        lambda x: x.name,
-        lambda x: x.dni,
-        lambda x: x.email,
-    ),
+    lambda v: v.IncludeProperties(lambda x: x.ppto),
 )
 if not result.is_valid:
     print(result.to_string())

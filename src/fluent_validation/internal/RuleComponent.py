@@ -1,4 +1,4 @@
-from typing import Callable, Optional, overload
+from typing import Any, Callable, Optional, overload
 
 from fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
 from fluent_validation.IValidationContext import ValidationContext
@@ -20,6 +20,9 @@ class RuleComponent[T, TProperty](IRuleComponent):
         self._errorMessageFactory: Callable[[ValidationContext], T] = None
 
         self._condition: Callable[[ValidationContext[T], bool]] = None
+
+        self._CustomStateProvider:Callable[[ValidationContext[T], TProperty], Any] = None
+        self._SeverityProvider:Callable[[ValidationContext[T]], TProperty] = None
 
     def __repr__(self) -> str:
         return f"<RuleComponent validator: {self.ErrorCode}>"
@@ -95,6 +98,23 @@ class RuleComponent[T, TProperty](IRuleComponent):
             return self._condition(context)
         return True
 
+    @property
+    def CustomStateProvider(self) -> Callable[[ValidationContext[T], TProperty], Any]:
+        """Function used to retrieve custom state for the validator"""
+        return self._CustomStateProvider
+
+    @CustomStateProvider.setter
+    def CustomStateProvider(self, value: Callable[[ValidationContext[T], TProperty], Any]) -> None:
+        self._CustomStateProvider = value
+
+    @property
+    def SeverityProvider(self) -> Callable[[ValidationContext[T]], TProperty]:
+        """Function used to retrieve the severity for the validator"""
+        return self._SeverityProvider
+
+    @SeverityProvider.setter
+    def SeverityProvider(self, value: Callable[[ValidationContext[T]], TProperty]) -> None:
+        self._SeverityProvider = value
     def GetErrorMessage(self, context: Optional[ValidationContext[T]], value: TProperty):
         # FIXME [x]: self._error_message has value when it must by empty test "test_When_the_maxlength_validator_fails_the_error_message_should_be_set"
         rawTemplate: Optional[str] = setattr(self._errorMessageFactory, value) if self._errorMessageFactory else self._error_message

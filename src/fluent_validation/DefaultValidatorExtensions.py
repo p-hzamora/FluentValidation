@@ -352,9 +352,10 @@ class DefaultValidatorExtensions[T, TProperty]:
     # 	}
 
     @staticmethod
-    def get_display_name(member: MemberInfo, expression: Callable[[T], TProperty]) -> str:
-        #FIXME [ ]: The original code called 'DisplayNameResolver' but break some tests
-        name = ValidatorOptions.Global.PropertyNameResolver(type(T), member, expression)
-        if name is None:
-            return name
-        return ExtensionsInternal.split_pascal_case(name)
+    def get_display_name(member: MemberInfo, expression: Callable[[T], TProperty]) -> None | str:
+        # FIXME [ ]: The original code called 'DisplayNameResolver' but break some tests
+        if (display_name_resolver := ValidatorOptions.Global.DisplayNameResolver(type(T), member, expression)) is not None:
+            return display_name_resolver
+        if member is not None:
+            return ExtensionsInternal.split_pascal_case(member.Name)
+        return None

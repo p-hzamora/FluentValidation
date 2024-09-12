@@ -65,6 +65,10 @@ class ScalePrecisionValidator[T](PropertyValidator[T, Decimal]):
 
     @override
     def is_valid(self, context: ValidationContext[T], decimalValue: Decimal) -> bool:
+        #TODOM: That conditional does not exist in the original code. Check it
+        if decimalValue is None:
+            return True
+        
         scale = self.GetScale(decimalValue)
         precision = self.GetPrecision(decimalValue)
         actualIntegerDigits = precision - scale

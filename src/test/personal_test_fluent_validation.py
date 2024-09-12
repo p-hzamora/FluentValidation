@@ -8,7 +8,7 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop(
 
 from dataclasses import dataclass  # noqa: E402
 from fluent_validation.abstract_validator import AbstractValidator  # noqa: E402
-from fluent_validation.enums import CascadeMode  # noqa: E402
+from fluent_validation.enums import CascadeMode, Severity  # noqa: E402
 
 
 class RegexPattern:
@@ -24,7 +24,8 @@ class Orders:
     name: str = None
     date: Optional[datetime] = None
     is_free: bool = False
-    price: int = 200
+    price: Decimal = 200
+    credit_card: str = None
 
 
 class OrdersValidator(AbstractValidator[Orders]):
@@ -34,7 +35,8 @@ class OrdersValidator(AbstractValidator[Orders]):
         self.rule_for(lambda x: x.name).not_equal("pablo")
         self.rule_for(lambda x: x.date).not_null()
         self.rule_for(lambda x: x.is_free).must(lambda x: isinstance(x, bool))
-        self.rule_for(lambda x: x.price).less_than_or_equal_to(0).when(lambda x: x.is_free is True)
+        self.rule_for(lambda x: x.price).less_than_or_equal_to(Decimal("0.00")).when(lambda x: x.is_free is True).precision_scale(6, 2, True)  # max 9999.99
+        self.rule_for(lambda o: o.credit_card).not_null().WithErrorCode("Null").not_empty().WithErrorCode("Empty").with_severity(Severity.Info).credit_card().with_severity(Severity.Warning)
 
 
 @dataclass
@@ -49,7 +51,7 @@ class Person:
     edad_min: int = None
     edad_max: int = None
     ppto: int | float | Decimal = None
-    credit_card: str = None
+    orders: list[Orders] = None
 
 
 class PersonValidator(AbstractValidator[Person]):
@@ -58,50 +60,62 @@ class PersonValidator(AbstractValidator[Person]):
         self.ClassLevelCascadeMode = CascadeMode.Continue
         self.RuleLevelCascadeMode = CascadeMode.Continue
         self.rule_for(lambda x: x.name).Cascade(CascadeMode.Continue).not_null().not_empty().max_length(30)
-        self.rule_for(lambda x: x.edad).not_null().must(lambda obj, value: obj.edad_min == value)
+        self.rule_for(lambda x: x.edad).Cascade(CascadeMode.Stop).not_null().must(lambda obj, value: obj.edad_min <= value <= obj.edad_max).with_severity(Severity.Warning)
         self.rule_for(lambda x: x.fecha_ini).not_null().less_than_or_equal_to(lambda x: x.fecha_fin)
-        self.rule_for(lambda x: x.edad).not_null().greater_than_or_equal_to(lambda x: x.edad_min).less_than_or_equal_to(lambda x: x.edad_max)
         self.rule_for(lambda x: x.ppto).precision_scale(5, 2, True)
         self.rule_for(lambda x: x.fecha_ini).not_null().less_than_or_equal_to(datetime.today())
-        self.rule_for(lambda x: x.dni).not_null().must(lambda x: isinstance(x, str)).with_message("Custom message of IsInstance method").matches(RegexPattern.Dni)
+        self.rule_for(lambda x: x.dni).not_null().must(lambda x: isinstance(x, str)).with_message("Custom message of IsInstance method").matches(RegexPattern.Dni).with_name("DNI")
         self.rule_for(lambda x: x.email).not_null().matches(RegexPattern.Email).with_message("The entered mail does not comply with the specific regex rules").max_length(15)
-        # self.rule_for(lambda x: x.orders).set_validator(OrdersValidator())
-        self.rule_for(lambda x: x.credit_card).not_empty().credit_card()
+        self.rule_for_each(lambda x: x.orders).set_validator(OrdersValidator())
+
+        self.rule_set(
+            "custom",
+            lambda: (
+                self.rule_for(lambda p: p.name).equal("pablo"),
+                self.rule_for(lambda p: p.edad).equal(25),
+                self.rule_for(lambda p: p.dni).equal("11111111P"),
+            ),
+        )
 
 
-# person = Person(
-#     name="Pablo",
-#     dni="00000000P",
-#     email="pablo@gmail.org",
-#     fecha_ini=datetime(2020, 11, 20),
-#     fecha_fin=datetime.today(),
-#     edad_min=5,
-#     edad=5,
-#     edad_max=20,
-#     ppto=550,  # -550.56,
-#     orders=Orders(150, "pablo", None, "SI", 10000),
-# )
+orders = [
+    Orders(0, "pp", datetime.now(), True, Decimal("10000.00"), credit_card=""),
+    Orders(50, "pablo", None, False, Decimal("10000.00"), credit_card=None),
+    Orders(100, "luis", None, False, Decimal("10000.00"), credit_card="0000000000000000"),
+    Orders(150, "Jhon", None, True, Decimal("10000.00"), credit_card="0000-1312-0000-1234"),
+]
 
-# validator = PersonValidator()
-# result = validator.validate(person)
-
-
-person = Person(
+person_errors = Person(
     name="",
     dni="___",
     email="pablo.org",
-    credit_card="",
-    ppto=Decimal("12.55000000")
+    ppto=Decimal("12.558000000"),
+    orders=orders,
+)
+
+person_correct = Person(
+    name="Pablo",
+    dni="51515151P",
+    email="pp@hotmail.org",
+    ppto=Decimal("12.55000000"),
+    fecha_fin=datetime(2020, 11, 20),
+    fecha_ini=datetime(2020, 11, 20),
+    edad_min=1,
+    edad_max=30,
+    edad=31,
 )
 
 validator = PersonValidator()
-# validator.validate_and_throw(person)
 
-
-print("\n" * 5)
 result = validator.validate(
-    person,
-    lambda v: v.IncludeProperties(lambda x: x.ppto),
+    person_errors,
+    lambda v: (
+        v.IncludeProperties(lambda x: x.orders),
+        v.IncludeRuleSets("custom"),
+    ),
 )
+
 if not result.is_valid:
-    print(result.to_string())
+    for err in result.errors:
+        print(f"-- [{err.Severity}, {err.ErrorCode}]\t{err.PropertyName}: {err.ErrorMessage}")
+print("OK")

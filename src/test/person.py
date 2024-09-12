@@ -108,9 +108,9 @@ class IOrder(ABC):
 class Order(IOrder):
     def __init__(
         self,
-        Amount: Decimal=Decimal("0"),
-        ProductName: str=None,
-        Payments: list["Payment"]=None,
+        Amount: Decimal = Decimal("0"),
+        ProductName: str = None,
+        Payments: list["Payment"] = None,
     ):
         self._Amount: Decimal = Amount
         self._ProductName: str = ProductName

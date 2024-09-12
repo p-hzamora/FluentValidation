@@ -70,7 +70,7 @@ class ValidatorConfiguration:
         self._defaultRuleLevelCascadeMode: CascadeMode = CascadeMode.Continue
 
         self._PropertyChainSeparator: str = "."
-        self._severity:_Severity = _Severity.Error
+        self._severity: _Severity = _Severity.Error
 
     # region Properties
     @property
@@ -89,14 +89,13 @@ class ValidatorConfiguration:
     def DefaultRuleLevelCascadeMode(self, value):
         self._defaultRuleLevelCascadeMode = value
 
-
     @property
-    def Severity(self)->_Severity:
+    def Severity(self) -> _Severity:
         """Default severity level"""
         return self._severity
 
     @Severity.setter
-    def Severity(self, value:_Severity)->None:
+    def Severity(self, value: _Severity) -> None:
         self._severity = value
 
     @property

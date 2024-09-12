@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 from typing import Any
 import unittest
 from pathlib import Path

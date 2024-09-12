@@ -21,8 +21,8 @@ class RuleComponent[T, TProperty](IRuleComponent):
 
         self._condition: Callable[[ValidationContext[T], bool]] = None
 
-        self._CustomStateProvider:Callable[[ValidationContext[T], TProperty], Any] = None
-        self._SeverityProvider:Callable[[ValidationContext[T]], TProperty] = None
+        self._CustomStateProvider: Callable[[ValidationContext[T], TProperty], Any] = None
+        self._SeverityProvider: Callable[[ValidationContext[T]], TProperty] = None
 
     def __repr__(self) -> str:
         return f"<RuleComponent validator: {self.ErrorCode}>"

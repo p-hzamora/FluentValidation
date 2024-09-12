@@ -5,7 +5,6 @@ from typing import overload
 from fluent_validation.internal.ExtensionInternal import ExtensionsInternal
 
 
-
 class CultureInfo:
     CurrentUICulture = None
 

@@ -3,12 +3,12 @@ import sys
 from pathlib import Path
 
 
-
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 from CultureScope import CultureScope
 from TestValidator import TestValidator
 from person import Person
+
 
 class CreditCardValidatorTests(unittest.TestCase):
     def setUp(self):

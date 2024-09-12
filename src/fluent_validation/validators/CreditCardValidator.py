@@ -14,7 +14,6 @@ class CreditCardValidator[T](PropertyValidator[T, str], ICreditCardValidator):
     This logic was taken from the CreditCardAttribute in the ASP.NET MVC3 source.
     """
 
-
     def __init__(self) -> None:
         super().__init__()
 
@@ -26,10 +25,9 @@ class CreditCardValidator[T](PropertyValidator[T, str], ICreditCardValidator):
     def is_valid(self, context: ValidationContext[T], value: str) -> str:
         if value is None:
             return True
-        
+
         if not isinstance(value, str):
             return False
-
 
         value = value.replace("-", "").replace(" ", "")
 

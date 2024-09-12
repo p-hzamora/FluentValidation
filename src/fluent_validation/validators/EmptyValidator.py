@@ -1,4 +1,3 @@
-
 # from typing import Iterable, override
 
 # from fluent_validation.validators import PropertyValidator
@@ -7,20 +6,18 @@
 
 # class EmptyValidator[T,TProperty](PropertyValidator[T,TProperty]):
 
-# 	@override 
+# 	@override
 # 	def is_valid(context:ValidationContext[T], value:TProperty)->bool:
 # 		if (value is None):
 # 			return True
-	
 
 
 # 		if isinstance(value, str) and (value.isspace()):
 # 			return True
-	
+
 
 # 		if isinstance(value, Iterable) and (len(value) == 0):
 # 			return True
-	
 
 
 # 		# return EqualityComparer<TProperty>.Default.Equals(value, default)
@@ -36,4 +33,4 @@
 
 # 		using (enumerator as IDisposable):
 # 			return !enumerator.MoveNext()
-	
+

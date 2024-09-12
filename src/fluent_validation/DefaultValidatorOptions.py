@@ -163,10 +163,10 @@ class DefaultValidatorOptions[T, TProperty]:
     @overload
     def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilder[T, TProperty]: ...  # (?<!#)\s+IRuleBuilderOptions[T, TProperty]
 
-    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str|Callable[[T], str]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
+    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str | Callable[[T], str]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
         if callable(nameProvider):
 
-            def _lambda(context:ValidationContext[T]):
+            def _lambda(context: ValidationContext[T]):
                 instance = context.instance_to_validate if context else None
                 return nameProvider(instance)
 
@@ -179,36 +179,35 @@ class DefaultValidatorOptions[T, TProperty]:
             rule.configurable(rule).SetDisplayName(nameProvider)
             return rule
 
+    #     public static IRuleBuilderOptions[T, TProperty] OverridePropertyName(rule:IRuleBuilderOptions[T, TProperty], str propertyName) {
+    #         # Allow str.Empty as this could be a model-level rule.
+    #         if (propertyName == null) throw new ArgumentNullException(nameof(propertyName), "A property name must be specified when calling OverridePropertyName.");
+    #         Configurable(rule).PropertyName = propertyName;
+    #         return rule;
+    #     }
 
-#     public static IRuleBuilderOptions[T, TProperty] OverridePropertyName(rule:IRuleBuilderOptions[T, TProperty], str propertyName) {
-#         # Allow str.Empty as this could be a model-level rule.
-#         if (propertyName == null) throw new ArgumentNullException(nameof(propertyName), "A property name must be specified when calling OverridePropertyName.");
-#         Configurable(rule).PropertyName = propertyName;
-#         return rule;
-#     }
+    #     public static IRuleBuilderOptions[T, TProperty] OverridePropertyName(rule:IRuleBuilderOptions[T, TProperty], Expression<Callable<T, object>> expr) {
+    #         if (expr == null) throw new ArgumentNullException(nameof(expr));
+    #         var member = expr.GetMember();
+    #         if (member == null) throw new NotSupportedException("Must supply a MemberExpression when calling OverridePropertyName");
+    #         return rule.OverridePropertyName(member.Name);
+    #     }
 
-#     public static IRuleBuilderOptions[T, TProperty] OverridePropertyName(rule:IRuleBuilderOptions[T, TProperty], Expression<Callable<T, object>> expr) {
-#         if (expr == null) throw new ArgumentNullException(nameof(expr));
-#         var member = expr.GetMember();
-#         if (member == null) throw new NotSupportedException("Must supply a MemberExpression when calling OverridePropertyName");
-#         return rule.OverridePropertyName(member.Name);
-#     }
+    #     public static IRuleBuilderOptions[T, TProperty] WithState(rule:IRuleBuilderOptions[T, TProperty], Callable<T, object> stateProvider) {
+    #         var wrapper = new Callable<ValidationContext[T], TProperty, object>((ctx, _) => stateProvider(ctx.InstanceToValidate));
+    #         Configurable(rule).Current.CustomStateProvider = wrapper;
+    #         return rule;
+    #     }
 
-#     public static IRuleBuilderOptions[T, TProperty] WithState(rule:IRuleBuilderOptions[T, TProperty], Callable<T, object> stateProvider) {
-#         var wrapper = new Callable<ValidationContext[T], TProperty, object>((ctx, _) => stateProvider(ctx.InstanceToValidate));
-#         Configurable(rule).Current.CustomStateProvider = wrapper;
-#         return rule;
-#     }
+    #     public static IRuleBuilderOptions[T, TProperty] WithState(rule:IRuleBuilderOptions[T, TProperty], Callable<T, TProperty, object> stateProvider) {
 
-#     public static IRuleBuilderOptions[T, TProperty] WithState(rule:IRuleBuilderOptions[T, TProperty], Callable<T, TProperty, object> stateProvider) {
+    #         var wrapper = new Callable<ValidationContext[T], TProperty, object>((ctx, val) => {
+    #             return stateProvider(ctx.InstanceToValidate, val);
+    #         });
 
-#         var wrapper = new Callable<ValidationContext[T], TProperty, object>((ctx, val) => {
-#             return stateProvider(ctx.InstanceToValidate, val);
-#         });
-
-#         Configurable(rule).Current.CustomStateProvider = wrapper;
-#         return rule;
-#     }
+    #         Configurable(rule).Current.CustomStateProvider = wrapper;
+    #         return rule;
+    #     }
 
 #     ///<summary>
 #     public static IRuleBuilderOptions[T, TProperty] WithSeverity(rule:IRuleBuilderOptions[T, TProperty], Severity severity) {

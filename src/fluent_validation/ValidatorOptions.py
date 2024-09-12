@@ -65,12 +65,11 @@ class ValidatorConfiguration:
         self._messageFormatterFactory: Callable[[], MessageFormatter] = lambda: MessageFormatter()
         self._errorCodeResolver: Callable[[IPropertyValidator], str] = self.DefaultErrorCodeResolver
         self._languageManager: ILanguageManager = LanguageManager()
-        self._PropertyChainSeparator: str = "."
 
-        # COMMENT: original C# Library has this vars as CascadeMode.Continue
         self._defaultClassLevelCascadeMode: CascadeMode = CascadeMode.Continue
         self._defaultRuleLevelCascadeMode: CascadeMode = CascadeMode.Continue
 
+        self._PropertyChainSeparator: str = "."
     # region Properties
     @property
     def DefaultClassLevelCascadeMode(self) -> CascadeMode:

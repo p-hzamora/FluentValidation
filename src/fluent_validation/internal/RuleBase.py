@@ -111,13 +111,12 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._propertyName = value
         self._propertyDisplayName = ExtensionsInternal.split_pascal_case(self._propertyName)
 
-
     @overload
     def SetDisplayName(self, name: str): ...
     @overload
-    def SetDisplayName(self, name: Callable[[ValidationContext[T],str]]): ...
+    def SetDisplayName(self, name: Callable[[ValidationContext[T], str]]): ...
 
-    def SetDisplayName(self, name: str| Callable[[ValidationContext[T],str]]):
+    def SetDisplayName(self, name: str | Callable[[ValidationContext[T], str]]):
         if callable(name):
             self._displayNameFactory = name
             self._displayName = None
@@ -126,9 +125,6 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
             self._displayName = name
             self._displayNameFactory = None
         return None
-        
-        
-
 
     @property
     def Current(self) -> IRuleComponent:
@@ -183,7 +179,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
     # 			validator.ApplyAsyncCondition(predicate);
     # 		}
 
-    # 		if (DependentRules != null) {
+    # 		if (DependentRules is not None) {
     # 			foreach (var dependentRule in DependentRules) {
     # 				dependentRule.ApplyAsyncCondition(predicate, applyConditionTo);
     # 			}

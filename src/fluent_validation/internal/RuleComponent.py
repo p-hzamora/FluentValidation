@@ -38,14 +38,6 @@ class RuleComponent[T, TProperty](IRuleComponent):
         # return self._asyncCondition is not None
 
     @property
-    def ErrorCode(self) -> str:
-        return self._error_code
-
-    @ErrorCode.setter
-    def ErrorCode(self, value: str) -> str:
-        self._error_code = value
-
-    @property
     def Validator(self) -> IPropertyValidator:
         return self._property_validator  # needs to be implemented => (IPropertyValidator) _propertyValidator ?? _asyncPropertyValidator
 
@@ -98,6 +90,14 @@ class RuleComponent[T, TProperty](IRuleComponent):
             return self._condition(context)
         return True
 
+    # internal async Task<bool> InvokeAsyncCondition(ValidationContext<T> context, CancellationToken token) {
+    # 	if (_asyncCondition != null) {
+    # 		return await _asyncCondition(context, token);
+    # 	}
+
+    # 	return true;
+    # }
+
     @property
     def CustomStateProvider(self) -> Callable[[ValidationContext[T], TProperty], Any]:
         """Function used to retrieve custom state for the validator"""
@@ -115,6 +115,16 @@ class RuleComponent[T, TProperty](IRuleComponent):
     @SeverityProvider.setter
     def SeverityProvider(self, value: Callable[[ValidationContext[T]], TProperty]) -> None:
         self._SeverityProvider = value
+
+    @property
+    def ErrorCode(self) -> str:
+        """Retrieves the error code."""
+        return self._error_code
+
+    @ErrorCode.setter
+    def ErrorCode(self, value: str) -> None:
+        self._error_code = value
+
     def GetErrorMessage(self, context: Optional[ValidationContext[T]], value: TProperty):
         # FIXME [x]: self._error_message has value when it must by empty test "test_When_the_maxlength_validator_fails_the_error_message_should_be_set"
         rawTemplate: Optional[str] = setattr(self._errorMessageFactory, value) if self._errorMessageFactory else self._error_message
@@ -133,3 +143,23 @@ class RuleComponent[T, TProperty](IRuleComponent):
         if message is None:
             message = self.Validator.get_default_message_template(self.ErrorCode)
         return message
+
+
+# 	/// <summary>
+# 	/// Sets the overridden error message template for this validator.
+# 	/// </summary>
+# 	/// <param name="errorFactory">A function for retrieving the error message template.</param>
+# 	public void SetErrorMessage(Func<ValidationContext<T>, TProperty, string> errorFactory) {
+# 		_errorMessageFactory = errorFactory;
+# 		_errorMessage = null;
+# 	}
+
+# 	/// <summary>
+# 	/// Sets the overridden error message template for this validator.
+# 	/// </summary>
+# 	/// <param name="errorMessage">The error message to set</param>
+# 	public void SetErrorMessage(string errorMessage) {
+# 		_errorMessage = errorMessage;
+# 		_errorMessageFactory = null;
+# 	}
+# }

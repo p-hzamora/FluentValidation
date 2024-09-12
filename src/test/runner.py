@@ -17,6 +17,7 @@ import test_NameResolutionPluggability
 import test_ForEachRule
 import test_DefaultValidatorExtension
 import test_CreditCardValidator
+import test_ScalePrecisionValidator
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -25,8 +26,10 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_CreditCardValidator),
+        *loader.loadTestsFromModule(test_ScalePrecisionValidator),
         *loader.loadTestsFromModule(test_DefaultValidatorExtension),
-        *loader.loadTestsFromModule(test_ForEachRule), #FIXME [ ]: If I add this module at the end of the tuple, then I get 6 errors like '- foo[0].foo + Orders[0].ProductName'
+        *loader.loadTestsFromModule(test_ForEachRule),  # FIXME [ ]: If I add this module at the end of the tuple, then I get 6 errors like '- foo[0].foo + Orders[0].ProductName'
         *loader.loadTestsFromModule(test_AbstractValidator),
         *loader.loadTestsFromModule(test_Equal),
         *loader.loadTestsFromModule(test_GreaterThanOrEqual),
@@ -41,7 +44,6 @@ suite.addTests(
         *loader.loadTestsFromModule(test_SharedCondition),
         *loader.loadTestsFromModule(test_ValidateAndThrow),
         *loader.loadTestsFromModule(test_NameResolutionPluggability),
-        *loader.loadTestsFromModule(test_CreditCardValidator),
     )
 )
 

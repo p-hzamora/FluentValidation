@@ -166,8 +166,8 @@ class DefaultValidatorOptions[T, TProperty]:
     def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str|Callable[[T], str]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
         if callable(nameProvider):
 
-            def _lambda(context):
-                instance: T = context.instance_to_validate if context else None
+            def _lambda(context:ValidationContext[T]):
+                instance = context.instance_to_validate if context else None
                 return nameProvider(instance)
 
             # Must use null propagation here.

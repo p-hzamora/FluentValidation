@@ -54,16 +54,16 @@ If you use FluentValidation in a commercial project, please sponsor the project 
   - [Predicate Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#predicate-validator)
   - [Regular Expression Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#regular-expression-validator)
   - [Email Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#email-validator) (Not available)
-  - [Credit Card Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#credit-card-validator) (Not available)
+  - [Credit Card Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#credit-card-validator)
   - [Enum Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-validator) (Not available)
   - [Enum Name Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-name-validator) (Not available)
   - [Empty Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#empty-validator)
   - [Null Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#null-validator)
   - [ExclusiveBetween Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#exclusivebetween-validator) (Not available)
   - [InclusiveBetween Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#inclusivebetween-validator) (Not available)
-  - [PrecisionScale Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#precisionscale-validator) (Not available)
+  - [PrecisionScale Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#precisionscale-validator)
 
-- [Custom Validators](https://github.com/p-hzamora/FluentValidation/blob/main/docs/custom-validators.md) [Not available]
+- [Custom Validators](https://github.com/p-hzamora/FluentValidation/blob/main/docs/custom-validators.md) (Not available)
 
 #### Other Features
 - [Including Rules](https://github.com/p-hzamora/FluentValidation/blob/main/docs/including-rules.md)

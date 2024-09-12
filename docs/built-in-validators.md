@@ -310,7 +310,7 @@ Checks whether a string property could be a valid credit card number.
 
 Example:
 ```python
-self.rule_for(lambda x: x.CreditCard).CreditCard()
+self.rule_for(lambda x: x.CreditCard).credit_card()
 ```
 Example error: *'Credit Card' is not a valid credit card number.*
 
@@ -375,7 +375,7 @@ when used on an IEnumerable (such as arrays, collections, lists, etc.), the vali
 
 Example:
 ```python
-self.rule_for(lambda x: x.Surname).Empty()
+self.rule_for(lambda x: x.Surname).empty()
 ```
 Example error: *'Surname' must be empty.*
 
@@ -435,7 +435,7 @@ Checks whether a decimal value has the specified precision and scale.
 
 Example:
 ```python
-self.rule_for(lambda x: x.Amount).PrecisionScale(4, 2, false)
+self.rule_for(lambda x: x.Amount).precision_scale(4, 2, false)
 ```
 Example error: *'Amount' must not be more than 4 digits in total, with allowance for 2 decimals. 5 digits and 3 decimals were found.*
 

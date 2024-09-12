@@ -159,21 +159,27 @@ class DefaultValidatorOptions[T, TProperty]:
 #         return rule;
 #     }
 
-#     public static IRuleBuilderOptions[T, TProperty] WithName(rule:IRuleBuilderOptions[T, TProperty], str overridePropertyName) {
-#         Configurable(rule).SetDisplayName(overridePropertyName);
-#         return rule;
-#     }
+    @overload
+    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    @overload
+    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
 
-#     public static IRuleBuilderOptions[T, TProperty] WithName(rule:IRuleBuilderOptions[T, TProperty], Callable<T, str> nameProvider) {
-#         # Must use null propagation here.
-#         # The MVC clientside validation will try and retrieve the name, but won't
-#         # be able to to so if we've used this overload of WithName.
-#         Configurable(rule).SetDisplayName((context => {
-#             T instance = context == null ? default : context.InstanceToValidate;
-#             return nameProvider(instance);
-#         }));
-#         return rule;
-#     }
+    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
+        if callable(nameProvider):
+
+            def _lambda(context):
+                instance: T = context.instance_to_validate if context else None
+                return nameProvider(instance)
+
+            # Must use null propagation here.
+            # The MVC clientside validation will try and retrieve the name, but won't
+            # be able to to so if we've used this overload of WithName.
+            rule.configurable(rule).SetDisplayName(_lambda)
+            return rule
+        else:
+            rule.configurable(rule).SetDisplayName(nameProvider)
+            return rule
+
 
 #     public static IRuleBuilderOptions[T, TProperty] OverridePropertyName(rule:IRuleBuilderOptions[T, TProperty], str propertyName) {
 #         # Allow str.Empty as this could be a model-level rule.

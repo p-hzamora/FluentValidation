@@ -44,7 +44,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._components: list[RuleComponent[T, TProperty]] = []
         self._condition: Optional[Callable[[ValidationContext[T]], bool]] = None
 
-        self._displayName: str = self._propertyName  # FIXME [x]: This implementation is wrong. It must call the "GetDisplay" method
+        self._displayName: str = None
         self._rule_sets: Optional[list[str]] = None
         self._DependentRules: list[IValidationRuleInternal[T]] = None
 
@@ -62,7 +62,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
     def get_display_name(self, context: ValidationContext[T]) -> None | str:
         if self._displayNameFactory is not None and (res := self._displayNameFactory(context)) is not None:
             return res
-        elif self._displayName:
+        elif self._displayName is not None:
             return self._displayName
         else:
             return self._propertyDisplayName

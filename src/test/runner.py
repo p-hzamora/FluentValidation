@@ -18,6 +18,7 @@ import test_ForEachRule
 import test_DefaultValidatorExtension
 import test_CreditCardValidator
 import test_ScalePrecisionValidator
+import test_Empty
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -26,6 +27,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_Empty),
         *loader.loadTestsFromModule(test_CreditCardValidator),
         *loader.loadTestsFromModule(test_ScalePrecisionValidator),
         *loader.loadTestsFromModule(test_DefaultValidatorExtension),

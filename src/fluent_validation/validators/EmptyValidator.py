@@ -1,36 +1,33 @@
-# from typing import Iterable, override
+from typing import Iterable, override
 
-# from fluent_validation.validators import PropertyValidator
-# from fluent_validation.IValidationContext import ValidationContext
-
-
-# class EmptyValidator[T,TProperty](PropertyValidator[T,TProperty]):
-
-# 	@override
-# 	def is_valid(context:ValidationContext[T], value:TProperty)->bool:
-# 		if (value is None):
-# 			return True
+from fluent_validation.validators.PropertyValidator import PropertyValidator
+from fluent_validation.IValidationContext import ValidationContext
 
 
-# 		if isinstance(value, str) and (value.isspace()):
-# 			return True
+class EmptyValidator[T, TProperty](PropertyValidator[T, TProperty]):
+    @override
+    def is_valid(self, context: ValidationContext[T], value: TProperty) -> bool:
+        if value is None:
+            return True
 
+        if isinstance(value, str) and (value.isspace()):
+            return True
 
-# 		if isinstance(value, Iterable) and (len(value) == 0):
-# 			return True
+        if isinstance(value, Iterable) and (self.IsEmpty(value)):
+            return True
 
+        return value == type(value)()
 
-# 		# return EqualityComparer<TProperty>.Default.Equals(value, default)
+    @override
+    def get_default_message_template(self, errorCode: str) -> str:
+        return self.Localized(errorCode, self.Name)
 
+    @staticmethod
+    def IsEmpty(enumerable: Iterable) -> bool:
+        enumerator = iter(enumerable)
 
-# 	@override
-# 	def GetDefaultMessageTemplate(self, errorCode:str)->str:
-# 		return self.Localized(errorCode, self.Name)
-
-
-# 	def IsEmpty(enumerable:Iterable)->bool:
-# 		var enumerator = enumerable.GetEnumerator()
-
-# 		using (enumerator as IDisposable):
-# 			return !enumerator.MoveNext()
-
+        try:
+            next(enumerator)
+            return False
+        except StopIteration:
+            return True

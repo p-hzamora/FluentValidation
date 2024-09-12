@@ -5,6 +5,7 @@ import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.AccessorCache import AccessorCache
+from fluent_validation.validators.EmptyValidator import EmptyValidator
 
 if TYPE_CHECKING:
     from fluent_validation.syntax import IRuleBuilder
@@ -68,8 +69,8 @@ class DefaultValidatorExtensions[T, TProperty]:
     def not_empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
         return ruleBuilder.set_validator(NotEmptyValidator[T, TProperty]())
 
-    # def empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
-    #     return ruleBuilder.set_validator(EmptyValidator[T, TProperty]())
+    def empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
+        return ruleBuilder.set_validator(EmptyValidator[T, TProperty]())
 
     # region less_than
     @overload

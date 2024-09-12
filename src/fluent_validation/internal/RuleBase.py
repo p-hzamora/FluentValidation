@@ -231,5 +231,12 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         failure.FormattedMessagePlaceholderValues = context.MessageFormatter.PlaceholderValues.copy()
         failure.ErrorCode = component.ErrorCode if component.ErrorCode is not None else ValidatorOptions.Global.ErrorCodeResolver(component.Validator)
 
+        failure.Severity = component.SeverityProvider(context, value) if component.SeverityProvider is not None else ValidatorOptions.Global.Severity
+
+        if component.CustomStateProvider is not None:
+            failure.CustomState = component.CustomStateProvider(context, value)
+
+        # if (ValidatorOptions.Global.OnFailureCreated is not None):
+        #     failure = ValidatorOptions.Global.OnFailureCreated(failure, context, value, self, component);
 
         return failure

@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 from typing import Callable, TYPE_CHECKING, overload
 
-from fluent_validation.enums import ApplyConditionTo, CascadeMode
+from fluent_validation.enums import ApplyConditionTo, CascadeMode, Severity as _Severity
 from fluent_validation.IValidationContext import ValidationContext
 
 
@@ -209,41 +209,39 @@ class DefaultValidatorOptions[T, TProperty]:
     #         return rule;
     #     }
 
-#     ///<summary>
-#     public static IRuleBuilderOptions[T, TProperty] WithSeverity(rule:IRuleBuilderOptions[T, TProperty], Severity severity) {
-#         Configurable(rule).Current.SeverityProvider = (_, _) => severity;
-#         return rule;
-#     }
+    @overload
+    def with_severity(rule: IRuleBuilder[T, TProperty], severityProvider: _Severity) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
+    @overload
+    def with_severity(rule: IRuleBuilder[T, TProperty], severityProvider: Callable[[T], _Severity]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
+    @overload
+    def with_severity(rule: IRuleBuilder[T, TProperty], severityProvider: Callable[[T, TProperty], _Severity]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
+    @overload
+    def with_severity(
+        rule: IRuleBuilder[T, TProperty], severityProvider: Callable[[T, TProperty, ValidationContext[T]], _Severity]
+    ) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
 
-#     public static IRuleBuilderOptions[T, TProperty] WithSeverity(rule:IRuleBuilderOptions[T, TProperty], Callable<T, Severity> severityProvider) {
+    def with_severity(
+        rule: IRuleBuilder[T, TProperty], severityProvider: _Severity | Callable[[T, TProperty, ValidationContext[T]], _Severity]
+    ) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]:
+        """Specifies custom severity that should be stored alongside the validation message when validation fails for this rule."""
+        if isinstance(severityProvider, _Severity):
+            rule.configurable(rule).Current.SeverityProvider = lambda a, b: severityProvider
+            return rule
 
-#         Severity SeverityProvider(ValidationContext[T] ctx, TProperty value) {
-#             return severityProvider(ctx.InstanceToValidate);
-#         }
+        def SeverityProvider(ctx: ValidationContext[T], value: TProperty) -> _Severity:
+            match inspect.signature(severityProvider).parameters:
+                case 1:
+                    return severityProvider(ctx.instance_to_validate)
+                case 2:
+                    return severityProvider(ctx.instance_to_validate, value)
+                case 3:
+                    return severityProvider(ctx.instance_to_validate, value, ctx)
+                case _:
+                    raise ValueError
 
-#         Configurable(rule).Current.SeverityProvider = SeverityProvider;
-#         return rule;
-#     }
+            rule.configurable(rule).Current.SeverityProvider = SeverityProvider
+            return rule
 
-#     public static IRuleBuilderOptions[T, TProperty] WithSeverity(rule:IRuleBuilderOptions[T, TProperty], Callable<T, TProperty, Severity> severityProvider) {
-
-#         Severity SeverityProvider(ValidationContext[T] ctx, TProperty value) {
-#             return severityProvider(ctx.InstanceToValidate, value);
-#         }
-
-#         Configurable(rule).Current.SeverityProvider = SeverityProvider;
-#         return rule;
-#     }
-
-#     public static IRuleBuilderOptions[T, TProperty] WithSeverity(rule:IRuleBuilderOptions[T, TProperty], Callable<T, TProperty, ValidationContext[T], Severity> severityProvider) {
-
-#         Severity SeverityProvider(ValidationContext[T] ctx, TProperty value) {
-#             return severityProvider(ctx.InstanceToValidate, value, ctx);
-#         }
-
-#         Configurable(rule).Current.SeverityProvider = SeverityProvider;
-#         return rule;
-#     }
 
 #     public static IRuleBuilderInitialCollection<T, TCollectionElement> OverrideIndexer<T, TCollectionElement>(this IRuleBuilderInitialCollection<T, TCollectionElement> rule, Callable<T, IEnumerable<TCollectionElement>, TCollectionElement, int, str> callback) {
 #         # This overload supports RuleFor().SetCollectionValidator() (which returns IRuleBuilderOptions<T, IEnumerable<TElement>>)

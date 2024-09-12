@@ -9,7 +9,7 @@ from fluent_validation.internal.MessageFormatter import MessageFormatter
 
 from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
-from .enums import CascadeMode
+from .enums import CascadeMode, Severity as _Severity
 from .internal.Resources.LanguageManager import LanguageManager
 from .internal.Resources.ILanguageManager import ILanguageManager
 
@@ -70,6 +70,8 @@ class ValidatorConfiguration:
         self._defaultRuleLevelCascadeMode: CascadeMode = CascadeMode.Continue
 
         self._PropertyChainSeparator: str = "."
+        self._severity:_Severity = _Severity.Error
+
     # region Properties
     @property
     def DefaultClassLevelCascadeMode(self) -> CascadeMode:
@@ -86,6 +88,16 @@ class ValidatorConfiguration:
     @DefaultRuleLevelCascadeMode.setter
     def DefaultRuleLevelCascadeMode(self, value):
         self._defaultRuleLevelCascadeMode = value
+
+
+    @property
+    def Severity(self)->_Severity:
+        """Default severity level"""
+        return self._severity
+
+    @Severity.setter
+    def Severity(self, value:_Severity)->None:
+        self._severity = value
 
     @property
     def PropertyChainSeparator(self) -> str:

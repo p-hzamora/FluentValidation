@@ -229,6 +229,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         failure = ValidationFailure(context.PropertyPath, error, value, component.ErrorCode)
 
         failure.FormattedMessagePlaceholderValues = context.MessageFormatter.PlaceholderValues.copy()
-        failure._ErrorCode = component.ErrorCode if component.ErrorCode is not None else ValidatorOptions.Global.ErrorCodeResolver(component.Validator)
+        failure.ErrorCode = component.ErrorCode if component.ErrorCode is not None else ValidatorOptions.Global.ErrorCodeResolver(component.Validator)
+
 
         return failure

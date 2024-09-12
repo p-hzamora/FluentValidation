@@ -50,6 +50,10 @@ class ValidationFailure:
     def ErrorCode(self) -> str:
         return self._ErrorCode
 
+    @ErrorCode.setter
+    def ErrorCode(self, value: str) -> None:
+        self._ErrorCode = value
+
     @property
     def FormattedMessagePlaceholderValues(self) -> dict[str, Any]:
         return self._FormattedMessagePlaceholderValues

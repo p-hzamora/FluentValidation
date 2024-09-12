@@ -114,8 +114,9 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
     # region equal
     @overload
-    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty, comparer: Callable[[TProperty, str], bool] = None) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
-
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    @overload
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty, comparer: Callable[[TProperty, str], bool]) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
     @overload
     def equal(
         ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Callable[[TProperty, str], bool] = None

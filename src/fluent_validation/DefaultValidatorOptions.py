@@ -85,10 +85,10 @@ class DefaultValidatorOptions[T, TProperty]:
     #     return rule._When(lambda x, ctx: predicate(x), applyConditionTo)
 
     def _When(
-        rule: IRuleBuilderOptions[T, TProperty],
+        rule: IRuleBuilder[T, TProperty],
         predicate: Callable[[T, ValidationContext[T]], bool],
         applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators,
-    ) -> IRuleBuilderOptions[T, TProperty]:
+    ) -> IRuleBuilder[T, TProperty]:
         # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
         rule.configurable(rule).ApplyCondition(lambda ctx: predicate(ctx.instance_to_validate, ValidationContext[T].GetFromNonGenericContext(ctx)), applyConditionTo)
         return rule
@@ -159,11 +159,11 @@ class DefaultValidatorOptions[T, TProperty]:
     #     }
 
     @overload
-    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
     @overload
-    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilder[T, TProperty]: ...  # (?<!#)\s+IRuleBuilderOptions[T, TProperty]
 
-    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
+    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str|Callable[[T], str]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
         if callable(nameProvider):
 
             def _lambda(context):

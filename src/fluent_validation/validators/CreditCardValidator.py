@@ -24,11 +24,12 @@ class CreditCardValidator[T](PropertyValidator[T, str], ICreditCardValidator):
 
     @override
     def is_valid(self, context: ValidationContext[T], value: str) -> str:
+        if value is None:
+            return True
+        
         if not isinstance(value, str):
             return False
 
-        if value is None:
-            return True
 
         value = value.replace("-", "").replace(" ", "")
 

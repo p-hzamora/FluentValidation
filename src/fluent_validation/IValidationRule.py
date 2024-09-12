@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from typing import Any, Callable, TYPE_CHECKING, TypeVar
+from typing import Any, Callable, TYPE_CHECKING, TypeVar, overload
 
 from fluent_validation.enums import ApplyConditionTo
 
@@ -76,15 +76,17 @@ class IValidationRule_one_arg[T](IValidatoinRule_no_args):
 
 
 class IValidationRule[T, TProperty](IValidationRule_one_arg[T]):
-    # @abstractmethod
-    # def SetDisplayName(self, name:str)->None: ...
+    @overload
+    def SetDisplayName(self, name: str) -> None: ...
+    @overload
+    def SetDisplayName(self, name: Callable[[ValidationContext[T]], str]) -> None: ...
+
+    @abstractmethod
+    def SetDisplayName(self, name: str| Callable[[ValidationContext[T]], str]) -> None: ...
 
     @property
     @abstractmethod
     def CascadeMode(self) -> _CascadeMode: ...
-
-    # @abstractmethod
-    # def SetDisplayName(self, factory:Callable[[ValidationContext[T]], str])->None: ...
 
     @abstractmethod
     def AddValidator(self, validator: IPropertyValidator[T, TProperty]): ...

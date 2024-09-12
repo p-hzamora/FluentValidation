@@ -35,6 +35,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._cascadeModeThunk: Callable[[], CascadeMode] = cascadeModeThunk
 
         containerType = type(T)
+        self._propertyDisplayName: Optional[str] = None
         self.PropertyName: Optional[str] = ValidatorOptions.Global.PropertyNameResolver(containerType, member, expression)
         self._displayNameFactory: Callable[[ValidationContext[T], str]] = lambda context: ValidatorOptions.Global.DisplayNameResolver(containerType, member, expression)
 
@@ -42,7 +43,6 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
         self._components: list[RuleComponent[T, TProperty]] = []
         self._condition: Optional[Callable[[ValidationContext[T]], bool]] = None
-        self._propertyDisplayName: Optional[str] = None
 
         self._displayName: str = self._propertyName  # FIXME [x]: This implementation is wrong. It must call the "GetDisplay" method
         self._rule_sets: Optional[list[str]] = None

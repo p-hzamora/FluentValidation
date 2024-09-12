@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Type, Optional, TYPE_CHECKING
+from typing import Any, Callable, Type, Optional, TYPE_CHECKING, overload
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.ValidatorOptions import ValidatorOptions
@@ -111,9 +111,24 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._propertyName = value
         self._propertyDisplayName = ExtensionsInternal.split_pascal_case(self._propertyName)
 
-    def SetDisplayName(self, name: str):
-        self._displayName = name
-        self._displayNameFactory = None
+
+    @overload
+    def SetDisplayName(self, name: str): ...
+    @overload
+    def SetDisplayName(self, name: Callable[[ValidationContext[T],str]]): ...
+
+    def SetDisplayName(self, name: str| Callable[[ValidationContext[T],str]]):
+        if callable(name):
+            self._displayNameFactory = name
+            self._displayName = None
+
+        else:
+            self._displayName = name
+            self._displayNameFactory = None
+        return None
+        
+        
+
 
     @property
     def Current(self) -> IRuleComponent:

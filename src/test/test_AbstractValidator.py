@@ -74,15 +74,15 @@ class AbstractValidatorTester(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "Foo")
         self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
 
-    # def WithName_should_override_field_name(self):
-    #     self.validator.rule_for(lambda x: x.Forename).not_null().WithName("First Name")
-    #     result = self.validator.validate(Person())
-    #     self.assertEqual(result.errors[0].ErrorMessage, "'First Name' must not be empty.")
+    def WithName_should_override_field_name(self):
+        self.validator.rule_for(lambda x: x.Forename).not_null().with_name("First Name")
+        result = self.validator.validate(Person())
+        self.assertEqual(result.errors[0].ErrorMessage, "'First Name' must not be empty.")
 
-    # def WithName_should_override_field_name_with_value_from_other_property(self):
-    #     self.validator.rule_for(lambda x: x.Forename).not_null().WithName(lambda x: x.Surname)
-    #     result = self.validator.validate(Person(Surname="Foo"))
-    #     self.assertEqual(result.errors[0].ErrorMessage, "'Foo' must not be empty.")
+    def WithName_should_override_field_name_with_value_from_other_property(self):
+        self.validator.rule_for(lambda x: x.Forename).not_null().with_name(lambda x: x.Surname)
+        result = self.validator.validate(Person(Surname="Foo"))
+        self.assertEqual(result.errors[0].ErrorMessage, "'Foo' must not be empty.")
 
     # def OverridePropertyName_should_override_property_name(self):
     #     self.validator.rule_for(lambda x: x.Surname).not_null().OverridePropertyName("foo")

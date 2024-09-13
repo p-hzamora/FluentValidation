@@ -9,7 +9,7 @@ from fluent_validation.internal.MessageFormatter import MessageFormatter
 
 from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
-from .enums import CascadeMode, Severity as _Severity
+from .enums import CascadeMode as _CascadeMode, Severity as _Severity
 from .internal.Resources.LanguageManager import LanguageManager
 from .internal.Resources.ILanguageManager import ILanguageManager
 
@@ -66,11 +66,29 @@ class ValidatorConfiguration:
         self._errorCodeResolver: Callable[[IPropertyValidator], str] = self.DefaultErrorCodeResolver
         self._languageManager: ILanguageManager = LanguageManager()
 
-        self._defaultClassLevelCascadeMode: CascadeMode = CascadeMode.Continue
-        self._defaultRuleLevelCascadeMode: CascadeMode = CascadeMode.Continue
+        self._defaultClassLevelCascadeMode: _CascadeMode = _CascadeMode.Continue
+        self._defaultRuleLevelCascadeMode: _CascadeMode = _CascadeMode.Continue
 
         self._PropertyChainSeparator: str = "."
         self._severity: _Severity = _Severity.Error
+
+    @property
+    def CascadeMode(self) -> _CascadeMode:
+        if self._defaultClassLevelCascadeMode == self._defaultRuleLevelCascadeMode:
+            return self._defaultClassLevelCascadeMode
+        elif self._defaultClassLevelCascadeMode == _CascadeMode.Continue and self._defaultRuleLevelCascadeMode == _CascadeMode.Stop:
+            return _CascadeMode.Stop  # COMMENT: Original is CascadeMode.StopOnFirstFailure
+        else:
+            raise Exception(
+                "There is no conversion to a single CascadeMode value from the current combination of "
+                + "DefaultClassLevelCascadeMode and DefaultRuleLevelCascadeMode. "
+                + "Please use these properties instead of the deprecated CascadeMode going forward."
+            )
+
+    @CascadeMode.setter
+    def CascadeMode(self, value: _CascadeMode) -> None:
+        self.DefaultClassLevelCascadeMode = value
+        self.DefaultRuleLevelCascadeMode = value
 
     # region Properties
     @property

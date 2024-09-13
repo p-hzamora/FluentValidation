@@ -37,6 +37,24 @@ class AbstractValidator[T](IValidator[T]):
         self._ruleLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultRuleLevelCascadeMode
         self._rules: TrackingCollection[IValidationRuleInternal] = TrackingCollection()
 
+    @property
+    def CascadeMode(self) -> CascadeMode:
+        if self.ClassLevelCascadeMode == self.RuleLevelCascadeMode:
+            return self.ClassLevelCascadeMode
+        elif self.ClassLevelCascadeMode == CascadeMode.Continue and self.RuleLevelCascadeMode == CascadeMode.Stop:
+            return CascadeMode.Stop # COMMENT: Original is CascadeMode.StopOnFirstFailure
+        else:
+            raise Exception(
+                "There is no conversion to a single CascadeMode value from the current combination of "
+                + "ClassLevelCascadeMode and RuleLevelCascadeMode. "
+                + "Please use these properties instead of the deprecated CascadeMode going forward."
+            )
+
+    @CascadeMode.setter
+    def CascadeMode(self, value: CascadeMode):
+        self.ClassLevelCascadeMode = value
+        self.RuleLevelCascadeMode = value
+
     def __getitem__(self, _index: int):
         return self._rules.__getitem__(_index)
 
@@ -252,10 +270,6 @@ class AbstractValidator[T](IValidator[T]):
     #     Rules.Add(rule)
     #     OnRuleAdded(rule)
     # }
-
-    # public IEnumerator<IValidationRule> GetEnumerator() => Rules.GetEnumerator()
-
-    # IEnumerator IEnumerable.GetEnumerator() => GetEnumerator()
 
     def PreValidate(self, context: ValidationContext[T], result: ValidationResult) -> bool:
         return True

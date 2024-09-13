@@ -1,6 +1,6 @@
 from __future__ import annotations
 from decimal import Decimal
-from typing import Callable, overload, TYPE_CHECKING
+from typing import Callable, Optional, overload, TYPE_CHECKING
 import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
@@ -121,14 +121,18 @@ class DefaultValidatorExtensions[T, TProperty]:
     @overload
     def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
     @overload
-    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty, comparer: Callable[[TProperty, str], bool]) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
     @overload
     def equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Callable[[TProperty, str], bool] = None
+        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
+    ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    @overload
+    def equal(
+        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None
     ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions[T, TProperty]:
 
     def equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty, comparer: Callable[[TProperty, str], bool] = None
+        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
     ) -> IRuleBuilder[T, TProperty]:  # return IRuleBuilderOptions[T,TProperty]
         expression = toCompare
         if not comparer:
@@ -148,6 +152,8 @@ class DefaultValidatorExtensions[T, TProperty]:
                 comparer=comparer,
             )
         )
+
+    # endregion
 
     # region must
     @overload
@@ -179,8 +185,6 @@ class DefaultValidatorExtensions[T, TProperty]:
                 )
             )
         raise Exception(f"Number of arguments exceeded. Passed {num_args}")
-
-    # endregion
 
     # endregion
     # region not_equal

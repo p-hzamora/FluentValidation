@@ -24,6 +24,9 @@ import test_CascadingFailures
 import test_ChainedValidation
 import test_ChainingValidators
 import test_LegacyCascadeModeProperties
+import test_InclusiveBetweenValidator
+import test_ExclusiveBetweenValidator
+
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -32,6 +35,8 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_InclusiveBetweenValidator),
+        *loader.loadTestsFromModule(test_ExclusiveBetweenValidator),
         *loader.loadTestsFromModule(test_LegacyCascadeModeProperties),
         *loader.loadTestsFromModule(test_ChainedValidation),
         *loader.loadTestsFromModule(test_ChainingValidators),

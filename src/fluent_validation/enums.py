@@ -1,4 +1,5 @@
 from enum import Enum, auto
+from typing import Callable
 
 
 class CascadeMode(Enum):
@@ -17,7 +18,15 @@ class Severity(Enum):
     Info = auto()
 
 
+def ordinal(x: str, y: str):
+    return x == y
+
+
+def ordinal_ignore_case(x: str, y: str):
+    return x.lower() == y.lower()
+
+
 # COMMENT: Replicated StringComparer C# enum
 class StringComparer(Enum):
-    Ordinal = lambda x, y: x == y  # noqa: E731
-    OrdinalIgnoreCase = lambda x, y: x.lower() == y.lower()  # noqa: E731
+    Ordinal: Callable[[str, str], bool] = ordinal
+    OrdinalIgnoreCase: Callable[[str, str], bool] = ordinal_ignore_case

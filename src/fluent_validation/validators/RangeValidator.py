@@ -1,8 +1,13 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import override
+from typing import override, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
+    from fluent_validation.validators.InclusiveBetweenValidator import InclusiveBetweenValidator
 from fluent_validation.IValidationContext import ValidationContext
 
-from fluent_validation.validators import PropertyValidator
+from fluent_validation.validators.PropertyValidator import PropertyValidator
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 
 
@@ -29,7 +34,7 @@ class IComparer[T](ABC):
     """
 
     @abstractmethod
-    def Compare(x: T = None, y: T = None) -> int: ...
+    def Compare(self, x: T = None, y: T = None) -> int: ...
 
 
 class IBetweenValidator(IPropertyValidator):
@@ -38,16 +43,14 @@ class IBetweenValidator(IPropertyValidator):
 
 
 class RangeValidator[T, TProperty](PropertyValidator[T, TProperty], IBetweenValidator):
-    _explicitComparer: IComparer[TProperty]
-
     def __init__(self, ini: TProperty, to: TProperty, comparer: IComparer[TProperty]):
-        self._to = to
-        self._from = ini
+        self._to: TProperty = to
+        self._from: TProperty = ini
 
-        self._explicitComparer = comparer
+        self._explicitComparer: IComparer[TProperty] = comparer
 
         if comparer.Compare(to, ini) == -1:
-            raise Exception(f"'{self._to} To should be larger than from.")
+            raise IndexError(f"'{self._to} To should be larger than from.")
 
     @property
     def From(self):
@@ -57,6 +60,7 @@ class RangeValidator[T, TProperty](PropertyValidator[T, TProperty], IBetweenVali
     def To(self):
         return self._to
 
+    @abstractmethod
     def HasError(self, value: TProperty) -> bool: ...
 
     @override
@@ -76,14 +80,21 @@ class RangeValidator[T, TProperty](PropertyValidator[T, TProperty], IBetweenVali
     def Compare(self, a: TProperty, b: TProperty) -> int:
         return self._explicitComparer.Compare(a, b)
 
+    @override
+    def get_default_message_template(self, errorCode:str)->str:
+        return self.Localized(errorCode, self.Name)
 
-# public static class RangeValidatorFactory {
-# 	public static ExclusiveBetweenValidator<T, TProperty> CreateExclusiveBetween<T,TProperty>(TProperty from, TProperty to)
-# 		where TProperty : IComparable<TProperty>, IComparable =>
-# 		new ExclusiveBetweenValidator<T, TProperty>(from, to, ComparableComparer<TProperty>.Instance);
+class RangeValidatorFactory:
+    @staticmethod
+    def CreateExclusiveBetween[T, TProperty](from_: TProperty, to: TProperty) -> ExclusiveBetweenValidator[T, TProperty]:
+        from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
+        from .ComparableComparer import ComparableComparer
 
-# 	public static InclusiveBetweenValidator<T, TProperty> CreateInclusiveBetween<T,TProperty>(TProperty from, TProperty to)
-# 		where TProperty : IComparable<TProperty>, IComparable {
-# 		return new InclusiveBetweenValidator<T, TProperty>(from, to, ComparableComparer<TProperty>.Instance);
-# 	}
-# }
+        return ExclusiveBetweenValidator[T, TProperty](from_, to, ComparableComparer[TProperty])
+
+    @staticmethod
+    def CreateInclusiveBetween[T, TProperty](from_: TProperty, to: TProperty) -> InclusiveBetweenValidator[T, TProperty]:
+        from fluent_validation.validators.InclusiveBetweenValidator import InclusiveBetweenValidator
+        from .ComparableComparer import ComparableComparer
+
+        return InclusiveBetweenValidator[T, TProperty](from_, to, ComparableComparer[TProperty])

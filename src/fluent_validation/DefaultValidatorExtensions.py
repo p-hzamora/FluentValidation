@@ -7,6 +7,9 @@ from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.AccessorCache import AccessorCache
 from fluent_validation.validators.EmptyValidator import EmptyValidator
 from fluent_validation.validators.NullValidator import NullValidator
+from fluent_validation.validators.InclusiveBetweenValidator import InclusiveBetweenValidator
+from fluent_validation.validators.RangeValidator import RangeValidatorFactory
+from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
 
 if TYPE_CHECKING:
     from fluent_validation.syntax import IRuleBuilder
@@ -248,25 +251,25 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     # endregion
 
-    # static IRuleBuilderOptions[T,TProperty] InclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to) where TProperty : IComparable<TProperty>, IComparable {
-    # 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween[T,TProperty](from, to))
-    # 	}
-    # 	static IRuleBuilderOptions[T,TProperty] InclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to, IComparer<TProperty> comparer) {
-    # 		return ruleBuilder.set_validator(InclusiveBetweenValidator[T,TProperty](from, to, comparer))
-    # 	}
-    # 	static IRuleBuilderOptions<T, TProperty?> InclusiveBetween[T,TProperty](IRuleBuilder<T, TProperty?> ruleBuilder, TProperty from, TProperty to) where TProperty : struct, IComparable<TProperty>, IComparable {
-    # 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween[T,TProperty](from, to))
-    # 	}
+    @overload
+    def inclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
+    @overload
+    def inclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer: None) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
-    # 	static IRuleBuilderOptions[T,TProperty] ExclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to) where TProperty : IComparable<TProperty>, IComparable {
-    # 		return ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween[T,TProperty](from, to))
-    # 	}
+    def inclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer=None) -> IRuleBuilder[T, TProperty]:
+        if comparer is None:
+            return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween(from_, to))
+        return ruleBuilder.set_validator(InclusiveBetweenValidator[T, TProperty](from_, to, comparer))
 
-    # 	static IRuleBuilderOptions[T,TProperty] ExclusiveBetween[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , TProperty from, TProperty to, IComparer<TProperty> comparer)
-    # 		=> ruleBuilder.set_validator(ExclusiveBetweenValidator[T,TProperty](from, to, comparer))
+    @overload
+    def exclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
+    @overload
+    def exclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer: None) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
-    # 	static IRuleBuilderOptions<T, TProperty?> ExclusiveBetween[T,TProperty](IRuleBuilder<T, TProperty?> ruleBuilder, TProperty from, TProperty to) where TProperty : struct, IComparable<TProperty>, IComparable
-    # 		=> ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween[T,TProperty](from, to))
+    def exclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer=None) -> IRuleBuilder[T, TProperty]:
+        if comparer is None:
+            return ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween(from_, to))
+        return ruleBuilder.set_validator(ExclusiveBetweenValidator[T, TProperty](from_, to, comparer))
 
     def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions[T, str]
         return ruleBuilder.set_validator(CreditCardValidator[T]())

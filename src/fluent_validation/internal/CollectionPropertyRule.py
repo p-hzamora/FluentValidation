@@ -8,6 +8,7 @@ from fluent_validation.enums import CascadeMode
 from fluent_validation.internal.AccessorCache import AccessorCache
 from fluent_validation.internal.RuleBase import RuleBase
 from fluent_validation.internal.RuleComponent import RuleComponent
+from fluent_validation.LambdaExpression import LambdaExpression
 
 
 if TYPE_CHECKING:
@@ -100,7 +101,7 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
         propertyName: str = context.PropertyChain.BuildPropertyPath(displayName if not self.PropertyName else self.PropertyName)
 
         if propertyName is None or propertyName == "":
-            propertyName = self.InferPropertyName(self.Expression.func)
+            propertyName = self.InferPropertyName(self.Expression)
 
         # Ensure that this rule is allowed to run.
         # The validatselector has the opportunity to veto this before any of the validators execute.
@@ -214,7 +215,7 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
         return validators
 
     @staticmethod
-    def InferPropertyName(expression: Callable[..., Any]) -> str:
+    def InferPropertyName(expression: LambdaExpression) -> str:
         # TODOM: Checked
         paramExp = expression.__name__
 

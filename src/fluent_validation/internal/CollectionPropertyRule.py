@@ -131,11 +131,10 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
         cascade = self.CascadeMode
 
         try:
-            # TODOH: Get the error most similar to 'NullReferenceException'
+            # FIXME [x]: Get the error most similar to 'NullReferenceException'
             collection: list[TElement] = self.PropertyFunc(context.instance_to_validate)
-        except TypeError as nre:
-            raise TypeError(f"NullReferenceException occurred when executing rule for {self.Expression}. If this property can be null you should add a null check using a When condition", nre)
-
+        except TypeError:
+            raise TypeError(f"TypeError occurred when executing rule for '{self.Expression.lambda_to_string}'. If this property can be None you should add a null check using a when condition")
         count: int = 0
         totalFailures: int = len(context.Failures)
 

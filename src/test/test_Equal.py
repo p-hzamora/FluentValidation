@@ -5,6 +5,7 @@ from pathlib import Path
 
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
+from fluent_validation.ValidatorOptions import ValidatorOptions
 from fluent_validation.enums import StringComparer
 from TestValidator import TestValidator  # noqa: E402
 from person import Person  # noqa: E402
@@ -12,8 +13,7 @@ from CultureScope import CultureScope  # noqa: E402
 
 
 class EqualValidatorTests(unittest.TestCase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def setUp(self):
         CultureScope.SetDefaultCulture()
 
     def test_When_the_objects_are_equal_validation_should_succeed(self):
@@ -58,17 +58,16 @@ class EqualValidatorTests(unittest.TestCase):
         self.assertFalse(result.is_valid)
         self.assertEqual(result.errors[0].ErrorMessage, "Forename")
 
-    # def test_Comparison_property_uses_custom_resolver(self):
-    # originalResolver = ValidatorOptions.Global.DisplayNameResolver
+    def test_Comparison_property_uses_custom_resolver(self):
+        originalResolver = ValidatorOptions.Global.DisplayNameResolver
 
-    # try:44
-    # ValidatorOptions.Global.DisplayNameResolver = (type, member,(lambda ): member.Name + "Foo"
-    #     validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).equal(lambda x: x.Forename).with_message("{ComparisonProperty}"))
-    #     result = validator.validate(Person(Surname="foo", Forename="bar"))
-    #     self.assertEqual(result.errors[0].ErrorMessage, "ForenameFoo")
-    # finally:
-    #     pass
-    # ValidatorOptions.Global.DisplayNameResolver = originalResolver
+        try:
+            ValidatorOptions.Global.DisplayNameResolver = lambda type, member, expr: member.Name + "Foo"
+            validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).equal(lambda x: x.Forename).with_message("{ComparisonProperty}"))
+            result = validator.validate(Person(Surname="foo", Forename="bar"))
+            self.assertEqual(result.errors[0].ErrorMessage, "ForenameFoo")
+        finally:
+            ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
     def test_Should_succeed_on_case_insensitive_comparison(self):
         validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).equal("FOO", StringComparer.OrdinalIgnoreCase))

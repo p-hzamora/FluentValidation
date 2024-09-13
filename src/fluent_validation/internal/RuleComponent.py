@@ -15,7 +15,7 @@ class RuleComponent[T, TProperty](IRuleComponent):
     def __init__(self, property_validator=None, asyncPropertyValidator=None) -> None:
         self._property_validator: IPropertyValidator[T, TProperty] = property_validator
         self._error_message: Optional[str] = None
-        self._error_code: str = self._property_validator.__class__.__name__
+        self._error_code: str = None
         self._asyncPropertyValidator: IAsyncPropertyValidator[T, TProperty] = asyncPropertyValidator
         self._errorMessageFactory: Callable[[ValidationContext], T] = None
 

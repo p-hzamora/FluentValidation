@@ -1,9 +1,10 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from typing import Any, Callable, TYPE_CHECKING, TypeVar, overload
+from typing import Callable, TYPE_CHECKING, TypeVar, overload
 
 from fluent_validation.enums import ApplyConditionTo
+from fluent_validation.LambdaExpression import LambdaExpression
 
 if TYPE_CHECKING:
     from fluent_validation.enums import CascadeMode as _CascadeMode
@@ -49,7 +50,7 @@ class IValidatoinRule_no_args(ABC):
 
     @property
     @abstractmethod
-    def Expression(self) -> Callable[..., Any]: ...
+    def Expression(self) -> LambdaExpression: ...
 
     @property
     @abstractmethod

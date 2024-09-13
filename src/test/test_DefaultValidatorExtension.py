@@ -24,6 +24,7 @@ from fluent_validation.validators.NotEmptyValidator import NotEmptyValidator
 from fluent_validation.validators.NotEqualValidator import NotEqualValidator
 from fluent_validation.validators.NotNullValidator import NotNullValidator
 from fluent_validation.validators.ScalePrecisionValidator import ScalePrecisionValidator
+from fluent_validation.validators.EmptyValidator import EmptyValidator
 
 
 @dataclass
@@ -44,9 +45,9 @@ class DefaultValidatorExtensionTester(unittest.TestCase):
         self.validator.rule_for(lambda x: x.Surname).not_empty()
         self.AssertValidator(NotEmptyValidator[Person, str])
 
-    # def test_Empty_should_create_EmptyValidator(self) -> None:
-    #     self.validator.rule_for(lambda x: x.Surname).Empty()
-    #     self.AssertValidator [ EmptyValidator [ Person, str ]] ()
+    def test_Empty_should_create_EmptyValidator(self) -> None:
+        self.validator.rule_for(lambda x: x.Surname).empty()
+        self.AssertValidator(EmptyValidator[Person, str])
 
     def test_Length_should_create_LengthValidator(self) -> None:
         self.validator.rule_for(lambda x: x.Surname).length(1, 20)

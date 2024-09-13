@@ -111,10 +111,10 @@ class DefaultValidatorOptions[T, TProperty]:
     ) -> IRuleBuilderOptions[T, TProperty]:
         return rule._When(lambda x, ctx: not predicate(x, ctx), applyConditionTo)
 
-    # def unless(
-    #     rule: IRuleBuilderOptionsConditions[T, TProperty], predicate: Callable[[T, ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators
-    # ) -> IRuleBuilderOptionsConditions[T, TProperty]:
-    #     return rule.when(lambda x, ctx: not predicate(x, ctx), applyConditionTo)
+    #   def unless(
+    #        rule: IRuleBuilderOptionsConditions[T, TProperty], predicate: Callable[[T, ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators
+    #    ) -> IRuleBuilderOptionsConditions[T, TProperty]:
+    #        return rule.when(lambda x, ctx: not predicate(x, ctx), applyConditionTo)
 
     #     public static IRuleBuilderOptions[T, TProperty] WhenAsync(rule:IRuleBuilderOptions[T, TProperty], Callable<T, CancellationToken, Task<bool>> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators) {
     #         return rule.WhenAsync((x, ctx, ct) => predicate(x, ct), applyConditionTo);

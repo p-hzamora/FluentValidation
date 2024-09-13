@@ -20,6 +20,7 @@ import test_CreditCardValidator
 import test_ScalePrecisionValidator
 import test_Empty
 import test_Null
+import test_CascadingFailures
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -28,6 +29,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_CascadingFailures),
         *loader.loadTestsFromModule(test_Null),
         *loader.loadTestsFromModule(test_Empty),
         *loader.loadTestsFromModule(test_CreditCardValidator),

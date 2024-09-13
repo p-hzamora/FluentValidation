@@ -1,16 +1,19 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 import datetime
 from decimal import Decimal
 from enum import Enum
 from typing import Optional, override
 
 
+@dataclass
 class Country:
-    Name: str
+    Name: str = None
 
 
+@dataclass
 class Payment:
-    Amount: Decimal
+    Amount: Decimal = Decimal("0.00")
 
 
 class EnumGender(Enum):
@@ -53,7 +56,7 @@ class _Address(IAddress):
         County: str = None,
         Postcode: str = None,
         Country: Country = None,
-        Id: int = None,
+        Id: int = 0,
     ):
         self._Line1: str = Line1
         self._Line2: str = Line2

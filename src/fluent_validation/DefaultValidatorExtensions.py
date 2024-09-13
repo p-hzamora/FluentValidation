@@ -6,6 +6,7 @@ import inspect
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.AccessorCache import AccessorCache
 from fluent_validation.validators.EmptyValidator import EmptyValidator
+from fluent_validation.validators.NullValidator import NullValidator
 
 if TYPE_CHECKING:
     from fluent_validation.syntax import IRuleBuilder
@@ -44,6 +45,9 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     def not_null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
         return ruleBuilder.set_validator(NotNullValidator[T, TProperty]())
+
+    def null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]:
+        return ruleBuilder.set_validator(NullValidator[T, TProperty]())
 
     def matches(ruleBuilder: IRuleBuilder[T, TProperty], pattern: str) -> IRuleBuilder[T, TProperty]:
         return ruleBuilder.set_validator(RegularExpressionValidator[T](pattern))

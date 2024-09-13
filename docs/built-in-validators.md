@@ -398,12 +398,12 @@ String format args:
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-## ExclusiveBetween Validator
+## exclusive_between Validator
 Checks whether the property value is in a range between the two specified numbers (exclusive).
 
 Example:
 ```python
-self.rule_for(lambda x: x.Id).ExclusiveBetween(1,10)
+self.rule_for(lambda x: x.Id).exclusive_between(1,10)
 ```
 Example error: *'Id' must be between 1 and 10 (exclusive). You entered 1.*
 
@@ -414,12 +414,12 @@ String format args:
 * `{To}` – Upper bound of the range
 * `{PropertyPath}` - The full path of the property
 
-## InclusiveBetween Validator
+## inclusive_between Validator
 Checks whether the property value is in a range between the two specified numbers (inclusive).
 
 Example:
 ```python
-self.rule_for(lambda x: x.Id).InclusiveBetween(1,10)
+self.rule_for(lambda x: x.Id).inclusive_between(1,10)
 ```
 Example error: *'Id' must be between 1 and 10. You entered 0.*
 

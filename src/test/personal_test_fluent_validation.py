@@ -35,8 +35,8 @@ class OrdersValidator(AbstractValidator[Orders]):
         self.rule_for(lambda x: x.name).not_equal("pablo")
         self.rule_for(lambda x: x.date).not_null()
         self.rule_for(lambda x: x.is_free).must(lambda x: isinstance(x, bool))
-        self.rule_for(lambda x: x.price).less_than_or_equal_to(Decimal("0.00")).when(lambda x: x.is_free is True).precision_scale(6, 2, True)  # max 9999.99
-        self.rule_for(lambda o: o.credit_card).not_null().WithErrorCode("Null").not_empty().WithErrorCode("Empty").with_severity(Severity.Info).credit_card().with_severity(Severity.Warning)
+        self.rule_for(lambda x: x.price).equal(Decimal("0.00")).when(lambda x: x.is_free is True).precision_scale(6, 2, True)  # max 9999.99
+        self.rule_for(lambda o: o.credit_card).not_null().WithErrorCode("Notull").not_empty().WithErrorCode("Empty").with_severity(Severity.Info).credit_card().with_severity(Severity.Warning)
 
 
 @dataclass
@@ -44,13 +44,13 @@ class Person:
     name: str = None
     dni: str = None
     email: str = None
-    edad: int = None
-    fecha_fin: datetime = None
-    fecha_ini: datetime = None
+    age: int = None
+    deadline: datetime = None
+    start_date: datetime = None
     person_id: int = None
-    edad_min: int = None
-    edad_max: int = None
-    ppto: int | float | Decimal = None
+    min_age: int = None
+    max_age: int = None
+    invoice: int | float | Decimal = None
     orders: list[Orders] = None
 
 
@@ -60,10 +60,10 @@ class PersonValidator(AbstractValidator[Person]):
         self.ClassLevelCascadeMode = CascadeMode.Continue
         self.RuleLevelCascadeMode = CascadeMode.Continue
         self.rule_for(lambda x: x.name).Cascade(CascadeMode.Continue).not_null().not_empty().max_length(30)
-        self.rule_for(lambda x: x.edad).Cascade(CascadeMode.Stop).not_null().must(lambda obj, value: obj.edad_min <= value <= obj.edad_max).with_severity(Severity.Warning)
-        self.rule_for(lambda x: x.fecha_ini).not_null().less_than_or_equal_to(lambda x: x.fecha_fin)
-        self.rule_for(lambda x: x.ppto).precision_scale(5, 2, True)
-        self.rule_for(lambda x: x.fecha_ini).not_null().less_than_or_equal_to(datetime.today())
+        self.rule_for(lambda x: x.age).Cascade(CascadeMode.Stop).not_null().must(lambda obj, value: obj.min_age <= value <= obj.max_age).with_severity(Severity.Warning)
+        self.rule_for(lambda x: x.start_date).not_null().less_than_or_equal_to(lambda x: x.deadline)
+        self.rule_for(lambda x: x.invoice).precision_scale(5, 2, True)
+        self.rule_for(lambda x: x.start_date).not_null().less_than_or_equal_to(datetime.today())
         self.rule_for(lambda x: x.dni).not_null().must(lambda x: isinstance(x, str)).with_message("Custom message of IsInstance method").matches(RegexPattern.Dni).with_name("DNI")
         self.rule_for(lambda x: x.email).not_null().matches(RegexPattern.Email).with_message("The entered mail does not comply with the specific regex rules").max_length(15)
         self.rule_for_each(lambda x: x.orders).set_validator(OrdersValidator())
@@ -72,7 +72,7 @@ class PersonValidator(AbstractValidator[Person]):
             "custom",
             lambda: (
                 self.rule_for(lambda p: p.name).equal("pablo"),
-                self.rule_for(lambda p: p.edad).equal(25),
+                self.rule_for(lambda p: p.age).equal(25),
                 self.rule_for(lambda p: p.dni).equal("11111111P"),
             ),
         )
@@ -89,7 +89,7 @@ person_errors = Person(
     name="",
     dni="___",
     email="pablo.org",
-    ppto=Decimal("12.558000000"),
+    invoice=Decimal("12.558000000"),
     orders=orders,
 )
 
@@ -97,12 +97,12 @@ person_correct = Person(
     name="Pablo",
     dni="51515151P",
     email="pp@hotmail.org",
-    ppto=Decimal("12.55000000"),
-    fecha_fin=datetime(2020, 11, 20),
-    fecha_ini=datetime(2020, 11, 20),
-    edad_min=1,
-    edad_max=30,
-    edad=31,
+    invoice=Decimal("12.55000000"),
+    deadline=datetime(2020, 11, 20),
+    start_date=datetime(2020, 11, 20),
+    min_age=1,
+    max_age=30,
+    age=31,
 )
 
 validator = PersonValidator()

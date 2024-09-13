@@ -64,7 +64,8 @@ class IRuleBuilderInitialCollection[T, TElement](IRuleBuilder[T, TElement]): ...
 
 
 class IConditionBuilder(ABC):
-    def otherwise(action: Callable[..., None]) -> None:
+    @abstractmethod
+    def otherwise(action: Callable[[], None]) -> None:
         """Rules to be invoked if the condition fails."""
 
     ...

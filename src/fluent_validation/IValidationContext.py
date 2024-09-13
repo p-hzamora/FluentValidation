@@ -112,7 +112,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self.__init__(instanceToValidate, propertyChain, validatorSelector, [], ValidatorOptions.Global.MessageFormatterFactory())
 
     def __init__all_attr(self, instanceToValidate: T, propertyChain: PropertyChain, validatorSelector: IValidatorSelector, failures: list[ValidationFailure], messageFormatter: MessageFormatter):
-        self._instance_to_validate = instanceToValidate
+        self._instance_to_validate: T = instanceToValidate
 
         self._PropertyChain = PropertyChain(propertyChain)
         self._Selector = validatorSelector

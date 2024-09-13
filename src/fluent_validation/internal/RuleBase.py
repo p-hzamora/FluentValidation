@@ -13,6 +13,7 @@ from fluent_validation.results.ValidationFailure import ValidationFailure
 
 from fluent_validation.IValidationContext import ValidationContext
 from fluent_validation.enums import ApplyConditionTo, CascadeMode
+from fluent_validation.LambdaExpression import LambdaExpression
 
 if TYPE_CHECKING:
     from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
@@ -76,8 +77,8 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         return self._PropertyFunc
 
     @property
-    def Expression(self) -> Callable[..., Any]:
-        return self._expression
+    def Expression(self) -> LambdaExpression:
+        return LambdaExpression(self._expression)
 
     @property
     def TypeToValidate(self) -> Type:

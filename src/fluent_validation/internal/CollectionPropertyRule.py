@@ -100,7 +100,7 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
         propertyName: str = context.PropertyChain.BuildPropertyPath(displayName if not self.PropertyName else self.PropertyName)
 
         if propertyName is None or propertyName == "":
-            propertyName = self.InferPropertyName(self.Expression)
+            propertyName = self.InferPropertyName(self.Expression.func)
 
         # Ensure that this rule is allowed to run.
         # The validatselector has the opportunity to veto this before any of the validators execute.

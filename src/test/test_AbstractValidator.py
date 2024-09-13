@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 
+from fluent_validation.ValidatorOptions import ValidatorOptions
 from fluent_validation.IValidationContext import ValidationContext
 from fluent_validation.IValidator import IValidator
 from fluent_validation.InlineValidator import InlineValidator
@@ -56,12 +57,12 @@ class AbstractValidatorTester(unittest.TestCase):
         result = self.validator.validate(Person())
         self.assertEqual(result.errors[0].ErrorCode, "NotNullValidator")
 
-    # def Can_replace_default_errorcode_resolver(self):
-    #     ValidatorOptions.Global.ErrorCodeResolver = lambda x: x.GetType().Name.Split('`')[0] + "_foo"
-    #     self.validator.rule_for(lambda x: x.Forename).not_null()
-    #     result = self.validator.validate(Person())
-    #     ValidatorOptions.Global.ErrorCodeResolver = None
-    #     self.assertEqual(result.errors[0].ErrorCode, "NotNullValidator_foo")
+    def test_Can_replace_default_errorcode_resolver(self):
+        ValidatorOptions.Global.ErrorCodeResolver = lambda x: x.__class__.__name__ + "_foo"
+        self.validator.rule_for(lambda x: x.Forename).not_null()
+        result = self.validator.validate(Person())
+        ValidatorOptions.Global.ErrorCodeResolver = None
+        self.assertEqual(result.errors[0].ErrorCode, "NotNullValidator_foo")
 
     def test_WithErrorCode_should_override_error_code(self):
         self.validator.rule_for(lambda x: x.Forename).not_null().WithErrorCode("ErrCode101")

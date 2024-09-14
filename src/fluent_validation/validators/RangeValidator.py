@@ -13,7 +13,7 @@ from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 
 class IComparer[T](ABC):
     """
-    Resumen:
+    Summary:
         Compares two objects and returns a value indicating whether one is less than,
         equal to, or greater than the other.
 
@@ -24,7 +24,7 @@ class IComparer[T](ABC):
     y:
         The second object to compare.
 
-    Devuelve:
+    returns:
         A signed integer that indicates the relative values of x and y, as shown in the
         following table.
         Value – Meaning

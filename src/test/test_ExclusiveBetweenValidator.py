@@ -9,10 +9,11 @@ from pathlib import Path
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 
+from StreetNumberComparer import StreetNumberComparer
 from fluent_validation.validators.RangeValidator import RangeValidatorFactory
 from TestValidator import TestValidator  # noqa: E402
 
-# from person import _Address as Address  # noqa: E402
+from person import _Address as Address  # noqa: E402
 from person import Person  # noqa: E402
 from CultureScope import CultureScope  # noqa: E402
 
@@ -116,30 +117,33 @@ class ExclusiveBetweenValidatorTests(unittest.TestCase):
         result = validator.validate(Person(NullableInt=10))
         self.assertFalse(result.is_valid)
 
-    # def test_When_the_value_is_between_the_range_specified_by_icomparer_then_the_validator_should_pass(self):
-    # 	validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
-    # 		Address(Line1 = "3 Main St."),
-    # 		Address(Line1 = "10 Main St."),
-    # 		StreetNumberComparer
-    # 			()))
-    # 	result = validator.validate(Person(Address = Address(Line1 = "5 Main St.")))
-    # 	self.assertTrue(result.is_valid)
+    def test_When_the_value_is_between_the_range_specified_by_icomparer_then_the_validator_should_pass(self):
+        validator = TestValidator(
+            lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
+                Address(Line1="3 Main St."),
+                Address(Line1="10 Main St."),
+                StreetNumberComparer(),
+            )
+        )
+        result = validator.validate(Person(Address=Address(Line1="5 Main St.")))
+        self.assertTrue(result.is_valid)
 
-    # def test_When_the_value_is_smaller_than_the_range_by_icomparer_then_the_validator_should_fail(self):
-    # 	validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
-    # 		Address(Line1 = "3 Main St." ),
-    # 		Address(Line1 = "10 Main St." ),
-    # 		StreetNumberComparer()))
-    # 	result = validator.validate(Person(Address = Address(Line1 = "1 Main St." )))
-    # 	self.assertFalse(result.is_valid)
+    def test_When_the_value_is_smaller_than_the_range_by_icomparer_then_the_validator_should_fail(self):
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
+            Address(Line1 = "3 Main St." ),
+            Address(Line1 = "10 Main St." ),
+            StreetNumberComparer()))
+        
+        result = validator.validate(Person(Address = Address(Line1 = "1 Main St." )))
+        self.assertFalse(result.is_valid)
 
-    # def test_When_the_value_is_larger_than_the_range_by_icomparer_then_the_validator_should_fail(self):
-    # 	validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
-    # 		Address(Line1 = "3 Main St." ),
-    # 		Address(Line1 = "10 Main St." ),
-    # 		StreetNumberComparer()))
-    # 	result = validator.validate(Person(Address = Address(Line1 = "11 Main St." )))
-    # 	self.assertFalse(result.is_valid)
+    def test_When_the_value_is_larger_than_the_range_by_icomparer_then_the_validator_should_fail(self):
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
+            Address(Line1 = "3 Main St." ),
+            Address(Line1 = "10 Main St." ),
+            StreetNumberComparer()))
+        result = validator.validate(Person(Address = Address(Line1 = "11 Main St." )))
+        self.assertFalse(result.is_valid)
 
 
 if __name__ == "__main__":

@@ -40,7 +40,7 @@ class NullTester(unittest.TestCase):
         result = validator.validate(Person())
         self.assertTrue(result.is_valid)
 
-    def test_AANullProperty_should_throw_NullReferenceException(self):
+    def test_NullProperty_should_throw_NullReferenceException(self):
         validator = InlineValidator[Person]()
         validator.rule_for(lambda x: len(x.Orders)).not_empty()
 

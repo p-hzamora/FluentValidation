@@ -69,7 +69,7 @@ class DefaultValidatorExtensionTester(unittest.TestCase):
         self.validator.rule_for(lambda x: x.Surname).not_equal("Foo")
         self.AssertValidator(NotEqualValidator[Person, str])
 
-    def test_AANotEqual_should_create_NotEqualValidator_with_lambda(self) -> None:
+    def test_NotEqual_should_create_NotEqualValidator_with_lambda(self) -> None:
         self.validator.rule_for(lambda x: x.Surname).not_equal(lambda x: "Foo")
         self.AssertValidator(NotEqualValidator[Person, str])
 

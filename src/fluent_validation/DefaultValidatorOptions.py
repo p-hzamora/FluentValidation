@@ -16,28 +16,72 @@ if TYPE_CHECKING:
         IRuleBuilderOptionsConditions,
     )
     from .IValidationRule import IValidationRule
+    from fluent_validation.syntax import IRuleBuilderInitialCollection
+    from fluent_validation.ICollectionRule import ICollectionRule
 
 
 class DefaultValidatorOptions[T, TProperty]:
+    @overload
+    def configure(ruleBuilder: IRuleBuilderInitial[T, TProperty], configurator: Callable[[IValidationRule[T, TProperty]], None]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Configures the rule.
+
+        Attribute
+        -
+
+        - "ruleBuilder"
+        - "configurator" Action to configure the object.
+        """
+        ...
+
+    @overload
+    def configure(ruleBuilder: IRuleBuilderOptions[T, TProperty], configurator: Callable[[IValidationRule[T, TProperty]], None]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+            Configures the rule.
+
+        Attribute
+        -
+
+            - "ruleBuilder"
+            - "configurator" Action to configure the object.
+        """
+        ...
+
+    @overload
+    def configure[T, TElement](ruleBuilder: IRuleBuilderInitialCollection[T, TElement], configurator: Callable[[ICollectionRule[T, TElement]], None]) -> IRuleBuilderInitialCollection[T, TElement]:
+        """
+            Configures the rule object.
+            -
+
+        - "ruleBuilder"
+            - "configurator" Action to configure the object.
+
+        """
+        ...
+
+    def configure[T, TElement](ruleBuilder: IRuleBuilderInitialCollection[T, TElement], configurator: Callable[[ICollectionRule[T, TElement]], None]) -> IRuleBuilderInitialCollection[T, TElement]:
+        """
+            Configures the rule object.
+            -
+
+        - "ruleBuilder"
+            - "configurator" Action to configure the object.
+
+        """
+        configurator(ruleBuilder.configurable(ruleBuilder))
+        return ruleBuilder
+
+
+    @overload
+    def configurable(ruleBuilder: IRuleBuilder[T, TProperty]) -> IValidationRule[T, TProperty]: ...
+
+    @overload
+    def configurable[TCollectionElement](ruleBuilder:IRuleBuilderInitialCollection[T, TCollectionElement] )->ICollectionRule[T, TCollectionElement] :... 
+        # return (ICollectionRule[T, TCollectionElement]) ((IRuleBuilderInternal[T, TCollectionElement]) ruleBuilder).Rule;
+
     @staticmethod
     def configurable(ruleBuilder: IRuleBuilder[T, TProperty]) -> IValidationRule[T, TProperty]:
         return ruleBuilder.Rule
-
-    # def Configure(ruleBuilder:IRuleBuilderOptions[T, TProperty], configurator:Callable[[IValidationRule[T, TProperty]],None])->IRuleBuilderOptions[T, TProperty] :
-    #     configurator(ruleBuilder.Configurable(ruleBuilder))
-    #     return ruleBuilder
-
-    # def Configure[T, TElement](this IRuleBuilderInitialCollection<T, TElement> ruleBuilder, Action<ICollectionRule<T, TElement>> configurator)->IRuleBuilderInitialCollection<T, TElement> :
-    #     configurator(Configurable(ruleBuilder))
-    #     return ruleBuilder
-
-    # @staticmethod
-    # def Configurable(ruleBuilder: IRuleBuilder[T, TProperty]) -> IValidationRule[T, TProperty]:
-    #     return ruleBuilder.Rule
-
-    # @staticmethod
-    # def Configurable<T, TCollectionElement>(IRuleBuilderInitialCollection<T, TCollectionElement> ruleBuilder)->ICollectionRule<T, TCollectionElement> :
-    #     return (ICollectionRule<T, TCollectionElement>) ((IRuleBuilderInternal<T, TCollectionElement>) ruleBuilder).Rule;
 
     # FIXME [ ]: the type of 'ruleBuilder' used to be 'IRuleBuilderInitial' and it should return the same
     def Cascade(ruleBuilder: IRuleBuilder[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilder[T, TProperty]:
@@ -62,9 +106,9 @@ class DefaultValidatorOptions[T, TProperty]:
 
             # TODOM: Check why 'instance_to_validate' is not detected by python's IDE
             if n_params == 1:
-                ruleBuilder.configurable(ruleBuilder).Current.set_error_message(lambda ctx, _: errorMessage(None if ctx is not None else ctx.instance_to_validate))
+                ruleBuilder.configurable(ruleBuilder).Current.set_error_message(lambda ctx, val: errorMessage(None if ctx is None else ctx.instance_to_validate))
             elif n_params == 2:
-                ruleBuilder.configurable(ruleBuilder).Current.set_error_message(lambda ctx, value: errorMessage(None if ctx is not None else ctx.instance_to_validate, value))
+                ruleBuilder.configurable(ruleBuilder).Current.set_error_message(lambda ctx, value: errorMessage(None if ctx is None else ctx.instance_to_validate, value))
         elif isinstance(errorMessage, str):
             DefaultValidatorOptions.configurable(ruleBuilder).Current.set_error_message(errorMessage)
         else:

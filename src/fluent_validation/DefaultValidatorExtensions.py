@@ -366,7 +366,7 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     @staticmethod
     def get_display_name(member: MemberInfo, expression: Callable[[T], TProperty]) -> None | str:
-        # FIXME [ ]: The original code called 'DisplayNameResolver' but break some tests
+        # FIXME [x]: The original code called 'DisplayNameResolver' but break some tests
         if (display_name_resolver := ValidatorOptions.Global.DisplayNameResolver(type(T), member, expression)) is not None:
             return display_name_resolver
         if member is not None:

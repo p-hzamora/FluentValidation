@@ -72,12 +72,14 @@ class DefaultValidatorOptions[T, TProperty]:
         configurator(ruleBuilder.configurable(ruleBuilder))
         return ruleBuilder
 
-
     @overload
+    @staticmethod
     def configurable(ruleBuilder: IRuleBuilder[T, TProperty]) -> IValidationRule[T, TProperty]: ...
 
     @overload
-    def configurable[TCollectionElement](ruleBuilder:IRuleBuilderInitialCollection[T, TCollectionElement] )->ICollectionRule[T, TCollectionElement] :... 
+    @staticmethod
+    def configurable[TCollectionElement](ruleBuilder: IRuleBuilderInitialCollection[T, TCollectionElement]) -> ICollectionRule[T, TCollectionElement]:
+        ...
         # return (ICollectionRule[T, TCollectionElement]) ((IRuleBuilderInternal[T, TCollectionElement]) ruleBuilder).Rule;
 
     @staticmethod

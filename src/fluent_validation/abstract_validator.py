@@ -1,6 +1,6 @@
 from __future__ import annotations
 import threading
-from typing import Any, Callable, Coroutine, Optional, Type, overload, override, TYPE_CHECKING
+from typing import Any, Awaitable, Callable, Coroutine, Optional, Type, overload, override, TYPE_CHECKING
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
@@ -42,7 +42,7 @@ class AbstractValidator[T](IValidator[T]):
         if self.ClassLevelCascadeMode == self.RuleLevelCascadeMode:
             return self.ClassLevelCascadeMode
         elif self.ClassLevelCascadeMode == CascadeMode.Continue and self.RuleLevelCascadeMode == CascadeMode.Stop:
-            return CascadeMode.Stop # COMMENT: Original is CascadeMode.StopOnFirstFailure
+            return CascadeMode.Stop  # COMMENT: Original is CascadeMode.StopOnFirstFailure
         else:
             raise Exception(
                 "There is no conversion to a single CascadeMode value from the current combination of "
@@ -84,7 +84,7 @@ class AbstractValidator[T](IValidator[T]):
         return self.__validate__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
 
     def __validate__(self, context: ValidationContext[T]) -> ValidationResult:
-        # TODOH: It's not the correct way to control the nested event loop because in 'ChildValidatorAdaptor' class, when validating, context does not updated properly
+        # FIXME [ ]: It's not the correct way to control the nested event loop because I get an error in 'test_Should_not_scramble_property_name_when_using_collection_validators_several_levels_deep'
         def run_coroutine_sync(coroutine: Coroutine[Any, Any, T], timeout: float = 30) -> T:
             def run_in_new_loop():
                 new_loop = asyncio.new_event_loop()
@@ -118,9 +118,9 @@ class AbstractValidator[T](IValidator[T]):
             raise AsyncValidatorInvokedSynchronouslyException(type(self), wasInvokeByMvc)
 
     @overload
-    async def ValidateAsync(self, instance: IValidationContext) -> ValidationResult: ...
+    async def ValidateAsync(self, instance: IValidationContext) -> Awaitable[ValidationResult]: ...
     @overload
-    async def ValidateAsync(self, instance: T) -> ValidationResult: ...
+    async def ValidateAsync(self, instance: T) -> Awaitable[ValidationResult]: ...
 
     @override
     async def ValidateAsync(self, instance):

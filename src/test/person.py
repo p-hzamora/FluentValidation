@@ -164,7 +164,7 @@ class Person:
         self.Id: int = Id
         self.Surname: str = Surname
         self.Forename: str = Forename
-        self.NickNames: str = NickNames
+        self.NickNames: list[str] = NickNames
         self.DateOfBirth: datetime.datetime = DateOfBirth
         self.NullableInt: int = NullableInt
         self.Address: _Address = Address

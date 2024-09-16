@@ -52,6 +52,7 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
         """
         Creates a new property rule from a lambda expression.
         """
+        # FIXME [ ]: test_Uses_useful_error_message_when_used_on_non_property fails due to  MemberInfo() should return None instead any valu
         member = MemberInfo(expression)
         compiled = AccessorCache[T].GetCachedAccessor(member, expression, bypassCache, "FV_RuleForEach")
         return CollectionPropertyRule[T, TElement](member, lambda x: compiled(x), expression, cascadeModeThunk, type(TElement))

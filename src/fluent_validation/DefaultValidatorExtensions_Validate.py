@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Awaitable
 
 from fluent_validation.IValidationContext import ValidationContext
 
@@ -13,8 +13,8 @@ class DefaultValidatorExtensions_Validate:
     def validate[T](validator: IValidator[T], instance: T, options: Callable[[ValidationStrategy[T]], None]) -> ValidationResult:
         validator.validate(ValidationContext[T].CreateWithOptions(instance, options))
 
-    # def Task<ValidationResult> ValidateAsync[T](this IValidator[T] validator, T instance, Action<ValidationStrategy[T]> options, CancellationToken cancellation = default)
-    # 	=> validator.ValidateAsync(ValidationContext[T].CreateWithOptions(instance, options), cancellation)
+    async def ValidateAsync[T](validator:IValidator[T], instance:T, options:Callable[[ValidationStrategy[T]],None])-> Awaitable[ValidationResult]: # , CancellationToken cancellation = default
+        return validator.ValidateAsync(ValidationContext[T].CreateWithOptions(instance, options)) # , cancellation
 
     def validate_and_throw[T](validator: IValidator[T], instance: T) -> None:
         validator.validate(instance, lambda options: options.ThrowOnFailures())

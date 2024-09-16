@@ -85,15 +85,15 @@ class AbstractValidatorTester(unittest.TestCase):
         result = self.validator.validate(Person(Surname="Foo"))
         self.assertEqual(result.errors[0].ErrorMessage, "'Foo' must not be empty.")
 
-    # def OverridePropertyName_should_override_property_name(self):
-    #     self.validator.rule_for(lambda x: x.Surname).not_null().OverridePropertyName("foo")
-    #     result = self.validator.validate(Person())
-    #     self.assertEqual(result.errors[0].PropertyName, "foo")
+    def OverridePropertyName_should_override_property_name(self):
+        self.validator.rule_for(lambda x: x.Surname).not_null().orverride_property_name("foo")
+        result = self.validator.validate(Person())
+        self.assertEqual(result.errors[0].PropertyName, "foo")
 
-    # def OverridePropertyName_with_lambda_should_override_property_name(self):
-    #     self.validator.rule_for(lambda x: x.Surname).not_null().OverridePropertyName(lambda x: x.Forename)
-    #     result = self.validator.validate(Person())
-    #     self.assertEqual(result.errors[0].PropertyName, "Forename")
+    def OverridePropertyName_with_lambda_should_override_property_name(self):
+        self.validator.rule_for(lambda x: x.Surname).not_null().orverride_property_name(lambda x: x.Forename)
+        result = self.validator.validate(Person())
+        self.assertEqual(result.errors[0].PropertyName, "Forename")
 
     def test_Should_not_main_state(self):
         self.validator.rule_for(lambda x: x.Forename).not_null()

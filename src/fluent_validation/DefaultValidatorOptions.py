@@ -5,6 +5,7 @@ from typing import Callable, TYPE_CHECKING, overload
 
 from fluent_validation.enums import ApplyConditionTo, CascadeMode, Severity as _Severity
 from fluent_validation.IValidationContext import ValidationContext
+from fluent_validation.MemberInfo import MemberInfo
 
 
 if TYPE_CHECKING:

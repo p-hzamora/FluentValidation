@@ -223,7 +223,7 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
             raise ValueError(
                 "Could not infer property name for expression: "
                 + expression
-                + '. Please explicitly specify a property name by calling OverridePropertyName as part of the rule chain. Eg: rule_for_each(lambda x: x).NotNull().OverridePropertyName("MyProperty")'
+                + '. Please explicitly specify a property name by calling orverride_property_name as part of the rule chain. Eg: rule_for_each(lambda x: x).NotNull().orverride_property_name("MyProperty")'
             )
 
         return paramExp

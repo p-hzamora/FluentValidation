@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Callable, Iterable, override, TYPE_CHECKING
 from fluent_validation.IValidationRule import IValidationRule
 from fluent_validation.internal.IValidatorSelector import IValidatorSelector
-from fluent_validation.internal.IncludeRule import IIncludeRule
 
 if TYPE_CHECKING:
     from fluent_validation.IValidationContext import IValidationContext
@@ -63,6 +62,8 @@ class RulesetValidatorSelector(IValidatorSelector):
 
     @staticmethod
     def IsIncludeRule(rule: IValidationRule) -> bool:
+        from fluent_validation.internal.IncludeRule import IIncludeRule
+
         return isinstance(rule, IIncludeRule)
 
     @staticmethod

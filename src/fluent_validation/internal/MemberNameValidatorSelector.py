@@ -5,7 +5,6 @@ import re
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.IValidatorSelector import IValidatorSelector
 
-from fluent_validation.internal.IncludeRule import IIncludeRule
 
 if TYPE_CHECKING:
     from fluent_validation.IValidationRule import IValidationRule
@@ -26,6 +25,8 @@ class MemberNameValidatorSelector(IValidatorSelector):
 
     @override
     def CanExecute(self, rule: IValidationRule, propertyPath: str, context: IValidationContext) -> bool:
+        from fluent_validation.internal.IncludeRule import IIncludeRule
+
         # Validator selector only applies to the top level.
         # If we're running in a child context then this means that the child validator has already been selected
         # Because of this, we assume that the rule should continue (ie if the parent rule is valid, all children are valid)

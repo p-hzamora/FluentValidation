@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .syntax import IConditionBuilder, IRuleBuilder
     from fluent_validation.IValidationRule import IValidationRule
 
-# from fluent_validation.internal.IncludeRule import IncludeRule
+from fluent_validation.internal.IncludeRule import IncludeRule
 from fluent_validation.ValidationException import ValidationException
 from fluent_validation.internal.ConditionBuilder import ConditionBuilder
 from fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
@@ -260,16 +260,15 @@ class AbstractValidator[T](IValidator[T]):
     # def UnlessAsync(Func<T, ValidationContext<T>, CancellationToken, Task<bool>> predicate, Action action)->IConditionBuilder:
     #     return new AsyncConditionBuilder<T>(Rules).UnlessAsync(predicate, action)
 
-    # def Include(self, rulesToInclude:IValidator[T])->None:
-    #     rule = IncludeRule[T].Create(rulesToInclude, lambda: self.RuleLevelCascadeMode)
-    #     self.Rules.append(rule)
-    #     self.OnRuleAdded(rule)
+    @overload
+    def Include(self, rulesToInclude: IValidator[T]) -> None: ...
+    @overload
+    def Include[TValidator: IValidator[T]](self, rulesToInclude: Callable[[T], TValidator]): ...
 
-    # public void Include<TValidator>(Func<T, TValidator> rulesToInclude) where TValidator : IValidator[T] {
-    #     rule = IncludeRule[T].Create(rulesToInclude, lambda: RuleLevelCascadeMode)
-    #     Rules.Add(rule)
-    #     OnRuleAdded(rule)
-    # }
+    def Include[TValidator: IValidator[T]](self, rulesToInclude: IValidator[T] | Callable[[T], TValidator]):
+        rule = IncludeRule[T].Create(rulesToInclude, lambda: self.RuleLevelCascadeMode)
+        self.Rules.append(rule)
+        self.OnRuleAdded(rule)
 
     def PreValidate(self, context: ValidationContext[T], result: ValidationResult) -> bool:
         return True

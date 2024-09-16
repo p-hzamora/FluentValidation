@@ -417,14 +417,14 @@ class ForEachRuleTests(unittest.TestCase):
     # 	results = validator.validate(self._person)
     # 	self.assertEqual(len(results.errors), 1)
 
-    # def test_Should_override_property_name(self):
-    # 	validator = TestValidator(
-    # 		lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator())
-    # 			.OverridePropertyName("Orders2")
-    # )
-
-    # 	results = validator.validate(self._person)
-    # 	results.errors[0].PropertyName.ShouldEqual("Orders2[0].ProductName")
+    def test_Should_override_property_name(self):
+        validator = TestValidator(
+            lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator())
+                .orverride_property_name("Orders2")
+        )
+        
+        results = validator.validate(self._person)
+        self.assertEqual(results.errors[0].PropertyName,"Orders2[0].ProductName")
 
     def test_Top_level_collection(self):
         v = InlineValidator[list[Order]]()

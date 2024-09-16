@@ -223,19 +223,23 @@ class DefaultValidatorOptions[T, TProperty]:
             rule.configurable(rule).SetDisplayName(nameProvider)
             return rule
 
-    #     public static IRuleBuilderOptions[T, TProperty] OverridePropertyName(rule:IRuleBuilderOptions[T, TProperty], str propertyName) {
-    #         # Allow str.Empty as this could be a model-level rule.
-    #         if (propertyName == null) throw new ArgumentNullException(nameof(propertyName), "A property name must be specified when calling OverridePropertyName.");
-    #         Configurable(rule).PropertyName = propertyName;
-    #         return rule;
-    #     }
+    @overload
+    def orverride_property_name(rule: IRuleBuilder[T, TProperty], propertyName: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    @overload
+    def orverride_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
 
-    #     public static IRuleBuilderOptions[T, TProperty] OverridePropertyName(rule:IRuleBuilderOptions[T, TProperty], Expression<Callable<T, object>> expr) {
-    #         if (expr == null) throw new ArgumentNullException(nameof(expr));
-    #         var member = expr.GetMember();
-    #         if (member == null) throw new NotSupportedException("Must supply a MemberExpression when calling OverridePropertyName");
-    #         return rule.OverridePropertyName(member.Name);
-    #     }
+    def orverride_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
+        if callable(propertyName):
+            member = MemberInfo(propertyName)
+            if member is None:
+                raise Exception("Must supply a MemberExpression when calling orverride_property_name")
+            return rule.orverride_property_name(member.Name)
+
+        # Allow str.Empty as this could be a model-level rule.
+        if propertyName is None:
+            raise Exception("A 'propertyName' must be specified when calling orverride_property_name.")
+        rule.configurable(rule).PropertyName = propertyName
+        return rule
 
     #     public static IRuleBuilderOptions[T, TProperty] WithState(rule:IRuleBuilderOptions[T, TProperty], Callable<T, object> stateProvider) {
     #         var wrapper = new Callable<ValidationContext[T], TProperty, object>((ctx, _) => stateProvider(ctx.InstanceToValidate));

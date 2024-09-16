@@ -68,7 +68,7 @@ rule_for(lambda customer: customer.Surname).not_null().WithName("Last name")
 Now the error message would be *'Last name' must not be empty.*
 
 Note that this only replaces the name of the property in the error message. when you inspect the `Errors` collection on the `ValidationResult`, this error will still be associated with a property called `Surname`.
-If you want to completely rename the property, you can use the `OverridePropertyName` method instead.
+If you want to completely rename the property, you can use the `orverride_property_name` method instead.
 
 There is also an overload of `WithName` that accepts a lambda expression in a similar way to `with_message` in the previous section.
 

@@ -221,10 +221,9 @@ class DefaultValidatorOptions[T, TProperty]:
             # The MVC clientside validation will try and retrieve the name, but won't
             # be able to to so if we've used this overload of WithName.
             rule.configurable(rule).SetDisplayName(_lambda)
-            return rule
         else:
             rule.configurable(rule).SetDisplayName(nameProvider)
-            return rule
+        return rule
 
     @overload
     def orverride_property_name(rule: IRuleBuilder[T, TProperty], propertyName: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]

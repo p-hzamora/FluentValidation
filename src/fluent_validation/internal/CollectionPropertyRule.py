@@ -217,7 +217,7 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
     @staticmethod
     def InferPropertyName(expression: LambdaExpression) -> str:
         # TODOM: Checked
-        paramExp = expression.__name__
+        paramExp = expression.lambda_to_string
 
         if paramExp is None:
             raise ValueError(

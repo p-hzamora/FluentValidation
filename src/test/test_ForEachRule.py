@@ -1,11 +1,13 @@
+from dataclasses import dataclass
 import sys
-from typing import Any
+from typing import Any, override
 import unittest
 from pathlib import Path
 
 
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
+from fluent_validation.validators.PropertyValidator import PropertyValidator
 from fluent_validation.InlineValidator import InlineValidator
 from fluent_validation.IValidationContext import ValidationContext
 from fluent_validation.abstract_validator import AbstractValidator
@@ -13,6 +15,45 @@ from fluent_validation.validators.NotNullValidator import NotNullValidator
 from fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
 from TestValidator import TestValidator  # noqa: E402
 from person import IOrder, Person, Order  # noqa: E402
+
+
+@dataclass
+class Question:
+    SelectedAnswerID: int = 0
+
+
+class ApplicationGroup:
+    def __init__(self) -> None:
+        self.Questions: list[Question] = [Question()]
+
+
+class ApplicationViewModel:
+    def __init__(self) -> None:
+        self.TradingExperience: list[ApplicationGroup] = [ApplicationGroup()]
+
+
+class ApplicationViewModelValidator(AbstractValidator[ApplicationViewModel]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for_each(lambda x: x.TradingExperience).set_validator(AppropriatenessGroupViewModelValidator())
+
+
+class AppropriatenessGroupViewModelValidator(AbstractValidator[ApplicationGroup]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for_each(lambda m: m.Questions).set_validator(AppropriatenessQuestionViewModelValidator())
+
+
+class AppropriatenessQuestionViewModelValidator(AbstractValidator[Question]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for(lambda m: m.SelectedAnswerID).set_validator(AppropriatenessAnswerViewModelRequiredValidator[Question, int]())
+
+
+class AppropriatenessAnswerViewModelRequiredValidator[T, TProperty](PropertyValidator[T, TProperty]):
+    @override
+    def is_valid(context: ValidationContext[T], value: TProperty) -> bool:
+        return False
 
 
 class Request:
@@ -281,42 +322,6 @@ class ForEachRuleTests(unittest.TestCase):
     # 	))
 
     # 		result.is_valid.ShouldBeTrue()
-
-    # 	public class ApplicationViewModel {
-    # 		public list<ApplicationGroup> TradingExperience { get set } = list<ApplicationGroup> {ApplicationGroup()}
-
-    # 	public class ApplicationGroup {
-    # 		public list<Question> Questions = list<Question> {Question()}
-
-    # 	public class Question {
-    # 		public int SelectedAnswerID { get set }
-
-    # 	public class ApplicationViewModelValidator : AbstractValidator<ApplicationViewModel> {
-    # 		public ApplicationViewModelValidator() {
-    # 			rule_for_each(lambda x: x.TradingExperience)
-    # 				.set_validator(AppropriatenessGroupViewModelValidator())
-    # 	)
-
-    # 	public class AppropriatenessGroupViewModelValidator : AbstractValidator<ApplicationGroup> {
-    # 		public AppropriatenessGroupViewModelValidator() {
-    # 			rule_for_each(m => m.Questions)
-    # 				.set_validator(AppropriatenessQuestionViewModelValidator())
-    # 	)
-
-    # 	public class AppropriatenessQuestionViewModelValidator : AbstractValidator<Question> {
-    # 		public AppropriatenessQuestionViewModelValidator() {
-    # 			RuleFor(m => m.SelectedAnswerID)
-    # 				.set_validator(AppropriatenessAnswerViewModelRequiredValidator<Question, int>())
-
-    # 	)
-
-    # 	public class AppropriatenessAnswerViewModelRequiredValidator[T,TProperty] : PropertyValidator[T,TProperty] {
-
-    # 		public override string Name => "AppropriatenessAnswerViewModelRequiredValidator"
-
-    # 		public override bool IsValid(ValidationContext<T> context, TProperty value) {
-    # 			return False
-    # 	)
 
     # 	async Task<bool> ExclusiveDelay(int milliseconds) {
     # 		lock (_lock) {

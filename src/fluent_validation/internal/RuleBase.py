@@ -29,7 +29,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         cascadeModeThunk: Callable[[], CascadeMode],
         typeToValidate: Type,
     ):
-        self._member: MemberInfo = member
+        self._member: MemberInfo = member if member is not None else MemberInfo(lambda: None)
         self._PropertyFunc = propertyFunc
         self._expression: Callable[..., Any] = expression
         self._typeToValidate: Type = typeToValidate
@@ -37,8 +37,8 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
         containerType = type(T)
         self._propertyDisplayName: Optional[str] = None
-        self.PropertyName: Optional[str] = ValidatorOptions.Global.PropertyNameResolver(containerType, member, expression)
-        self._displayNameFactory: Callable[[ValidationContext[T], str]] = lambda context: ValidatorOptions.Global.DisplayNameResolver(containerType, member, expression)
+        self.PropertyName: Optional[str] = ValidatorOptions.Global.PropertyNameResolver(containerType, self._member, expression)
+        self._displayNameFactory: Callable[[ValidationContext[T], str]] = lambda context: ValidatorOptions.Global.DisplayNameResolver(containerType, self._member, expression)
 
         self._displayNameFunc: Callable[[ValidationContext[T], str]] = self.get_display_name
 

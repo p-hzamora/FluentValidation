@@ -164,18 +164,18 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors[0].PropertyName.ShouldEqual("NickNames[0]")
     # 		result.errors[1].PropertyName.ShouldEqual("NickNames[2]")
 
-    # 	def test_Nested_collection_for_null_property_should_not_throw_null_reference(self):
-    # 		validator = InlineValidator<Request>()
-    # 		validator.when(r => r.person is not None, () => { validator.rule_for_each(lambda x: x.person.NickNames).not_null() })
+    def test_Nested_collection_for_null_property_should_not_throw_null_reference(self):
+        validator = InlineValidator[Request]()
+        validator.when(lambda r: r.person is not None, lambda: validator.rule_for_each(lambda x: x.person.NickNames).not_null())
 
-    # 		result = validator.validate(Request())
-    # 		result.errors.Count.ShouldEqual(0)
+        result = validator.validate(Request())
+        self.assertEqual(len(result.errors), 0)
 
-    # 	def test_Should_not_scramble_property_name_when_using_collection_validators_several_levels_deep(self):
-    # 		v = ApplicationViewModelValidator()
-    # 		result = v.validate(ApplicationViewModel())
+    # def test_Should_not_scramble_property_name_when_using_collection_validators_several_levels_deep(self):
+    #     v = ApplicationViewModelValidator()
+    #     result = v.validate(ApplicationViewModel())
 
-    # 		result.errors.Single().PropertyName.ShouldEqual("TradingExperience[0].Questions[0].SelectedAnswerID")
+    #     self.assertEqual(result.errors[0].PropertyName, "TradingExperience[0].Questions[0].SelectedAnswerID")
 
     # 	def public async Task Should_not_scramble_property_name_when_using_collection_validators_several_levels_deep_with_ValidateAsync(self):
     # 		v = ApplicationViewModelValidator()
@@ -183,20 +183,21 @@ class ForEachRuleTests(unittest.TestCase):
 
     # 		result.errors.Single().PropertyName.ShouldEqual("TradingExperience[0].Questions[0].SelectedAnswerID")
 
-    # 	def test_Uses_useful_error_message_when_used_on_non_property(self):
-    # 		validator = InlineValidator[Person]()
-    # 		validator.rule_for_each(lambda x: x.NickNames.AsEnumerable()).not_null()
+    # def test_Uses_useful_error_message_when_used_on_non_property(self):
+    #     validator = InlineValidator[Person]()
+    #     validator.rule_for_each(lambda x: x.NickNames.AsEnumerable()).not_null()
 
-    # 		bool thrown = False
-    # 		try {
-    # 			validator.validate(Person {NickNames = string[] {null, None}})
-    # 	)
-    # 		catch (System.InvalidOperationException ex) {
-    # 			thrown = true
-    # 			ex.Message.ShouldEqual("Could not infer property name for expression: lambda x: x.NickNames.AsEnumerable(). Please explicitly specify a property name by calling OverridePropertyName as part of the rule chain. Eg: rule_for_each(lambda x: x).not_null().OverridePropertyName(\"MyProperty\")")
-    # 	)
+    #     thrown: bool = False
+    #     try:
+    #         validator.validate(Person(NickNames=[None, None]))
+    #     except ValueError as ex:
+    #         thrown = True
+    #         self.assertEqual(
+    #             ex.args[0],
+    #             'Could not infer property name for expression: lambda x: x.NickNames.AsEnumerable(). Please explicitly specify a property name by calling orverride_property_name as part of the rule chain. Eg: rule_for_each(lambda x: x).not_null().orverride_property_name("MyProperty")',
+    #         )
 
-    # 		thrown.ShouldBeTrue()
+    #     self.assertTrue(thrown)
 
     # 	def public async Task RuleForEach_async_RunsTasksSynchronously(self):
     # 		validator = InlineValidator[Person]()
@@ -205,7 +206,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		validator.rule_for_each(lambda x: x.Children).MustAsync(async (person, token) =>
     # 			await ExclusiveDelay(1)
     # 				.ContinueWith(t => result.Add(t.Result), token)
-    # 				.ContinueWith(t => true, token)
+    # 				.ContinueWith(t => True, token)
     # 		)
 
     # 		await validator.ValidateAsync(Person() {
@@ -229,10 +230,10 @@ class ForEachRuleTests(unittest.TestCase):
 
     # 	def test_Nested_conditions_Rule_For(self):
     # 		validator = InlineValidator<Request>()
-    # 		validator.when(r => true, () => {
-    # 			validator.when(r => r.person?.NickNames?.Any() == true, () => {
+    # 		validator.when(r => True, () => {
+    # 			validator.when(r => r.person?.NickNames?.Any() == True, () => {
     # 				validator.rule_for(r => r.person.NickNames)
-    # 					.must(nn => true)
+    # 					.must(nn => True)
     # 					.with_message("Failed RuleFor")
     # 		))
     # 	))
@@ -242,10 +243,10 @@ class ForEachRuleTests(unittest.TestCase):
     # 	def test_Nested_conditions_Rule_For_Each(self):
     # 		validator = InlineValidator<Request>()
 
-    # 		validator.when(lambda x: true, () => {
-    # 			validator.when(r => r.person?.NickNames?.Any() == true, () => {
+    # 		validator.when(lambda x: True, () => {
+    # 			validator.when(r => r.person?.NickNames?.Any() == True, () => {
     # 				validator.rule_for_each(lambda x: x.person.NickNames)
-    # 					.must(nn => true)
+    # 					.must(nn => True)
     # 					.with_message("Failed rule_for_each")
     # 		))
     # 	))
@@ -307,9 +308,9 @@ class ForEachRuleTests(unittest.TestCase):
 
     # 		validator.rule_for(lambda x: x.Orders)
     # 			.ForEach(o => {
-    # 				o.must(lambda v: true)
+    # 				o.must(lambda v: True)
     # 		))
-    # 			.must((val) => true)
+    # 			.must((val) => True)
     # 			.with_message("what")
 
     # 		# The RuleBuilder is RuleBuilder<Person, IList[Order]>
@@ -335,7 +336,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 			_counter -= 1
     # 	)
 
-    # 		return true
+    # 		return True
 
     def test_Validates_collection(self):
         validator = TestValidator(
@@ -418,13 +419,10 @@ class ForEachRuleTests(unittest.TestCase):
     # 	self.assertEqual(len(results.errors), 1)
 
     def test_Should_override_property_name(self):
-        validator = TestValidator(
-            lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator())
-                .orverride_property_name("Orders2")
-        )
-        
+        validator = TestValidator(lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator()).orverride_property_name("Orders2"))
+
         results = validator.validate(self._person)
-        self.assertEqual(results.errors[0].PropertyName,"Orders2[0].ProductName")
+        self.assertEqual(results.errors[0].PropertyName, "Orders2[0].ProductName")
 
     def test_Top_level_collection(self):
         v = InlineValidator[list[Order]]()
@@ -451,7 +449,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		validator.rule_for_each(lambda x: x.Children).set_validator(childValidator)
 
     # 		await validator.ValidateAsync(Person() {Children = list[Person] {Person()}})
-    # 		childValidator.WasCalledAsync.ShouldEqual(true)
+    # 		childValidator.WasCalledAsync.ShouldEqual(True)
 
     def test_Can_access_colletion_index(self):
         validator = InlineValidator[Person]()
@@ -555,40 +553,34 @@ class ForEachRuleTests(unittest.TestCase):
         result = validator.validate(Person())
         self.assertTrue(result.is_valid)
 
+    # 	def public async Task Failing_condition_should_prevent_multiple_components_running_and_not_throw_async(self):
+    # 		# https://github.com/FluentValidation/FluentValidation/issues/1698
+    # 		validator = InlineValidator[Person]()
 
-# 	def public async Task Failing_condition_should_prevent_multiple_components_running_and_not_throw_async(self):
-# 		# https://github.com/FluentValidation/FluentValidation/issues/1698
-# 		validator = InlineValidator[Person]()
+    # 		validator.rule_for_each(lambda x: x.Orders)
+    # 			.MustAsync((o, ct) => Task.FromResult(o is not None))
+    # 			.MustAsync((o, ct) => Task.FromResult(o is not None))
+    # 			.when(lambda x: x.Orders.Count > 0)
 
-# 		validator.rule_for_each(lambda x: x.Orders)
-# 			.MustAsync((o, ct) => Task.FromResult(o is not None))
-# 			.MustAsync((o, ct) => Task.FromResult(o is not None))
-# 			.when(lambda x: x.Orders.Count > 0)
+    # 		result = await validator.ValidateAsync(Person())
+    # 		result.is_valid.ShouldBeTrue()
 
-# 		result = await validator.ValidateAsync(Person())
-# 		result.is_valid.ShouldBeTrue()
+    # def test_Rule_ForEach_display_name_should_match_RuleForEach_display_name(self):
+    #     validator = InlineValidator[Person]()
 
-# 	def test_Rule_ForEach_display_name_should_match_RuleForEach_display_name(self):
-# 		validator = InlineValidator[Person]()
+    #     # These 2 rule definitions should produce the same error message and property name.
+    #     # https://github.com/FluentValidation/FluentValidation/issues/1231
 
-# 		# These 2 rule definitions should produce the same error message and property name.
-# 		# https://github.com/FluentValidation/FluentValidation/issues/1231
+    #     (validator.rule_for_each(lambda x: x.NickNames).must(lambda x: False).with_message("{PropertyName}"))
 
-# 		validator
-# 			.rule_for_each(lambda x: x.NickNames)
-# 			.must(lambda x: False)
-# 			.with_message("{PropertyName}")
+    #     validator.rule_for(lambda x: x.NickNames).for_each(lambda n: n.must(lambda x: False).with_message("{PropertyName}"))
 
-# 		validator
-# 			.rule_for(lambda x: x.NickNames)
-# 			.ForEach(n => n.must(lambda x: False).with_message("{PropertyName}"))
+    #     result = validator.validate(Person(NickNames=["foo"]))
+    #     self.assertEqual(result.errors[0].PropertyName, "NickNames[0]")
+    #     self.assertEqual(result.errors[0].ErrorMessage, "Nick Names")
 
-# 		result = validator.validate(Person() {NickNames = new[] {"foo"}})
-# 		result.errors[0].PropertyName.ShouldEqual("NickNames[0]")
-# 		result.errors[0].ErrorMessage.ShouldEqual("Nick Names")
-
-# 		result.errors[1].PropertyName.ShouldEqual("NickNames[0]")
-# 		result.errors[1].ErrorMessage.ShouldEqual("Nick Names")
+    #     self.assertEqual(result.errors[1].PropertyName, "NickNames[0]")
+    #     self.assertEqual(result.errors[1].ErrorMessage, "Nick Names")
 
 
 class OrderValidator(AbstractValidator[Order]):

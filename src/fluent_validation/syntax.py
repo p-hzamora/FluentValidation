@@ -45,9 +45,7 @@ class IRuleBuilder[T, TProperty](IRuleBuilderInternal[T, TProperty], DefaultVali
 class IRuleBuilderInitial[T, TProperty](IRuleBuilder[T, TProperty]): ...
 
 
-class IRuleBuilderOptions[T, TProperty](
-    IRuleBuilder[T, TProperty],
-):
+class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
     @abstractmethod
     def DependentRules(action) -> Self:
         """Creates a scope for declaring dependent rules."""

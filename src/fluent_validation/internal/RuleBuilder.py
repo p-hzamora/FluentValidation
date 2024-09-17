@@ -1,5 +1,6 @@
+from __future__ import annotations
 import inspect
-from typing import Callable, TypeVar
+from typing import Callable, TYPE_CHECKING
 
 from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
 from fluent_validation.IValidator import IValidator
@@ -9,18 +10,24 @@ from fluent_validation.IValidationRule import IValidationRule
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 from fluent_validation.syntax import IRuleBuilder, IRuleBuilderInternal, IRuleBuilderOptions
 
+if TYPE_CHECKING:
+    from fluent_validation.abstract_validator import AbstractValidator
 
-TAbstractValidator = TypeVar("TAbstractValidator")
+
 
 
 class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal):  # IRuleBuilderOptions does not implemented due to I don't know what it does
-    def __init__(self, rule: IValidationRuleInternal[T, TProperty], parent: TAbstractValidator):
-        self._rule = rule
-        self.parent_validator = parent
+    def __init__(self, rule: IValidationRuleInternal[T, TProperty], parent: AbstractValidator[T]):
+        self._rule:IValidationRuleInternal[T, TProperty] = rule
+        self.parent_validator:AbstractValidator[T] = parent
 
     @property
     def Rule(self) -> IValidationRule[T, TProperty]:
         return self._rule
+
+    @property
+    def ParentValidator(self) -> AbstractValidator[T]:
+        return self.parent_validator
 
     def set_validator(self, validator, *ruleSets) -> IRuleBuilderOptions[T, TProperty]:
         if isinstance(validator, IPropertyValidator):

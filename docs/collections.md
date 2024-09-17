@@ -59,14 +59,14 @@ class CustomerValidator(AbstractValidator[Customer]):
         self.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator())
 ```
 
-<!-- Alternatively, as of FluentValidation 8.5, you can also define rules for child collection elements in-line using the `ChildRules` method:
+<!-- Alternatively, as of FluentValidation 8.5, you can also define rules for child collection elements in-line using the `child_rules` method:
 
 ```python
 public class CustomerValidator : AbstractValidator<Customer> 
 {
   public CustomerValidator() 
   {
-    rule_for_each(x => x.Orders).ChildRules(order => 
+    rule_for_each(x => x.Orders).child_rules(order => 
     {
       order.rule_for(x => x.Total).greater_than(0)
     })

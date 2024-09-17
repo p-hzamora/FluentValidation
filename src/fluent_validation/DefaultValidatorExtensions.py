@@ -12,6 +12,7 @@ from fluent_validation.validators.RangeValidator import IComparer, RangeValidato
 from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
 
 if TYPE_CHECKING:
+    from fluent_validation.InlineValidator import InlineValidator
     from fluent_validation.syntax import IRuleBuilder
 
 
@@ -328,34 +329,38 @@ class DefaultValidatorExtensions[T, TProperty]:
     # 	static IRuleBuilderOptions<T, str> IsEnumName<T>(IRuleBuilder<T, str> ruleBuilder, Type enumType, bool caseSensitive = true)
     # 		=> ruleBuilder.set_validator(StringEnumValidator<T>(enumType, caseSensitive))
 
-    # 	static IRuleBuilderOptions[T,TProperty] ChildRules[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<InlineValidator<TProperty>> action) {
-    # 		if (action == null) throw ArgumentNullException(nameof(action))
-    # 		var validator = ChildRulesContainer<TProperty>()
-    # 		var parentValidator = ((IRuleBuilderInternal<T>) ruleBuilder).ParentValidator
+    def child_rules[T, TProperty](
+        ruleBuilder: IRuleBuilder[T, TProperty], action: None | Callable[[InlineValidator[TProperty], None]]
+    ) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
+        from fluent_validation.internal.ChildRulesContainer import ChildRulesContainer
 
-    # 		str[] ruleSets
+        if action is None:
+            raise ValueError("action")
+        validator = ChildRulesContainer[TProperty]()
+        # parentValidator = ((IRuleBuilderInternal[T]) ruleBuilder).ParentValidator
+        parentValidator = ruleBuilder.ParentValidator
 
-    # 		if (parentValidator is ChildRulesContainer<T> container && container.RuleSetsToApplyToChildRules != null) {
-    # 			ruleSets = container.RuleSetsToApplyToChildRules
-    # 		}
-    # 		else {
-    # 			ruleSets = DefaultValidatorOptions.Configurable(ruleBuilder).RuleSets
-    # 		}
+        ruleSets: list[str]
 
-    # 		# Store the correct rulesets on the child validator in case
-    # 		# we have nested calls to ChildRules, which can then pick up from
-    # 		# the parent validator.
-    # 		validator.RuleSetsToApplyToChildRules = ruleSets
+        # TODOH: Checked
+        if isinstance(parentValidator, ChildRulesContainer):
+            if parentValidator.RuleSetsToApplyToChildRules is not None:
+                ruleSets = parentValidator.RuleSetsToApplyToChildRules
+        else:
+            ruleSets = DefaultValidatorOptions.configurable(ruleBuilder).RuleSets
 
-    # 		action(validator)
+        # Store the correct rulesets on the child validator in case
+        # we have nested calls to child_rules, which can then pick up from
+        # the parent validator.
+        validator.RuleSetsToApplyToChildRules = ruleSets
 
-    # 		foreach(var rule in validator.Rules) {
-    # 			if (rule.RuleSets == null) {
-    # 				rule.RuleSets = ruleSets
-    # 			}
-    # 		}
-    # 		return ruleBuilder.set_validator(validator)
-    # 	}
+        action(validator)
+
+        for rule in validator.Rules:
+            if rule.RuleSets is None:
+                rule.RuleSets = ruleSets
+
+        return ruleBuilder.set_validator(validator)
 
     # 	static IRuleBuilderOptions[T,TProperty] SetInheritanceValidator[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<PolymorphicValidator[T,TProperty]> validatorConfiguration) {
     # 		if (validatorConfiguration == null) throw ArgumentNullException(nameof(validatorConfiguration))

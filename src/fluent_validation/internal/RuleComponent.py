@@ -140,7 +140,7 @@ class RuleComponent[T, TProperty](IRuleComponent):
 
     def GetErrorMessage(self, context: Optional[ValidationContext[T]], value: TProperty):
         # FIXME [x]: self._error_message has value when it must by empty test "test_When_the_maxlength_validator_fails_the_error_message_should_be_set"
-        rawTemplate: Optional[str] = setattr(self._errorMessageFactory, value) if self._errorMessageFactory else self._error_message
+        rawTemplate: Optional[str] = self._errorMessageFactory(context,value) if self._errorMessageFactory else self._error_message
         if rawTemplate is None:
             rawTemplate = self.Validator.get_default_message_template(self.ErrorCode)  # original
 

@@ -7,7 +7,7 @@ from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
 
 if TYPE_CHECKING:
     from fluent_validation.IValidator import IValidator
-    # from fluent_validation.abstract_validator import AbstractValidator
+    from fluent_validation.abstract_validator import AbstractValidator
 
 from .validators.IpropertyValidator import IPropertyValidator
 
@@ -17,9 +17,9 @@ from .IValidationRule import IValidationRule
 
 class IRuleBuilderInternal_one_generic[T](ABC):
     ...
-    # @property
-    # @abstractmethod
-    # def ParentValidator(self) -> AbstractValidator[T]: ...
+    @property
+    @abstractmethod
+    def ParentValidator(self) -> AbstractValidator[T]: ...
 
 
 class IRuleBuilderInternal[T, TProperty](IRuleBuilderInternal_one_generic[T]):

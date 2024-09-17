@@ -49,8 +49,21 @@ class RuleComponent[T, TProperty](IRuleComponent):
     def SupportsAsynchronousValidation(self) -> bool:
         return self._asyncPropertyValidator is not None
 
-    def set_error_message(self, error_message: str) -> None:
-        self._error_message = error_message
+    @overload
+    def set_error_message(self, error_message: Callable[[ValidationContext[T], TProperty], str]) -> None: ...
+    @overload
+    def set_error_message(self, error_message: str) -> None: ...
+
+    def set_error_message(self, error_message: Callable[[ValidationContext[T], TProperty], str] | str) -> None:
+        if isinstance(error_message, str):
+            self._error_message = error_message
+            self._errorMessageFactory = None
+        elif callable(error_message):
+            self._error_message = None
+            self._errorMessageFactory = error_message
+
+        else:
+            raise ValueError("error_message does not expected in 'set_error_message'")
 
     async def ValidateAsync(self, context: ValidationContext[T], value: TProperty, useAsync: bool) -> bool:
         if useAsync:

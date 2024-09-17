@@ -10,6 +10,7 @@ from fluent_validation.validators.NullValidator import NullValidator
 from fluent_validation.validators.InclusiveBetweenValidator import InclusiveBetweenValidator
 from fluent_validation.validators.RangeValidator import IComparer, RangeValidatorFactory
 from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
+from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
 
 if TYPE_CHECKING:
     from fluent_validation.InlineValidator import InlineValidator
@@ -255,9 +256,11 @@ class DefaultValidatorExtensions[T, TProperty]:
     @overload
     def inclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
     @overload
-    def inclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer:Optional[IComparer[T]]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
+    def inclusive_between(
+        ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]]
+    ) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
-    def inclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer:Optional[IComparer[T]]=None) -> IRuleBuilder[T, TProperty]:
+    def inclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilder[T, TProperty]:
         if comparer is None:
             return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween(from_, to))
         return ruleBuilder.set_validator(InclusiveBetweenValidator[T, TProperty](from_, to, comparer))
@@ -265,9 +268,11 @@ class DefaultValidatorExtensions[T, TProperty]:
     @overload
     def exclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
     @overload
-    def exclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer:Optional[IComparer[T]]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
+    def exclusive_between(
+        ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]]
+    ) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
-    def exclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer:Optional[IComparer[T]]=None) -> IRuleBuilder[T, TProperty]:
+    def exclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilder[T, TProperty]:
         if comparer is None:
             return ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween(from_, to))
         return ruleBuilder.set_validator(ExclusiveBetweenValidator[T, TProperty](from_, to, comparer))

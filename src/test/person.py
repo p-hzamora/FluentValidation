@@ -152,7 +152,7 @@ class Person:
         max_length: int = 0,
         Gender: Optional[EnumGender] = None,
         Genderstr: Optional[str] = None,
-        Children: list["Person"] = [],
+        Children: list[Optional["Person"]] = [],
         Orders: list[Optional[Order]] = [],
         NullableInt: Optional[int] = None,
         NullableDiscount: Optional[Decimal] = None,

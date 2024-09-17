@@ -3,12 +3,12 @@
 # [p-hzamora] I've tried to adapt it with Decimal object in Python
 
 from decimal import Decimal
-from typing import override
-import numpy as np
+from typing import override, NewType
 
 from fluent_validation.validators.PropertyValidator import PropertyValidator
 from fluent_validation.IValidationContext import ValidationContext
 
+UInt = NewType("UInt", int)
 
 class ScalePrecisionValidator[T](PropertyValidator[T, Decimal]):
     """
@@ -99,18 +99,18 @@ class ScalePrecisionValidator[T](PropertyValidator[T, Decimal]):
         # return (bits[2] * 4294967296m * 4294967296m) + (bits[1] * 4294967296m) + bits[0]
         return decimal.normalize().as_tuple().digits
 
-    def GetUnsignedScale(self, decimal: Decimal) -> np.uint:
+    def GetUnsignedScale(self, decimal: Decimal) -> UInt:
         return abs(decimal.as_tuple().exponent)
 
     def GetScale(self, decimal: Decimal) -> int:
-        scale: np.uint = self.GetUnsignedScale(decimal)
+        scale: UInt = self.GetUnsignedScale(decimal)
         if self.IgnoreTrailingZeros:
             return int(scale - self.NumTrailingZeros(decimal))
 
         return int(scale)
 
-    def NumTrailingZeros(self, decimal: Decimal) -> np.uint:
-        trailingZeros: np.uint = 0
+    def NumTrailingZeros(self, decimal: Decimal) -> UInt:
+        trailingZeros: UInt = 0
         digits = decimal.as_tuple().digits
 
         for digit in digits[::-1]:

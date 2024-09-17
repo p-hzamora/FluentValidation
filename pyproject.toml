@@ -3,8 +3,8 @@ line-length = 200
 
 [tool.poetry]
 name = "fluent_validation"
-version = "2.3.3"
-description = "A popular .NET validation library developed by 'Jeremy Skinner' for building strongly-typed validation rules, rewritten in python by 'Pablo Hernández"
+version = "2.3.4"
+description = "A popular .NET validation library developed by 'Jeremy Skinner' for building strongly-typed validation rules, rewritten in python by 'Pablo Hernández'"
 authors = [
     "p-hzamora <p.hzamora@icloud.com>",
     "Jeremy Skinner",
@@ -14,7 +14,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-
 
 [tool.poetry.group.dev.dependencies]
 twine = "^5.1.1"

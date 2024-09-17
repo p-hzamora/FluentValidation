@@ -41,7 +41,7 @@ class CustomMessageFormatTester(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "Foo")
         self.assertEqual(result.errors[1].ErrorMessage, "'Surname' must not be empty.")
 
-    def test_AAUses_property_value_in_message(self):
+    def test_Uses_property_value_in_message(self):
         self.validator.rule_for(lambda x: x.Surname).not_equal("foo").with_message(lambda person: f"was {person.Surname}")
         error = self.validator.validate(Person(Surname="foo")).errors[0].ErrorMessage
         self.assertEqual(error, "was foo")

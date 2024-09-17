@@ -399,17 +399,16 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Single().PropertyName.ShouldEqual("Forename")
     # 	}
 
-    # 	def void RuleSet_can_be_used_inside_condition() {
-    # 		validator = TestValidator()
+    def test_RuleSet_can_be_used_inside_condition(self):
+        validator = TestValidator()
 
-    # 		validator.when(lambda x: x.Id > 0, lambda: { validator.RuleSet("foo", lambda: { validator.rule_for(lambda x: x.Forename).not_null() }) })
+        validator.when(lambda x: x.Id > 0, lambda: {validator.rule_set("foo", lambda: {validator.rule_for(lambda x: x.Forename).not_null()})})
 
-    # 		validator.rule_for(lambda x: x.Surname).not_null()
+        validator.rule_for(lambda x: x.Surname).not_null()
 
-    # 		result = validator.validate(Person {Id = 5}, v => v.IncludeRuleSets("foo"))
-    # 		result.Errors.Count.ShouldEqual(1)
-    # 		result.Errors.Single().PropertyName.ShouldEqual("Forename")
-    # 	}
+        result = validator.validate(Person(Id=5), lambda v: v.IncludeRuleSets("foo"))
+        self.assertEqual(len(result.errors), 1)
+        self.assertEqual(result.errors[0].PropertyName, "Forename")
 
     # 	def async Task RuleSet_can_be_used_inside_async_condition() {
     # 		validator = TestValidator()
@@ -567,20 +566,20 @@ class SharedConditionTests(unittest.TestCase):
     # 		self.assertTrue(result.is_valid)
     # 	}
 
-    # 	def void When_condition_only_executed_once() {
-    # 		validator = TestValidator()
-    # 		int executions = 0
-    # 		validator.when(lambda x: {
-    # 			executions++
-    # 			return x.Age > 10
-    # 		}, lambda: {
-    # 			validator.rule_for(lambda x: x.Surname).not_null()
-    # 			validator.rule_for(lambda x: x.Forename).not_null()
-    # 		})
+    def test_When_condition_only_executed_once(self):
+        validator = TestValidator()
 
-    # 		validator.validate(Person(Age = 11))
-    # 		executions.ShouldEqual(1)
-    # 	}
+        executions: int = 0
+
+        def lambda_(a: Person):
+            nonlocal executions
+            executions += 1
+            return a.Age > 0
+
+        validator.when(lambda_, lambda: (validator.rule_for(lambda x: x.Surname).not_null(), validator.rule_for(lambda x: x.Forename).not_null()))
+
+        validator.validate(Person(Age=11))
+        self.assertEqual(executions, 1)
 
     # 	def async Task WhenAsync_condition_only_executed_once() {
     # 		validator = TestValidator()
@@ -657,10 +656,15 @@ class SharedConditionTests(unittest.TestCase):
 
     def test_Nested_when_inside_otherwise(self):
         validator = InlineValidator[Person]()
-        validator.when(lambda x: x.Id == 1, lambda: validator.rule_for(lambda x: x.Forename).not_null()).otherwise(
-            lambda: validator.when(
-                lambda x: x.Age > 18,
-                lambda: validator.rule_for(lambda x: x.Email).not_null(),
+        (
+            validator.when(
+                lambda x: x.Id == 1,
+                lambda: validator.rule_for(lambda x: x.Forename).not_null(),
+            ).otherwise(
+                lambda: validator.when(
+                    lambda x: x.Age > 18,
+                    lambda: validator.rule_for(lambda x: x.Email).not_null(),
+                )
             )
         )
 
@@ -672,31 +676,30 @@ class SharedConditionTests(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
         self.assertEqual(result.errors[0].PropertyName, "Email")
 
+    def test_When_condition_executed_for_each_instance_of_RuleForEach_condition_should_not_be_cached(self):
+        person = Person(
+            Children=[
+                Person(Id=1),
+                Person(Id=0),
+            ]
+        )
 
-# 	def void When_condition_executed_for_each_instance_of_RuleForEach_condition_should_not_be_cached() {
-# 		person = Person {
-# 			Children = list<Person> {
-# 				Person { Id = 1},
-# 				Person { Id = 0}
-# 			}
-# 		}
+        childValidator = InlineValidator[Person]()
+        executions: int = 0
 
-# 		childValidator = InlineValidator<Person>()
-# 		int executions = 0
+        def lambda_(a: Person):
+            nonlocal executions
+            executions += 1
+            return a.Id != 0
 
-# 		childValidator.when(a => {
-# 			executions++
-# 			return a.Id != 0
-# 		}, lambda: {
-# 			childValidator.rule_for(a => a.Id).Equal(1)
-# 		})
-# 		personValidator = InlineValidator<Person>()
-# 		personValidator.rule_for_each(p => p.Children).SetValidator(childValidator)
+        childValidator.when(lambda_, lambda: (childValidator.rule_for(lambda a: a.Id).equal(1)))
+        personValidator = InlineValidator[Person]()
+        personValidator.rule_for_each(lambda p: p.Children).set_validator(childValidator)
 
-# 		validationResult = personValidator.validate(person)
-# 		validationResult.is_valid.ShouldBeTrue()
-# 		executions.ShouldEqual(2)
-# 	}
+        validationResult = personValidator.validate(person)
+        self.assertTrue(validationResult.is_valid)
+        self.assertEqual(executions, 2)
+
 
 # 	def async Task When_async_condition_executed_for_each_instance_of_RuleForEach_condition_should_not_be_cached() {
 # 		person = Person {

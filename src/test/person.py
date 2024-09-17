@@ -144,7 +144,7 @@ class Person:
         Address: Optional[_Address] = None,
         Email: Optional[str] = None,
         Discount: Optional[Decimal] = None,
-        Age: Optional[float] = None,
+        Age: Optional[float] = 0.00,
         AnotherInt: int = 0,
         CreditCard: Optional[str] = None,
         Regex: Optional[str] = None,

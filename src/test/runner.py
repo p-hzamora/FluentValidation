@@ -28,6 +28,7 @@ import test_InclusiveBetweenValidator
 import test_ExclusiveBetweenValidator
 import test_Extension
 import test_CustomMessageFormat
+import test_UserSeverity
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -36,6 +37,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_UserSeverity),
         *loader.loadTestsFromModule(test_CustomMessageFormat),
         *loader.loadTestsFromModule(test_Extension),
         *loader.loadTestsFromModule(test_InclusiveBetweenValidator),

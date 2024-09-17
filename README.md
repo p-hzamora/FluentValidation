@@ -53,17 +53,17 @@ If you use FluentValidation in a commercial project, please sponsor the project 
   - [Greater Than Or Equal Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#greater-than-or-equal-validator)
   - [Predicate Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#predicate-validator)
   - [Regular Expression Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#regular-expression-validator)
-  - [Email Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#email-validator) (Not available)
+  - [Email Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#email-validator) (Not implemented yet)
   - [Credit Card Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#credit-card-validator)
-  - [Enum Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-validator) (Not available)
-  - [Enum Name Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-name-validator) (Not available)
+  - [Enum Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-validator) (Not implemented yet)
+  - [Enum Name Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-name-validator) (Not implemented yet)
   - [Empty Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#empty-validator)
   - [Null Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#null-validator)
   - [exclusive between Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#exclusivebetween-validator)
   - [inclusive between Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#inclusivebetween-validator)
   - [PrecisionScale Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#precisionscale-validator)
 
-- [Custom Validators](https://github.com/p-hzamora/FluentValidation/blob/main/docs/custom-validators.md) (Not available)
+- [Custom Validators](https://github.com/p-hzamora/FluentValidation/blob/main/docs/custom-validators.md) (Not implemented yet)
 
 #### Other Features
 - [Including Rules](https://github.com/p-hzamora/FluentValidation/blob/main/docs/including-rules.md)

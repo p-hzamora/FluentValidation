@@ -20,6 +20,8 @@ if TYPE_CHECKING:
     from fluent_validation.syntax import IRuleBuilderInitialCollection
     from fluent_validation.ICollectionRule import ICollectionRule
 
+from fluent_validation.internal.ExtensionInternal import ExtensionsInternal
+
 
 class DefaultValidatorOptions[T, TProperty]:
     @overload
@@ -274,12 +276,9 @@ class DefaultValidatorOptions[T, TProperty]:
         rule: IRuleBuilder[T, TProperty], severityProvider: _Severity | Callable[[T, TProperty, ValidationContext[T]], _Severity]
     ) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]:
         """Specifies custom severity that should be stored alongside the validation message when validation fails for this rule."""
-        if isinstance(severityProvider, _Severity):
-            rule.configurable(rule).Current.SeverityProvider = lambda a, b: severityProvider
-            return rule
 
         def SeverityProvider(ctx: ValidationContext[T], value: TProperty) -> _Severity:
-            match inspect.signature(severityProvider).parameters:
+            match len(inspect.signature(severityProvider).parameters):
                 case 1:
                     return severityProvider(ctx.instance_to_validate)
                 case 2:
@@ -289,8 +288,15 @@ class DefaultValidatorOptions[T, TProperty]:
                 case _:
                     raise ValueError
 
-            rule.configurable(rule).Current.SeverityProvider = SeverityProvider
+        if severityProvider is None:
+            ExtensionsInternal.Guard(severityProvider, "A lambda expression must be passed to WithSeverity", severityProvider)
+            
+        if isinstance(severityProvider, _Severity):
+            rule.configurable(rule).Current.SeverityProvider = lambda a, b: severityProvider
             return rule
+
+        rule.configurable(rule).Current.SeverityProvider = SeverityProvider
+        return rule
 
 
 #     public static IRuleBuilderInitialCollection<T, TCollectionElement> OverrideIndexer<T, TCollectionElement>(this IRuleBuilderInitialCollection<T, TCollectionElement> rule, Callable<T, IEnumerable<TCollectionElement>, TCollectionElement, int, str> callback) {

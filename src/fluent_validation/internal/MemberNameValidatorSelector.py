@@ -82,7 +82,7 @@ class MemberNameValidatorSelector(IValidatorSelector):
             if "[]" in memberName:
                 if normalizedPropertyPath is None:
                     # Normalize the property path using a regex. Orders[0].Name -> Orders[].Name.
-                    normalizedPropertyPath = self._collectionIndexNormalizer.sub(propertyPath, "[]")
+                    normalizedPropertyPath = self._collectionIndexNormalizer.sub("[]", propertyPath)
 
                 if memberName == normalizedPropertyPath:
                     return True

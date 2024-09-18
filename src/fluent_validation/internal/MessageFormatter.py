@@ -34,7 +34,7 @@ class MessageFormatter:
 
             format = match.group(2)
             if format is None:
-                return str(value) if value else None
+                return str(value) if value is not None else None
             format_string = f"{{0:{format}}}"
             return format_string.format(value)  # Format specified?
 

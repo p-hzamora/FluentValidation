@@ -1,29 +1,26 @@
-from typing import Callable, overload, override
-from fluent_validation.validators.AbstractComparisonValidator import (
-    AbstractComparisonValidator,
-    Comparison,
-)
+from typing import Callable, override
+
+from fluent_validation.MemberInfo import MemberInfo
+from fluent_validation.validators.AbstractComparisonValidator import Comparison
+
+from .EqualValidator import EqualValidator, IEqualityComparer
 
 
-class NotEqualValidator[T, TProperty](AbstractComparisonValidator[T, TProperty]):
-    @overload
-    def __init__(self, value: TProperty): ...
-
-    @overload
-    def __init__(self, valueToCompareFunc: Callable[[T], TProperty], memberDisplayName: str): ...
-
-    @overload
+class NotEqualValidator[T, TProperty](EqualValidator[T, TProperty]):
     def __init__(
         self,
-        valueToCompareFunc: Callable[[T], tuple[bool, TProperty]],
-        memberDisplayName: str,
-    ): ...
-
-    def __init__(self, value=None, valueToCompareFunc=None, memberDisplayName=None):
+        valueToCompare: TProperty = None,
+        comparer: IEqualityComparer[TProperty] = None,
+        comparisonProperty: Callable[[T], TProperty] = None,
+        member: MemberInfo = None,
+        memberDisplayName: str = None,
+    ):
         super().__init__(
-            valueToCompareFunc=valueToCompareFunc,
-            memberDisplayName=memberDisplayName,
-            value=value,
+            valueToCompare,
+            comparer,
+            comparisonProperty,
+            member,
+            memberDisplayName,
         )
 
     @override
@@ -31,6 +28,5 @@ class NotEqualValidator[T, TProperty](AbstractComparisonValidator[T, TProperty])
     def Comparison(self) -> Comparison:
         return Comparison.not_equal
 
-    @override
-    def get_default_message_template(self, error_code: str) -> str:
-        return self.Localized(error_code, self.Name)
+    def Compare(self, comparisonValue: TProperty, propertyValue: TProperty) -> bool:
+        return not super().Compare(comparisonValue, propertyValue)

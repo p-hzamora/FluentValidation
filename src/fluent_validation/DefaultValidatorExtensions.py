@@ -194,22 +194,39 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
     # region not_equal
     @overload
-    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...
-
+    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
     @overload
-    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]: ...
+    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    @overload
+    def not_equal(
+        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
+    ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    @overload
+    def not_equal(
+        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None
+    ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions[T, TProperty]:
 
     def not_equal(
-        ruleBuilder: IRuleBuilder[T, TProperty],
-        valueToCompare: Callable[[T], TProperty] | TProperty,
-    ) -> IRuleBuilder[T, TProperty]:
-        if callable(valueToCompare):
-            func = valueToCompare
-            member = MemberInfo(valueToCompare)
-            name = ruleBuilder.get_display_name(member, valueToCompare)
-            return ruleBuilder.set_validator(NotEqualValidator[T, TProperty](valueToCompareFunc=func, memberDisplayName=name))
+        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
+    ) -> IRuleBuilder[T, TProperty]:  # return IRuleBuilderOptions[T,TProperty]
+        expression = toCompare
+        if not comparer:
+            comparer = lambda x, y: x == y  # noqa: E731
 
-        return ruleBuilder.set_validator(NotEqualValidator(value=valueToCompare))
+        if not callable(toCompare):
+            return ruleBuilder.set_validator(NotEqualValidator[T, TProperty](toCompare, comparer))
+
+        member = MemberInfo(expression)
+        func = AccessorCache[T].GetCachedAccessor(member, expression)
+        name = ruleBuilder.get_display_name(member, expression)
+        return ruleBuilder.set_validator(
+            NotEqualValidator[T, TProperty](
+                comparisonProperty=func,
+                member=member,
+                memberDisplayName=name,
+                comparer=comparer,
+            )
+        )
 
     # endregion
     # region greater_than

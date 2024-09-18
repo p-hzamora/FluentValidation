@@ -348,8 +348,7 @@ class DefaultValidatorExtensions[T, TProperty]:
         ruleSets: list[str]
 
         # TODOH: Checked
-        if isinstance(parentValidator, ChildRulesContainer):
-            if parentValidator.RuleSetsToApplyToChildRules is not None:
+        if isinstance(parentValidator, ChildRulesContainer) and parentValidator.RuleSetsToApplyToChildRules is not None:
                 ruleSets = parentValidator.RuleSetsToApplyToChildRules
         else:
             ruleSets = DefaultValidatorOptions.configurable(ruleBuilder).RuleSets

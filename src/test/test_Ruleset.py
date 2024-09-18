@@ -13,7 +13,7 @@ from fluent_validation.abstract_validator import AbstractValidator
 from fluent_validation.internal.PropertyChain import PropertyChain
 from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
 from fluent_validation.results.ValidationResult import ValidationResult
-from person import _Address as Address
+from person import _Address as Address, Order
 from person import Person
 
 
@@ -52,40 +52,30 @@ class RulesetTests(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
         self.AssertExecuted(result, "Test")
 
-    #     def test_Ruleset_cascades_to_child_collection_validator(self):
-    #         orderValidator = InlineValidator<Order>()
-    #         orderValidator.rule_set("Test", lambda: {
-    #             orderValidator.rule_for(lambda x: x.ProductName).not_null()
-    #         })
+    def test_Ruleset_cascades_to_child_collection_validator(self):
+        orderValidator = InlineValidator[Order]()
+        orderValidator.rule_set("Test", lambda: {orderValidator.rule_for(lambda x: x.ProductName).not_null()})
 
-    #         validator = TestValidator()
+        validator = TestValidator()
 
-    #         validator.rule_set("Test", lambda: {
-    #             validator.rule_for_each(lambda x: x.Orders).set_validator(orderValidator)
-    #         })
+        validator.rule_set("Test", lambda: {validator.rule_for_each(lambda x: x.Orders).set_validator(orderValidator)})
 
-    #         person = Person {
-    #             Orders = { Order(), Order() }
-    #         }
+        person = Person(Orders=[Order(), Order()])
 
-    #         result = validator.validate(ValidationContext[Person](person, PropertyChain(), RulesetValidatorSelector(new[] { "Test" })))
+        result = validator.validate(ValidationContext[Person](person, PropertyChain(), RulesetValidatorSelector(["Test"])))
 
-    #         result.Errors.Count.ShouldEqual(2) //one for each order
-    #         self.AssertExecuted(result, "Test")
-    #     }
+        self.assertEqual(len(result.errors), 2)  # one for each order
+        self.AssertExecuted(result, "Test")
 
-    #     def test_Executes_multiple_rulesets(self):
-    #         validator = TestValidator()
-    #         validator.rule_set("Id", lambda: {
-    #             validator.rule_for(lambda x: x.Id).NotEqual(0)
-    #         })
+    def test_Executes_multiple_rulesets(self):
+        validator = TestValidator()
+        validator.rule_set("Id", lambda: {validator.rule_for(lambda x: x.Id).not_equal(0)})
 
-    #         person = Person()
-    #         result = validator.validate(ValidationContext[Person](person, PropertyChain(), RulesetValidatorSelector(new[] { "Names", "Id" })))
+        person = Person()
+        result = validator.validate(ValidationContext[Person](person, PropertyChain(), RulesetValidatorSelector(["Names", "Id"])))
 
-    #         result.Errors.Count.ShouldEqual(3)
-    #         self.AssertExecuted(result, "Names", "Id")
-    #     }
+        self.assertEqual(len(result.errors), 3)
+        self.AssertExecuted(result, "Names", "Id")
 
     def test_Executes_all_rules(self):
         validator = TestValidator()
@@ -116,17 +106,17 @@ class RulesetTests(unittest.TestCase):
         self.assertTrue(result.is_valid)
         self.AssertExecuted(result)
 
-    # def test_Ruleset_selection_should_cascade_downwards_with_when_setting_child_validator_using_include_statement(self):
-    #     validator = TestValidator3()
-    #     result = validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
-    #     self.assertFalse(result.is_valid)
-    #     self.AssertExecuted(result, "Names")
+    def test_Ruleset_selection_should_cascade_downwards_with_when_setting_child_validator_using_include_statement(self):
+        validator = TestValidator3()
+        result = validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
+        self.assertFalse(result.is_valid)
+        self.AssertExecuted(result, "Names")
 
-    # def test_Ruleset_selection_should_cascade_downwards_with_when_setting_child_validator_using_include_statement_with_lambda(self):
-    #     validator = InlineValidator[Person]()
-    #     validator.Include(lambda x: TestValidator2())
-    #     result = validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
-    #     self.assertFalse(result.is_valid)
+    def test_Ruleset_selection_should_cascade_downwards_with_when_setting_child_validator_using_include_statement_with_lambda(self):
+        validator = InlineValidator[Person]()
+        validator.Include(lambda x: TestValidator2())
+        result = validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
+        self.assertFalse(result.is_valid)
 
     def test_Trims_spaces(self):
         validator = InlineValidator[Person]()
@@ -173,114 +163,92 @@ class RulesetTests(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
         self.AssertExecuted(result, "default")
 
+    def test_Executes_in_rule_in_default_and_none(self):
+        validator = InlineValidator[Person]()
+        # FIXME [ ]: Fails because of 'rule_set' is case-sensitive. Must be case-insensitive
+        validator.rule_set("First, Default", lambda: validator.rule_for(lambda x: x.Forename).not_null())
+        validator.rule_for(lambda x: x.Forename).not_null()
 
-#     def test_Executes_in_rule_in_default_and_none(self):
-#         validator = InlineValidator[Person]()
-#         validator.rule_set("First, Default", lambda: {
-#             validator.rule_for(lambda x: x.Forename).not_null()
-#         })
-#         validator.rule_for(lambda x: x.Forename).not_null()
+        result = validator.validate(Person(), lambda v: v.IncludeRulesNotInRuleSet())
+        self.assertEqual(len(result.errors), 2)
+        self.AssertExecuted(result, "default")
 
-#         result = validator.validate(Person(), lambda v: v.IncludeRulesNotInRuleSet())
-#         result.Errors.Count.ShouldEqual(2)
-#         self.AssertExecuted(result, "default")
-#     }
+    def test_Combines_rulesets_and_explicit_properties(self):
+        validator = InlineValidator[Person]()
+        validator.rule_for(lambda x: x.Forename).not_null()
+        validator.rule_for(lambda x: x.Surname).not_null()
+        validator.rule_set("Test", lambda: validator.rule_for(lambda x: x.Age).greater_than(0))
 
+        result = validator.validate(
+            Person(),
+            lambda options: (
+                options.IncludeRuleSets("Test"),
+                options.IncludeProperties(lambda x: x.Forename),
+            ),
+        )
 
-#     def test_Combines_rulesets_and_explicit_properties(self):
-#         validator = InlineValidator[Person]()
-#         validator.rule_for(lambda x: x.Forename).not_null()
-#         validator.rule_for(lambda x: x.Surname).not_null()
-#         validator.rule_set("Test", lambda: {
-#             validator.rule_for(lambda x: x.Age).GreaterThan(0)
-#         })
+        self.assertEqual(len(result.errors), 2)
+        self.assertEqual(result.errors[0].PropertyName, "Forename")
+        self.assertEqual(result.errors[1].PropertyName, "Age")
 
-#         result = validator.validate(Person(), lambda options:{
-#             options.IncludeRuleSets("Test")
-#             options.IncludeProperties(lambda x: x.Forename)
-#         })
+    #     def test_Task(selfC:bines_rulesets_and_explicit_properties_async() {
+    #         validator = InlineValidator[Person]()
+    #         validator.rule_for(lambda x: x.Forename).MustAsync((x,t) => Task.FromResult(x != null))
+    #         validator.rule_for(lambda x: x.Surname).MustAsync((x,t) => Task.FromResult(x != null))
+    #         validator.rule_set("Test", lambda: {
+    #             validator.rule_for(lambda x: x.Age).MustAsync((x,t) => Task.FromResult(x > 0))
+    #         })
 
-#         result.Errors.Count.ShouldEqual(2)
-#         result.Errors[0].PropertyName.ShouldEqual("Forename")
-#         result.Errors[1].PropertyName.ShouldEqual("Age")
-#     }
+    #         result = await validator.validateAsync(Person(), lambda options:{
+    #             options.IncludeRuleSets("Test")
+    #             options.IncludeProperties(lambda x: x.Forename)
+    #         })
 
+    #         result.Errors.Count.ShouldEqual(2)
+    #         result.Errors[0].PropertyName.ShouldEqual("Forename")
+    #         result.Errors[1].PropertyName.ShouldEqual("Age")
+    #     }
 
-#     def test_Task(selfC:bines_rulesets_and_explicit_properties_async() {
-#         validator = InlineValidator[Person]()
-#         validator.rule_for(lambda x: x.Forename).MustAsync((x,t) => Task.FromResult(x != null))
-#         validator.rule_for(lambda x: x.Surname).MustAsync((x,t) => Task.FromResult(x != null))
-#         validator.rule_set("Test", lambda: {
-#             validator.rule_for(lambda x: x.Age).MustAsync((x,t) => Task.FromResult(x > 0))
-#         })
+    def test_Includes_combination_of_rulesets(self):
+        validator = InlineValidator[Person]()
+        validator.rule_for(lambda x: x.Forename).not_null()
+        validator.rule_set("Test1", lambda: validator.rule_for(lambda x: x.Surname).not_null())
+        validator.rule_set("Test2", lambda: validator.rule_for(lambda x: x.Age).greater_than(0))
 
-#         result = await validator.validateAsync(Person(), lambda options:{
-#             options.IncludeRuleSets("Test")
-#             options.IncludeProperties(lambda x: x.Forename)
-#         })
+        result = validator.validate(Person(), lambda options: {options.IncludeRuleSets("Test1").IncludeRulesNotInRuleSet()})
 
-#         result.Errors.Count.ShouldEqual(2)
-#         result.Errors[0].PropertyName.ShouldEqual("Forename")
-#         result.Errors[1].PropertyName.ShouldEqual("Age")
-#     }
+        self.assertEqual(len(result.errors), 2)
+        self.assertEqual(result.errors[0].PropertyName, "Forename")
+        self.assertEqual(result.errors[1].PropertyName, "Surname")
 
+    #     def test_Task(selfI:ludes_combination_of_rulesets_async() {
+    #         validator = InlineValidator[Person]()
+    #         validator.rule_for(lambda x: x.Forename).MustAsync((x,t) => Task.FromResult(x != null))
+    #         validator.rule_set("Test1", lambda: {
+    #             validator.rule_for(lambda x: x.Surname).MustAsync((x,t) => Task.FromResult(x != null))
+    #         })
+    #         validator.rule_set("Test2", lambda: {
+    #             validator.rule_for(lambda x: x.Age).MustAsync((x,t) => Task.FromResult(x > 0))
+    #         })
 
-#     def test_Includes_combination_of_rulesets(self):
-#         validator = InlineValidator[Person]()
-#         validator.rule_for(lambda x: x.Forename).not_null()
-#         validator.rule_set("Test1", lambda: {
-#             validator.rule_for(lambda x: x.Surname).not_null()
-#         })
-#         validator.rule_set("Test2", lambda: {
-#             validator.rule_for(lambda x: x.Age).GreaterThan(0)
-#         })
+    #         result = await validator.validateAsync(Person(), lambda options:{
+    #             options.IncludeRuleSets("Test1").IncludeRulesNotInRuleSet()
+    #         })
 
-#         result = validator.validate(Person(), lambda options:{
-#             options.IncludeRuleSets("Test1").IncludeRulesNotInRuleSet()
-#         })
+    #         result.Errors.Count.ShouldEqual(2)
+    #         result.Errors[0].PropertyName.ShouldEqual("Forename")
+    #         result.Errors[1].PropertyName.ShouldEqual("Surname")
+    #     }
 
-#         result.Errors.Count.ShouldEqual(2)
-#         result.Errors[0].PropertyName.ShouldEqual("Forename")
-#         result.Errors[1].PropertyName.ShouldEqual("Surname")
-#     }
+    def test_Includes_all_rulesets(self):
+        validator = InlineValidator[Person]()
+        validator.rule_for(lambda x: x.Forename).not_null()
+        validator.rule_set("Test1", lambda: validator.rule_for(lambda x: x.Surname).not_null())
+        validator.rule_set("Test2", lambda: validator.rule_for(lambda x: x.Age).greater_than(0))
 
+        result = validator.validate(Person(), lambda options: {options.IncludeAllRuleSets()})
 
-#     def test_Task(selfI:ludes_combination_of_rulesets_async() {
-#         validator = InlineValidator[Person]()
-#         validator.rule_for(lambda x: x.Forename).MustAsync((x,t) => Task.FromResult(x != null))
-#         validator.rule_set("Test1", lambda: {
-#             validator.rule_for(lambda x: x.Surname).MustAsync((x,t) => Task.FromResult(x != null))
-#         })
-#         validator.rule_set("Test2", lambda: {
-#             validator.rule_for(lambda x: x.Age).MustAsync((x,t) => Task.FromResult(x > 0))
-#         })
-
-#         result = await validator.validateAsync(Person(), lambda options:{
-#             options.IncludeRuleSets("Test1").IncludeRulesNotInRuleSet()
-#         })
-
-#         result.Errors.Count.ShouldEqual(2)
-#         result.Errors[0].PropertyName.ShouldEqual("Forename")
-#         result.Errors[1].PropertyName.ShouldEqual("Surname")
-#     }
-
-
-#     def test_Includes_all_rulesets(self):
-#         validator = InlineValidator[Person]()
-#         validator.rule_for(lambda x: x.Forename).not_null()
-#         validator.rule_set("Test1", lambda: {
-#             validator.rule_for(lambda x: x.Surname).not_null()
-#         })
-#         validator.rule_set("Test2", lambda: {
-#             validator.rule_for(lambda x: x.Age).GreaterThan(0)
-#         })
-
-#         result = validator.validate(Person(), lambda options:{
-#             options.IncludeAllRuleSets()
-#         })
-
-#         result.Errors.Count.ShouldEqual(3)
-#     }
+        self.assertEqual(len(result.errors), 3)
 
 
 #     def test_Task(selfI:ludes_all_rulesets_async() {

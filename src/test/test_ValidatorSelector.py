@@ -53,7 +53,7 @@ class ValidatorSelectorTests(unittest.TestCase):
 
     def test_validates_nullable_property_with_overriden_name_when_selected(self):
         validator = InlineValidator[TestObject](
-            lambda v: v.rule_for(lambda x: x.SomeNullableProperty).greater_than(Decimal("0")).when(lambda x: x.SomeNullableProperty is not None).orverride_property_name("SomeNullableProperty")
+            lambda v: v.rule_for(lambda x: x.SomeNullableProperty).greater_than(Decimal("0")).when(lambda x: x.SomeNullableProperty is not None).override_property_name("SomeNullableProperty")
         )
 
         result = validator.validate(TestObject(SomeNullableProperty=Decimal("0")), lambda v: v.IncludeProperties(lambda x: x.SomeNullableProperty))
@@ -184,7 +184,6 @@ class ValidatorSelectorTests(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "'Amount' must be greater than '6'.")
         self.assertEqual(result.errors[1].PropertyName, "Orders[1].Amount")
         self.assertEqual(result.errors[1].ErrorMessage, "'Amount' must be greater than '6'.")
-
 
     # # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
     # def test_Only_validates_single_child_property_of_all_elements_in_nested_collection(self):

@@ -194,7 +194,7 @@ class ForEachRuleTests(unittest.TestCase):
     #         thrown = True
     #         self.assertEqual(
     #             ex.args[0],
-    #             'Could not infer property name for expression: lambda x: x.NickNames.AsEnumerable(). Please explicitly specify a property name by calling orverride_property_name as part of the rule chain. Eg: rule_for_each(lambda x: x).not_null().orverride_property_name("MyProperty")',
+    #             'Could not infer property name for expression: lambda x: x.NickNames.AsEnumerable(). Please explicitly specify a property name by calling override_property_name as part of the rule chain. Eg: rule_for_each(lambda x: x).not_null().override_property_name("MyProperty")',
     #         )
 
     #     self.assertTrue(thrown)
@@ -419,7 +419,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 	self.assertEqual(len(results.errors), 1)
 
     def test_Should_override_property_name(self):
-        validator = TestValidator(lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator()).orverride_property_name("Orders2"))
+        validator = TestValidator(lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator()).override_property_name("Orders2"))
 
         results = validator.validate(self._person)
         self.assertEqual(results.errors[0].PropertyName, "Orders2[0].ProductName")

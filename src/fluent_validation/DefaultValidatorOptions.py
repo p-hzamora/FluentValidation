@@ -228,20 +228,20 @@ class DefaultValidatorOptions[T, TProperty]:
         return rule
 
     @overload
-    def orverride_property_name(rule: IRuleBuilder[T, TProperty], propertyName: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    def override_property_name(rule: IRuleBuilder[T, TProperty], propertyName: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
     @overload
-    def orverride_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    def override_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
 
-    def orverride_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
+    def override_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
         if callable(propertyName):
             member = MemberInfo(propertyName)
             if member is None:
-                raise Exception("Must supply a MemberExpression when calling orverride_property_name")
-            return rule.orverride_property_name(member.Name)
+                raise Exception("Must supply a MemberExpression when calling override_property_name")
+            return rule.override_property_name(member.Name)
 
         # Allow str.Empty as this could be a model-level rule.
         if propertyName is None:
-            raise Exception("A 'propertyName' must be specified when calling orverride_property_name.")
+            raise Exception("A 'propertyName' must be specified when calling override_property_name.")
         rule.configurable(rule).PropertyName = propertyName
         return rule
 
@@ -290,7 +290,7 @@ class DefaultValidatorOptions[T, TProperty]:
 
         if severityProvider is None:
             ExtensionsInternal.Guard(severityProvider, "A lambda expression must be passed to WithSeverity", severityProvider)
-            
+
         if isinstance(severityProvider, _Severity):
             rule.configurable(rule).Current.SeverityProvider = lambda a, b: severityProvider
             return rule

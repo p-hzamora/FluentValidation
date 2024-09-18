@@ -57,9 +57,16 @@ class MemberNameValidatorSelector(IValidatorSelector):
 
             if memberName.startswith(propertyPath + "["):
                 return True
-
-            if memberName.count("[]"):
+            
+			# If property path is for child property within collection,
+			# and member path contains wildcard [] then this means that we want to match
+			# with all items in the collection, but we need to normalize the property path
+			# in order to match. For example, if the propertyPath is "Orders[0].Name"
+			# and the memberName for inclusion is "Orders[].Name" then this should
+			# be allowed to match.
+            if "[]" in memberName:
                 if normalizedPropertyPath is None:
+                    # Normalize the property path using a regex. Orders[0].Name -> Orders[].Name.
                     normalizedPropertyPath = self._collectionIndexNormalizer.sub(propertyPath, "[]")
 
                 if memberName == normalizedPropertyPath:
@@ -77,6 +84,7 @@ class MemberNameValidatorSelector(IValidatorSelector):
 
     @classmethod
     def MemberNamesFromExpressions[T](cls, *propertyExpressions: Callable[[T], Any]) -> list[str]:
+        """Gets member names from expressions"""
         members: list[str] = [cls.MemberFromExpression(x) for x in propertyExpressions]
         return members
 

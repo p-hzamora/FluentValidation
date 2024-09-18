@@ -1,12 +1,64 @@
+from __future__ import annotations
+from dataclasses import dataclass
 import sys
+from typing import override
 import unittest
 from pathlib import Path
+from fluent_validation.ValidatorOptions import ValidatorOptions
+from fluent_validation.enums import StringComparer
 
 
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 from CultureScope import CultureScope
 from person import Person
 from TestValidator import TestValidator
+from fluent_validation import AbstractValidator
+
+
+class MyValueType:
+    def __init__(self, value: int = 0):
+        self._value: int = value
+
+    @property
+    def None_(self) -> MyValueType:
+        return MyValueType()
+
+    @property
+    def Value(self) -> int:
+        return self._value if self._value is not None else -1
+
+    @override
+    def __hash__(self) -> int:
+        return 0 if self._value is None else hash(self._value)
+
+    @override
+    def __str__(self) -> str:
+        return str(self._value) if self._value is not None else ""
+
+    @override
+    def __eq__(self, other: object) -> bool:
+        if other is None or not isinstance(other, MyValueType):
+            return False
+
+        return self._value == other._value
+
+    # static bool operator ==(MyValueType first, MyValueType second) {
+    #    return first.Equals(second)
+
+    # static bool operator !=(MyValueType first, MyValueType second) {
+    #     return !(first == second)
+    # }
+
+
+@dataclass
+class MyType:
+    Value: MyValueType = MyValueType()
+
+
+class MyTypeValidator(AbstractValidator[MyType]):
+    def __init__(self):
+        super().__init__()
+        self.rule_for(lambda myType: myType.Value).not_equal(MyValueType().None_)
 
 
 class NotEqualValidatorTests(unittest.TestCase):
@@ -36,21 +88,17 @@ class NotEqualValidatorTests(unittest.TestCase):
         self.assertFalse(result.is_valid)
         self.assertEqual(result.errors[0].ErrorMessage, "Surname")
 
-    # def test_Comparison_property_uses_custom_resolver(self):
-    # 	originalResolver = ValidatorOptions.Global.DisplayNameResolver
+    def test_Comparison_property_uses_custom_resolver(self):
+        originalResolver = ValidatorOptions.Global.DisplayNameResolver
 
-    # 	try:
-    # 		ValidatorOptions.Global.DisplayNameResolver = (type, member, exprlambda ): member.Name + "Foo"
-    # 		validator = TestValidator(
-    # 			lambda v: v.rule_for(lambda x: x.Forename)
-    # 				.not_equal(lambda x: x.Surname)
-    # 				.with_message("{ComparisonProperty}")
-    # 		)
+        try:
+            ValidatorOptions.Global.DisplayNameResolver = lambda type, member, expr: member.Name + "Foo"
+            validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).not_equal(lambda x: x.Surname).with_message("{ComparisonProperty}"))
 
-    # 		result = validator.validate(Person( Surname = "foo", Forename = "foo" })
-    # 		self.assertEqual(result.errors[0].ErrorMessage, "SurnameFoo")
-    # 	finally:
-    # 		ValidatorOptions.Global.DisplayNameResolver = originalResolver
+            result = validator.validate(Person(Surname="foo", Forename="foo"))
+            self.assertEqual(result.errors[0].ErrorMessage, "SurnameFoo")
+        finally:
+            ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
     # def test_Should_store_property_to_compare(self):
     # 	validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).not_equal(lambda x: x.Surname))
@@ -77,65 +125,24 @@ class NotEqualValidatorTests(unittest.TestCase):
         self.assertTrue(result.is_valid)
 
     def test_Should_not_be_valid_for_case_insensitve_comparison_with_expression(self):
-        # validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).not_equal(lambda x: x.Surname, StringComparer.OrdinalIgnoreCase)) #FIXME [ ]: Try to use implement StringComparer.OrdinalIgnoreCase
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Forename).not_equal(lambda x: x.Surname))
-        # result = validator.validate(Person( Forename = "foo", Surname = "FOO")) # original
-        result = validator.validate(Person(Forename="foo", Surname="foo"))
+        validator = TestValidator(
+            lambda v: v.rule_for(lambda x: x.Forename).not_equal(lambda x: x.Surname, StringComparer.OrdinalIgnoreCase)
+        )  # FIXME [x]: Try to use implement StringComparer.OrdinalIgnoreCase
+        result = validator.validate(Person(Forename="foo", Surname="FOO"))  # original
         self.assertFalse(result.is_valid)
 
-    # def test_Should_handle_custom_value_types_correctly(self):
-    # 	myType = MyType()
-    # 	myTypeValidator = MyTypeValidator()
+    def test_Should_handle_custom_value_types_correctly(self):
+        myType = MyType()
+        myTypeValidator = MyTypeValidator()
 
-    # 	validationResult = myTypeValidator.Validate(myType)
-    # 	validationResult.is_valid.ShouldEqual(false)
+        validationResult = myTypeValidator.validate(myType)
+        self.assertFalse(validationResult.is_valid)
 
-    # def test_Should_use_ordinal_comparison_by_default(self):
-    # 	validator = TestValidator()
-    # 	validator.rule_for(lambda x: x.Surname).not_equal("a")
-    # 	result = validator.validate(Person(Surname = "a\0"))
-    # 	self.assertTrue(result.is_valid)
-
-    # class MyType:
-    # 	Value:MyValueType
-
-    # class MyTypeValidator(AbstractValidator)[MyType]:
-    # 	MyTypeValidator()
-    # 		rule_for(myTyplambda e: myType.Value).not_equal(MyValueType.None)
-
-    # class MyValueType:
-    # 	static readonly MyValueType None = default
-
-    # 	MyValueType(int value)
-    # 		_value = value
-
-    # 	int Value
-    # 		get { return _value ?? -1 }
-
-    # 	private readonly int? _value
-
-    # 	override int GetHashCode() {
-    # 		return _value == null ? 0 : _value.Value.GetHashCode()
-
-    # 	override string ToString() {
-    # 		return _value == null ? null : _value.Value.ToString()
-
-    # 	override bool Equals(object obj) {
-    # 		if (obj == null || obj.GetType() != typeof(MyValueType))
-    # 			return false
-
-    # 		otherValueType = (MyValueType)obj
-    # 		return Equals(otherValueType)
-
-    # 	bool Equals(MyValueType other) {
-    # 		return _value == other._value
-
-    # 	static bool operator ==(MyValueType first, MyValueType second) {
-    # 		return first.Equals(second)
-
-    # 	static bool operator !=(MyValueType first, MyValueType second) {
-    # 		return !(first == second)
-    # }
+    def test_Should_use_ordinal_comparison_by_default(self):
+        validator = TestValidator()
+        validator.rule_for(lambda x: x.Surname).not_equal("a")
+        result = validator.validate(Person(Surname="a\0"))
+        self.assertTrue(result.is_valid)
 
 
 if __name__ == "__main__":

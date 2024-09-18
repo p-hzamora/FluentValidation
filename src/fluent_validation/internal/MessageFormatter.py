@@ -1,5 +1,4 @@
 import re
-from typing import Any
 
 
 class MessageFormatter:
@@ -22,20 +21,22 @@ class MessageFormatter:
         return self.AppendArgument(self.PropertyValue, value)
 
     def BuildMessage(self, messageTemplate: str) -> str:
-        return self.replace_placeholders(messageTemplate, self.PlaceholderValues)
+        return self.replace_placeholders(messageTemplate)
 
-    def replace_placeholders(self, message_template: str, placeholder_values: dict[str, Any]):
-        def replace(match: re.Match) -> str:
+    def replace_placeholders(self, message_template: str):
+        def replace(match: re.Match[str]) -> str:
             key = match.group(1)
 
-            if key not in placeholder_values:
+            if key not in self._placeholderValues:
                 return match.group(0)  # No placeholder / value
 
-            value = placeholder_values[key]
-            if match.group(2):  # Format specified?
-                return f"{value:{match.group(2)}}"
-            else:
-                return str(value)
+            value = self._placeholderValues.get(key)
+
+            format = match.group(2)
+            if format is None:
+                return str(value) if value else None
+            format_string = f"{{0:{format}}}"
+            return format_string.format(value)  # Format specified?
 
         return self._keyRegex.sub(replace, message_template)
 

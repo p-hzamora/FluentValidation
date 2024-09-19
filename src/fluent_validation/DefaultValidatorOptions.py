@@ -201,11 +201,12 @@ class DefaultValidatorOptions[T, TProperty]:
     #         return rule.WhenAsync(async (x, ctx, ct) => !await predicate(x, ctx, ct), applyConditionTo);
     #     }
 
-    #     public static IRuleBuilderInitialCollection<T, TCollectionElement> Where<T, TCollectionElement>(this IRuleBuilderInitialCollection<T, TCollectionElement> rule, Callable<TCollectionElement, bool> predicate) {
-    #         # This overload supports RuleFor().SetCollectionValidator() (which returns IRuleBuilderOptions<T, IEnumerable<TElement>>)
-    #         Configurable(rule).Filter = predicate;
-    #         return rule;
-    #     }
+    # FIXME [ ]: the type var of rule would be 'IRuleBuilderInitialCollection'
+    def where[TCollectionElement](rule: IRuleBuilder[T, TCollectionElement], predicate: Callable[[TCollectionElement], bool]) -> IRuleBuilderInitialCollection[T, TCollectionElement]:
+        # This overload supports RuleFor().SetCollectionValidator() (which returns IRuleBuilderOptions<T, IEnumerable<TElement>>)
+        rule_configurable: ICollectionRule = rule.configurable(rule)
+        rule_configurable.Filter = predicate
+        return rule
 
     @overload
     def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]

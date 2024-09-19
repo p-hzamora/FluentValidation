@@ -16,7 +16,6 @@ from .IValidationRule import IValidationRule
 
 
 class IRuleBuilderInternal_one_generic[T](ABC):
-    ...
     @property
     @abstractmethod
     def ParentValidator(self) -> AbstractValidator[T]: ...

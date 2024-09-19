@@ -1,3 +1,4 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import datetime
@@ -113,7 +114,7 @@ class Order(IOrder):
         self,
         Amount: int|float|Decimal = Decimal("0"),
         ProductName: Optional[str] = None,
-        Payments: Optional[list["Payment"]] = None,
+        Payments: Optional[list[Payment]] = None,
     ):
         self._Amount: int|float|Decimal = Amount
         self._ProductName: Optional[str] = ProductName
@@ -128,7 +129,7 @@ class Order(IOrder):
         return self._Amount
 
     @property
-    def Payments(self) -> Optional[list["Payment"]]:
+    def Payments(self) -> Optional[list[Payment]]:
         return self._Payments
 
 
@@ -152,7 +153,7 @@ class Person:
         max_length: int = 0,
         Gender: Optional[EnumGender] = None,
         Genderstr: Optional[str] = None,
-        Children: list[Optional["Person"]] = [],
+        Children: list[Optional[Person]] = [],
         Orders: list[Optional[Order]] = [],
         NullableInt: Optional[int] = None,
         NullableDiscount: Optional[Decimal] = None,

@@ -28,6 +28,33 @@ class IRuleBuilderInternal[T, TProperty](IRuleBuilderInternal_one_generic[T]):
 
 
 class IRuleBuilder[T, TProperty](IRuleBuilderInternal[T, TProperty], DefaultValidatorExtensions[T, TProperty], DefaultValidatorOptions[T, TProperty]):
+    def __getattr__(self, __name: str) -> Callable[..., IRuleBuilder[T, TProperty]]:
+        """
+        Unlike C#, Python does not have extension methods, so we have to hard-code the custom method directly into 'IRuleBuilder' class in order to use it.
+
+        ```csharp
+        public static IRuleBuilderOptions<T, IList<TElement>> ListMustContainFewerThan<T, TElement>(this IRuleBuilder<T, IList<TElement>> ruleBuilder, int num) {
+          ...
+        }
+        ```
+
+        The code above will be translated as:
+
+        ```python
+        def ListMustContainFewerThan(ruleBuilder:IRuleBuilder[T,list[TElement]], num:int)->IRuleBuilderOptions[T,list[TElement]]: ...
+        IRuleBuilder.Foo = Foo
+        ```
+
+        Since the linter won't be able to find it, we need to specify that any method not declared in IRuleBuilder will be of type IRuleBuilder itself,
+        so we can continue using the rest of the validating methods even after calling one of these.
+
+        We can achieve this by overriding '__getattr__' special method with Callable class from typing module.
+        """
+        func = self.__dict__.get(__name, None)
+        if func is None:
+            raise AttributeError(f"'{__name}' method does not exits")
+        return func
+
     @overload
     def set_validator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload

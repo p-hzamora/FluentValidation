@@ -125,8 +125,8 @@ print("OK")
 # Custom Validators
 @dataclass
 class Pet:
-    age: int
-    name: str
+    age: Optional[int] = None
+    name: Optional[str] = None
 
 
 class Person:

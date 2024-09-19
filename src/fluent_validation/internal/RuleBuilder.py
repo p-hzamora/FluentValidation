@@ -14,12 +14,10 @@ if TYPE_CHECKING:
     from fluent_validation.abstract_validator import AbstractValidator
 
 
-
-
 class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal):  # IRuleBuilderOptions does not implemented due to I don't know what it does
     def __init__(self, rule: IValidationRuleInternal[T, TProperty], parent: AbstractValidator[T]):
-        self._rule:IValidationRuleInternal[T, TProperty] = rule
-        self.parent_validator:AbstractValidator[T] = parent
+        self._rule: IValidationRuleInternal[T, TProperty] = rule
+        self.parent_validator: AbstractValidator[T] = parent
 
     @property
     def Rule(self) -> IValidationRule[T, TProperty]:

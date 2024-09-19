@@ -43,7 +43,7 @@ public class NotNullValidator : PropertyValidator
 {
   protected override bool is_valid(PropertyValidatorContext context)
   {
-    return context.PropertyValue != null
+    return context.PropertyValue is not None
   }
 
   protected override string GetDefaultMessageTemplate()
@@ -57,7 +57,7 @@ public class NotNullValidator<T,TProperty> : PropertyValidator<T, TProperty>
 
   public override bool is_valid(ValidationContext<T> context, TProperty value)
   {
-    return value != null
+    return value is not None
   }
 
   protected override string GetDefaultMessageTemplate(string errorCode)

@@ -59,30 +59,26 @@ class CustomerValidator(AbstractValidator[Customer]):
         self.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator())
 ```
 
-<!-- Alternatively, as of FluentValidation 8.5, you can also define rules for child collection elements in-line using the `child_rules` method:
+Alternatively, as of FluentValidation 8.5, you can also define rules for child collection elements in-line using the `child_rules` method:
 
 ```python
-public class CustomerValidator : AbstractValidator<Customer> 
-{
-  public CustomerValidator() 
-  {
-    rule_for_each(x => x.Orders).child_rules(order => 
-    {
-      order.rule_for(x => x.Total).greater_than(0)
-    })
-  }
-}
+class CustomerValidator(AbstractValidator[Customer]):
+    def __init__(self) -> None:
+        super().__init__()
+        self.rule_for_each(lambda x: x.Orders).child_rules(
+            lambda order: order.rule_for(lambda x: x.Total).greater_than(0),
+        )
 ```
 
-You can optionally include or exclude certain items in the collection from being validated by using the `Where` method. Note this must come directly after the call to `rule_for_each`:
+You can optionally include or exclude certain items in the collection from being validated by using the `where` method. Note this must come directly after the call to `rule_for_each`:
 
 ```python
 rule_for_each(x => x.Orders)
-  .Where(x => x.Cost != null)
+  .where(x => x.Cost is not None)
   .set_validator(new OrderValidator())
 ```
 
-As of version 8.2, an alternative to using `rule_for_each` is to call `ForEach` as part of a regular `rule_for`. With this approach you can combine rules that act upon the entire collection with rules which act upon individual elements within the collection. For example, imagine you have the following 2 rules:
+<!-- As of version 8.2, an alternative to using `rule_for_each` is to call `ForEach` as part of a regular `rule_for`. With this approach you can combine rules that act upon the entire collection with rules which act upon individual elements within the collection. For example, imagine you have the following 2 rules:
 
 ```python
 # This rule acts on the whole collection (using rule_for)

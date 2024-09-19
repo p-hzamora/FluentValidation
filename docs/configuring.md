@@ -77,7 +77,7 @@ Property name resolution is also pluggable. By default, the name of the property
 ```python
 ValidatorOptions.Global.DisplayNameResolver = (type, member, expression) => 
 {
-  if(member != null) 
+  if(member is not None) 
   {
      return member.Name + "Foo"
   }

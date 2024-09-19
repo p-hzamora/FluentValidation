@@ -150,7 +150,7 @@ class MyCustomValidators:
 class PersonValidator(AbstractValidator[Person], MyCustomValidators):
     def __init__(self) -> None:
         super().__init__()
-        self.rule_for(lambda x: x.Pets).ListMustContainFewerThan(10)
+        self.rule_for(lambda x: x.Pets).ListMustContainFewerThan(10).must(lambda x: len(x) == 10).with_severity(Severity.Warning)
 
 
 person = Person(

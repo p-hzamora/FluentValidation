@@ -30,6 +30,7 @@ import test_Extension
 import test_CustomMessageFormat
 import test_ValidatorSelector
 import test_UserSeverity
+import test_ChildRules
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -38,6 +39,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_ChildRules),
         *loader.loadTestsFromModule(test_UserSeverity),
         *loader.loadTestsFromModule(test_ValidatorSelector),
         *loader.loadTestsFromModule(test_CustomMessageFormat),

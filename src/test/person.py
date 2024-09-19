@@ -105,30 +105,30 @@ class _Address(IAddress):
 class IOrder(ABC):
     @property
     @abstractmethod
-    def Amount(self) -> Decimal: ...
+    def Amount(self) -> int|float|Decimal: ...
 
 
 class Order(IOrder):
     def __init__(
         self,
-        Amount: Decimal = Decimal("0"),
-        ProductName: str = None,
-        Payments: list["Payment"] = None,
+        Amount: int|float|Decimal = Decimal("0"),
+        ProductName: Optional[str] = None,
+        Payments: Optional[list["Payment"]] = None,
     ):
-        self._Amount: Decimal = Amount
-        self._ProductName: str = ProductName
-        self._Payments: list["Payment"] = Payments
+        self._Amount: int|float|Decimal = Amount
+        self._ProductName: Optional[str] = ProductName
+        self._Payments: Optional[list[Payment]] = Payments
 
     @property
-    def ProductName(self) -> str:
+    def ProductName(self) -> Optional[str]:
         return self._ProductName
 
     @property
-    def Amount(self) -> Decimal:
+    def Amount(self) -> int|float|Decimal:
         return self._Amount
 
     @property
-    def Payments(self) -> list["Payment"]:
+    def Payments(self) -> Optional[list["Payment"]]:
         return self._Payments
 
 

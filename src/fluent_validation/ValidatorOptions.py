@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Type
+from typing import Any, Callable, Iterable, Type,Optional
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.CompositeValidatorSelector import CompositeValidatorSelector
@@ -92,7 +92,7 @@ class ValidatorConfiguration:
 
     # region Properties
     @property
-    def DefaultClassLevelCascadeMode(self) -> CascadeMode:
+    def DefaultClassLevelCascadeMode(self) -> _CascadeMode:
         return self._defaultClassLevelCascadeMode
 
     @DefaultClassLevelCascadeMode.setter
@@ -100,7 +100,7 @@ class ValidatorConfiguration:
         self._defaultClassLevelCascadeMode = value
 
     @property
-    def DefaultRuleLevelCascadeMode(self) -> CascadeMode:
+    def DefaultRuleLevelCascadeMode(self) -> _CascadeMode:
         return self._defaultRuleLevelCascadeMode
 
     @DefaultRuleLevelCascadeMode.setter
@@ -166,7 +166,7 @@ class ValidatorConfiguration:
     # endregion
 
     @property
-    def ErrorCodeResolver(self) -> Callable[[IPropertyValidator], str]:
+    def ErrorCodeResolver(self) -> Optional[Callable[[IPropertyValidator], str]]:
         return self._errorCodeResolver
 
     @ErrorCodeResolver.setter
@@ -186,7 +186,7 @@ class ValidatorConfiguration:
         return memberInfo.Name
 
     @staticmethod
-    def DefaultDisplayNameResolver(_type: Type, memberInfo: MemberInfo, expression: Callable[..., str]):
+    def DefaultDisplayNameResolver(_type: Type, memberInfo: MemberInfo, expression: Callable[..., str])->None| Callable[[Type, MemberInfo, Callable[..., Any]], str]:
         return None
 
     @staticmethod

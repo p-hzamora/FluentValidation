@@ -57,12 +57,18 @@ class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal
         self.Rule.AddAsyncValidator(adaptor, adaptor)
         return self
 
-    def set_validator_Callable_T(self, validator: Callable[[T], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
-        # TODOH []: We need to implement this method to use set_validator properly
-        raise Exception
+    def set_validator_Callable_T[TValidator: IValidator[TProperty]](self, validator: Callable[[T], TValidator], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
+        # TODOH [x]: We need to implement this method to use set_validator properly
+        adaptor = ChildValidatorAdaptor[T, TProperty](lambda context, _: validator(context.instance_to_validate), type(TValidator))
+        adaptor.RuleSets = ruleSets
+        # ChildValidatorAdaptor supports both sync and async execution.
+        self.Rule.AddAsyncValidator(adaptor, adaptor)
         return self
 
-    def set_validator_Callable_T_TProperty(self, validator: Callable[[T, TProperty], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
-        # TODOH []: We need to implement this method to use set_validator properly
-        raise Exception
+    def set_validator_Callable_T_TProperty[TValidator: IValidator[TProperty]](self, validator: Callable[[T, TProperty], TValidator], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
+        # TODOH [x]: We need to implement this method to use set_validator properly
+        adaptor = ChildValidatorAdaptor[T, TProperty](lambda context, val: validator(context.instance_to_validate, val), type(TValidator))
+        adaptor.RuleSets = ruleSets
+        # ChildValidatorAdaptor supports both sync and async execution.
+        self.Rule.AddAsyncValidator(adaptor, adaptor)
         return self

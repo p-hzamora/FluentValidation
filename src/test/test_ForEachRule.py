@@ -408,15 +408,17 @@ class ForEachRuleTests(unittest.TestCase):
         result = validator.validate(self._person)
         self.assertFalse(result.is_valid)
 
-    # def test_Can_specify_condition_for_individual_collection_elements(self):
-    # 	validator = TestValidator(
-    # 		lambda v: v.rule_for_each(lambda x: x.Orders)
-    # 			.Where(lambda x: x.ProductName is not None)
-    # 			.set_validator(OrderValidator())
-    # )
+    def test_Can_specify_condition_for_individual_collection_elements(self):
+        validator = TestValidator(
+            lambda v: v.rule_for_each(lambda x: x.Orders)
+            .where(lambda x: x.ProductName is not None)
+            .set_validator(
+                OrderValidator(),
+            )
+        )
 
-    # 	results = validator.validate(self._person)
-    # 	self.assertEqual(len(results.errors), 1)
+        results = validator.validate(self._person)
+        self.assertEqual(len(results.errors), 1)
 
     def test_Should_override_property_name(self):
         validator = TestValidator(lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator()).override_property_name("Orders2"))

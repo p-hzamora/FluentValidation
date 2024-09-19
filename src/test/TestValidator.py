@@ -16,6 +16,4 @@ class TestValidator(InlineValidator[Person]):
     def __init__(self, *actions: Callable[["TestValidator"], None]): ...
 
     def __init__(self, *actions: Callable[["TestValidator"], None]):
-        super().__init__()
-        for action in actions:
-            action(self)
+        super().__init__(*actions)

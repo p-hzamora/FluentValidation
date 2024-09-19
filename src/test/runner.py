@@ -31,6 +31,8 @@ import test_CustomMessageFormat
 import test_ValidatorSelector
 import test_UserSeverity
 import test_ChildRules
+import test_CascadingFailuresLegacy
+import test_CollectionValidatorWithParent
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -39,6 +41,8 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_CollectionValidatorWithParent),
+        *loader.loadTestsFromModule(test_CascadingFailuresLegacy),
         *loader.loadTestsFromModule(test_ChildRules),
         *loader.loadTestsFromModule(test_UserSeverity),
         *loader.loadTestsFromModule(test_ValidatorSelector),

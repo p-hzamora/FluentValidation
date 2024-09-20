@@ -171,11 +171,23 @@ class ValidatorSelectorTests(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "'Amount' must be greater than '6'.")
 
     def test_Only_validates_single_child_property_of_all_elements_in_collection(self):
-        person = Person(Address=Address(Country=Country()), Orders=[Order(Amount=5), Order(ProductName="Foo"), Order(Amount=10)])
+        person = Person(
+            Address=Address(Country=Country()),
+            Orders=[
+                Order(Amount=5),
+                Order(ProductName="Foo"),
+                Order(Amount=10),
+            ],
+        )
 
         validator = InlineValidator[Person]()
         validator.rule_for(lambda x: x.Address.Country.Name).not_empty()
-        validator.rule_for_each(lambda x: x.Orders).child_rules(lambda x: (x.rule_for(lambda y: y.Amount).greater_than(6), x.rule_for(lambda y: y.ProductName).min_length(5)))
+        validator.rule_for_each(lambda x: x.Orders).child_rules(
+            lambda x: (
+                x.rule_for(lambda y: y.Amount).greater_than(6),
+                x.rule_for(lambda y: y.ProductName).min_length(5),
+            )
+        )
 
         # FIXME [x]: does not working when use '[]' wildcard
         result = validator.validate(person, lambda opt: opt.IncludeProperties("Orders[].Amount"))

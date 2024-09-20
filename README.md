@@ -63,7 +63,7 @@ If you use FluentValidation in a commercial project, please sponsor the project 
   - [Inclusive Between Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#inclusivebetween-validator)
   - [PrecisionScale Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#precisionscale-validator)
 
-- [Custom Validators](https://github.com/p-hzamora/FluentValidation/blob/main/docs/custom-validators.md) (Not implemented yet)
+- [Custom Validators](https://github.com/p-hzamora/FluentValidation/blob/main/docs/custom-validators.md)
 
 #### Other Features
 - [Including Rules](https://github.com/p-hzamora/FluentValidation/blob/main/docs/including-rules.md)

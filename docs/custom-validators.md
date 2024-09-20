@@ -28,7 +28,7 @@ class PersonValidator(AbstractValidator[Person]):
 
 ```
 
-To make this logic reusable, we can wrap it an extension method that acts upon any `List<T>` type.
+To make this logic reusable, we can wrap it an extension method that acts upon any `list[T]` type.
 
 ```python
 class MyCustomValidators:
@@ -39,7 +39,7 @@ class MyCustomValidators:
 
 ```
 
-Here we create an extension method on `IRuleBuilder<T,TProperty>`, and we use a generic type constraint to ensure this method only appears in intellisense for List types. Inside the method, we call the must method in the same way as before but this time we call it on the passed-in `RuleBuilder` instance. We also pass in the number of items for comparison as a parameter. Our rule definition can now be rewritten to use this method:
+Here we create an extension method on `IRuleBuilder[T,TProperty]`, and we use a generic type constraint to ensure this method only appears in intellisense for List types. Inside the method, we call the must method in the same way as before but this time we call it on the passed-in `RuleBuilder` instance. We also pass in the number of items for comparison as a parameter. Our rule definition can now be rewritten to use this method:
 
 ```python
 self.rule_for(lambda x: x.Pets).ListMustContainFewerThan(10)

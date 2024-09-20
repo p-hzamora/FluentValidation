@@ -35,7 +35,8 @@ class PropertyChain:
 
     @staticmethod
     def FromExpression(expression: Callable[..., Any]) -> "PropertyChain":
-        # COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has. Since we always pass one attr, we only need to access the first position of the list
+        # COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has.
+        #  Since we always pass one attr, we only need to access the first position of the list if not empty
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
             # FIXME [ ]: Checked who to resovle with original code

@@ -9,7 +9,7 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop(
 from dataclasses import dataclass  # noqa: E402
 from fluent_validation.abstract_validator import AbstractValidator  # noqa: E402
 from fluent_validation.enums import CascadeMode, Severity  # noqa: E402
-from fluent_validation import IRuleBuilder, IRuleBuilderOptions, ValidationContext
+from fluent_validation import IRuleBuilder, IRuleBuilderOptions
 
 
 class RegexPattern:
@@ -136,13 +136,12 @@ class Person:
 
 class MyCustomValidators:
     def ListMustContainFewerThan[T, TElement](ruleBuilder: IRuleBuilder[T, list[TElement]], num: int) -> IRuleBuilderOptions[T, list[TElement]]:
-        def _lambda[T](rootObject, list, context: ValidationContext[T]) -> bool:
-            (context.MessageFormatter.AppendArgument("MaxElements", num).AppendArgument("TotalElements", len(list)))
-            return len(list) < num
-
-        return ruleBuilder.must(lambda rootObject, list_, context: _lambda(rootObject, list_, context)).with_message(
-            "{PropertyName} must contain fewer than {MaxElements} items. The list contains {TotalElements} element"
-        )
+        return ruleBuilder.must(
+            lambda rootObject, list_, context: (
+                context.MessageFormatter.AppendArgument("MaxElements", num).AppendArgument("TotalElements", len(list_)),
+                len(list_) < num,
+            )[1]
+        ).with_message("{PropertyName} must contain fewer than {MaxElements} items. The list contains {TotalElements} element")
 
     IRuleBuilder.ListMustContainFewerThan = ListMustContainFewerThan
 

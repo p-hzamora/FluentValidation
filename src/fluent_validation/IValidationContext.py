@@ -161,7 +161,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         return None
 
     @staticmethod
-    def CreateWithOptions(instanceToValidate: T, options: Callable[[ValidationStrategy], None]) -> "ValidationContext[T]":
+    def CreateWithOptions(instanceToValidate: T, options: Callable[[ValidationStrategy], None]) -> ValidationContext[T]:
         strategy = ValidationStrategy()
         options(strategy)
         return strategy.BuildContext(instanceToValidate)
@@ -252,7 +252,7 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         return self._sharedConditionCache
 
     @staticmethod
-    def GetFromNonGenericContext(context: IValidationContext) -> "ValidationContext[T]":
+    def GetFromNonGenericContext(context: IValidationContext) -> ValidationContext[T]:
         # Already of the correct type.
         # FIXME [ ]: this conditional is not working properly. The original is '(context is ValidationContext<T> c)'
         if isinstance(context, ValidationContext):

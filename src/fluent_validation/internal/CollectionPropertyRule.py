@@ -48,14 +48,16 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
         self._IndexBuilder = value
 
     @classmethod
-    def Create(cls, expression: Callable[[T], list[TElement]], cascadeModeThunk: Callable[[], CascadeMode], bypassCache: bool = False) -> CollectionPropertyRule[T, TElement]:
+    def Create(cls, expression: Callable[[T], list[TElement]], cascadeModeThunk: Callable[[], CascadeMode], type_model: Type[T], bypassCache: bool = False) -> CollectionPropertyRule[T, TElement]:
         """
         Creates a new property rule from a lambda expression.
         """
         # FIXME [ ]: test_Uses_useful_error_message_when_used_on_non_property fails due to  MemberInfo() should return None instead any valu
         member = MemberInfo(expression)
         compiled = AccessorCache[T].GetCachedAccessor(member, expression, bypassCache, "FV_RuleForEach")
-        return CollectionPropertyRule[T, TElement](member, lambda x: compiled(x), expression, cascadeModeThunk, type(TElement))
+        t_element: Type[TElement] = member.get_type_hint(type_model)
+
+        return CollectionPropertyRule[T, TElement](member, lambda x: compiled(x), expression, cascadeModeThunk, t_element)
 
     # 	internal static CollectionPropertyRule[T, TElement] CreateTransformed<TOriginal>(Expression<Func<T, list<TOriginal>>> expression, Func<TOriginal, TElement> transformer, Func<CascadeMode> cascadeModeThunk, bool bypassCache = False) {
     # 		"""

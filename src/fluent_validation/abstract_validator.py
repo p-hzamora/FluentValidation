@@ -32,7 +32,8 @@ from fluent_validation.internal.ConditionBuilder import ConditionBuilder
 
 class AbstractValidator[T](IValidator[T]):
     # region constructor
-    def __init__(self) -> None:
+    def __init__(self, type_model: Optional[Type[T]] = None) -> None:
+        self._type_model: Optional[Type[T]] = type_model
         self._classLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultClassLevelCascadeMode
         self._ruleLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultRuleLevelCascadeMode
         self._rules: TrackingCollection[IValidationRuleInternal] = TrackingCollection()
@@ -174,7 +175,7 @@ class AbstractValidator[T](IValidator[T]):
 
     def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
         ExtensionsInternal.Guard(expression, "Cannot pass None to rule_for", "expression")
-        rule: PropertyRule[T, TProperty] = PropertyRule[T, TProperty].create(expression, lambda: self.RuleLevelCascadeMode)
+        rule: PropertyRule[T, TProperty] = PropertyRule[T, TProperty].create(expression, lambda: self.RuleLevelCascadeMode, self._type_model)
         self._rules.append(rule)
         self.OnRuleAdded(rule)
         return RuleBuilder[T, TProperty](rule, self)
@@ -197,7 +198,7 @@ class AbstractValidator[T](IValidator[T]):
 
     def rule_for_each[TElement](self, expression: Callable[[T], list[TElement]]) -> IRuleBuilder[T, TElement]:  # IRuleBuilderInitialCollection[T, TElement]:
         ExtensionsInternal.Guard(expression, "Cannot pass null to rule_for_each", "expression")
-        rule = CollectionPropertyRule[T, TElement].Create(expression, lambda: self.RuleLevelCascadeMode)
+        rule = CollectionPropertyRule[T, TElement].Create(expression, lambda: self.RuleLevelCascadeMode, self._type_model)
         self._rules.append(rule)
         self.OnRuleAdded(rule)
         return RuleBuilder[T, TElement](rule, self)

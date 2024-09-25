@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Self, TYPE_CHECKING
+from typing import Any, Callable, Self, TYPE_CHECKING, Type
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.AccessorCache import AccessorCache
@@ -28,10 +28,12 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         return f"<{self.__class__.__name__} from '{self.PropertyName}' at {hex(id(self))}>"
 
     @classmethod
-    def create(cls, expression: Callable[[T], TProperty], cascadeModeThunk: Callable[[], CascadeMode], bypassCache: bool = False) -> Self:
+    def create(cls, expression: Callable[[T], TProperty], cascadeModeThunk: Callable[[], CascadeMode], type_model: Type[T], bypassCache: bool = False) -> Self:
         member = MemberInfo(expression)
         compiled = AccessorCache[T].GetCachedAccessor(member, expression, bypassCache)
-        return PropertyRule[T, TProperty](member, lambda x: compiled(x), expression, cascadeModeThunk, type(TProperty))
+
+        t_property: Type[TProperty] = member.get_type_hint(type_model)
+        return PropertyRule[T, TProperty](member, lambda x: compiled(x), expression, cascadeModeThunk, t_property)
 
     def AddValidator(self, validator: IPropertyValidator[T, TProperty]) -> None:
         component: RuleComponent = RuleComponent[T, TProperty](validator)

@@ -27,12 +27,12 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         propertyFunc: Callable[[T], TProperty],
         expression: Callable[..., Any],
         cascadeModeThunk: Callable[[], CascadeMode],
-        typeToValidate: Type,
+        typeToValidate: Optional[Type],
     ):
         self._member: MemberInfo = member if member is not None else MemberInfo(lambda: None)
         self._PropertyFunc = propertyFunc
         self._expression: Callable[..., Any] = expression
-        self._typeToValidate: Type = typeToValidate
+        self._typeToValidate: Optional[Type] = typeToValidate
         self._cascadeModeThunk: Callable[[], CascadeMode] = cascadeModeThunk
 
         containerType = type(T)
@@ -82,7 +82,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         return LambdaExpression(self._expression)
 
     @property
-    def TypeToValidate(self) -> Type:
+    def TypeToValidate(self) -> Optional[Type]:
         return self._typeToValidate
 
     @property

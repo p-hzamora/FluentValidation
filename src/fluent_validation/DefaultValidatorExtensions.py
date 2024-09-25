@@ -11,6 +11,7 @@ from fluent_validation.validators.InclusiveBetweenValidator import InclusiveBetw
 from fluent_validation.validators.RangeValidator import IComparer, RangeValidatorFactory
 from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
 from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
+from fluent_validation.validators.EnumValidator import EnumValidator
 
 if TYPE_CHECKING:
     from fluent_validation.InlineValidator import InlineValidator
@@ -297,8 +298,8 @@ class DefaultValidatorExtensions[T, TProperty]:
     def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions[T, str]
         return ruleBuilder.set_validator(CreditCardValidator[T]())
 
-    # def IsInEnum(ruleBuilder: IRuleBuilder[T,TProperty] )->IRuleBuilder[T,TProperty]: # IRuleBuilderOptions[T,TProperty]
-    #     return ruleBuilder.set_validator(EnumValidator[T,TProperty]())
+    def IsInEnum(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
+        return ruleBuilder.set_validator(EnumValidator[T, TProperty](ruleBuilder.Rule.TypeToValidate))
 
     # region precision_scale
     @overload
@@ -366,7 +367,7 @@ class DefaultValidatorExtensions[T, TProperty]:
 
         # TODOH: Checked
         if isinstance(parentValidator, ChildRulesContainer) and parentValidator.RuleSetsToApplyToChildRules is not None:
-                ruleSets = parentValidator.RuleSetsToApplyToChildRules
+            ruleSets = parentValidator.RuleSetsToApplyToChildRules
         else:
             ruleSets = DefaultValidatorOptions.configurable(ruleBuilder).RuleSets
 

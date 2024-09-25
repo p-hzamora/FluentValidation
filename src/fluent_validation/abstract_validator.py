@@ -3,6 +3,7 @@ import threading
 from typing import Any, Awaitable, Callable, Coroutine, Optional, Type, overload, override, TYPE_CHECKING
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import re
 
 from fluent_validation.internal.CollectionPropertyRule import CollectionPropertyRule
 from fluent_validation.internal.ExtensionInternal import ExtensionsInternal
@@ -221,7 +222,7 @@ class AbstractValidator[T](IValidator[T]):
 
     # FIXME [x]: It's wrong implementation
     def rule_set(self, rule_set_name: str, action: Callable[[], None]) -> None:
-        rule_set_names = [name.strip() for name in rule_set_name.split(",")]
+        rule_set_names = [name.strip() for name in re.split(r"[,;]", rule_set_name)]
         with self._rules.OnItemAdded(lambda r: setattr(r, "RuleSets", rule_set_names)):
             action()
         return None

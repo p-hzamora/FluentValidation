@@ -1,4 +1,4 @@
-﻿from enum import Enum, Flag
+from enum import Enum, Flag
 from typing import Any, Type, override
 from fluent_validation.IValidationContext import ValidationContext
 from fluent_validation.validators.PropertyValidator import PropertyValidator

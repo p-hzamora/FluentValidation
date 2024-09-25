@@ -76,7 +76,6 @@ suite.addTests(
         *loader.loadTestsFromModule(test_SharedCondition),
         *loader.loadTestsFromModule(test_ValidateAndThrow),
         *loader.loadTestsFromModule(test_NameResolutionPluggability),
-
     )
 )
 

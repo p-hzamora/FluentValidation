@@ -1,12 +1,12 @@
-﻿from typing import Optional
+from typing import Optional
 from fluent_validation.validators.RangeValidator import IComparer
 
 
-class IComparable[T]():
+class IComparable[T]:
+    def __init__(self, value: T) -> None:
+        self.value: T = value
 
-	def __init__(self, value:T	) -> None:
-		self.value:T = value
-	"""
+    """
 	Summary:
 			Compares the current instance with another object of the same type and returns
 			an integer that indicates whether the current instance precedes, follows, or
@@ -26,16 +26,16 @@ class IComparable[T]():
 
 			Greater than zero – This instance follows other in the sort order.
 	"""
-	def CompareTo(self, other: Optional[T]) -> int: 
-		if self.value < other:
-			return -1
-		elif self.value > other:
-			return 1
-		return 0
-		
+
+    def CompareTo(self, other: Optional[T]) -> int:
+        if self.value < other:
+            return -1
+        elif self.value > other:
+            return 1
+        return 0
 
 
 class ComparableComparer[T: IComparable[T]](IComparer[T]):
-	@staticmethod
-	def Compare(x: T, y: T) -> int:
-		return IComparable(x).CompareTo(y)
+    @staticmethod
+    def Compare(x: T, y: T) -> int:
+        return IComparable(x).CompareTo(y)

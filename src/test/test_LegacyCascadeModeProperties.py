@@ -62,30 +62,30 @@ class CascadeModePropertiesTesterLegacy(unittest.TestCase, IDisposable):
         self.assertEqual(CascadeMode.Continue, self._validator.ClassLevelCascadeMode)
 
     # def test_Setting_class_CascadeMode_StopOnFirstFailure_sets_rule_Stop_and_class_Continue(self) -> None:
-        # self._validator.CascadeMode = CascadeMode.StopOnFirstFailure
+    # self._validator.CascadeMode = CascadeMode.StopOnFirstFailure
 
-        # self.assertEqual(CascadeMode.Stop, self._validator.RuleLevelCascadeMode)
-        # self.assertEqual(CascadeMode.Continue, self._validator.ClassLevelCascadeMode)
+    # self.assertEqual(CascadeMode.Stop, self._validator.RuleLevelCascadeMode)
+    # self.assertEqual(CascadeMode.Continue, self._validator.ClassLevelCascadeMode)
 
     # def test_Setting_global_DefaultRuleLevelCascadeMode_to_StopOnFirstFailure_sets_Stop(self) -> None:
-        # ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.StopOnFirstFailure
+    # ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.StopOnFirstFailure
 
-        # self.assertEqual(CascadeMode.Stop, ValidatorOptions.Global.DefaultRuleLevelCascadeMode)
+    # self.assertEqual(CascadeMode.Stop, ValidatorOptions.Global.DefaultRuleLevelCascadeMode)
 
     # def test_Setting_global_DefaultClassLevelCascadeMode_to_StopOnFirstFailure_sets_Stop(self) -> None:
-        # ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.StopOnFirstFailure
+    # ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.StopOnFirstFailure
 
-        # self.assertEqual(CascadeMode.Stop, ValidatorOptions.Global.DefaultClassLevelCascadeMode)
+    # self.assertEqual(CascadeMode.Stop, ValidatorOptions.Global.DefaultClassLevelCascadeMode)
 
     # def test_Setting_class_RuleLevelCascadeMode_to_StopOnFirstFailure_sets_Stop(self) -> None:
-        # self._validator.RuleLevelCascadeMode = CascadeMode.StopOnFirstFailure
+    # self._validator.RuleLevelCascadeMode = CascadeMode.StopOnFirstFailure
 
-        # self.assertEqual(CascadeMode.Stop, self._validator.RuleLevelCascadeMode)
+    # self.assertEqual(CascadeMode.Stop, self._validator.RuleLevelCascadeMode)
 
     # def test_Setting_class_ClassLevelCascadeMode_to_StopOnFirstFailure_sets_Stop(self) -> None:
-        # self._validator.ClassLevelCascadeMode = CascadeMode.StopOnFirstFailure
+    # self._validator.ClassLevelCascadeMode = CascadeMode.StopOnFirstFailure
 
-        # self.assertEqual(CascadeMode.Stop, self._validator.ClassLevelCascadeMode)
+    # self.assertEqual(CascadeMode.Stop, self._validator.ClassLevelCascadeMode)
 
     def test_Global_default_CascadeMode_Get_returns_Stop_when_both_Stop(self) -> None:
         self.SetBothGlobalCascadeModes(CascadeMode.Stop)

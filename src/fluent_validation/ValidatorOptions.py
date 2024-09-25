@@ -1,4 +1,4 @@
-from typing import Any, Callable, Iterable, Type,Optional
+from typing import Any, Callable, Iterable, Type, Optional
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.internal.CompositeValidatorSelector import CompositeValidatorSelector
@@ -186,7 +186,7 @@ class ValidatorConfiguration:
         return memberInfo.Name
 
     @staticmethod
-    def DefaultDisplayNameResolver(_type: Type, memberInfo: MemberInfo, expression: Callable[..., str])->None| Callable[[Type, MemberInfo, Callable[..., Any]], str]:
+    def DefaultDisplayNameResolver(_type: Type, memberInfo: MemberInfo, expression: Callable[..., str]) -> None | Callable[[Type, MemberInfo, Callable[..., Any]], str]:
         return None
 
     @staticmethod

@@ -41,7 +41,7 @@ class RulesetValidatorSelector(IValidatorSelector):
             return True
 
         if any([StringComparer.OrdinalIgnoreCase(self.DefaultRuleSetName, x) for x in self._rulesetsToExecute]):
-            if rule.RuleSets is None or len(rule.RuleSets) == 0 or any([StringComparer.OrdinalIgnoreCase(self.DefaultRuleSetName,x) for x in rule.RuleSets]):
+            if rule.RuleSets is None or len(rule.RuleSets) == 0 or any([StringComparer.OrdinalIgnoreCase(self.DefaultRuleSetName, x) for x in rule.RuleSets]):
                 executed.add(self.DefaultRuleSetName)
                 return True
 

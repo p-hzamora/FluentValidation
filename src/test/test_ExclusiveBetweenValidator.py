@@ -129,20 +129,14 @@ class ExclusiveBetweenValidatorTests(unittest.TestCase):
         self.assertTrue(result.is_valid)
 
     def test_When_the_value_is_smaller_than_the_range_by_icomparer_then_the_validator_should_fail(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
-            Address(Line1 = "3 Main St." ),
-            Address(Line1 = "10 Main St." ),
-            StreetNumberComparer()))
-        
-        result = validator.validate(Person(Address = Address(Line1 = "1 Main St." )))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(Address(Line1="3 Main St."), Address(Line1="10 Main St."), StreetNumberComparer()))
+
+        result = validator.validate(Person(Address=Address(Line1="1 Main St.")))
         self.assertFalse(result.is_valid)
 
     def test_When_the_value_is_larger_than_the_range_by_icomparer_then_the_validator_should_fail(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(
-            Address(Line1 = "3 Main St." ),
-            Address(Line1 = "10 Main St." ),
-            StreetNumberComparer()))
-        result = validator.validate(Person(Address = Address(Line1 = "11 Main St." )))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).exclusive_between(Address(Line1="3 Main St."), Address(Line1="10 Main St."), StreetNumberComparer()))
+        result = validator.validate(Person(Address=Address(Line1="11 Main St.")))
         self.assertFalse(result.is_valid)
 
 

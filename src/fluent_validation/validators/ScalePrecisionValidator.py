@@ -10,6 +10,7 @@ from fluent_validation.IValidationContext import ValidationContext
 
 UInt = NewType("UInt", int)
 
+
 class ScalePrecisionValidator[T](PropertyValidator[T, Decimal]):
     """
     Allows a decimal to be validated for scale and precision.

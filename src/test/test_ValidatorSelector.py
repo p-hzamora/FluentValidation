@@ -44,7 +44,8 @@ class ValidatorSelectorTests(unittest.TestCase):
         self.assertEqual(len(result.errors), 1)
 
     def test_Does_not_validate_other_property_using_expression(self):
-        validator = InlineValidator[TestObject](TestObject, 
+        validator = InlineValidator[TestObject](
+            TestObject,
             lambda v: v.rule_for(lambda x: x.SomeOtherProperty).not_null(),
         )
 
@@ -52,8 +53,9 @@ class ValidatorSelectorTests(unittest.TestCase):
         self.assertEqual(len(result.errors), 0)
 
     def test_validates_nullable_property_with_overriden_name_when_selected(self):
-        validator = InlineValidator[TestObject](TestObject, 
-            lambda v: v.rule_for(lambda x: x.SomeNullableProperty).greater_than(Decimal("0")).when(lambda x: x.SomeNullableProperty is not None).override_property_name("SomeNullableProperty")
+        validator = InlineValidator[TestObject](
+            TestObject,
+            lambda v: v.rule_for(lambda x: x.SomeNullableProperty).greater_than(Decimal("0")).when(lambda x: x.SomeNullableProperty is not None).override_property_name("SomeNullableProperty"),
         )
 
         result = validator.validate(TestObject(SomeNullableProperty=Decimal("0")), lambda v: v.IncludeProperties(lambda x: x.SomeNullableProperty))

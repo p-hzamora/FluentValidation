@@ -8,7 +8,7 @@ from .syntax import IRuleBuilderOptions
 class InlineValidator[T](AbstractValidator[T]):
     """
      Validator implementation that allows rules to be defined without inheriting from AbstractValidator.
-     
+
      EXAMPLE
      -
 
@@ -16,7 +16,7 @@ class InlineValidator[T](AbstractValidator[T]):
      public class Customer:
        Id: int
        Name: str
-    
+
        public static readonly InlineValidator&lt;Customer&gt; Validator = new InlineValidator&lt;Customer&gt; {
          v =&gt; v.RuleFor(x =&gt; x.Name).NotNull(),
          v =&gt; v.RuleFor(x =&gt; x.Id).NotEqual(0),

@@ -48,7 +48,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._displayName: str = None
         self._rule_sets: Optional[list[str]] = None
         self._DependentRules: list[IValidationRuleInternal[T]] = None
-        self._MessageBuilder:None| Callable[[IMessageBuilderContext[T, TProperty]], str] = None
+        self._MessageBuilder: None | Callable[[IMessageBuilderContext[T, TProperty]], str] = None
 
     def AddValidator(self, validator: IPropertyValidator[T, TValue]) -> None:
         component = RuleComponent[T, TValue](validator)
@@ -137,9 +137,9 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
     @property
     def MessageBuilder(self) -> Callable[[IMessageBuilderContext[T, TProperty]], str]:
         return self._MessageBuilder
-    
+
     @MessageBuilder.setter
-    def MessageBuilder(self, value: Callable[[IMessageBuilderContext[T, TProperty]], str]) -> None: 
+    def MessageBuilder(self, value: Callable[[IMessageBuilderContext[T, TProperty]], str]) -> None:
         self._MessageBuilder = value
 
     @property

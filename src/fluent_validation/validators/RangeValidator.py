@@ -81,8 +81,9 @@ class RangeValidator[T, TProperty](PropertyValidator[T, TProperty], IBetweenVali
         return self._explicitComparer.Compare(a, b)
 
     @override
-    def get_default_message_template(self, errorCode:str)->str:
+    def get_default_message_template(self, errorCode: str) -> str:
         return self.Localized(errorCode, self.Name)
+
 
 class RangeValidatorFactory:
     @staticmethod

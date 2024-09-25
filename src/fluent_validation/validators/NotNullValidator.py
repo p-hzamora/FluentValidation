@@ -3,11 +3,11 @@ from fluent_validation.IValidationContext import ValidationContext
 from fluent_validation.validators.PropertyValidator import PropertyValidator
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 
+
 class INotNullValidator(IPropertyValidator): ...
 
 
-
-class NotNullValidator[T, TProperty](PropertyValidator[T, TProperty], INotNullValidator ):
+class NotNullValidator[T, TProperty](PropertyValidator[T, TProperty], INotNullValidator):
     @override
     def is_valid(self, _: ValidationContext, value: TProperty) -> bool:
         return value is not None

@@ -39,7 +39,7 @@ class ChildValidatorAdaptor[T, TProperty](NoopPropertyValidator[T, TProperty], I
     def __init__(self, validator=None, validatorType=None):
         self._validatorProvider: None | Callable[[ValidationContext[T], TProperty], IValidator[TProperty]] = None
         self._validator: None | IValidator[TProperty] = None
-        self._rule_sets:Optional[list[str]] = None
+        self._rule_sets: Optional[list[str]] = None
 
         if isinstance(validator, IValidator) and not callable(validator):
             self._validator: IValidator[TProperty] = validator

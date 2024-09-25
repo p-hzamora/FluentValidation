@@ -42,43 +42,42 @@ class MemberNameValidatorSelector(IValidatorSelector):
 
         if isinstance(rule, IIncludeRule):
             return True
-		# Stores the normalized property name if we're working with collection properties
-		# eg Orders[0].Name -> Orders[].Name. This is only initialized if needed (see below).
+        # Stores the normalized property name if we're working with collection properties
+        # eg Orders[0].Name -> Orders[].Name. This is only initialized if needed (see below).
         normalizedPropertyPath: Optional[str] = None
 
-		# If the current property path is equal to any of the member names for inclusion
-		# or it's a child property path (indicated by a period) where we have a partial match.
+        # If the current property path is equal to any of the member names for inclusion
+        # or it's a child property path (indicated by a period) where we have a partial match.
         for memberName in self._memberNames:
-                  
-			# If the property path is equal to any of the input member names then it should be executed.
+            # If the property path is equal to any of the input member names then it should be executed.
             if memberName == propertyPath:
                 return True
 
-			# If the property path is for a child property,
-			# and the parent property is selected for inclusion,
-			# then it should be allowed to execute.
+            # If the property path is for a child property,
+            # and the parent property is selected for inclusion,
+            # then it should be allowed to execute.
             if propertyPath.startswith(memberName + "."):
                 return True
 
-			# If the property path is for a parent property,
-			# and any of its child properties are selected for inclusion
-			# then it should be allowed to execute
+            # If the property path is for a parent property,
+            # and any of its child properties are selected for inclusion
+            # then it should be allowed to execute
             if memberName.startswith(propertyPath + "."):
                 return True
 
-			# If the property path is for a collection property
-			# and a child property for this collection has been passed in for inclusion.
-			# For example, memberName is "Orders[0].Amount"
-			# and propertyPath is "Orders" then it should be allowed to execute.
+            # If the property path is for a collection property
+            # and a child property for this collection has been passed in for inclusion.
+            # For example, memberName is "Orders[0].Amount"
+            # and propertyPath is "Orders" then it should be allowed to execute.
             if memberName.startswith(propertyPath + "["):
                 return True
-            
-			# If property path is for child property within collection,
-			# and member path contains wildcard [] then this means that we want to match
-			# with all items in the collection, but we need to normalize the property path
-			# in order to match. For example, if the propertyPath is "Orders[0].Name"
-			# and the memberName for inclusion is "Orders[].Name" then this should
-			# be allowed to match.
+
+            # If property path is for child property within collection,
+            # and member path contains wildcard [] then this means that we want to match
+            # with all items in the collection, but we need to normalize the property path
+            # in order to match. For example, if the propertyPath is "Orders[0].Name"
+            # and the memberName for inclusion is "Orders[].Name" then this should
+            # be allowed to match.
             if "[]" in memberName:
                 if normalizedPropertyPath is None:
                     # Normalize the property path using a regex. Orders[0].Name -> Orders[].Name.

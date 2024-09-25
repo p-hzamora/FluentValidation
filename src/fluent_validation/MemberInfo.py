@@ -23,7 +23,7 @@ class MemberInfo:
 
     def get_type_hint(self, type_model: Type) -> Type[Any]:
         original_type_hints: dict[str, Any] = get_type_hints(type_model.__init__)
-        
+
         if not self._lambda_vars or len(original_type_hints) == 0:
             return None
         _, *nested_name = self._lambda_vars[0].nested_element.parents

@@ -33,6 +33,7 @@ import test_UserSeverity
 import test_ChildRules
 import test_CascadingFailuresLegacy
 import test_CollectionValidatorWithParent
+import test_EnumValidator
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -41,6 +42,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_EnumValidator),
         *loader.loadTestsFromModule(test_CollectionValidatorWithParent),
         *loader.loadTestsFromModule(test_CascadingFailuresLegacy),
         *loader.loadTestsFromModule(test_ChildRules),

@@ -31,7 +31,7 @@ class Orders:
 
 class OrdersValidator(AbstractValidator[Orders]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Orders)
         self.rule_for(lambda x: x.id).less_than_or_equal_to(100)
         self.rule_for(lambda x: x.name).not_equal("pablo")
         self.rule_for(lambda x: x.date).not_null()
@@ -57,7 +57,7 @@ class Person:
 
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.ClassLevelCascadeMode = CascadeMode.Continue
         self.RuleLevelCascadeMode = CascadeMode.Continue
         self.rule_for(lambda x: x.name).Cascade(CascadeMode.Continue).not_null().not_empty().max_length(30)
@@ -148,7 +148,7 @@ class MyCustomValidators:
 
 class PersonValidator(AbstractValidator[Person], MyCustomValidators):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_for(lambda x: x.Pets).ListMustContainFewerThan(10).must(lambda x: len(x) == 10).with_severity(Severity.Warning)
 
 

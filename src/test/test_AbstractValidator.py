@@ -138,7 +138,7 @@ class AbstractValidatorTester(unittest.TestCase):
         self.assertEqual(len(result.errors), 0)
 
     def test_Validates_single_property_by_path(self):
-        addressValidator = InlineValidator[Address]()
+        addressValidator = InlineValidator[Address](Address)
         addressValidator.rule_for(lambda x: x.Line1).not_null()
         addressValidator.rule_for(lambda x: x.Line2).not_null()
 

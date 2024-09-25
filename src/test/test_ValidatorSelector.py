@@ -26,25 +26,25 @@ class ValidatorSelectorTests(unittest.TestCase):
         CultureScope.SetDefaultCulture()
 
     def test_MemberNameValidatorSelector_returns_true_when_property_name_matches(self):
-        validator = InlineValidator[TestObject](lambda v: v.rule_for(lambda x: x.SomeProperty).not_null())
+        validator = InlineValidator[TestObject](TestObject, lambda v: v.rule_for(lambda x: x.SomeProperty).not_null())
 
         result = validator.validate(TestObject(), lambda v: v.IncludeProperties("SomeProperty"))
         self.assertEqual(len(result.errors), 1)
 
     def test_Does_not_validate_other_property(self):
-        validator = InlineValidator[TestObject](lambda v: v.rule_for(lambda x: x.SomeOtherProperty).not_null())
+        validator = InlineValidator[TestObject](TestObject, lambda v: v.rule_for(lambda x: x.SomeOtherProperty).not_null())
 
         result = validator.validate(TestObject(), lambda v: v.IncludeProperties("SomeProperty"))
         self.assertEqual(len(result.errors), 0)
 
     def test_validates_property_using_expression(self):
-        validator = InlineValidator[TestObject](lambda v: v.rule_for(lambda x: x.SomeProperty).not_null())
+        validator = InlineValidator[TestObject](TestObject, lambda v: v.rule_for(lambda x: x.SomeProperty).not_null())
 
         result = validator.validate(TestObject(), lambda v: v.IncludeProperties(lambda x: x.SomeProperty))
         self.assertEqual(len(result.errors), 1)
 
     def test_Does_not_validate_other_property_using_expression(self):
-        validator = InlineValidator[TestObject](
+        validator = InlineValidator[TestObject](TestObject, 
             lambda v: v.rule_for(lambda x: x.SomeOtherProperty).not_null(),
         )
 
@@ -52,7 +52,7 @@ class ValidatorSelectorTests(unittest.TestCase):
         self.assertEqual(len(result.errors), 0)
 
     def test_validates_nullable_property_with_overriden_name_when_selected(self):
-        validator = InlineValidator[TestObject](
+        validator = InlineValidator[TestObject](TestObject, 
             lambda v: v.rule_for(lambda x: x.SomeNullableProperty).greater_than(Decimal("0")).when(lambda x: x.SomeNullableProperty is not None).override_property_name("SomeNullableProperty")
         )
 
@@ -130,7 +130,7 @@ class ValidatorSelectorTests(unittest.TestCase):
     def test_Only_validates_doubly_nested_property(self):
         person = Person(Address=Address(Country=Country()), Orders=[Order(Amount=5), Order(ProductName="Foo")])
 
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: x.Address.Country.Name).not_empty()
 
         # child_rules should not be included. Bug prior to 11.1.1 meant that child_rules were
@@ -156,7 +156,7 @@ class ValidatorSelectorTests(unittest.TestCase):
             ],
         )
 
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: x.Address.Country.Name).not_empty()
         validator.rule_for_each(lambda x: x.Orders).child_rules(
             lambda x: (
@@ -180,7 +180,7 @@ class ValidatorSelectorTests(unittest.TestCase):
             ],
         )
 
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: x.Address.Country.Name).not_empty()
         validator.rule_for_each(lambda x: x.Orders).child_rules(
             lambda x: (
@@ -217,7 +217,7 @@ class ValidatorSelectorTests(unittest.TestCase):
     #         ],
     #     )
 
-    #     validator = InlineValidator[Person]()
+    #     validator = InlineValidator[Person](Person)
     #     validator.rule_for_each(lambda x: x.Orders).child_rules(
     #         lambda x: (x.rule_for(lambda y: y.Amount).greater_than(6), x.rule_for_each(lambda y: y.Payments).child_rules(lambda a: (a.rule_for(lambda b: b.Amount).greater_than(0))))
     #     )

@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Callable, Iterable, override, TYPE_CHECKING
 from fluent_validation.IValidationRule import IValidationRule
 from fluent_validation.internal.IValidatorSelector import IValidatorSelector
+from fluent_validation.enums import StringComparer
 
 if TYPE_CHECKING:
     from fluent_validation.IValidationContext import IValidationContext
@@ -39,12 +40,13 @@ class RulesetValidatorSelector(IValidatorSelector):
             executed.add(self.DefaultRuleSetName)
             return True
 
-        if self.DefaultRuleSetName in self._rulesetsToExecute:
-            if rule.RuleSets is None or len(rule.RuleSets) == 0 or self.DefaultRuleSetName in rule.RuleSets:
+        if any([StringComparer.OrdinalIgnoreCase(self.DefaultRuleSetName, x) for x in self._rulesetsToExecute]):
+            if rule.RuleSets is None or len(rule.RuleSets) == 0 or any([StringComparer.OrdinalIgnoreCase(self.DefaultRuleSetName,x) for x in rule.RuleSets]):
                 executed.add(self.DefaultRuleSetName)
                 return True
 
         if rule.RuleSets is not None and len(rule.RuleSets) > 0 and self._rulesetsToExecute:
+            # FIXME [ ]: try to get the intersection with
             intersection = set(rule.RuleSets) & set(self._rulesetsToExecute)
             if intersection:
                 for r in intersection:

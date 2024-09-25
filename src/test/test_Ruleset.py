@@ -165,7 +165,7 @@ class RulesetTests(unittest.TestCase):
 
     def test_Executes_in_rule_in_default_and_none(self):
         validator = InlineValidator[Person]()
-        # FIXME [ ]: Fails because of 'rule_set' is case-sensitive. Must be case-insensitive
+        # FIXME [x]: Fails because of 'rule_set' is case-sensitive. Must be case-insensitive
         validator.rule_set("First, Default", lambda: validator.rule_for(lambda x: x.Forename).not_null())
         validator.rule_for(lambda x: x.Forename).not_null()
 

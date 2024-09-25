@@ -151,7 +151,7 @@ class Person:
         Regex: Optional[str] = None,
         min_length: int = 0,
         max_length: int = 0,
-        Gender: Optional[EnumGender] = None,
+        Gender: Optional[EnumGender] = 0,
         Genderstr: Optional[str] = None,
         Children: list[Optional[Person]] = [],
         Orders: list[Optional[Order]] = [],

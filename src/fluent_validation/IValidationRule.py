@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 
-from typing import Callable, TYPE_CHECKING, TypeVar, overload
+from typing import Callable, TYPE_CHECKING, Optional, Type, TypeVar, overload
 
 from fluent_validation.enums import ApplyConditionTo
 from fluent_validation.LambdaExpression import LambdaExpression
@@ -38,7 +38,7 @@ class IValidatoinRule_no_args(ABC):
 
     @property
     @abstractmethod
-    def TypeToValidate(self) -> type: ...
+    def TypeToValidate(self) -> Optional[Type]: ...
 
     @property
     @abstractmethod

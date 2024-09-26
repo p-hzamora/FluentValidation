@@ -3,13 +3,16 @@ import unittest
 from pathlib import Path
 
 
+
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
 
+from TestValidatorWithPreValidate import TestValidatorWithPreValidate
 from fluent_validation.ValidatorOptions import ValidatorOptions
 from fluent_validation.IValidationContext import ValidationContext
 from fluent_validation.IValidator import IValidator
 from fluent_validation.InlineValidator import InlineValidator
+from fluent_validation.results.ValidationFailure import ValidationFailure
 from TestValidator import TestValidator  # noqa: E402
 from person import _Address as Address  # noqa: E402
 from person import Person  # noqa: E402
@@ -24,10 +27,9 @@ class DerivedPerson(Person):
 class AbstractValidatorTester(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.testValidatorWithPreValidate:TestValidatorWithPreValidate
         CultureScope.SetDefaultCulture()
         self.validator: TestValidator = TestValidator()
-        # testValidatorWithPreValidate = TestValidatorWithPreValidate()
+        self.testValidatorWithPreValidate:TestValidatorWithPreValidate = TestValidatorWithPreValidate()
 
     def test_When_the_Validators_pass_then_the_validatorRunner_should_return_true(self):
         self.validator.rule_for(lambda x: x.Forename).not_null()
@@ -75,22 +77,22 @@ class AbstractValidatorTester(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "Foo")
         self.assertEqual(result.errors[0].ErrorCode, "ErrCode101")
 
-    def WithName_should_override_field_name(self):
+    def test_WithName_should_override_field_name(self):
         self.validator.rule_for(lambda x: x.Forename).not_null().with_name("First Name")
         result = self.validator.validate(Person())
         self.assertEqual(result.errors[0].ErrorMessage, "'First Name' must not be empty.")
 
-    def WithName_should_override_field_name_with_value_from_other_property(self):
+    def test_WithName_should_override_field_name_with_value_from_other_property(self):
         self.validator.rule_for(lambda x: x.Forename).not_null().with_name(lambda x: x.Surname)
         result = self.validator.validate(Person(Surname="Foo"))
         self.assertEqual(result.errors[0].ErrorMessage, "'Foo' must not be empty.")
 
-    def OverridePropertyName_should_override_property_name(self):
+    def test_OverridePropertyName_should_override_property_name(self):
         self.validator.rule_for(lambda x: x.Surname).not_null().override_property_name("foo")
         result = self.validator.validate(Person())
         self.assertEqual(result.errors[0].PropertyName, "foo")
 
-    def OverridePropertyName_with_lambda_should_override_property_name(self):
+    def test_OverridePropertyName_with_lambda_should_override_property_name(self):
         self.validator.rule_for(lambda x: x.Surname).not_null().override_property_name(lambda x: x.Forename)
         result = self.validator.validate(Person())
         self.assertEqual(result.errors[0].PropertyName, "Forename")
@@ -214,27 +216,27 @@ class AbstractValidatorTester(unittest.TestCase):
     #         Assert.equal(preValidationResult.errors.Count, result.errors.Count)
     #         Assert.DoesNotContain(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
 
-    #     def PreValidate_bypasses_nullcheck_on_instance(self):
-    #         testValidatorWithPreValidate.rule_for(lambda x: x.Surname).not_null()
-    #         testValidatorWithPreValidate.PreValidateMethod = (ctx, rlambda ): false
+    def test_PreValidate_bypasses_nullcheck_on_instance(self):
+        self.testValidatorWithPreValidate.rule_for(lambda x: x.Surname).not_null()
+        self.testValidatorWithPreValidate.PreValidateMethod = lambda ctx, rlambda : False
 
-    #         result = testValidatorWithPreValidate.validate((Person)None)
-    #         self.assertTrue(result)
+        result = self.testValidatorWithPreValidate.validate(None)
+        self.assertTrue(result)
 
-    #     def WhenPreValidationReturnsTrue_ValidatorsGetHit_Validate(self):
-    #         const string testProperty = "TestProperty"
-    #         const string testMessage = "Test Message"
-    #         testValidatorWithPreValidate.PreValidateMethod = (context, validationResultlambda ): {
-    #             validationResult.errors.Add(ValidationFailure(testProperty, testMessage))
-    #             return true
+    def test_WhenPreValidationReturnsTrue_ValidatorsGetHit_Validate(self):
+        testProperty:str = "TestProperty"
+        testMessage:str = "Test Message"
+        self.testValidatorWithPreValidate.PreValidateMethod = lambda context, validationResult: (
+            validationResult.errors.append(ValidationFailure(testProperty, testMessage)),
+            True)[1]
 
-    #         testValidatorWithPreValidate.rule_for(persolambda n: person.Age).greater_than_or_equal_to(0)
+        self.testValidatorWithPreValidate.rule_for(lambda person: person.Age).greater_than_or_equal_to(0)
 
-    #         result = testValidatorWithPreValidate.validate(Person() { Age = -1 })
+        result = self.testValidatorWithPreValidate.validate(Person(Age = -1 ))
 
-    #         Assert.Contains(nameof(Person.Age), result.errors.Select(failurlambda e: failure.PropertyName))
-    #         Assert.Contains(testProperty, result.errors.Select(failurlambda e: failure.PropertyName))
-    #         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
+        self.assertIn("Age", [failure.PropertyName for failure in result.errors])
+        self.assertIn(testProperty, [failure.PropertyName for failure in result.errors])
+        self.assertIn(testMessage, [failure.ErrorMessage for failure in result.errors])
 
     #     async Task WhenPreValidationReturnsTrue_ValidatorsGetHit_ValidateAsync() {
     #         const string testProperty = "TestProperty"
@@ -251,12 +253,12 @@ class AbstractValidatorTester(unittest.TestCase):
     #         Assert.Contains(testProperty, result.errors.Select(failurlambda e: failure.PropertyName))
     #         Assert.Contains(testMessage, result.errors.Select(failurlambda e: failure.ErrorMessage))
 
-    #     def PropertyName_With_Periods_Displays_Correctly_In_Messages(self):
-    #         self.validator.rule_for(lambda x: x.Address.Line1).not_null().with_message("{PropertyName}")
+    def test_PropertyName_With_Periods_Displays_Correctly_In_Messages(self):
+        self.validator.rule_for(lambda x: x.Address.Line1).not_null().with_message("{PropertyName}")
 
-    #         validationResult = self.validator.validate(Person( Address = Address() })
+        validationResult = self.validator.validate(Person( Address = Address() ))
 
-    #         self.assertEqual(validationResult.errors.First().ErrorMessage, "Address Line1")
+        self.assertEqual(validationResult.errors[0].ErrorMessage, "Address Line1")
 
     def test_Message_arguments_should_be_updated_on_failure_instances(self):
         self.validator.rule_for(lambda x: x.Surname).not_empty()

@@ -14,7 +14,7 @@ from person import Order, Person
 
 class TestConditionValidator(AbstractValidator[Person]):
     def __init__(self):
-        super().__init__()
+        super().__init__(Person)
         self.rule_for(lambda x: x.Forename).not_null().when(lambda x: x.Id == 0)
 
 
@@ -30,7 +30,7 @@ class TestConditionValidator(AbstractValidator[Person]):
 
 class InverseConditionValidator(AbstractValidator[Person]):
     def __init__(self):
-        super().__init__()
+        super().__init__(Person)
         self.rule_for(lambda x: x.Forename).not_null().unless(lambda x: x.Id == 0)
 
 

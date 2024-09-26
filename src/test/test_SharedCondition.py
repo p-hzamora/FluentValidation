@@ -655,7 +655,7 @@ class SharedConditionTests(unittest.TestCase):
     # 	}
 
     def test_Nested_when_inside_otherwise(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         (
             validator.when(
                 lambda x: x.Id == 1,
@@ -684,7 +684,7 @@ class SharedConditionTests(unittest.TestCase):
             ]
         )
 
-        childValidator = InlineValidator[Person]()
+        childValidator = InlineValidator[Person](Person)
         executions: int = 0
 
         def lambda_(a: Person):
@@ -693,7 +693,7 @@ class SharedConditionTests(unittest.TestCase):
             return a.Id != 0
 
         childValidator.when(lambda_, lambda: (childValidator.rule_for(lambda a: a.Id).equal(1)))
-        personValidator = InlineValidator[Person]()
+        personValidator = InlineValidator[Person](Person)
         personValidator.rule_for_each(lambda p: p.Children).set_validator(childValidator)
 
         validationResult = personValidator.validate(person)
@@ -739,27 +739,27 @@ class SharedConditionTests(unittest.TestCase):
 # 	}
 
 # def test_Shouldnt_break_with_hashcode_collision(self):
-#     v1 = InlineValidator[Collision1]()
-#     v2 = InlineValidator[Collision2]()
+#     v1 = InlineValidator[Collision1](Collision1)
+#     v2 = InlineValidator[Collision2](Collision2)
 
 
-#     v = InlineValidator[CollisionBase]()
+#     v = InlineValidator[CollisionBase](CollisionBase)
 #     v.when(lambda x: x is Collision1, lambda: (v.rule_for(lambda x: x.Name).not_null()))
 
 #     v.when(lambda x: x is Collision2, lambda: v.rule_for(lambda x: x.Name).not_null())
 
 #     # shouldn't throw an InvalidCastException.
-#     containerValidator = InlineValidator[list[CollisionBase]]()
+#     containerValidator = InlineValidator[list[CollisionBase]](list[CollisionBase])
 #     containerValidator.rule_for_each(lambda x: x).SetValidator(v)
 #     containerValidator.validate(list[CollisionBase] {
 #         Collision1(), Collision2()
 #     })
 
 # 	def async Task Shouldnt_break_with_hashcode_collision_async() {
-# 		v1 = InlineValidator[Collision1]()
-# 		v2 = InlineValidator[Collision2]()
+# 		v1 = InlineValidator[Collision1](Collision1)
+# 		v2 = InlineValidator[Collision2](Collision2)
 
-# 		v = InlineValidator[CollisionBase]()
+# 		v = InlineValidator[CollisionBase](CollisionBase)
 # 		v.WhenAsync((x, ct) => Task.FromResult(x is Collision1), lambda: {
 # 			v.rule_for(lambda x: ((Collision1)x).Name).not_null()
 # 		})

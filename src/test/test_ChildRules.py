@@ -14,7 +14,7 @@ from fluent_validation.InlineValidator import InlineValidator
 
 class RulesetChildRulesValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_set(
             "testing", lambda: (self.rule_for(lambda a: a.Surname).not_empty(), self.rule_for_each(lambda a: a.Orders).child_rules(lambda child: child.rule_for(lambda o: o.ProductName).not_empty()))
         )
@@ -23,11 +23,11 @@ class RulesetChildRulesValidator(AbstractValidator[Person]):
 class RulesetChildValidatorRulesValidator(AbstractValidator[Person]):
     class RulesetOrderValidator(AbstractValidator[Order]):
         def __init__(self) -> None:
-            super().__init__()
+            super().__init__(Order)
             self.rule_set("b", lambda: (self.rule_for(lambda o: o.ProductName).not_empty()))
 
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_set(
             "a, b",
             lambda: (
@@ -67,7 +67,7 @@ class Bar(Base):
 
 class RootValidator(AbstractValidator[Root]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Root)
         self.rule_for(lambda x: x).child_rules(self.RootRules())
 
     @classmethod
@@ -81,7 +81,7 @@ class RootValidator(AbstractValidator[Root]):
 
 class ChildRulesTests(unittest.TestCase):
     def test_Can_define_nested_rules_for_collection(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
 
         validator.rule_for_each(lambda x: x.Orders).child_rules(
             lambda order: (

@@ -34,19 +34,19 @@ class ApplicationViewModel:
 
 class ApplicationViewModelValidator(AbstractValidator[ApplicationViewModel]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(ApplicationViewModel)
         self.rule_for_each(lambda x: x.TradingExperience).set_validator(AppropriatenessGroupViewModelValidator())
 
 
 class AppropriatenessGroupViewModelValidator(AbstractValidator[ApplicationGroup]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(ApplicationGroup)
         self.rule_for_each(lambda m: m.Questions).set_validator(AppropriatenessQuestionViewModelValidator())
 
 
 class AppropriatenessQuestionViewModelValidator(AbstractValidator[Question]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Question)
         self.rule_for(lambda m: m.SelectedAnswerID).set_validator(AppropriatenessAnswerViewModelRequiredValidator[Question, int]())
 
 
@@ -56,6 +56,7 @@ class AppropriatenessAnswerViewModelRequiredValidator[T, TProperty](PropertyVali
         return False
 
 
+@dataclass(frozen=True, eq=True)
 class Request:
     person: Person = None
 
@@ -165,7 +166,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors[1].PropertyName.ShouldEqual("NickNames[2]")
 
     def test_Nested_collection_for_null_property_should_not_throw_null_reference(self):
-        validator = InlineValidator[Request]()
+        validator = InlineValidator[Request](Request)
         validator.when(lambda r: r.person is not None, lambda: validator.rule_for_each(lambda x: x.person.NickNames).not_null())
 
         result = validator.validate(Request())
@@ -184,7 +185,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors.Single().PropertyName.ShouldEqual("TradingExperience[0].Questions[0].SelectedAnswerID")
 
     # def test_Uses_useful_error_message_when_used_on_non_property(self):
-    #     validator = InlineValidator[Person]()
+    #     validator = InlineValidator[Person](Person)
     #     validator.rule_for_each(lambda x: x.NickNames.AsEnumerable()).not_null()
 
     #     thrown: bool = False
@@ -200,7 +201,7 @@ class ForEachRuleTests(unittest.TestCase):
     #     self.assertTrue(thrown)
 
     # 	def public async Task RuleForEach_async_RunsTasksSynchronously(self):
-    # 		validator = InlineValidator[Person]()
+    # 		validator = InlineValidator[Person](Person)
     # 		result = list<bool>()
 
     # 		validator.rule_for_each(lambda x: x.Children).MustAsync(async (person, token) =>
@@ -217,7 +218,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		Assert.All(result, Assert.True)
 
     # 	def test_Can_use_cascade_with_RuleForEach(self):
-    # 		validator = InlineValidator[Person]()
+    # 		validator = InlineValidator[Person](Person)
     # #pragma warning disable 618
     # 		validator.rule_for_each(lambda x: x.NickNames)
     # 			.Cascade(CascadeMode.StopOnFirstFailure)
@@ -274,7 +275,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors[2].PropertyName.ShouldEqual("Children[1]")
 
     # 	def test_Resets_state_correctly_between_rules(self):
-    # 		v = InlineValidator[Person]()
+    # 		v = InlineValidator[Person](Person)
     # 		v.rule_for_each(lambda x: x.NickNames).not_null()
     # 		v.rule_for(lambda x: x.Forename).not_null()
 
@@ -289,7 +290,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors[2].PropertyName.ShouldEqual("Forename")
 
     # 	def public async Task Resets_state_correctly_between_rules_async(self):
-    # 		v = InlineValidator[Person]()
+    # 		v = InlineValidator[Person](Person)
     # 		v.rule_for_each(lambda x: x.NickNames).not_null()
     # 		v.rule_for(lambda x: x.Forename).not_null()
 
@@ -304,7 +305,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors[2].PropertyName.ShouldEqual("Forename")
 
     # 	def test_Shouldnt_throw_exception_when_configuring_rule_after_ForEach(self):
-    # 		validator = InlineValidator[Person]()
+    # 		validator = InlineValidator[Person](Person)
 
     # 		validator.rule_for(lambda x: x.Orders)
     # 			.ForEach(o => {
@@ -427,7 +428,7 @@ class ForEachRuleTests(unittest.TestCase):
         self.assertEqual(results.errors[0].PropertyName, "Orders2[0].ProductName")
 
     def test_Top_level_collection(self):
-        v = InlineValidator[list[Order]]()
+        v = InlineValidator[list[Order]](list[Order])
         v.rule_for_each(lambda x: x).set_validator(OrderValidator())
         orders: list[Order] = [Order(), Order()]
 
@@ -454,7 +455,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		childValidator.WasCalledAsync.ShouldEqual(True)
 
     def test_Can_access_colletion_index(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for_each(lambda x: x.Orders).not_null().with_message("{CollectionIndex}")
         result = validator.validate(Person(Orders=[Order(), None]))
 
@@ -462,7 +463,7 @@ class ForEachRuleTests(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "1")
 
     # 	def public async Task Can_access_colletion_index_async(self):
-    # 		validator = InlineValidator[Person]()
+    # 		validator = InlineValidator[Person](Person)
     # 		validator.rule_for_each(lambda x: x.Orders).MustAsync((x, ct) => Task.FromResult(x is not None)).with_message("{CollectionIndex}")
     # 		result = await validator.ValidateAsync(Person {Orders = list[Order]() {Order(), None}})
     # 		result.is_valid.ShouldBeFalse()
@@ -470,7 +471,7 @@ class ForEachRuleTests(unittest.TestCase):
 
     def test_When_runs_outside_RuleForEach_loop(self):
         # Shouldn't throw an exception if the condition is run outside the loop.
-        validator = InlineValidator[tuple[None | Person]]()
+        validator = InlineValidator[tuple[None | Person]](Person)
         validator.rule_for_each(lambda x: x[0].Orders).must(lambda x: False).when(lambda x: x[0] is not None)
 
         result = validator.validate((None,))
@@ -481,7 +482,7 @@ class ForEachRuleTests(unittest.TestCase):
 
     # 	def public async Task When_runs_outside_RuleForEach_loop_async(self):
     # 		# Shouldn't throw an exception if the condition is run outside the loop.
-    # 		validator = InlineValidator[tuple[Person]]()
+    # 		validator = InlineValidator[tuple[Person]](tuple[Person])
     # 		validator.rule_for_each(lambda x: x[0].Orders)
     # 			.MustAsync((x,c) => Task.FromResult(False))
     # 			.when(lambda x: x[0] is not None)
@@ -493,8 +494,8 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.is_valid.ShouldBeFalse()
 
     # def test_Can_access_parent_index(self):
-    # 	personValidator = InlineValidator[Person]()
-    # 	orderValidator = InlineValidator[Order]()
+    # 	personValidator = InlineValidator[Person](Person)
+    # 	orderValidator = InlineValidator[Order](Order)
 
     # 	orderValidator.rule_for(lambda order: order.ProductName).not_empty().with_message("{CollectionIndex} must not be empty")
 
@@ -517,8 +518,8 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors[0].ErrorMessage.ShouldEqual("1 must not be empty")
 
     # 	def public async Task Can_access_parent_index_async(self):
-    # 		personValidator = InlineValidator[Person]()
-    # 		orderValidator = InlineValidator[Order]()
+    # 		personValidator = InlineValidator[Person](Person)
+    # 		orderValidator = InlineValidator[Order](Order)
 
     # 		orderValidator.rule_for(lambda order: order.ProductName)
     # 			.not_empty()
@@ -548,7 +549,7 @@ class ForEachRuleTests(unittest.TestCase):
 
     def test_Failing_condition_should_prevent_multiple_components_running_and_not_throw(self):
         # https://github.com/FluentValidation/FluentValidation/issues/1698
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
 
         validator.rule_for_each(lambda x: x.Orders).not_null().not_null().when(lambda x: len(x.Orders) > 0)
 
@@ -557,7 +558,7 @@ class ForEachRuleTests(unittest.TestCase):
 
     # 	def public async Task Failing_condition_should_prevent_multiple_components_running_and_not_throw_async(self):
     # 		# https://github.com/FluentValidation/FluentValidation/issues/1698
-    # 		validator = InlineValidator[Person]()
+    # 		validator = InlineValidator[Person](Person)
 
     # 		validator.rule_for_each(lambda x: x.Orders)
     # 			.MustAsync((o, ct) => Task.FromResult(o is not None))
@@ -568,7 +569,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.is_valid.ShouldBeTrue()
 
     # def test_Rule_ForEach_display_name_should_match_RuleForEach_display_name(self):
-    #     validator = InlineValidator[Person]()
+    #     validator = InlineValidator[Person](Person)
 
     #     # These 2 rule definitions should produce the same error message and property name.
     #     # https://github.com/FluentValidation/FluentValidation/issues/1231
@@ -587,14 +588,14 @@ class ForEachRuleTests(unittest.TestCase):
 
 class OrderValidator(AbstractValidator[Order]):
     def __init__(self):
-        super().__init__()
+        super().__init__(Order)
         self.rule_for(lambda x: x.ProductName).not_empty()
         self.rule_for(lambda x: x.Amount).not_equal(0)
 
 
 class OrderInterfaceValidator(AbstractValidator[IOrder]):
     def __init__(self):
-        super().__init__()
+        super().__init__(IOrder)
         self.rule_for(lambda x: x.Amount).not_equal(0)
 
 

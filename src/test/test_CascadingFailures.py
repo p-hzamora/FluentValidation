@@ -396,7 +396,7 @@ class CascadingFailuresTester(unittest.TestCase, IDisposable):
     # async def test_Cascade_set_to_stop_in_child_validator_with_RuleForEach_in_parent(self):
     # 	# See https://github.com/FluentValidation/FluentValidation/issues/2207
 
-    # 	childValidator = InlineValidator[Order]()
+    # 	childValidator = InlineValidator[Order](Order)
     # 	childValidator.ClassLevelCascadeMode = CascadeMode.Stop
     # 	childValidator.rule_for(lambda x: x.ProductName).not_null()
     # 	childValidator.rule_for(lambda x: x.Amount).GreaterThan(0)

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 import unittest
 
 import sys
@@ -38,7 +39,7 @@ class RulesetTests(unittest.TestCase):
         self.AssertExecuted(result, "default")
 
     def test_Ruleset_cascades_to_child_validator(self):
-        addressValidator = InlineValidator[Address]()
+        addressValidator = InlineValidator[Address](Address)
         addressValidator.rule_set("Test", lambda: addressValidator.rule_for(lambda x: x.Line1).not_null())
 
         validator = TestValidator()
@@ -53,7 +54,7 @@ class RulesetTests(unittest.TestCase):
         self.AssertExecuted(result, "Test")
 
     def test_Ruleset_cascades_to_child_collection_validator(self):
-        orderValidator = InlineValidator[Order]()
+        orderValidator = InlineValidator[Order](Order)
         orderValidator.rule_set("Test", lambda: {orderValidator.rule_for(lambda x: x.ProductName).not_null()})
 
         validator = TestValidator()
@@ -113,13 +114,13 @@ class RulesetTests(unittest.TestCase):
         self.AssertExecuted(result, "Names")
 
     def test_Ruleset_selection_should_cascade_downwards_with_when_setting_child_validator_using_include_statement_with_lambda(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.Include(lambda x: TestValidator2())
         result = validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
         self.assertFalse(result.is_valid)
 
     def test_Trims_spaces(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_set("First", lambda: {validator.rule_for(lambda x: x.Forename).not_null()})
         validator.rule_set("Second", lambda: {validator.rule_for(lambda x: x.Surname).not_null()})
 
@@ -128,7 +129,7 @@ class RulesetTests(unittest.TestCase):
         self.AssertExecuted(result, "First", "Second")
 
     def test_Applies_multiple_rulesets_to_rule(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_set("First, Second", lambda: validator.rule_for(lambda x: x.Forename).not_null())
 
         result = validator.validate(Person(), lambda v: v.IncludeRuleSets("First"))
@@ -148,7 +149,7 @@ class RulesetTests(unittest.TestCase):
         self.AssertExecuted(result, "default")
 
     def test_Executes_in_rule_in_ruleset_and_default(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_set("First, Default", lambda: {validator.rule_for(lambda x: x.Forename).not_null()})
 
         result = validator.validate(Person(), lambda v: v.IncludeRuleSets("First"))
@@ -164,7 +165,7 @@ class RulesetTests(unittest.TestCase):
         self.AssertExecuted(result, "default")
 
     def test_Executes_in_rule_in_default_and_none(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         # FIXME [x]: Fails because of 'rule_set' is case-sensitive. Must be case-insensitive
         validator.rule_set("First, Default", lambda: validator.rule_for(lambda x: x.Forename).not_null())
         validator.rule_for(lambda x: x.Forename).not_null()
@@ -174,7 +175,7 @@ class RulesetTests(unittest.TestCase):
         self.AssertExecuted(result, "default")
 
     def test_Combines_rulesets_and_explicit_properties(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: x.Forename).not_null()
         validator.rule_for(lambda x: x.Surname).not_null()
         validator.rule_set("Test", lambda: validator.rule_for(lambda x: x.Age).greater_than(0))
@@ -192,7 +193,7 @@ class RulesetTests(unittest.TestCase):
         self.assertEqual(result.errors[1].PropertyName, "Age")
 
     #     def test_Task(selfC:bines_rulesets_and_explicit_properties_async() {
-    #         validator = InlineValidator[Person]()
+    #         validator = InlineValidator[Person](Person)
     #         validator.rule_for(lambda x: x.Forename).MustAsync((x,t) => Task.FromResult(x != null))
     #         validator.rule_for(lambda x: x.Surname).MustAsync((x,t) => Task.FromResult(x != null))
     #         validator.rule_set("Test", lambda: {
@@ -210,7 +211,7 @@ class RulesetTests(unittest.TestCase):
     #     }
 
     def test_Includes_combination_of_rulesets(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: x.Forename).not_null()
         validator.rule_set("Test1", lambda: validator.rule_for(lambda x: x.Surname).not_null())
         validator.rule_set("Test2", lambda: validator.rule_for(lambda x: x.Age).greater_than(0))
@@ -222,7 +223,7 @@ class RulesetTests(unittest.TestCase):
         self.assertEqual(result.errors[1].PropertyName, "Surname")
 
     #     def test_Task(selfI:ludes_combination_of_rulesets_async() {
-    #         validator = InlineValidator[Person]()
+    #         validator = InlineValidator[Person](Person)
     #         validator.rule_for(lambda x: x.Forename).MustAsync((x,t) => Task.FromResult(x != null))
     #         validator.rule_set("Test1", lambda: {
     #             validator.rule_for(lambda x: x.Surname).MustAsync((x,t) => Task.FromResult(x != null))
@@ -241,7 +242,7 @@ class RulesetTests(unittest.TestCase):
     #     }
 
     def test_Includes_all_rulesets(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: x.Forename).not_null()
         validator.rule_set("Test1", lambda: validator.rule_for(lambda x: x.Surname).not_null())
         validator.rule_set("Test2", lambda: validator.rule_for(lambda x: x.Age).greater_than(0))
@@ -252,7 +253,7 @@ class RulesetTests(unittest.TestCase):
 
 
 #     def test_Task(selfI:ludes_all_rulesets_async() {
-#         validator = InlineValidator[Person]()
+#         validator = InlineValidator[Person](Person)
 #         validator.rule_for(lambda x: x.Forename).MustAsync((x,t) => Task.FromResult(x != null))
 #         validator.rule_set("Test1", lambda: {
 #             validator.rule_for(lambda x: x.Surname).MustAsync((x,t) => Task.FromResult(x != null))
@@ -271,7 +272,7 @@ class RulesetTests(unittest.TestCase):
 
 class TestValidator(InlineValidator[Person]):
     def __init__(self):
-        super().__init__()
+        super().__init__(Person)
         self.rule_set(
             "Names",
             lambda: (
@@ -285,13 +286,13 @@ class TestValidator(InlineValidator[Person]):
 
 class TestValidator2(AbstractValidator[Person]):
     def __init__(self):
-        super().__init__()
+        super().__init__(Person)
         self.rule_set("Names", lambda: self.rule_for(lambda x: x.Surname).not_null().with_message("foo"))
 
 
 class TestValidator3(AbstractValidator[Person]):
     def __init__(self):
-        super().__init__()
+        super().__init__(Person)
 
         # TODOL: added Include method in AbstractValidator
         self.Include(TestValidator2())
@@ -312,7 +313,7 @@ class PersonContainer:
 
 class TestValidator4(AbstractValidator[PersonContainer]):
     def __init__(self):
-        super().__init__()
+        super().__init__(PersonContainer)
         self.rule_for(lambda x: x.Person).set_validator(TestValidator2())
 
 

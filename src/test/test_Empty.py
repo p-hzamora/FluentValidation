@@ -69,7 +69,7 @@ class EmptyTester(unittest.TestCase):
         self.assertEqual(result.errors[0].ErrorMessage, "'Surname' must be empty.")
 
     def test_Passes_for_ienumerable_that_doesnt_implement_ICollection(self):
-        validator = InlineValidator[TestModel]()
+        validator = InlineValidator[TestModel](TestModel)
         validator.rule_for(lambda x: x.Strings).empty()
 
         result = validator.validate(TestModel())

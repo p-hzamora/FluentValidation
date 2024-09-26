@@ -41,7 +41,7 @@ class NullTester(unittest.TestCase):
         self.assertTrue(result.is_valid)
 
     def test_NullProperty_should_throw_NullReferenceException(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: len(x.Orders)).not_empty()
 
         with self.assertRaises(TypeError) as ex:
@@ -52,7 +52,7 @@ class NullTester(unittest.TestCase):
         self.assertIsInstance(ex.exception, TypeError)
 
     def test_ForEachNullProperty_should_throw_NullReferenceException_when_exception_occurs(self):
-        validator = InlineValidator[Person]()
+        validator = InlineValidator[Person](Person)
         validator.rule_for_each(lambda x: x.Orders[0].Payments).not_null()
 
         with self.assertRaises(TypeError) as ex:

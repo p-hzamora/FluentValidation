@@ -25,7 +25,7 @@ class Department:
 
 class DepartmentValidator(AbstractValidator[Department]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Department)
         self.CascadeMode = _CascadeMode.Stop  # _CascadeMode.StopOnFirstFailure
         self.rule_for(lambda x: x.Manager).not_null()
         self.rule_for(lambda x: x.Assistant.Surname).not_equal(lambda x: x.Manager.Surname).when(lambda x: x.Assistant is not None and x.Manager.Surname is not None)
@@ -33,7 +33,7 @@ class DepartmentValidator(AbstractValidator[Department]):
 
 class PersonValidator(InlineValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_for(lambda x: x.Forename).not_null()
         self.when(
             lambda x: x.Address is not None,
@@ -91,7 +91,7 @@ class ChainedValidationTester(unittest.TestCase):
         self.assertEqual(result.errors[-1].PropertyName, "Address.Line1")
 
     def test_Can_validate_using_validator_for_base_type(self):
-        addressValidator = InlineValidator[IAddress]()
+        addressValidator = InlineValidator[IAddress](IAddress)
         addressValidator.rule_for(lambda x: x.Line1).not_null()
 
         validator = TestValidator()
@@ -127,10 +127,10 @@ class ChainedValidationTester(unittest.TestCase):
     # 	members[3].Key.ShouldEqual("Address.Line1")
 
     def test_Uses_explicit_ruleset(self):
-        addressValidator = InlineValidator[Address]()
+        addressValidator = InlineValidator[Address](Address)
         addressValidator.rule_set("ruleset1", lambda: (addressValidator.rule_for(lambda x: x.Line1).not_null()))
         addressValidator.rule_for(lambda x: x.Line2).not_null()
-        self.validator = InlineValidator[Person]()
+        self.validator = InlineValidator[Person](Person)
         self.validator.rule_for(lambda x: x.Address).set_validator(addressValidator, "ruleset1")
 
         result = self.validator.validate(Person(Address=Address()))

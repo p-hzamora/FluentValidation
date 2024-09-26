@@ -145,8 +145,8 @@ class ValidateAndThrowTester(unittest.TestCase):
     # 	}
 
     def test_Only_root_validator_throws(self) -> None:
-        validator = InlineValidator[Person]()
-        addressValidator = InlineValidator[Address]()
+        validator = InlineValidator[Person](Person)
+        addressValidator = InlineValidator[Address](Address)
         addressValidator.rule_for(lambda x: x.Line1).not_null()
         validator.rule_for(lambda x: x.Address).set_validator(addressValidator)
         validator.rule_for(lambda x: x.Forename).not_null()

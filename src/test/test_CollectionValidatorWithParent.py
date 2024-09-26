@@ -63,7 +63,7 @@ class CollectionValidatorWithParentTests(unittest.TestCase):
     #         lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(lambda y: OrderValidator(y)),
     #     )
 
-    #     rootValidator = InlineValidator[NamedTupleTest[Person, Any]]()
+    #     rootValidator = InlineValidator[NamedTupleTest[Person, Any]](NamedTupleTest[Person, Any])
     #     rootValidator.rule_for(lambda x: x.Item1).set_validator(validator)
 
     #     # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
@@ -79,7 +79,7 @@ class CollectionValidatorWithParentTests(unittest.TestCase):
     # 		lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(lambda y: OrderValidator(y))
     # 	)
 
-    # 	rootValidator = InlineValidator[NamedTupleTest[Person, Any]]()
+    # 	rootValidator = InlineValidator[NamedTupleTest[Person, Any]](NamedTupleTest[Person, Any])
     # 	rootValidator.rule_for(lambda x: x.Item1).set_validator(validator)
 
     # 	results  = await rootValidator.ValidateAsync(NamedTupleTest(self.person, object()))
@@ -173,10 +173,10 @@ class CollectionValidatorWithParentTests(unittest.TestCase):
         self.assertEqual(results.errors[0].PropertyName, "Orders2[0].ProductName")
 
     def test_Should_work_with_top_level_collection_validator(self):
-        personValidator = InlineValidator[Person]()
+        personValidator = InlineValidator[Person](Person)
         personValidator.rule_for(lambda x: x.Surname).not_null()
 
-        validator = InlineValidator[list[Person]]()
+        validator = InlineValidator[list[Person]](list[Person])
         validator.rule_for_each(lambda x: x).set_validator(personValidator)
 
         results = validator.validate([Person(), Person(), Person(Surname="Bishop")])
@@ -184,10 +184,10 @@ class CollectionValidatorWithParentTests(unittest.TestCase):
         self.assertEqual(results.errors[0].PropertyName, "x[0].Surname")
 
     def test_Should_work_with_top_level_collection_validator_and_overriden_name(self):
-        personValidator = InlineValidator[Person]()
+        personValidator = InlineValidator[Person](Person)
         personValidator.rule_for(lambda x: x.Surname).not_null()
 
-        validator = InlineValidator[list[Person]]()
+        validator = InlineValidator[list[Person]](list[Person])
         validator.rule_for_each(lambda x: x).set_validator(personValidator).override_property_name("test")
 
         results = validator.validate([Person(), Person(), Person(Surname="Bishop")])
@@ -195,12 +195,12 @@ class CollectionValidatorWithParentTests(unittest.TestCase):
         self.assertEqual(results.errors[0].PropertyName, "test[0].Surname")
 
     def test_Creates_validator_using_context_from_property_value(self):
-        personValidator = InlineValidator[Person]()
+        personValidator = InlineValidator[Person](Person)
 
-        normalOrderValidator = InlineValidator[Order]()
+        normalOrderValidator = InlineValidator[Order](Order)
         normalOrderValidator.rule_for(lambda x: x.Amount).greater_than(0)
 
-        freeOrderValidator = InlineValidator[Order]()
+        freeOrderValidator = InlineValidator[Order](Order)
         freeOrderValidator.rule_for(lambda x: x.Amount).equal(0)
 
         personValidator.rule_for_each(lambda x: x.Orders).set_validator(lambda p, order: freeOrderValidator if order.ProductName == "FreeProduct" else normalOrderValidator)
@@ -215,7 +215,7 @@ class CollectionValidatorWithParentTests(unittest.TestCase):
 
 class OrderValidator(AbstractValidator[Order]):
     def __init__(self, person: Person) -> None:
-        super().__init__()
+        super().__init__(Order)
         self.rule_for(lambda x: x.ProductName).must(self.BeOneOfTheChildrensEmailAddress(person))
 
     @staticmethod
@@ -225,7 +225,7 @@ class OrderValidator(AbstractValidator[Order]):
 
 class OrderInterfaceValidator(AbstractValidator[IOrder]):
     def __init__(self, person: Person) -> None:
-        super().__init__()
+        super().__init__(IOrder)
         self.rule_for(lambda x: x.Amount).not_equal(person.AnotherInt)
 
 

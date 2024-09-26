@@ -1,5 +1,6 @@
-from typing import Any, Callable, Type, get_type_hints, get_args, get_origin, Union
+from typing import Any, Callable, Type, get_type_hints, get_args, get_origin, Union, Optional
 from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction, TupleInstruction
+import types
 
 
 class MemberInfo:
@@ -22,21 +23,44 @@ class MemberInfo:
         return lambda_var if not nested_name else nested_name[-1]
 
     def get_type_hint(self, type_model: Type) -> Type[Any]:
-        original_type_hints: dict[str, Any] = get_type_hints(type_model.__init__)
+        current_type_hints: dict[str, Any] = get_type_hints(type_model.__init__)
 
-        if not self._lambda_vars or len(original_type_hints) == 0:
+        if not self._lambda_vars:
             return None
-        _, *nested_name = self._lambda_vars[0].nested_element.parents
+
+        lambda_var, *nested_name = self._lambda_vars[0].nested_element.parents
+
+        if len(current_type_hints) == 0:
+            if lambda_var == self.Name:
+                return get_origin(type_model)
+
+            if hasattr(type_model, self.Name) and isinstance(prop := getattr(type_model, self.Name), property):
+                return get_type_hints(prop.fget)["return"]
+
+            raise TypeError(f"The variable '{self.Name}' does not exist in '{type_model.__name__}' class")
 
         current_instance_var = None
-        current_type_hints: dict[str, Any] = original_type_hints
         for var in nested_name:
             var_type_hint = current_type_hints[var]
-            origin = get_origin(var_type_hint)
-            if origin is Union:
-                current_instance_var = get_args(var_type_hint)[0]
-            else:
-                current_instance_var = var_type_hint
 
+            # It would be something like:   int | float | Decimal | ...
+            if self.isUnionType(var_type_hint):
+                return var_type_hint
+
+            current_instance_var = self.get_args(var_type_hint)
             current_type_hints = get_type_hints(current_instance_var.__init__)
         return current_instance_var
+
+    @staticmethod
+    def isUnionType(value: Any) -> bool:
+        return get_origin(value) is types.UnionType
+
+    @staticmethod
+    def isOptional(value: Any) -> bool:
+        return get_origin(value) is Union
+
+    @classmethod
+    def get_args(cls, value: Any) -> Any:
+        if cls.isOptional(value):
+            return get_args(value)[0]
+        return value

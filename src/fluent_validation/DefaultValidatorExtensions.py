@@ -353,7 +353,8 @@ class DefaultValidatorExtensions[T, TProperty]:
     # 		=> ruleBuilder.set_validator(StringEnumValidator<T>(enumType, caseSensitive))
 
     def child_rules[T, TProperty](
-        ruleBuilder: IRuleBuilder[T, TProperty], action: None | Callable[[InlineValidator[TProperty], None]]
+        ruleBuilder: IRuleBuilder[T, TProperty],
+        action: None | Callable[[InlineValidator[TProperty], None]],
     ) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
         from fluent_validation.internal.ChildRulesContainer import ChildRulesContainer
 
@@ -365,7 +366,7 @@ class DefaultValidatorExtensions[T, TProperty]:
         # so we get the __args__ and get the first element of the tuple
         model = get_args(ruleBuilder.Rule.TypeToValidate)[0]
         t_property = MemberInfo.get_args(model)
-        
+
         validator = ChildRulesContainer[TProperty](t_property)
         # parentValidator = ((IRuleBuilderInternal[T]) ruleBuilder).ParentValidator
         parentValidator = ruleBuilder.ParentValidator

@@ -36,6 +36,7 @@ import test_CollectionValidatorWithParent
 import test_EnumValidator
 import test_StringEnumValidator
 import test_ComplexValidation
+import test_InlineValidator
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -44,6 +45,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_InlineValidator),
         *loader.loadTestsFromModule(test_ComplexValidation),
         *loader.loadTestsFromModule(test_StringEnumValidator),
         *loader.loadTestsFromModule(test_EnumValidator),

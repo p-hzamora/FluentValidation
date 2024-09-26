@@ -354,10 +354,10 @@ Checks whether a string is a valid enum name.
 Example:
 ```python
 # For a case sensitive comparison
-self.rule_for(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel))
+self.rule_for(lambda x: x.ErrorLevelName).is_enum_name(typeof(ErrorLevel))
 
 # For a case-insensitive comparison
-self.rule_for(lambda x: x.ErrorLevelName).IsEnumName(typeof(ErrorLevel), caseSensitive: false)
+self.rule_for(lambda x: x.ErrorLevelName).is_enum_name(typeof(ErrorLevel), caseSensitive: false)
 ```
 Example error: *'Error Level' has a range of values which does not include 'Foo'.*
 

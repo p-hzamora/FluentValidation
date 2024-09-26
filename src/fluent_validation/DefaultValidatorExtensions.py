@@ -1,6 +1,6 @@
 from __future__ import annotations
 from decimal import Decimal
-from typing import Callable, Optional, get_args, overload, TYPE_CHECKING
+from typing import Callable, Optional, Type, get_args, overload, TYPE_CHECKING
 import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
@@ -12,6 +12,7 @@ from fluent_validation.validators.RangeValidator import IComparer, RangeValidato
 from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
 from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
 from fluent_validation.validators.EnumValidator import EnumValidator
+from fluent_validation.validators.StringEnumValidator import StringEnumValidator
 
 if TYPE_CHECKING:
     from fluent_validation.InlineValidator import InlineValidator
@@ -349,8 +350,8 @@ class DefaultValidatorExtensions[T, TProperty]:
     # 		return ruleBuilder.set_validator(innerValidator)
     # 	}
 
-    # 	static IRuleBuilderOptions<T, str> IsEnumName<T>(IRuleBuilder<T, str> ruleBuilder, Type enumType, bool caseSensitive = true)
-    # 		=> ruleBuilder.set_validator(StringEnumValidator<T>(enumType, caseSensitive))
+    def is_enum_name(ruleBuilder: IRuleBuilder[T, str], enumType: Type, caseSensitive: True = True) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions<T, str>:
+        return ruleBuilder.set_validator(StringEnumValidator[T](enumType, caseSensitive))
 
     def child_rules[T, TProperty](
         ruleBuilder: IRuleBuilder[T, TProperty],

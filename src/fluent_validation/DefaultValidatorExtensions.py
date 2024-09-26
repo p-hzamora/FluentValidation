@@ -1,6 +1,6 @@
 from __future__ import annotations
 from decimal import Decimal
-from typing import Callable, Optional, Type, get_args, overload, TYPE_CHECKING
+from typing import Callable, Optional, Type, get_args, overload, TYPE_CHECKING, get_origin
 import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
@@ -368,6 +368,10 @@ class DefaultValidatorExtensions[T, TProperty]:
         model = get_args(ruleBuilder.Rule.TypeToValidate)[0]
         t_property = MemberInfo.get_args(model)
 
+        t_property_origin = get_origin(t_property)
+        if t_property_origin and issubclass(t_property_origin, list):
+            # COMMENT: As the datatype of property we are validating is an Iterable object
+            t_property = get_args(t_property)[0]
         validator = ChildRulesContainer[TProperty](t_property)
         # parentValidator = ((IRuleBuilderInternal[T]) ruleBuilder).ParentValidator
         parentValidator = ruleBuilder.ParentValidator

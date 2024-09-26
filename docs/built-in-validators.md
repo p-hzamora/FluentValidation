@@ -323,26 +323,23 @@ String format args:
 Checks whether a numeric value is valid to be in that enum. This is used to prevent numeric values from being cast to an enum type when the resulting value would be invalid. For example, the following is possible:
 
 ```python
-public enum ErrorLevel 
-{
+class ErrorLevel(enum):
   Error = 1,
   Warning = 2,
   Notice = 3
-}
 
-public class Model
-{
-  self.public ErrorLevel ErrorLevel { get set }
-}
+@dataclass
+class Model
+  errorLevel: ErrorLevel = 0
 
-self.var model = new Model()
-self.model.ErrorLevel = (ErrorLevel)4
+self.var model = Model(errorLevel = 4)
 ```
+<!-- self.model.errorLevel = (ErrorLevel)4 -->
 
-The compiler will allow this, but a value of 4 is technically not valid for this enum. The Enum validator can prevent this from happening.
+<!-- The compiler will allow this, but a value of 4 is technically not valid for this enum. The Enum validator can prevent this from happening. -->
 
 ```python
-self.rule_for(lambda x: x.ErrorLevel).is_in_enum()
+self.rule_for(lambda x: x.errorLevel).is_in_enum()
 ```
 Example error: *'Error Level' has a range of values which does not include '4'.*
 
@@ -351,7 +348,7 @@ String format args:
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-## Enum Name Validator
+<!-- ## Enum Name Validator
 Checks whether a string is a valid enum name.
 
 Example:
@@ -367,7 +364,7 @@ Example error: *'Error Level' has a range of values which does not include 'Foo'
 String format args:
 * `{PropertyName}` – Name of the property being validated
 * `{PropertyValue}` – Current value of the property
-* `{PropertyPath}` - The full path of the property
+* `{PropertyPath}` - The full path of the property -->
 
 ## Empty Validator
 Opposite of the `not_empty` validator. Checks if a property value is null, or is the default value for the type.

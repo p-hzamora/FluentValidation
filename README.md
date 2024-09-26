@@ -55,7 +55,7 @@ If you use FluentValidation in a commercial project, please sponsor the project 
   - [Regular Expression Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#regular-expression-validator)
   - [Email Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#email-validator) (Not implemented yet)
   - [Credit Card Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#credit-card-validator)
-  - [Enum Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-validator) (Not implemented yet)
+  - [Enum Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-validator)
   - [Enum Name Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#enum-name-validator) (Not implemented yet)
   - [Empty Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#empty-validator)
   - [Null Validator](https://github.com/p-hzamora/FluentValidation/blob/main/docs/built-in-validators.md#null-validator)

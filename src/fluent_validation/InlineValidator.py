@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable, Optional, Type
+from typing import Callable, Type
 
 from .abstract_validator import AbstractValidator
 from .syntax import IRuleBuilderOptions
@@ -24,7 +24,7 @@ class InlineValidator[T](AbstractValidator[T]):
      }
     """
 
-    def __init__[TProperty](self, model: Optional[Type[T]], *ruleCreator: Callable[[InlineValidator[T]], IRuleBuilderOptions[T, TProperty]]) -> None:
+    def __init__[TProperty](self, model: Type[T], *ruleCreator: Callable[[InlineValidator[T]], IRuleBuilderOptions[T, TProperty]]) -> None:
         super().__init__(model)
         for rule in ruleCreator:
             rule(self)

@@ -221,7 +221,16 @@ class ValidatorSelectorTests(unittest.TestCase):
 
     #     validator = InlineValidator[Person](Person)
     #     validator.rule_for_each(lambda x: x.Orders).child_rules(
-    #         lambda x: (x.rule_for(lambda y: y.Amount).greater_than(6), x.rule_for_each(lambda y: y.Payments).child_rules(lambda a: (a.rule_for(lambda b: b.Amount).greater_than(0))))
+    #         lambda x: (
+    #             x.rule_for(lambda y: y.Amount).greater_than(6),
+    #             x.rule_for_each(lambda y: y.Payments).child_rules(
+    #                 lambda a: (
+    #                     a.rule_for(
+    #                         lambda b: b.Amount,
+    #                     ).greater_than(0)
+    #                 )
+    #             ),
+    #         )
     #     )
 
     #     result = validator.validate(person, lambda opt: opt.IncludeProperties("Orders[].Payments[].Amount"))

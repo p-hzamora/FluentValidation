@@ -24,7 +24,7 @@ class InlineValidator[T](AbstractValidator[T]):
      }
     """
 
-    def __init__[TProperty](self, model: Optional[Type[T]] = None, *ruleCreator: Callable[[InlineValidator[T]], IRuleBuilderOptions[T, TProperty]]) -> None:
+    def __init__[TProperty](self, model: Optional[Type[T]], *ruleCreator: Callable[[InlineValidator[T]], IRuleBuilderOptions[T, TProperty]]) -> None:
         super().__init__(model)
         for rule in ruleCreator:
             rule(self)

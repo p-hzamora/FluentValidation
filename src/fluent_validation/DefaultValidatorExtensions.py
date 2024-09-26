@@ -1,6 +1,6 @@
 from __future__ import annotations
 from decimal import Decimal
-from typing import Callable, Optional, overload, TYPE_CHECKING
+from typing import Callable, Optional, get_args, overload, TYPE_CHECKING
 import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
@@ -359,7 +359,14 @@ class DefaultValidatorExtensions[T, TProperty]:
 
         if action is None:
             raise ValueError("action")
-        validator = ChildRulesContainer[TProperty]()
+
+        # COMMENT: As the datatype of property we are validating is an Iterable object
+        # we're going to get the type of each element. We assumed that all element are of the same type,
+        # so we get the __args__ and get the first element of the tuple
+        model = get_args(ruleBuilder.Rule.TypeToValidate)[0]
+        t_property = MemberInfo.get_args(model)
+        
+        validator = ChildRulesContainer[TProperty](t_property)
         # parentValidator = ((IRuleBuilderInternal[T]) ruleBuilder).ParentValidator
         parentValidator = ruleBuilder.ParentValidator
 

@@ -33,8 +33,8 @@ from fluent_validation.internal.ConditionBuilder import ConditionBuilder
 
 class AbstractValidator[T](IValidator[T]):
     # region constructor
-    def __init__(self, type_model: Optional[Type[T]] = None) -> None:
-        self._type_model: Optional[Type[T]] = type_model
+    def __init__(self, type_model: Type[T]) -> None:
+        self._type_model: Type[T] = type_model
         self._classLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultClassLevelCascadeMode
         self._ruleLevelCascadeMode: Callable[[], CascadeMode] = lambda: ValidatorOptions.Global.DefaultRuleLevelCascadeMode
         self._rules: TrackingCollection[IValidationRuleInternal] = TrackingCollection()

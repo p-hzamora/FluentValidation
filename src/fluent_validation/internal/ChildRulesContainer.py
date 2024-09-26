@@ -7,9 +7,8 @@ class ChildRulesContainer[T](InlineValidator[T]):
     """
     /// AbstractValidator implementation for containing child rules.
     """
-
-    def __init__[TProperty](self, *ruleCreator: Callable[[InlineValidator[T]], IRuleBuilderOptions[T, TProperty]]) -> None:
-        super().__init__(*ruleCreator)
+    def __init__[TProperty](self, model: type[T] | None, *ruleCreator: Callable[[InlineValidator[T]], IRuleBuilderOptions[T, TProperty]]) -> None:
+        super().__init__(model, *ruleCreator)
         self._RuleSetsToApplyToChildRules: list[str] = None
 
     @property

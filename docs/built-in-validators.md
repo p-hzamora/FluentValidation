@@ -348,23 +348,23 @@ String format args:
 * `{PropertyValue}` – Current value of the property
 * `{PropertyPath}` - The full path of the property
 
-<!-- ## Enum Name Validator
+## Enum Name Validator
 Checks whether a string is a valid enum name.
 
 Example:
 ```python
 # For a case sensitive comparison
-self.rule_for(lambda x: x.ErrorLevelName).is_enum_name(typeof(ErrorLevel))
+self.rule_for(lambda x: x.ErrorLevelName).is_enum_name(ErrorLevel)
 
 # For a case-insensitive comparison
-self.rule_for(lambda x: x.ErrorLevelName).is_enum_name(typeof(ErrorLevel), caseSensitive: false)
+self.rule_for(lambda x: x.ErrorLevelName).is_enum_name(ErrorLevel, caseSensitive=False)
 ```
 Example error: *'Error Level' has a range of values which does not include 'Foo'.*
 
 String format args:
 * `{PropertyName}` – Name of the property being validated
 * `{PropertyValue}` – Current value of the property
-* `{PropertyPath}` - The full path of the property -->
+* `{PropertyPath}` - The full path of the property
 
 ## Empty Validator
 Opposite of the `not_empty` validator. Checks if a property value is null, or is the default value for the type.

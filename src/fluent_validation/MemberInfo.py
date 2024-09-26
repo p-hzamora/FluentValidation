@@ -30,12 +30,12 @@ class MemberInfo:
 
         lambda_var, *nested_name = self._lambda_vars[0].nested_element.parents
 
+        if hasattr(type_model, self.Name) and isinstance(prop := getattr(type_model, self.Name), property):
+            return get_type_hints(prop.fget)["return"]
+
         if len(current_type_hints) == 0:
             if lambda_var == self.Name:
                 return get_origin(type_model)
-
-            if hasattr(type_model, self.Name) and isinstance(prop := getattr(type_model, self.Name), property):
-                return get_type_hints(prop.fget)["return"]
 
             raise TypeError(f"The variable '{self.Name}' does not exist in '{type_model.__name__}' class")
 

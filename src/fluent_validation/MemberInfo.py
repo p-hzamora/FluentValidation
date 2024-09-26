@@ -1,4 +1,4 @@
-from typing import Any, Callable, Type, get_type_hints, get_args, get_origin, Union, Optional
+from typing import Any, Callable, Type, get_type_hints, get_args, get_origin, Union
 from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction, TupleInstruction
 import types
 

@@ -117,7 +117,7 @@ class ScalePrecisionValidatorTests(unittest.TestCase):
         self.assertTrue(result.is_valid)
 
         # COMMENT: I believed that in the original C# library, 0M represents a decimal as 0.00, but that's not true
-        # TODOL: translate 0M as Decimal("0.00") to assert True
+        # TODOL [x]: translate 0M as Decimal("0.00") to assert True
         result = validator.validate(Person(Discount=Decimal("0.00")))
         self.assertTrue(result.is_valid)
 

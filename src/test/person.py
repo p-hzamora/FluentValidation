@@ -152,7 +152,7 @@ class Person:
         min_length: int = 0,
         max_length: int = 0,
         Gender: Optional[EnumGender] = 0,
-        Genderstr: Optional[str] = None,
+        GenderString: Optional[str] = None,
         Children: list[Optional[Person]] = [],
         Orders: list[Optional[Order]] = [],
         NullableInt: Optional[int] = None,
@@ -180,7 +180,7 @@ class Person:
         self.min_length: int = min_length
         self.max_length: int = max_length
         self.Gender: EnumGender = Gender
-        self.Genderstr: str = Genderstr
+        self.GenderString: str = GenderString
 
     @staticmethod
     def CalculateSalary() -> int:

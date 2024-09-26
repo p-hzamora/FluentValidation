@@ -298,7 +298,7 @@ class DefaultValidatorExtensions[T, TProperty]:
     def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions[T, str]
         return ruleBuilder.set_validator(CreditCardValidator[T]())
 
-    def IsInEnum(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
+    def is_in_enum(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
         return ruleBuilder.set_validator(EnumValidator[T, TProperty](ruleBuilder.Rule.TypeToValidate))
 
     # region precision_scale

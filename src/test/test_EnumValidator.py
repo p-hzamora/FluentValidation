@@ -145,7 +145,7 @@ class EnumValidatorTests(unittest.TestCase):
     def setUp(self):
         CultureScope.SetDefaultCulture()
 
-        self.validator: TestValidator = TestValidator(lambda v: v.rule_for(lambda x: x.Gender).IsInEnum())
+        self.validator: TestValidator = TestValidator(lambda v: v.rule_for(lambda x: x.Gender).is_in_enum())
 
     def test_IsValidTests(self):
         self.assertTrue(self.validator.validate(Person(Gender=EnumGender.Female)).is_valid)  # Simplest valid value
@@ -167,19 +167,19 @@ class EnumValidatorTests(unittest.TestCase):
 
     def test_Nullable_enum_valid_when_property_value_is_null(self):
         validator = InlineValidator[Foo](Foo)
-        validator.rule_for(lambda x: x.Gender).IsInEnum()
+        validator.rule_for(lambda x: x.Gender).is_in_enum()
         result = validator.validate(Foo())
         self.assertTrue(result.is_valid)
 
     def test_Nullable_enum_valid_when_value_specified(self):
         validator = InlineValidator[Foo](Foo)
-        validator.rule_for(lambda x: x.Gender).IsInEnum()
+        validator.rule_for(lambda x: x.Gender).is_in_enum()
         result = validator.validate(Foo(Gender=EnumGender.Male))
         self.assertTrue(result.is_valid)
 
     def test_Nullable_enum_invalid_when_bad_value_specified(self):
         validator = InlineValidator[Foo](Foo)
-        validator.rule_for(lambda x: x.Gender).IsInEnum()
+        validator.rule_for(lambda x: x.Gender).is_in_enum()
         result = validator.validate(Foo(Gender=42))
         self.assertFalse(result.is_valid)
 
@@ -198,7 +198,7 @@ class EnumValidatorTests(unittest.TestCase):
 
     def test_Flags_enum_with_overlapping_flags_valid_when_using_bitwise_value(self):
         inlineValidator = InlineValidator[FlagsEnumPoco](FlagsEnumPoco)
-        inlineValidator.rule_for(lambda x: x.EnumWithOverlappingFlagsValue).IsInEnum()
+        inlineValidator.rule_for(lambda x: x.EnumWithOverlappingFlagsValue).is_in_enum()
 
         poco = FlagsEnumPoco()
 
@@ -264,16 +264,16 @@ class EnumValidatorTests(unittest.TestCase):
     @staticmethod
     def Create_validator() -> InlineValidator[FlagsEnumPoco]:
         inlineValidator = InlineValidator[FlagsEnumPoco](FlagsEnumPoco)
-        inlineValidator.rule_for(lambda x: x.SByteValue).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.ByteValue).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.Int16Value).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.UInt16Value).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.Int32Value).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.UInt32Value).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.Int64Value).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.UInt64Value).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.EnumWithNegativesValue).IsInEnum()
-        inlineValidator.rule_for(lambda x: x.EnumWithOverlappingFlagsValue).IsInEnum()
+        inlineValidator.rule_for(lambda x: x.SByteValue).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.ByteValue).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.Int16Value).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.UInt16Value).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.Int32Value).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.UInt32Value).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.Int64Value).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.UInt64Value).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.EnumWithNegativesValue).is_in_enum()
+        inlineValidator.rule_for(lambda x: x.EnumWithOverlappingFlagsValue).is_in_enum()
 
         return inlineValidator
 

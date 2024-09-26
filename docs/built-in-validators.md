@@ -342,7 +342,7 @@ self.model.ErrorLevel = (ErrorLevel)4
 The compiler will allow this, but a value of 4 is technically not valid for this enum. The Enum validator can prevent this from happening.
 
 ```python
-self.rule_for(lambda x: x.ErrorLevel).IsInEnum()
+self.rule_for(lambda x: x.ErrorLevel).is_in_enum()
 ```
 Example error: *'Error Level' has a range of values which does not include '4'.*
 

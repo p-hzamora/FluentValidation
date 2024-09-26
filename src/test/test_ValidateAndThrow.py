@@ -5,7 +5,8 @@ from pathlib import Path
 
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
-
+from fluent_validation import ValidationFailure
+from TestValidatorWithPreValidate import TestValidatorWithPreValidate
 from fluent_validation.ValidationException import ValidationException
 from fluent_validation.InlineValidator import InlineValidator
 from TestValidator import TestValidator  # noqa: E402
@@ -162,69 +163,66 @@ class ValidateAndThrowTester(unittest.TestCase):
                 raise ValidationException
 
 
-# 	def test_Throws_exception_when_preValidate_fails_and_continueValidation_true(self)->None:
-# 		validator = TestValidatorWithPreValidate {
-# 			PreValidateMethod = (context, result) => {
-# 				result.Errors.Add(ValidationFailure("test", "test"))
-# 				return True
-# 			}
-# 		}
+    def test_Throws_exception_when_preValidate_fails_and_continueValidation_true(self)->None:
+        validator = TestValidatorWithPreValidate(
+            PreValidateMethod = lambda context, result:(
+                result.errors.append(ValidationFailure("test", "test")),
+                True,
+            )[1]
+        )
 
-# 		Assert.Throws<ValidationException>(lambda: validator.validate_and_throw(Person()))
-# 	}
+        with self.assertRaises(ValidationException):
+            validator.validate_and_throw(Person())
 
-# 	def test_Throws_exception_when_preValidate_fails_and_continueValidation_False(self)->None:
-# 		validator = TestValidatorWithPreValidate {
-# 			PreValidateMethod = (context, result) => {
-# 				result.Errors.Add(ValidationFailure("test", "test"))
-# 				return False
-# 			}
-# 		}
 
-# 		Assert.Throws<ValidationException>(lambda: validator.validate_and_throw(Person()))
-# 	}
+    def test_Throws_exception_when_preValidate_fails_and_continueValidation_False(self)->None:
+        validator = TestValidatorWithPreValidate(
+            PreValidateMethod = lambda context, result:(
+                result.errors.append(ValidationFailure("test", "test")), 
+                False
+            )[1]
+        )
 
-# 	def test_Does_not_throws_exception_when_preValidate_ends_with_continueValidation_False(self)->None:
-# 		validator = TestValidatorWithPreValidate {
-# 			PreValidateMethod = (context, result) => False
-# 		}
+        with self.assertRaises(ValidationException):
+            validator.validate_and_throw(Person())
 
-# 		validator.validate_and_throw(Person())
-# 	}
+    def test_Does_not_throws_exception_when_preValidate_ends_with_continueValidation_False(self)->None:
+        validator = TestValidatorWithPreValidate(PreValidateMethod = lambda context, result:(False))
+        validator.validate_and_throw(Person())
 
-# 	def test_Task Throws_exception_when_preValidate_fails_and_continueValidation_true_async(self)->None:
-# 		validator = TestValidatorWithPreValidate {
-# 			PreValidateMethod = (context, result) => {
-# 				result.Errors.Add(ValidationFailure("test", "test"))
-# 				return True
-# 			}
-# 		}
+    # def test_Task Throws_exception_when_preValidate_fails_and_continueValidation_true_async(self)->None:
+    #     validator = TestValidatorWithPreValidate(
+    #         PreValidateMethod = lambda context, result:(
+    #             result.errors.append(ValidationFailure("test", "test"))
+    #             return True
+    #         )
+    #     )
 
-# 		await Assert.ThrowsAsync<ValidationException>(async lambda: {
-# 			await validator.ValidateAndThrowAsync(Person())
-# 		})
-# 	}
+    #     await Assert.ThrowsAsync<ValidationException>(async lambda: {
+    #         await validator.ValidateAndThrowAsync(Person())
+    #     ))
+    # )
 
-# 	def test_Task Throws_exception_when_preValidate_fails_and_continueValidation_False_async(self)->None:
-# 		validator = TestValidatorWithPreValidate {
-# 			PreValidateMethod = (context, result) => {
-# 				result.Errors.Add(ValidationFailure("test", "test"))
-# 				return False
-# 			}
-# 		}
+    # def test_Task Throws_exception_when_preValidate_fails_and_continueValidation_False_async(self)->None:
+    #     validator = TestValidatorWithPreValidate(
+    #         PreValidateMethod = lambda context, result:(
+    #             result.errors.append(ValidationFailure("test", "test"))
+    #             return False
+    #         )
+    #     )
 
-# 		await Assert.ThrowsAsync<ValidationException>(async lambda: {
-# 			await validator.ValidateAndThrowAsync(Person())
-# 		})
-# 	}
+    #     await Assert.ThrowsAsync<ValidationException>(async lambda: {
+    #         await validator.ValidateAndThrowAsync(Person())
+    #     ))
+    # )
 
-# 	def test_Task Does_not_throws_exception_when_preValidate_ends_with_continueValidation_False_async(self)->None:
-# 		validator = TestValidatorWithPreValidate {
-# 			PreValidateMethod = (context, result) => False
-# 		}
+    # def test_Task Does_not_throws_exception_when_preValidate_ends_with_continueValidation_False_async(self)->None:
+    #     validator = TestValidatorWithPreValidate(
+    #         PreValidateMethod = lambda context, result:(
+    #     )
 
-# 		await validator.ValidateAndThrowAsync(Person())
-# 	}
+    #     await validator.ValidateAndThrowAsync(Person())
+    # )
 
 # 	def test_Throws_when_calling_validator_as_interface(self)->None:
 # 		IValidator<TestType> validator = InterfaceValidator()

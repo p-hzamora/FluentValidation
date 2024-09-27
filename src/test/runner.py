@@ -86,5 +86,5 @@ suite.addTests(
 )
 
 # initialize a runner, pass it your suite and run it
-runner = unittest.TextTestRunner()
+runner = unittest.TextTestRunner(verbosity=0)
 result = runner.run(suite)

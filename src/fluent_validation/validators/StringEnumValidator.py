@@ -25,8 +25,8 @@ class StringEnumValidator[T](PropertyValidator[T, str]):
 
     def CheckTypeIsEnum(self, enumType: Type[Enum]) -> None:
         if not issubclass(enumType, Enum):
-            message: str = f"The type '{enumType.__name__}' is not an enum and can't be used with is_enum_name."
-            TypeError("enumType", message)
+            message: str = f"The type '{enumType.__name__}' is not an enum and can't be used with is_enum_name. (Parameter 'enumType')"
+            raise TypeError(message)
 
     @override
     def get_default_message_template(self, errorCode: str) -> str:

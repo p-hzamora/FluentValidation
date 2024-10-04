@@ -52,8 +52,13 @@ class StringEnumValidatorTests(unittest.TestCase):
 
     def test_When_enumType_is_null_it_should_throw(self):
         with self.assertRaises(TypeError):
-            TestValidator(lambda v: v.rule_for(lambda x: x.GenderString).is_enum_name(None))
-
+            try:
+                TestValidator(lambda v: v.rule_for(lambda x: x.GenderString).is_enum_name(Person))
+            except TypeError as e:
+                expectedMessage:str = "The type 'Person' is not an enum and can't be used with is_enum_name. (Parameter 'enumType')"
+                self.assertEqual(expectedMessage, e.args[0])
+                raise TypeError
+            
     # def test_When_enumType_is_not_an_enum_it_should_throw(self):
     # 	exception = Assert.Throws<TypeError>(() =>TestValidator(lambda v: v.rule_for(lambda x: x.GenderString).is_enum_name(typeof(Person)) })
     # 	string expectedMessage = "The type 'Person' is not an enum and can't be used with is_enum_name. (Parameter 'enumType')"

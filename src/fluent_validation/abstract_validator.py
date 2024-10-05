@@ -86,7 +86,7 @@ class AbstractValidator[T](IValidator[T]):
         return self.__validate__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
 
     def __validate__(self, context: ValidationContext[T]) -> ValidationResult:
-        # FIXME [ ]: It's not the correct way to control the nested event loop because I get an error in 'test_Should_not_scramble_property_name_when_using_collection_validators_several_levels_deep'
+        # FIXME [ ]: It's not the correct way to control the nested event loop because I get an error in several tests like 'test_Should_not_scramble_property_name_when_using_collection_validators_several_levels_deep'
         def run_coroutine_sync(coroutine: Coroutine[Any, Any, T], timeout: float = 30) -> T:
             def run_in_new_loop():
                 new_loop = asyncio.new_event_loop()

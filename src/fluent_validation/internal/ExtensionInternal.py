@@ -59,7 +59,7 @@ class ExtensionsInternal:
 
     @staticmethod
     def ResolveErrorMessageUsingErrorCode(error_code: str, fall_back_Key: str) -> str:
-        from .Resources.LanguageManager import LanguageManager  # FIXME [ ]: I don't know how to avoid this import to prevent circular imports
+        from .Resources.LanguageManager import LanguageManager
 
         languageManager: ILanguageManager = LanguageManager()
         if error_code is not None:

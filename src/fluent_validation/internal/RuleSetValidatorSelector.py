@@ -46,7 +46,7 @@ class RulesetValidatorSelector(IValidatorSelector):
                 return True
 
         if rule.RuleSets is not None and len(rule.RuleSets) > 0 and self._rulesetsToExecute:
-            # FIXME [ ]: try to get the intersection with
+            # FIXME [x]: try to get the intersection with
             intersection = set(rule.RuleSets) & set(self._rulesetsToExecute)
             if intersection:
                 for r in intersection:

@@ -13,6 +13,11 @@ from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetw
 from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
 from fluent_validation.validators.EnumValidator import EnumValidator
 from fluent_validation.validators.StringEnumValidator import StringEnumValidator
+from fluent_validation.validators.EmailValidator import (
+    AspNetCoreCompatibleEmailValidator,
+    EmailValidationMode,
+    EmailValidator,
+)
 
 if TYPE_CHECKING:
     from fluent_validation.InlineValidator import InlineValidator
@@ -58,6 +63,27 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     def matches(ruleBuilder: IRuleBuilder[T, TProperty], pattern: str) -> IRuleBuilder[T, TProperty]:
         return ruleBuilder.set_validator(RegularExpressionValidator[T](pattern))
+
+    def email_address(ruleBuilder: IRuleBuilder[T, str], mode: EmailValidationMode = EmailValidationMode.AspNetCoreCompatible) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions<T, string> :
+        """
+	    Defines an email validator on the current rule builder for string properties.
+	    Validation will fail if the value returned by the lambda is not a valid email address.
+
+        :param rule_builder: The rule builder on which the validator should be defined.
+        :type rule_builder: IRuleBuilder
+        :param mode: The mode to use for email validation.
+        :type mode: EmailValidationMode
+        mode:
+        - **Net4xRegex**: Uses a regular expression for validation. This is the same regex used by the `EmailAddressAttribute` in .NET 4.x.
+        - **AspNetCoreCompatible**: Uses the simplified ASP.NET Core logic for checking an email address, which just checks for the presence of an `@` sign.
+
+        :raises ValueError: If an invalid mode is passed.
+        :type T: Type of object being validated.
+        
+        """
+
+        validator = AspNetCoreCompatibleEmailValidator[T]() if mode == EmailValidationMode.AspNetCoreCompatible else EmailValidator[T]()
+        return ruleBuilder.set_validator(validator)
 
     @overload
     def length(ruleBuilder: IRuleBuilder[T, TProperty], min: Callable[[T], None], max: Callable[[T], None]) -> IRuleBuilder[T, TProperty]: ...

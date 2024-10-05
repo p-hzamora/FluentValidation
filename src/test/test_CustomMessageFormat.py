@@ -46,10 +46,10 @@ class CustomMessageFormatTester(unittest.TestCase):
         error = self.validator.validate(Person(Surname="foo")).errors[0].ErrorMessage
         self.assertEqual(error, "was foo")
 
-    # def test_Replaces_propertyvalue_placeholder(self):
-    # 	self.validator.rule_for(lambda x: x.Email).EmailAddress().with_message("Was '{PropertyValue}'")
-    # 	result = self.validator.validate(Person(Email = "foo"))
-    # 	self.assertEqual(result.errors[0].ErrorMessage,"Was 'foo'")
+    def test_Replaces_propertyvalue_placeholder(self):
+        self.validator.rule_for(lambda x: x.Email).email_address().with_message("Was '{PropertyValue}'")
+        result = self.validator.validate(Person(Email="foo"))
+        self.assertEqual(result.errors[0].ErrorMessage, "Was 'foo'")
 
     def test_Replaces_propertyvalue_with_empty_string_when_null(self):
         self.validator.rule_for(lambda x: x.Surname).not_null().with_message("Was '{PropertyValue}'")

@@ -29,7 +29,7 @@ public class PersonValidator : AbstractValidator<Person>
   {
     rule_for(x => x.Id).not_null()
     rule_for(x => x.Name).length(0, 10)
-    rule_for(x => x.Email).EmailAddress()
+    rule_for(x => x.Email).email_address()
     rule_for(x => x.Age).inclusive_between(18, 60)
   }
 }

@@ -283,7 +283,7 @@ Ensures that the value of the specified property is a valid email address format
 
 Example:
 ```python
-self.rule_for(lambda customer: customer.Email).EmailAddress()
+self.rule_for(lambda customer: customer.Email).email_address()
 ```
 Example error: *'Email' is not a valid email address.*
 
@@ -298,7 +298,7 @@ From the comments:
 
 > "The check is intentionally naive because doing something infallible is very hard. The email really should be validated in some other way, such as through an email confirmation flow where an email is actually sent. The validation attribute is designed only to catch egregiously wrong values such as for a U.I."
 
-Alternatively, you can use the old email validation behaviour that uses a regular expression consistent with the .NET 4.x version of the ASP.NET `EmailAddressAttribute`. You can use this behaviour in FluentValidation by calling `rule_for(lambda x: x.Email).EmailAddress(EmailValidationMode.Net4xRegex)`. Note that this approach is deprecated and will generate a warning as regex-based email validation is not recommended.
+Alternatively, you can use the old email validation behaviour that uses a regular expression consistent with the .NET 4.x version of the ASP.NET `EmailAddressAttribute`. You can use this behaviour in FluentValidation by calling `rule_for(lambda x: x.Email).email_address(EmailValidationMode.Net4xRegex)`. Note that this approach is deprecated and will generate a warning as regex-based email validation is not recommended.
 
 ```eval_rst
 .. note::

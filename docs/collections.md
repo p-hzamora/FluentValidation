@@ -15,7 +15,7 @@ class Person:
 ```python
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_for_each(lambda x: x.AddressLines).not_null()
 ```
 
@@ -26,7 +26,7 @@ As of version 8.5, if you want to access the index of the collection element tha
 ```python
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_for_each(lambda x: x.AddressLines).not_null().with_message("Address {CollectionIndex} is required.")
 ```
 
@@ -49,13 +49,13 @@ class Customer:
 ```python
 class OrderValidator(AbstractValidator[Order]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Order)
         self.rule_for(lambda x: x.Total).greater_than(0)
 
 
 class CustomerValidator(AbstractValidator[Customer]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Customer)
         self.rule_for_each(lambda x: x.Orders).set_validator(OrderValidator())
 ```
 
@@ -64,7 +64,7 @@ Alternatively, as of FluentValidation 8.5, you can also define rules for child c
 ```python
 class CustomerValidator(AbstractValidator[Customer]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Customer)
         self.rule_for_each(lambda x: x.Orders).child_rules(
             lambda order: order.rule_for(lambda x: x.Total).greater_than(0),
         )

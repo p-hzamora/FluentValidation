@@ -8,7 +8,7 @@ Imagine you have two validators defined as part of a single rule definition, a `
 ```python
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_for(lambda x: x.Surname).not_null().not_equal("foo")
 ```
 

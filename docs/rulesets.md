@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_set(
             "Names",
             lambda: (

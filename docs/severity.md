@@ -5,7 +5,7 @@ Given the following example that validates a `Person` object:
 ```python
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
 
         self.rule_for(lambda person: person.Surname).not_null()
         self.rule_for(lambda person: person.Forename).not_null()

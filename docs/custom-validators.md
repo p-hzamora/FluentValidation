@@ -23,7 +23,7 @@ To ensure our list property contains fewer than 10 items, we could do this:
 ```python
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
-        super().__init__()
+        super().__init__(Person)
         self.rule_for(lambda x: x.Pets).must(lambda list: len(list) < 10).with_message("The list must contain fewer than 10 items")
 
 ```

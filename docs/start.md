@@ -37,7 +37,7 @@ from fluent_validation import AbstractValidator
 
 class CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
-    super().__init__()
+    super().__init__(Customer)
     self.rule_for(lambda customer: customer.Surname).not_null()
 ```
 To run the validator, instantiate the validator object and call the `validate` method, passing in the object to validate.
@@ -85,7 +85,7 @@ from fluent_validation import AbstractValidator
 
 CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
-    super().__init__()
+    super().__init__(Customer)
     rule_for(lambda customer: customer.Surname).not_null().not_equal("foo")
 
 ```
@@ -154,7 +154,7 @@ class Address
 ```python
 class AddressValidator(AbstractValidator[Address]):
   def __init__(self):
-    super().__init__()
+    super().__init__(Address)
     self.rule_for(lambda address: address.Postcode).not_null()
     #etc
 ```
@@ -164,7 +164,7 @@ class AddressValidator(AbstractValidator[Address]):
 ```python
 class CustomerValidator(AbstractValidator[Customer]):
   def __init__(self):
-    super().__init__()
+    super().__init__(Customer)
     self.rule_for(lambda customer: customer.Name).not_null()
     rule_for(lambda customer: customer.Address).set_validator(AddressValidator())
 ```

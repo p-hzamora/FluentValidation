@@ -97,7 +97,7 @@ def BeAValidPostcode(postcode:str)->bool:
 
 class CustomerValidator(AbstractValidator[Customer]):
   def __init__(self)-> None:
-    super().__init__()
+    super().__init__(Customer)
     self.rule_for(lambda x: x.Surname).not_empty()
     self.rule_for(lambda x: x.Forename).not_empty().with_message("Please specify a first name")
     self.rule_for(lambda x: x.Discount).not_equal(0).when(lambda x: x.HasDiscount)

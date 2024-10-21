@@ -16,7 +16,13 @@ class RulesetChildRulesValidator(AbstractValidator[Person]):
     def __init__(self) -> None:
         super().__init__(Person)
         self.rule_set(
-            "testing", lambda: (self.rule_for(lambda a: a.Surname).not_empty(), self.rule_for_each(lambda a: a.Orders).child_rules(lambda child: child.rule_for(lambda o: o.ProductName).not_empty()))
+            "testing",
+            lambda: (
+                self.rule_for(lambda a: a.Surname).not_empty(),
+                self.rule_for_each(lambda a: a.Orders).child_rules(
+                    lambda child: child.rule_for(lambda o: o.ProductName).not_empty(),
+                ),
+            ),
         )
 
 

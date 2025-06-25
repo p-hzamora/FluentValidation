@@ -19,6 +19,9 @@ class CultureInfo:
             cls.CurrentUICulture, _ = locale.getlocale()
         elif not CultureInfo.CurrentUICulture:
             cls.CurrentUICulture = current_ui_Culture
+
+        if "_" in cls.CurrentUICulture:
+            cls.CurrentUICulture = cls.CurrentUICulture.replace('_',"-")
         return object.__new__(cls)
 
 

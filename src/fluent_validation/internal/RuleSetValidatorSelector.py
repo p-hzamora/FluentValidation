@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Callable, Iterable, override, TYPE_CHECKING
+from typing import Callable, ClassVar, Iterable, override, TYPE_CHECKING
 from fluent_validation.IValidationRule import IValidationRule
 from fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from fluent_validation.enums import StringComparer
@@ -16,8 +16,8 @@ def get_or_add[T](dictionary: dict, key: str, factory: Callable[..., T]) -> set:
 
 # TODOL: Check how to implement 'case insensitive'. Currently it's case sensitive
 class RulesetValidatorSelector(IValidatorSelector):
-    DefaultRuleSetName: str = "default"
-    WildcardRuleSetName: str = "*"
+    DefaultRuleSetName: ClassVar[str] = "default"
+    WildcardRuleSetName: ClassVar[str] = "*"
 
     DefaultRuleSetNameInArray: list[str] = [DefaultRuleSetName]
 

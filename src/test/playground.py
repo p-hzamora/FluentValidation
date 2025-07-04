@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
@@ -6,7 +7,7 @@ from typing import Optional
 
 sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop())
 
-from dataclasses import dataclass  # noqa: E402
+from pydantic import BaseModel
 from fluent_validation.abstract_validator import AbstractValidator  # noqa: E402
 from fluent_validation.enums import CascadeMode, Severity  # noqa: E402
 from fluent_validation import IRuleBuilder, IRuleBuilderOptions
@@ -20,13 +21,13 @@ class RegexPattern:
 
 
 @dataclass
-class Orders:
+class Orders():
     id: Optional[int] = None
-    name: str = None
+    name: Optional[str] = None
     date: Optional[datetime] = None
     is_free: bool = False
-    price: Decimal = 200
-    credit_card: str = None
+    price: Decimal = Decimal("200")
+    credit_card: Optional[str] = None
 
 
 class OrdersValidator(AbstractValidator[Orders]):
@@ -40,19 +41,22 @@ class OrdersValidator(AbstractValidator[Orders]):
         self.rule_for(lambda o: o.credit_card).not_null().WithErrorCode("Notull").not_empty().WithErrorCode("Empty").with_severity(Severity.Info).credit_card().with_severity(Severity.Warning)
 
 
-@dataclass
-class Person:
-    name: str = None
-    dni: str = None
-    email: str = None
-    age: int = None
-    deadline: datetime = None
-    start_date: datetime = None
-    person_id: int = None
-    min_age: int = None
-    max_age: int = None
-    invoice: int | float | Decimal = None
-    orders: list[Orders] = None
+
+
+class Person(BaseModel):
+    name: Optional[str] = None
+    dni: Optional[str] = None
+    email: Optional[str] = None
+    age: Optional[int] = None
+    deadline: Optional[datetime] = None
+    start_date: Optional[datetime] = None
+    Surname: Optional[str] = None
+    Forename: Optional[str] = None
+    person_id: Optional[int] = None
+    min_age: Optional[int] = None
+    max_age: Optional[int] = None
+    invoice: Optional[int | float | Decimal] = None
+    orders: Optional[list[Orders]] = None
 
 
 class PersonValidator(AbstractValidator[Person]):
@@ -123,15 +127,15 @@ print("OK")
 
 
 # Custom Validators
-@dataclass
-class Pet:
+
+class Pets(BaseModel):
     age: Optional[int] = None
     name: Optional[str] = None
 
 
 class Person:
-    def __init__(self, pet: Optional[list[Pet]] = None):
-        self.Pets: list[Pet] = pet if pet is not None else []
+    def __init__(self, pets: Optional[list[Pets]] = None):
+        self.pets: list[Pets] = pets if pets is not None else []
 
 
 class MyCustomValidators:
@@ -149,22 +153,22 @@ class MyCustomValidators:
 class PersonValidator(AbstractValidator[Person], MyCustomValidators):
     def __init__(self) -> None:
         super().__init__(Person)
-        self.rule_for(lambda x: x.Pets).ListMustContainFewerThan(10).must(lambda x: len(x) == 10).with_severity(Severity.Warning)
+        self.rule_for(lambda x: x.pets).ListMustContainFewerThan(10).must(lambda x: len(x) == 10).with_severity(Severity.Warning)
 
 
 person = Person(
     [
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
-        Pet(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
+        Pets(),
     ]
 )
 validator = PersonValidator().validate_and_throw(person)

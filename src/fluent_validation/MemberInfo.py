@@ -22,8 +22,9 @@ class MemberInfo:
 
         return lambda_var if not nested_name else nested_name[-1]
 
-    def get_type_hint(self, type_model: Type) -> Type[Any]:
-        current_type_hints: dict[str, Any] = get_type_hints(type_model.__init__)
+    def get_type_hint(self, type_model: Type) -> Type[Any]: 
+
+        current_type_hints: dict[str, Any] = get_type_hints(type_model.__init__) | get_type_hints(type_model) if hasattr(type_model,"__annotations__") else {}
 
         if not self._lambda_vars:
             return None

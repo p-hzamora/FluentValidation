@@ -75,14 +75,7 @@ There is also an overload of `WithName` that accepts a lambda expression in a si
 Property name resolution is also pluggable. By default, the name of the property extracted from the `MemberExpression` passed to `rule_for`. If you want to change this logic, you can set the `DisplayNameResolver` property on the `ValidatorOptions` class:
 
 ```python
-ValidatorOptions.Global.DisplayNameResolver = (type, member, expression) => 
-{
-  if(member is not None) 
-  {
-     return member.Name + "Foo"
-  }
-  return null
-}
+ValidatorOptions.Global.DisplayNameResolver = lambda type_, member, expression:f"{member.Name}Foo" if member is not None else None
 ```
 
 This is not a realistic example as it changes all properties to have the suffix `Foo`, but hopefully illustrates the point.

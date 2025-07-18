@@ -23,7 +23,16 @@ class MemberInfo:
         return lambda_var if not nested_name else nested_name[-1]
 
     def get_type_hint(self, type_model: Type) -> Type[Any]:
-        current_type_hints: dict[str, Any] = get_type_hints(type_model.__init__)
+        def get_types(obj: Any):
+
+            init_types = get_type_hints(obj.__init__) if hasattr(obj, "__init__") else {}
+            annotations_types = obj.__annotations__ if hasattr(obj, "__annotations__") else {}
+
+            return init_types if len(init_types) > len(annotations_types) else annotations_types
+
+        current_type_hints: dict[str, Any] = get_types(type_model)
+
+
 
         if not self._lambda_vars:
             return None
@@ -48,7 +57,7 @@ class MemberInfo:
                 return var_type_hint
 
             current_instance_var = self.get_args(var_type_hint)
-            current_type_hints = get_type_hints(current_instance_var.__init__)
+            current_type_hints = get_types(current_instance_var)
         return current_instance_var
 
     @staticmethod

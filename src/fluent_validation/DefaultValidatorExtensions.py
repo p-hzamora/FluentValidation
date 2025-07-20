@@ -20,6 +20,7 @@ from fluent_validation.validators.EmailValidator import (
 )
 
 if TYPE_CHECKING:
+    from fluent_validation.DefaultValidatorOptions import IRuleBuilderOptions
     from fluent_validation.InlineValidator import InlineValidator
     from fluent_validation.syntax import IRuleBuilder
 
@@ -55,19 +56,19 @@ class DefaultValidatorExtensions[T, TProperty]:
     ruleBuilder actua como self, ya que es la instancia padre que se le pasa a traves de la herencia
     """
 
-    def not_null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
+    def not_null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(NotNullValidator[T, TProperty]())
 
-    def null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]:
+    def null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(NullValidator[T, TProperty]())
 
-    def matches(ruleBuilder: IRuleBuilder[T, TProperty], pattern: str) -> IRuleBuilder[T, TProperty]:
+    def matches(ruleBuilder: IRuleBuilder[T, TProperty], pattern: str) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(RegularExpressionValidator[T](pattern))
 
-    def email_address(ruleBuilder: IRuleBuilder[T, str], mode: EmailValidationMode = EmailValidationMode.AspNetCoreCompatible) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions<T, string> :
+    def email_address(ruleBuilder: IRuleBuilder[T, str], mode: EmailValidationMode = EmailValidationMode.AspNetCoreCompatible) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions<T, string> :
         """
-	    Defines an email validator on the current rule builder for string properties.
-	    Validation will fail if the value returned by the lambda is not a valid email address.
+            Defines an email validator on the current rule builder for string properties.
+            Validation will fail if the value returned by the lambda is not a valid email address.
 
         :param rule_builder: The rule builder on which the validator should be defined.
         :type rule_builder: IRuleBuilder
@@ -79,47 +80,47 @@ class DefaultValidatorExtensions[T, TProperty]:
 
         :raises ValueError: If an invalid mode is passed.
         :type T: Type of object being validated.
-        
+
         """
 
         validator = AspNetCoreCompatibleEmailValidator[T]() if mode == EmailValidationMode.AspNetCoreCompatible else EmailValidator[T]()
         return ruleBuilder.set_validator(validator)
 
     @overload
-    def length(ruleBuilder: IRuleBuilder[T, TProperty], min: Callable[[T], None], max: Callable[[T], None]) -> IRuleBuilder[T, TProperty]: ...
+    def length(ruleBuilder: IRuleBuilder[T, TProperty], min: Callable[[T], None], max: Callable[[T], None]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @overload
-    def length(ruleBuilder: IRuleBuilder[T, TProperty], min: int, max: int) -> IRuleBuilder[T, TProperty]: ...
+    def length(ruleBuilder: IRuleBuilder[T, TProperty], min: int, max: int) -> IRuleBuilderOptions[T, TProperty]: ...
 
-    def length(ruleBuilder: IRuleBuilder[T, TProperty], min: int | T, max: int | T) -> IRuleBuilder[T, TProperty]:
+    def length(ruleBuilder: IRuleBuilder[T, TProperty], min: int | T, max: int | T) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(LengthValidator[T](min, max))
 
-    def exact_length(ruleBuilder: IRuleBuilder[T, TProperty], exactLength: int) -> IRuleBuilder[T, TProperty]:
+    def exact_length(ruleBuilder: IRuleBuilder[T, TProperty], exactLength: int) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(ExactLengthValidator[T](exactLength))
 
-    def max_length(ruleBuilder: IRuleBuilder[T, TProperty], max_length: int) -> IRuleBuilder[T, TProperty]:
+    def max_length(ruleBuilder: IRuleBuilder[T, TProperty], max_length: int) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(MaximumLengthValidator[T](max_length))
 
-    def min_length(ruleBuilder: IRuleBuilder[T, TProperty], min_length: int) -> IRuleBuilder[T, TProperty]:
+    def min_length(ruleBuilder: IRuleBuilder[T, TProperty], min_length: int) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(MinimumLengthValidator[T](min_length))
 
-    def not_empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
+    def not_empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(NotEmptyValidator[T, TProperty]())
 
-    def empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:
+    def empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(EmptyValidator[T, TProperty]())
 
     # region less_than
     @overload
-    def less_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...
+    def less_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @overload
-    def less_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]: ...
+    def less_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def less_than(
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
-    ) -> IRuleBuilder[T, TProperty]:
+    ) -> IRuleBuilderOptions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -132,15 +133,15 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
     # region less_than_or_equal_to
     @overload
-    def less_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...
+    def less_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @overload
-    def less_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]: ...
+    def less_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def less_than_or_equal_to(
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
-    ) -> IRuleBuilder[T, TProperty]:
+    ) -> IRuleBuilderOptions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -152,21 +153,15 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
     # region equal
     @overload
-    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
-    ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None
-    ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions[T, TProperty]:
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]: ...
 
-    def equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
-    ) -> IRuleBuilder[T, TProperty]:  # return IRuleBuilderOptions[T,TProperty]
+    def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]:
         expression = toCompare
         if not comparer:
             comparer = lambda x, y: x == y  # noqa: E731
@@ -190,17 +185,17 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     # region must
     @overload
-    def must(ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[TProperty], bool]) -> IRuleBuilder[T, TProperty]: ...
+    def must(ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[TProperty], bool]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @overload
-    def must(ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[T, TProperty], bool]) -> IRuleBuilder[T, TProperty]: ...
+    def must(ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[T, TProperty], bool]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @overload
-    def must(ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[T, TProperty, ValidationContext[T]], bool]) -> IRuleBuilder[T, TProperty]: ...
+    def must(ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[T, TProperty, ValidationContext[T]], bool]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def must(
         ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[TProperty], bool] | Callable[[T, TProperty], bool] | Callable[[T, TProperty, ValidationContext[T]], bool]
-    ) -> IRuleBuilder[T, TProperty]:
+    ) -> IRuleBuilderOptions[T, TProperty]:
         num_args = len(inspect.signature(predicate).parameters)
 
         if num_args == 1:
@@ -222,21 +217,15 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
     # region not_equal
     @overload
-    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def not_equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
-    ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions
+    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def not_equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None
-    ) -> IRuleBuilder[T, TProperty]: ...  # return IRuleBuilderOptions[T, TProperty]:
+    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]: ...
 
-    def not_equal(
-        ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None
-    ) -> IRuleBuilder[T, TProperty]:  # return IRuleBuilderOptions[T,TProperty]
+    def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]:
         expression = toCompare
         if not comparer:
             comparer = lambda x, y: x == y  # noqa: E731
@@ -259,15 +248,15 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
     # region greater_than
     @overload
-    def greater_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...
+    def greater_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @overload
-    def greater_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]: ...
+    def greater_than(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def greater_than(
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
-    ) -> IRuleBuilder[T, TProperty]:
+    ) -> IRuleBuilderOptions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -279,15 +268,15 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
     # region GreaterThanOrEqual
     @overload
-    def greater_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilder[T, TProperty]: ...
+    def greater_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...
 
     @overload
-    def greater_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]: ...
+    def greater_than_or_equal_to(ruleBuilder: IRuleBuilder[T, TProperty], valueToCompare: Callable[[T], TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def greater_than_or_equal_to(
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
-    ) -> IRuleBuilder[T, TProperty]:
+    ) -> IRuleBuilderOptions[T, TProperty]:
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -299,42 +288,44 @@ class DefaultValidatorExtensions[T, TProperty]:
     # endregion
 
     @overload
-    def inclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
+    def inclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
     @overload
     def inclusive_between(
         ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]]
-    ) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
+    ) -> IRuleBuilderOptions[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
-    def inclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilder[T, TProperty]:
+    def inclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilderOptions[T, TProperty]:
         if comparer is None:
             return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween(from_, to))
         return ruleBuilder.set_validator(InclusiveBetweenValidator[T, TProperty](from_, to, comparer))
 
     @overload
-    def exclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
+    def exclusive_between(ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty) -> IRuleBuilderOptions[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty]:
     @overload
     def exclusive_between(
         ruleBuilder: IRuleBuilder[T, TProperty], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]]
-    ) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
+    ) -> IRuleBuilderOptions[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
-    def exclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilder[T, TProperty]:
+    def exclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilderOptions[T, TProperty]:
         if comparer is None:
             return ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween(from_, to))
         return ruleBuilder.set_validator(ExclusiveBetweenValidator[T, TProperty](from_, to, comparer))
 
-    def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions[T, str]
+    def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions[T, str]
         return ruleBuilder.set_validator(CreditCardValidator[T]())
 
-    def is_in_enum(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
+    def is_in_enum(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
         return ruleBuilder.set_validator(EnumValidator[T, TProperty](ruleBuilder.Rule.TypeToValidate))
 
     # region precision_scale
     @overload
-    def precision_scale(ruleBuilder: IRuleBuilder[T, Decimal], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilder[T, Decimal]: ...  # IRuleBuilderOptions<T, Decimal>: ...
+    def precision_scale(ruleBuilder: IRuleBuilder[T, Decimal], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilderOptions[T, Decimal]: ...  # IRuleBuilderOptions<T, Decimal>: ...
     @overload
-    def precision_scale(ruleBuilder: IRuleBuilder[T, None], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilder[T, None]: ...  # IRuleBuilderOptions<T, None>: ...
+    def precision_scale(ruleBuilder: IRuleBuilder[T, None], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilderOptions[T, None]: ...  # IRuleBuilderOptions<T, None>: ...
 
-    def precision_scale[TPrecision](ruleBuilder: IRuleBuilder[T, TPrecision], precision: int, scale: int, ignoreTrailingZeros: bool) -> IRuleBuilder[T, TPrecision]:  # IRuleBuilderOptions<T, Decimal?>
+    def precision_scale[TPrecision](
+        ruleBuilder: IRuleBuilder[T, TPrecision], precision: int, scale: int, ignoreTrailingZeros: bool
+    ) -> IRuleBuilderOptions[T, TPrecision]:  # IRuleBuilderOptions<T, Decimal?>
         return ruleBuilder.set_validator(ScalePrecisionValidator[T](scale, precision, ignoreTrailingZeros))
 
     # endregion
@@ -376,13 +367,13 @@ class DefaultValidatorExtensions[T, TProperty]:
     # 		return ruleBuilder.set_validator(innerValidator)
     # 	}
 
-    def is_enum_name(ruleBuilder: IRuleBuilder[T, str], enumType: Type, caseSensitive: True = True) -> IRuleBuilder[T, str]:  # IRuleBuilderOptions<T, str>:
+    def is_enum_name(ruleBuilder: IRuleBuilder[T, str], enumType: Type, caseSensitive: True = True) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions<T, str>:
         return ruleBuilder.set_validator(StringEnumValidator[T](enumType, caseSensitive))
 
     def child_rules[T, TProperty](
         ruleBuilder: IRuleBuilder[T, TProperty],
         action: None | Callable[[InlineValidator[TProperty], None]],
-    ) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
+    ) -> IRuleBuilderOptions[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
         from fluent_validation.internal.ChildRulesContainer import ChildRulesContainer
 
         if action is None:

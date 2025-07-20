@@ -25,7 +25,7 @@ from fluent_validation.internal.ExtensionInternal import ExtensionsInternal
 
 class DefaultValidatorOptions[T, TProperty]:
     @overload
-    def configure(ruleBuilder: IRuleBuilderInitial[T, TProperty], configurator: Callable[[IValidationRule[T, TProperty]], None]) -> IRuleBuilderOptions[T, TProperty]:
+    def configure(ruleBuilder: IRuleBuilderInitial[T, TProperty], configurator: Callable[[IValidationRule[T, TProperty]], None]) -> IRuleBuilderInitial[T, TProperty]:
         """
         Configures the rule.
 

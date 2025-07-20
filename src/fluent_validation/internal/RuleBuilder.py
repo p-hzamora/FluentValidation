@@ -1,12 +1,10 @@
 from __future__ import annotations
 import inspect
-from typing import Callable, TYPE_CHECKING
+from typing import Callable, TYPE_CHECKING, overload
 
-from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
 from fluent_validation.IValidator import IValidator
 from fluent_validation.validators.ChildValidatorAdaptor import ChildValidatorAdaptor
 
-from fluent_validation.IValidationRule import IValidationRule
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 from fluent_validation.syntax import IRuleBuilderInternal, IRuleBuilderOptions, IRuleBuilderInitial, IRuleBuilderInitialCollection, IRuleBuilderOptionsConditions
 
@@ -23,7 +21,7 @@ class RuleBuilder[T, TProperty](
         self.parent_validator: AbstractValidator[T] = parent
 
     @property
-    def Rule(self) -> IValidationRule[T, TProperty]:
+    def Rule(self) -> IValidationRuleInternal[T, TProperty]:
         return self._rule
 
     @property
@@ -45,6 +43,29 @@ class RuleBuilder[T, TProperty](
 
         else:
             raise AttributeError(validator)
+
+    @overload
+    def DependentRules(self: IRuleBuilderOptions, action: Callable) -> IRuleBuilderOptions[T, TProperty]: ...
+    @overload
+    def DependentRulesConditions(self: IRuleBuilderOptionsConditions, action: Callable) -> IRuleBuilderOptionsConditions[T, TProperty]: ...
+
+    def DependentRulesConditions(self, action: Callable) -> IRuleBuilderOptionsConditions[T, TProperty]:
+        self._DependentRulesInternal(action)
+        return self
+
+    def _DependentRulesInternal(self, action: Callable[..., None]):
+        dependencyContainer: list[IValidationRuleInternal[T]] = []
+
+        # Capture any rules added to the parent validator inside this delegate.
+        with self.ParentValidator.Rules.Capture(dependencyContainer.append):
+            action()
+
+        if self.Rule.RuleSets is not None and len(self.Rule.RuleSets) > 0:
+            for dependentRule in dependencyContainer:
+                if dependentRule.RuleSets is None:
+                    dependentRule.RuleSets = self.Rule.RuleSets
+
+        self.Rule.AddDependentRules(dependencyContainer)
 
     def set_validator_IPropertyValidator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
         self.Rule.AddValidator(validator)

@@ -28,7 +28,7 @@ class IRuleBuilderInternal[T, TProperty](IRuleBuilderInternal_one_generic[T]):
 
 
 class IRuleBuilder[T, TProperty](IRuleBuilderInternal[T, TProperty], DefaultValidatorExtensions[T, TProperty], DefaultValidatorOptions[T, TProperty]):
-    def __getattr__(self, __name: str) -> Callable[..., IRuleBuilder[T, TProperty]]:
+    def __getattr__(self, __name: str) -> Callable[..., IRuleBuilderOptions[T, TProperty]]:
         """
         Unlike C#, Python does not have extension methods, so we have to hard-code the custom method directly into 'IRuleBuilder' class in order to use it.
 

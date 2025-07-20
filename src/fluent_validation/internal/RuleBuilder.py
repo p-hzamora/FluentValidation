@@ -8,13 +8,16 @@ from fluent_validation.validators.ChildValidatorAdaptor import ChildValidatorAda
 
 from fluent_validation.IValidationRule import IValidationRule
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
-from fluent_validation.syntax import IRuleBuilder, IRuleBuilderInternal, IRuleBuilderOptions
+from fluent_validation.syntax import IRuleBuilderInternal, IRuleBuilderOptions, IRuleBuilderInitial, IRuleBuilderInitialCollection, IRuleBuilderOptionsConditions
 
 if TYPE_CHECKING:
+    from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
     from fluent_validation.abstract_validator import AbstractValidator
 
 
-class RuleBuilder[T, TProperty](IRuleBuilder[T, TProperty], IRuleBuilderInternal):  # IRuleBuilderOptions does not implemented due to I don't know what it does
+class RuleBuilder[T, TProperty](
+    IRuleBuilderOptions[T, TProperty], IRuleBuilderInitial[T, TProperty], IRuleBuilderInitialCollection[T, TProperty], IRuleBuilderOptionsConditions[T, TProperty], IRuleBuilderInternal[T, TProperty]
+):
     def __init__(self, rule: IValidationRuleInternal[T, TProperty], parent: AbstractValidator[T]):
         self._rule: IValidationRuleInternal[T, TProperty] = rule
         self.parent_validator: AbstractValidator[T] = parent

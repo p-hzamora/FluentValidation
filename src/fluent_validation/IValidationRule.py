@@ -106,3 +106,6 @@ class IValidationRule[T, TProperty](IValidationRule_one_arg[T]):
     @MessageBuilder.setter
     @abstractmethod
     def MessageBuilder(self, value: Callable[[IMessageBuilderContext[T, TProperty]], str]) -> None: ...
+
+    if TYPE_CHECKING:
+        def GetPropertyValue(self, prop_: T) -> TProperty: ...

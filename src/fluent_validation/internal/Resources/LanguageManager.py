@@ -5,7 +5,24 @@ from .Lenguages import *  # noqa: F403
 
 
 class LanguageManager(ILanguageManager):
-    # readonly ConcurrentDictionary<string, string> _languages = new ConcurrentDictionary<string, string>();
+    """Allows the default error message translations to be managed."""
+
+    _enabled: bool
+    _languages: dict[str, str]
+
+    def __init__(self):
+        self._languages = {}
+        self._enabled = True
+        self._culture: Optional[CultureInfo] = None
+
+    @property
+    def Enabled(self) -> bool:
+        return self._enabled
+
+    @Enabled.setter
+    def Enabled(self, value: bool) -> None:
+        self._enabled = value
+
     @staticmethod
     def GetTranslation(culture: str, key: str) -> Optional[str]:
         dicc = {
@@ -68,18 +85,66 @@ class LanguageManager(ILanguageManager):
 
     @property
     @override
-    def Enabled(self) -> bool:
-        return True
+    def Culture(self) -> Optional[CultureInfo]:
+        return self._culture
 
-    @property
-    @override
-    def Culture(self) -> CultureInfo:
-        if not CultureInfo.CurrentUICulture:
-            return CultureInfo().CurrentUICulture
-        return CultureInfo.CurrentUICulture
+    @Culture.setter
+    def Culture(self, value: CultureInfo) -> None:
+        self._culture = value
+
+    def Clear(self) -> None:
+        """Removes all languages except the default."""
+        self._languages.clear()
+
+    def AddTranslation(self, culture: str, key: str, message: str) -> None:
+        """Adds a custom translation for a specific culture and key."""
+
+        if culture == "":
+            raise ValueError(f"'{culture}' must not be empty")
+        if key == "":
+            raise ValueError(f"'{key}' must not be empty")
+        if message == "":
+            raise ValueError(f"'{message}' must not be empty")
+        
+
+        self._languages[f"{culture}:{key}"] = message
 
     @override
-    def GetString(self, key: str, culture: CultureInfo = None) -> Optional[str]:
-        if culture is None:
-            self.Culture
-        return self.GetTranslation(self.Culture, key)
+    def GetString(self, key: str, culture: Optional[CultureInfo] = None) -> str:
+        """
+            Gets a translated string based on its key. If the culture is specific and it isn't registered, we try the neutral culture instead.
+            If no matching culture is found  to be registered we use English.
+
+            Args:
+                key: The key
+                culture: The culture to translate into
+
+            Return:
+                str
+
+        """
+        if self._enabled:
+
+            if culture is None:
+                if self.Culture is not None:
+                    culture = self.Culture
+                else:
+                    culture =CultureInfo.CurrentUICulture()
+            
+            currentCultureKey: str = culture.Name + ":" + key
+
+            value = self._languages.get(currentCultureKey, self.GetTranslation(culture.Name, key))
+            currentCulture = culture
+            while value is None and currentCulture.Parent != CultureInfo.InvariantCulture():
+                currentCulture = currentCulture.Parent
+                parentCultureKey: str = currentCulture.Name + ":" + key
+                value = self._languages.get(parentCultureKey, self.GetTranslation(currentCulture.Name, key))
+
+            if value is None and culture.Name != EnglishLanguage.Culture:
+                # If it couldn't be found, try the fallback English (if we haven't tried it already).
+                if not culture.IsNeutralCulture and culture.Parent.Name != EnglishLanguage.Culture:
+                    value = self._languages.get(EnglishLanguage.Culture + ":" + key, EnglishLanguage.GetTranslation(key))
+        else:
+            value = self._languages.get(EnglishLanguage.Culture + ":" + key, EnglishLanguage.GetTranslation(key))
+
+        return value if value is not None else ""

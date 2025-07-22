@@ -109,3 +109,49 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         #     for dependentRules in self.DependentRules:
         #         await dependentRules.ValidateAsync(context,useAsync)
         return None
+
+    def ValidateSync(self, context: ValidationContext[T]) -> None:
+        """Synchronous version of 'ValidateAsync' to avoid event loop deadlocks."""
+        displayName: None | str = self.get_display_name(context)
+
+        if self.PropertyName is None and displayName is None:
+            displayName = ""
+
+        PropertyPath: str = context.PropertyChain.BuildPropertyPath(displayName if not self.PropertyName else self.PropertyName)
+        if not context.Selector.CanExecute(self, PropertyPath, context):
+            return None
+
+        if self.Condition:
+            if not self.Condition(context):
+                return None
+
+        first = True
+        propValue = None
+        cascade = self.CascadeMode
+        total_failures = len(context.Failures)
+
+        context.InitializeForPropertyValidator(PropertyPath, self._displayNameFunc, self.PropertyName)
+
+        for component in self.Components:
+            context.MessageFormatter.Reset()
+
+            if not component.InvokeCondition(context):
+                continue
+
+            if first:
+                first = False
+                try:
+                    propValue = self.PropertyFunc(context.instance_to_validate)
+                except TypeError:
+                    raise TypeError(f"TypeError occurred when executing rule for '{self.Expression.lambda_to_string}'. If this property can be None you should add a null check using a when condition")
+
+            valid: bool = component.ValidateSync(context, propValue)
+            if not valid:
+                self.PrepareMessageFormatterForValidationError(context, propValue)
+                failure = self.CreateValidationError(context, propValue, component)
+                context.Failures.append(failure)
+
+            if len(context.Failures) > total_failures and cascade == CascadeMode.Stop:
+                break
+
+        return None

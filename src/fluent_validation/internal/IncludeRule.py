@@ -65,3 +65,15 @@ class IncludeRule[T](PropertyRule[T, T], IIncludeRule):
 
         if shouldAddStateKey:
             context.RootContextData.pop(MemberNameValidatorSelector.DisableCascadeKey)
+
+    def ValidateSync(self, context: ValidationContext[T]) -> None:
+        """Synchronous version of ValidateAsync to avoid event loop deadlocks."""
+        shouldAddStateKey: bool = MemberNameValidatorSelector.DisableCascadeKey not in context.RootContextData
+
+        if shouldAddStateKey:
+            context.RootContextData[MemberNameValidatorSelector.DisableCascadeKey] = True
+
+        super().ValidateSync(context)
+
+        if shouldAddStateKey:
+            context.RootContextData.pop(MemberNameValidatorSelector.DisableCascadeKey)

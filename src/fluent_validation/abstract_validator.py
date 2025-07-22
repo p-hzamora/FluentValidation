@@ -86,38 +86,8 @@ class AbstractValidator[T](IValidator[T]):
         return self.__validate__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
 
     def __validate__(self, context: ValidationContext[T]) -> ValidationResult:
-        # FIXME [ ]: It's not the correct way to control the nested event loop because I get an error in several tests like 'test_Should_not_scramble_property_name_when_using_collection_validators_several_levels_deep'
-        def run_coroutine_sync(coroutine: Coroutine[Any, Any, T], timeout: float = 30) -> T:
-            def run_in_new_loop():
-                new_loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(new_loop)
-                try:
-                    return new_loop.run_until_complete(coroutine)
-                finally:
-                    new_loop.close()
-
-            try:
-                loop = asyncio.get_running_loop()
-            except RuntimeError:
-                return asyncio.run(coroutine)
-
-            if threading.current_thread() is threading.main_thread():
-                if not loop.is_running():
-                    return loop.run_until_complete(coroutine)
-                else:
-                    with ThreadPoolExecutor() as pool:
-                        future = pool.submit(run_in_new_loop)
-                        return future.result(timeout=timeout)
-            else:
-                return asyncio.run_coroutine_threadsafe(coroutine, loop).result()
-
-        try:
-            completedValueTask = self.ValidateInternalAsync(context, False)
-            return run_coroutine_sync(completedValueTask)
-
-        except RuntimeError:
-            wasInvokeByMvc: bool = "InvokedByMvc" in context.RootContextData
-            raise AsyncValidatorInvokedSynchronouslyException(type(self), wasInvokeByMvc)
+        # Use synchronous validation to avoid async deadlocks in nested collections
+        return self.ValidateSync(context)
 
     @overload
     async def ValidateAsync(self, instance: IValidationContext) -> Awaitable[ValidationResult]: ...
@@ -160,6 +130,49 @@ class AbstractValidator[T](IValidator[T]):
         return result
 
         # COMMENT: used in private async ValueTask<ValidationResult> ValidateInternalAsync(ValidationContext<T> context, bool useAsync, CancellationToken cancellation) {...}
+
+
+
+    @overload
+    def ValidateSync(self, instance: IValidationContext) -> ValidationResult: ...
+    @overload
+    def ValidateSync(self, instance: T) -> ValidationResult: ...
+
+    @override
+    def ValidateSync(self, instance):
+        if isinstance(instance, IValidationContext):
+            return self.__validate_sync__(ValidationContext[T].GetFromNonGenericContext(instance))
+
+        return self.__validate_sync__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
+
+    def __validate_sync__(self, instance: ValidationContext[T]):
+        instance.IsAsync = True
+        return self.ValidateInternalSync(instance)
+
+    def ValidateInternalSync(self, context: ValidationContext[T]) -> ValidationResult:
+        """Synchronous version of ValidateInternalAsync to avoid event loop deadlocks in nested validations."""
+        result: ValidationResult = ValidationResult(errors=context.Failures)
+        shouldContinue: bool = self.PreValidate(context, result)
+
+        if not shouldContinue:
+            if not result.is_valid and context.ThrowOnFailures:
+                self.RaiseValidationException(context, result)
+            return result
+
+        count: int = len(self._rules)
+        for i in range(count):
+            totalFailures = len(context.Failures)
+            # COMMENT: Call synchronous validation instead of async
+            self._rules[i].ValidateSync(context)
+
+            if self.ClassLevelCascadeMode == CascadeMode.Stop and len(result.errors) > totalFailures:
+                break
+
+        self.SetExecutedRuleSets(result, context)
+
+        if not result.is_valid and context.ThrowOnFailures:
+            self.RaiseValidationException(context, result)
+        return result
 
     def SetExecutedRuleSets(self, result: ValidationResult, context: ValidationContext[T]) -> None:
         obj = context.RootContextData.get("_FV_RuleSetsExecuted", None)

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, Callable, Type, TYPE_CHECKING
+from typing import Any, Callable, Optional, Type, TYPE_CHECKING
 from fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
 from fluent_validation.ICollectionRule import ICollectionRule
 from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
@@ -187,6 +187,101 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
                         return await AfterValidate()  # 🙃
                 context.RestoreState()
         return await AfterValidate()
+
+    def ValidateSync(self, context: ValidationContext[T]) -> None:
+        """Synchronous version of 'ValidateAsync' to avoid event loop deadlocks in nested collections."""
+
+        def AfterValidateSync():
+            if len(context.Failures) <= totalFailures and self.DependentRules is not None:
+                for dependentRule in self.DependentRules:
+                    dependentRule.ValidateSync(context)
+            return None
+
+        displayName: Optional[str] = self.get_display_name(context)
+
+        if self.PropertyName is None and displayName is None:
+            displayName = ""
+
+        propertyName: str = context.PropertyChain.BuildPropertyPath(displayName if not self.PropertyName else self.PropertyName)
+
+        if propertyName is None or propertyName == "":
+            propertyName = self.InferPropertyName(self.Expression)
+
+        if not context.Selector.CanExecute(self, propertyName, context):
+            return None
+
+        if self.Condition:
+            if not self.Condition(context):
+                return None
+
+        filteredValidators = self.GetValidatorsToExecuteSync(context)
+
+        if len(filteredValidators) == 0:
+            return None
+
+        cascade = self.CascadeMode
+
+        try:
+            collection: list[TElement] = self.PropertyFunc(context.instance_to_validate)
+        except TypeError:
+            raise TypeError(f"TypeError occurred when executing rule for '{self.Expression.lambda_to_string}'. If this property can be None you should add a null check using a when condition")
+
+        count: int = 0
+        totalFailures: int = len(context.Failures)
+
+        if collection is not None:
+            if propertyName is None or propertyName == "":
+                raise RuntimeError("Could not automatically determine the property name ")
+
+            for element in collection:
+                index: int = count
+                count += 1
+
+                if self.Filter is not None and not self.Filter(element):
+                    continue
+
+                indexer: str = str(index)
+                useDefaultIndexFormat: bool = True
+
+                if self.IndexBuilder is not None:
+                    indexer = self.IndexBuilder(context.instance_to_validate, collection, element, index)
+                    useDefaultIndexFormat = False
+
+                context.PrepareForChildCollectionValidator()
+                context.PropertyChain.Add(propertyName)
+                context.PropertyChain.AddIndexer(indexer, useDefaultIndexFormat)
+
+                valueToValidate = element
+                propertyPath = context.PropertyChain.ToString()
+                totalFailuresInner = len(context.Failures)
+                context.InitializeForPropertyValidator(propertyPath, self._displayNameFunc, self.PropertyName)
+
+                for component in filteredValidators:
+                    context.MessageFormatter.Reset()
+                    context.MessageFormatter.AppendArgument("CollectionIndex", index)
+
+                    valid: bool = component.ValidateSync(context, valueToValidate)
+
+                    if not valid:
+                        self.PrepareMessageFormatterForValidationError(context, valueToValidate)
+                        failure = self.CreateValidationError(context, valueToValidate, component)
+                        context.Failures.append(failure)
+
+                    if len(context.Failures) > totalFailuresInner and cascade == CascadeMode.Stop:
+                        context.RestoreState()
+                        return AfterValidateSync()
+                context.RestoreState()
+        return AfterValidateSync()
+
+    def GetValidatorsToExecuteSync(self, context: ValidationContext[T]) -> list[RuleComponent[T, TElement]]:
+        """Synchronous version of GetValidatorsToExecuteAsync."""
+        validators = self.Components.copy()
+
+        for component in self.Components:
+            if component.HasCondition:
+                if not component.InvokeCondition(context):
+                    validators.remove(component)
+        return validators
 
     def AddDependentRules(self, rules: list[IValidationRuleInternal[T]]) -> None:
         # TODOM: Checked if the translation is correct

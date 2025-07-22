@@ -215,6 +215,9 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
 
     # object IValidationRule<T>.GetPropertyValue(T instance) => PropertyFunc(instance);
 
+    def GetPropertyValue(self, instance: T) -> Any:
+        return self.PropertyFunc(instance)
+
     @staticmethod
     def PrepareMessageFormatterForValidationError(context: ValidationContext[T], value: TValue) -> None:
         context.MessageFormatter.AppendPropertyName(context.DisplayName)

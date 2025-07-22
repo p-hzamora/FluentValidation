@@ -1,28 +1,97 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 import locale
-from typing import overload
+import threading
+from typing import ClassVar, Optional, Protocol, overload
 
 from fluent_validation.internal.ExtensionInternal import ExtensionsInternal
 
 
+class CurrentThreadType(Protocol):
+    CurrentCulture: CultureInfo
+    CurrentUICulture: CultureInfo
+
+
+_thread_culture: CurrentThreadType = threading.local()
+
+HYPHEN = "-"
+
+
+def get_default_ui() -> str:
+    """Get the default UI culture from system locale"""
+    loc = locale.getlocale()[0] or "en-US"
+    return loc.replace("_", HYPHEN)
+
+
 class CultureInfo:
-    CurrentUICulture = None
+    """Python implementation of .NET CultureInfo class"""
+
+    # Class variables for cached instances
+    _current_ui_culture: ClassVar[Optional["CultureInfo"]] = None
+    _invariant_culture: ClassVar[Optional["CultureInfo"]] = None
 
     @overload
-    def __new__(cls) -> "CultureInfo": ...
+    def __init__(self): ...
 
     @overload
-    def __new__(cls, curent_ui_Culture) -> "CultureInfo": ...
+    def __init__(self, culture_name: str): ...
 
-    def __new__(cls, current_ui_Culture=None) -> "CultureInfo":
-        if current_ui_Culture is None:
-            cls.CurrentUICulture, _ = locale.getlocale()
-        elif not CultureInfo.CurrentUICulture:
-            cls.CurrentUICulture = current_ui_Culture
+    def __init__(self, culture_name: Optional[str] = None):
+        self._name = get_default_ui() if culture_name is None else culture_name
 
-        if "_" in cls.CurrentUICulture:
-            cls.CurrentUICulture = cls.CurrentUICulture.replace('_',"-")
-        return object.__new__(cls)
+    @property
+    def Name(self) -> str:
+        """Gets the culture name"""
+        return self._name
+
+    @property
+    def Parent(self) -> "CultureInfo":
+        """Gets the parent culture (language without region)"""
+        if HYPHEN in self.Name and self.Name:
+            parent_name = self.Name.split(HYPHEN)[:-1]
+
+            return CultureInfo("-".join(parent_name))
+
+        # If already neutral or empty, return invariant culture
+        return CultureInfo.InvariantCulture()
+
+    @property
+    def IsNeutralCulture(self) -> bool:
+        """True if no region specified (e.g. 'es' is neutral, 'es-MX' is not)"""
+        return HYPHEN not in self.Name and self.Name != ""
+
+    @classmethod
+    def CurrentUICulture(cls) -> "CultureInfo":
+        """Gets the current UI culture (cached)"""
+        if hasattr(_thread_culture, 'CurrentUICulture'):
+            return _thread_culture.CurrentUICulture
+        return CultureInfo(get_default_ui())
+
+    @classmethod
+    def set_current_ui_culture(cls, culture: "CultureInfo") -> None:
+        """Sets the current UI culture"""
+        cls._current_ui_culture = culture
+
+    @classmethod
+    def InvariantCulture(cls) -> "CultureInfo":
+        """Gets the invariant culture (cached)"""
+        if cls._invariant_culture is None:
+            cls._invariant_culture = CultureInfo("")
+        return cls._invariant_culture
+
+    def __eq__(self, other) -> bool:
+        """Check equality based on culture name"""
+        return isinstance(other, CultureInfo) and self.Name == other.Name
+
+    def __hash__(self) -> int:
+        """Make CultureInfo hashable"""
+        return hash(self.Name)
+
+    def __repr__(self) -> str:
+        return f"CultureInfo('{self.Name}')"
+
+    def __str__(self) -> str:
+        return self.Name
 
 
 class ILanguageManager(ABC, ExtensionsInternal):
@@ -34,5 +103,22 @@ class ILanguageManager(ABC, ExtensionsInternal):
     @abstractmethod
     def Culture(self) -> CultureInfo: ...
 
+    @overload
+    def GetString(self, key: str) -> str: ...
+    @overload
+    def GetString(self, key: str, culture: CultureInfo) -> str: ...
     @abstractmethod
-    def GetString(self, key: str, culture: CultureInfo = None): ...
+    def GetString(self, key: str, culture: Optional[CultureInfo] = None) -> str:
+        """
+        Gets a translated string based on its key. If the culture is specific and it isn't registered, we try the neutral culture instead.
+        If no matching culture is found  to be registered we use English.
+
+        Args:
+            key: The key
+            culture: The culture to translate into
+
+        Return:
+            str
+
+        """
+        ...

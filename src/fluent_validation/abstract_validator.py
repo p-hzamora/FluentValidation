@@ -1,8 +1,5 @@
 from __future__ import annotations
-import threading
-from typing import Any, Awaitable, Callable, Coroutine, Optional, Type, overload, override, TYPE_CHECKING
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
+from typing import Awaitable, Callable, Optional, Type, overload, override, TYPE_CHECKING
 import re
 
 from fluent_validation.internal.CollectionPropertyRule import CollectionPropertyRule
@@ -14,9 +11,9 @@ if TYPE_CHECKING:
     from fluent_validation.internal.ValidationStrategy import ValidationStrategy
     from .syntax import IConditionBuilder, IRuleBuilder
     from fluent_validation.IValidationRule import IValidationRule
+    from fluent_validation.DefaultValidatorOptions import IRuleBuilderInitial
 
 from fluent_validation.ValidationException import ValidationException
-from fluent_validation.AsyncValidatorInvokedSynchronouslyException import AsyncValidatorInvokedSynchronouslyException
 from fluent_validation.internal.TrackingCollection import TrackingCollection
 from fluent_validation.IValidator import IValidator
 from fluent_validation.results.ValidationResult import ValidationResult
@@ -187,7 +184,7 @@ class AbstractValidator[T](IValidator[T]):
     def CanValidateInstancesOfType(self, _type: Type) -> bool:
         return issubclass(_type, self.__orig_bases__[0].__args__[0])
 
-    def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderInitial[T,TProperty]:
+    def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilderInitial[T, TProperty]:
         ExtensionsInternal.Guard(expression, "Cannot pass None to rule_for", "expression")
         rule: PropertyRule[T, TProperty] = PropertyRule[T, TProperty].create(expression, lambda: self.RuleLevelCascadeMode, self._type_model)
         self._rules.append(rule)

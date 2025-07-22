@@ -1,7 +1,65 @@
 from typing import Optional, override
 
 from .ILanguageManager import ILanguageManager, CultureInfo
-from .Lenguages import *  # noqa: F403
+from .Lenguages import (
+    EnglishLanguage,
+    AlbanianLanguage,
+    ArabicLanguage,
+    AzerbaijaneseLanguage,
+    BengaliLanguage,
+    BosnianLanguage,
+    BulgarianLanguage,
+    CatalanLanguage,
+    ChineseSimplifiedLanguage,
+    ChineseTraditionalLanguage,
+    CroatianLanguage,
+    CzechLanguage,
+    DanishLanguage,
+    DutchLanguage,
+    EstonianLanguage,
+    FinnishLanguage,
+    FrenchLanguage,
+    GermanLanguage,
+    GeorgianLanguage,
+    GreekLanguage,
+    HebrewLanguage,
+    HindiLanguage,
+    HungarianLanguage,
+    IcelandicLanguage,
+    IndonesianLanguage,
+    ItalianLanguage,
+    JapaneseLanguage,
+    KazakhLanguage,
+    KhmerLanguage,
+    KoreanLanguage,
+    LatvianLanguage,
+    MacedonianLanguage,
+    NorwegianBokmalLanguage,
+    NorwegianNynorskLanguage,
+    PersianLanguage,
+    PolishLanguage,
+    PortugueseLanguage,
+    PortugueseBrazilLanguage,
+    RomanianLanguage,
+    RomanshLanguage,
+    RussianLanguage,
+    SerbianCyrillicLanguage,
+    SerbianLatinLanguage,
+    SlovakLanguage,
+    SlovenianLanguage,
+    SpanishLanguage,
+    SwedishLanguage,
+    TajikLanguage,
+    TamilLanguage,
+    TeluguLanguage,
+    ThaiLanguage,
+    TurkishLanguage,
+    UkrainianLanguage,
+    UzbekCyrillicLanguage,
+    UzbekLatinLanguage,
+    VietnameseLanguage,
+    WelshLanguage,
+)
 
 
 class LanguageManager(ILanguageManager):
@@ -25,60 +83,77 @@ class LanguageManager(ILanguageManager):
 
     @staticmethod
     def GetTranslation(culture: str, key: str) -> Optional[str]:
+        """
+        Language factory.
+
+        Args:
+            culture: The culture code
+            key: The key to load
+
+        Returns:
+        Optional[str]: The corresponding Language instance or null.
+        """
+
         dicc = {
-            EnglishLanguage.AmericanCulture: lambda x: EnglishLanguage.GetTranslation(x),  # noqa: F405
-            EnglishLanguage.BritishCulture: lambda x: EnglishLanguage.GetTranslation(x),  # noqa: F405
-            EnglishLanguage.Culture: lambda x: EnglishLanguage.GetTranslation(x),  # noqa: F405
-            # AlbanianLanguage.Culture: lambda x: AlbanianLanguage.GetTranslation(x),  # noqa: F405
-            # ArabicLanguage.Culture: lambda x: ArabicLanguage.GetTranslation(x),  # noqa: F405
-            # AzerbaijaneseLanguage.Culture: lambda x: AzerbaijaneseLanguage.GetTranslation(x),  # noqa: F405
-            # BengaliLanguage.Culture: lambda x: BengaliLanguage.GetTranslation(x),  # noqa: F405
-            # BosnianLanguage.Culture: lambda x: BosnianLanguage.GetTranslation(x),  # noqa: F405
-            # BulgarianLanguage.Culture: lambda x: BulgarianLanguage.GetTranslation(x),  # noqa: F405
-            # ChineseSimplifiedLanguage.Culture: lambda x: ChineseSimplifiedLanguage.GetTranslation(x),  # noqa: F405
-            # ChineseTraditionalLanguage.Culture: lambda x: ChineseTraditionalLanguage.GetTranslation(x),  # noqa: F405
-            # CroatianLanguage.Culture: lambda x: CroatianLanguage.GetTranslation(x),  # noqa: F405
-            # CzechLanguage.Culture: lambda x: CzechLanguage.GetTranslation(x),  # noqa: F405
-            # DanishLanguage.Culture: lambda x: DanishLanguage.GetTranslation(x),  # noqa: F405
-            # DutchLanguage.Culture: lambda x: DutchLanguage.GetTranslation(x),  # noqa: F405
-            # FinnishLanguage.Culture: lambda x: FinnishLanguage.GetTranslation(x),  # noqa: F405
-            # EstonianLanguage.Culture: lambda x: EstonianLanguage.GetTranslation(x),  # noqa: F405
-            # FrenchLanguage.Culture: lambda x: FrenchLanguage.GetTranslation(x),  # noqa: F405
-            # GermanLanguage.Culture: lambda x: GermanLanguage.GetTranslation(x),  # noqa: F405
-            # GeorgianLanguage.Culture: lambda x: GeorgianLanguage.GetTranslation(x),  # noqa: F405
-            # GreekLanguage.Culture: lambda x: GreekLanguage.GetTranslation(x),  # noqa: F405
-            # HebrewLanguage.Culture: lambda x: HebrewLanguage.GetTranslation(x),  # noqa: F405
-            # HindiLanguage.Culture: lambda x: HindiLanguage.GetTranslation(x),  # noqa: F405
-            # HungarianLanguage.Culture: lambda x: HungarianLanguage.GetTranslation(x),  # noqa: F405
-            # IcelandicLanguage.Culture: lambda x: IcelandicLanguage.GetTranslation(x),  # noqa: F405
-            # ItalianLanguage.Culture: lambda x: ItalianLanguage.GetTranslation(x),  # noqa: F405
-            # IndonesianLanguage.Culture: lambda x: IndonesianLanguage.GetTranslation(x),  # noqa: F405
-            # JapaneseLanguage.Culture: lambda x: JapaneseLanguage.GetTranslation(x),  # noqa: F405
-            # KazakhLanguage.Culture: lambda x: KazakhLanguage.GetTranslation(x),  # noqa: F405
-            # KhmerLanguage.Culture: lambda x: KhmerLanguage.GetTranslation(x),  # noqa: F405
-            # KoreanLanguage.Culture: lambda x: KoreanLanguage.GetTranslation(x),  # noqa: F405
-            # MacedonianLanguage.Culture: lambda x: MacedonianLanguage.GetTranslation(x),  # noqa: F405
-            # NorwegianBokmalLanguage.Culture: lambda x: NorwegianBokmalLanguage.GetTranslation(x),  # noqa: F405
-            # PersianLanguage.Culture: lambda x: PersianLanguage.GetTranslation(x),  # noqa: F405
-            # PolishLanguage.Culture: lambda x: PolishLanguage.GetTranslation(x),  # noqa: F405
-            # PortugueseLanguage.Culture: lambda x: PortugueseLanguage.GetTranslation(x),  # noqa: F405
-            # PortugueseBrazilLanguage.Culture: lambda x: PortugueseBrazilLanguage.GetTranslation(x),  # noqa: F405
-            # RomanianLanguage.Culture: lambda x: RomanianLanguage.GetTranslation(x),  # noqa: F405
-            # RussianLanguage.Culture: lambda x: RussianLanguage.GetTranslation(x),  # noqa: F405
-            # SlovakLanguage.Culture: lambda x: SlovakLanguage.GetTranslation(x),  # noqa: F405
-            # SlovenianLanguage.Culture: lambda x: SlovenianLanguage.GetTranslation(x),  # noqa: F405
-            SpanishLanguage.Culture: lambda x: SpanishLanguage.GetTranslation(x),  # noqa: F405
-            # SerbianLanguage.Culture: lambda x: SerbianLanguage.GetTranslation(x),  # noqa: F405
-            # SwedishLanguage.Culture: lambda x: SwedishLanguage.GetTranslation(x),  # noqa: F405
-            # ThaiLanguage.Culture: lambda x: ThaiLanguage.GetTranslation(x),  # noqa: F405
-            # TurkishLanguage.Culture: lambda x: TurkishLanguage.GetTranslation(x),  # noqa: F405
-            # UkrainianLanguage.Culture: lambda x: UkrainianLanguage.GetTranslation(x),  # noqa: F405
-            # VietnameseLanguage.Culture: lambda x: VietnameseLanguage.GetTranslation(x),  # noqa: F405
-            # WelshLanguage.Culture: lambda x: WelshLanguage.GetTranslation(x),  # noqa: F405
-            # UzbekLatinLanguage.Culture: lambda x: UzbekLatinLanguage.GetTranslation(x),  # noqa: F405
-            # UzbekCyrillicLanguage.Culture: lambda x: UzbekCyrillicLanguage.GetTranslation(x),  # noqa: F405
-            # CatalanLanguage.Culture: lambda x: CatalanLanguage.GetTranslation(x),  # noqa: F405
-            # TajikLanguage.Culture: lambda x: TajikLanguage.GetTranslation(x),  # noqa: F405
+            EnglishLanguage.AmericanCulture: lambda x: EnglishLanguage.GetTranslation(x),
+            EnglishLanguage.BritishCulture: lambda x: EnglishLanguage.GetTranslation(x),
+            EnglishLanguage.Culture: lambda x: EnglishLanguage.GetTranslation(x),
+            AlbanianLanguage.Culture: lambda x: AlbanianLanguage.GetTranslation(x),
+            ArabicLanguage.Culture: lambda x: ArabicLanguage.GetTranslation(x),
+            AzerbaijaneseLanguage.Culture: lambda x: AzerbaijaneseLanguage.GetTranslation(x),
+            BengaliLanguage.Culture: lambda x: BengaliLanguage.GetTranslation(x),
+            BosnianLanguage.Culture: lambda x: BosnianLanguage.GetTranslation(x),
+            BulgarianLanguage.Culture: lambda x: BulgarianLanguage.GetTranslation(x),
+            CatalanLanguage.Culture: lambda x: CatalanLanguage.GetTranslation(x),
+            ChineseSimplifiedLanguage.Culture: lambda x: ChineseSimplifiedLanguage.GetTranslation(x),
+            ChineseTraditionalLanguage.Culture: lambda x: ChineseTraditionalLanguage.GetTranslation(x),
+            CroatianLanguage.Culture: lambda x: CroatianLanguage.GetTranslation(x),
+            CzechLanguage.Culture: lambda x: CzechLanguage.GetTranslation(x),
+            DanishLanguage.Culture: lambda x: DanishLanguage.GetTranslation(x),
+            DutchLanguage.Culture: lambda x: DutchLanguage.GetTranslation(x),
+            EstonianLanguage.Culture: lambda x: EstonianLanguage.GetTranslation(x),
+            FinnishLanguage.Culture: lambda x: FinnishLanguage.GetTranslation(x),
+            FrenchLanguage.Culture: lambda x: FrenchLanguage.GetTranslation(x),
+            GermanLanguage.Culture: lambda x: GermanLanguage.GetTranslation(x),
+            GeorgianLanguage.Culture: lambda x: GeorgianLanguage.GetTranslation(x),
+            GreekLanguage.Culture: lambda x: GreekLanguage.GetTranslation(x),
+            HebrewLanguage.Culture: lambda x: HebrewLanguage.GetTranslation(x),
+            HindiLanguage.Culture: lambda x: HindiLanguage.GetTranslation(x),
+            HungarianLanguage.Culture: lambda x: HungarianLanguage.GetTranslation(x),
+            IcelandicLanguage.Culture: lambda x: IcelandicLanguage.GetTranslation(x),
+            IndonesianLanguage.Culture: lambda x: IndonesianLanguage.GetTranslation(x),
+            ItalianLanguage.Culture: lambda x: ItalianLanguage.GetTranslation(x),
+            JapaneseLanguage.Culture: lambda x: JapaneseLanguage.GetTranslation(x),
+            KazakhLanguage.Culture: lambda x: KazakhLanguage.GetTranslation(x),
+            KhmerLanguage.Culture: lambda x: KhmerLanguage.GetTranslation(x),
+            KoreanLanguage.Culture: lambda x: KoreanLanguage.GetTranslation(x),
+            LatvianLanguage.Culture: lambda x: LatvianLanguage.GetTranslation(x),
+            MacedonianLanguage.Culture: lambda x: MacedonianLanguage.GetTranslation(x),
+            NorwegianBokmalLanguage.Culture: lambda x: NorwegianBokmalLanguage.GetTranslation(x),
+            NorwegianNynorskLanguage.Culture: lambda x: NorwegianNynorskLanguage.GetTranslation(x),
+            PersianLanguage.Culture: lambda x: PersianLanguage.GetTranslation(x),
+            PolishLanguage.Culture: lambda x: PolishLanguage.GetTranslation(x),
+            PortugueseLanguage.Culture: lambda x: PortugueseLanguage.GetTranslation(x),
+            PortugueseBrazilLanguage.Culture: lambda x: PortugueseBrazilLanguage.GetTranslation(x),
+            RomanianLanguage.Culture: lambda x: RomanianLanguage.GetTranslation(x),
+            RomanshLanguage.Culture: lambda x: RomanshLanguage.GetTranslation(x),
+            RussianLanguage.Culture: lambda x: RussianLanguage.GetTranslation(x),
+            SerbianCyrillicLanguage.Culture: lambda x: SerbianCyrillicLanguage.GetTranslation(x),
+            SerbianLatinLanguage.Culture: lambda x: SerbianLatinLanguage.GetTranslation(x),
+            SlovakLanguage.Culture: lambda x: SlovakLanguage.GetTranslation(x),
+            SlovenianLanguage.Culture: lambda x: SlovenianLanguage.GetTranslation(x),
+            SpanishLanguage.Culture: lambda x: SpanishLanguage.GetTranslation(x),
+            SwedishLanguage.Culture: lambda x: SwedishLanguage.GetTranslation(x),
+            TajikLanguage.Culture: lambda x: TajikLanguage.GetTranslation(x),
+            TamilLanguage.Culture: lambda x: TamilLanguage.GetTranslation(x),
+            TeluguLanguage.Culture: lambda x: TeluguLanguage.GetTranslation(x),
+            ThaiLanguage.Culture: lambda x: ThaiLanguage.GetTranslation(x),
+            TurkishLanguage.Culture: lambda x: TurkishLanguage.GetTranslation(x),
+            UkrainianLanguage.Culture: lambda x: UkrainianLanguage.GetTranslation(x),
+            UzbekCyrillicLanguage.Culture: lambda x: UzbekCyrillicLanguage.GetTranslation(x),
+            UzbekLatinLanguage.Culture: lambda x: UzbekLatinLanguage.GetTranslation(x),
+            VietnameseLanguage.Culture: lambda x: VietnameseLanguage.GetTranslation(x),
+            WelshLanguage.Culture: lambda x: WelshLanguage.GetTranslation(x),
         }
         value = dicc.get(culture, None)
         return value(key) if value is not None else None

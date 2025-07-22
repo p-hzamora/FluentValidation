@@ -88,8 +88,13 @@ class DefaultValidatorOptions[T, TProperty]:
     def configurable(ruleBuilder: IRuleBuilder[T, TProperty]) -> IValidationRule[T, TProperty]:
         return ruleBuilder.Rule
 
-    # FIXME [ ]: the type of 'ruleBuilder' used to be 'IRuleBuilderInitial' and it should return the same
-    def Cascade(ruleBuilder: IRuleBuilder[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilder[T, TProperty]:
+    # FIXME [x]: the type of 'ruleBuilder' used to be 'IRuleBuilderInitial' and it should return the same
+    @overload
+    def Cascade(ruleBuilder: IRuleBuilderInitial[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]: ...
+    @overload
+    def Cascade(ruleBuilder: IRuleBuilderInitialCollection[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]: ...
+    
+    def Cascade(ruleBuilder: IRuleBuilderInitialCollection[T, TProperty]| IRuleBuilderInitial[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]:
         ruleBuilder.configurable(ruleBuilder).CascadeMode = cascadeMode
         return ruleBuilder
 
@@ -99,17 +104,53 @@ class DefaultValidatorOptions[T, TProperty]:
     # }
 
     @overload
-    def with_message(ruleBuilder: IRuleBuilder[T, TProperty], errorMessage: str) -> IRuleBuilder[T, TProperty]: ...
-    @overload
-    def with_message(ruleBuilder: IRuleBuilder[T, TProperty], errorMessage: Callable[[T], str]) -> IRuleBuilder[T, TProperty]: ...
-    @overload
-    def with_message(ruleBuilder: IRuleBuilder[T, TProperty], errorMessage: Callable[[T, TProperty], str]) -> IRuleBuilder[T, TProperty]: ...
+    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: str) -> IRuleBuilderOptions[T, TProperty]: 
+        """
+        Specifies a custom error message to use when validation fails.
+        Only applies to the rule that directly precedes it.
 
-    def with_message(ruleBuilder: IRuleBuilder[T, TProperty], errorMessage: str | Callable[[T], str] | Callable[[T, TProperty], str]):
+        Args:
+            rule (IRuleBuilderOptions[T, TProperty]): The current rule.
+            errorMessage (str): The error message to use.
+
+        Returns:
+            IRuleBuilderOptions[T, TProperty]: The rule builder options with the custom error message applied.
+        """
+        ...
+    @overload
+    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: Callable[[T], str]) -> IRuleBuilderOptions[T, TProperty]: 
+        """
+        Specifies a custom error message to use when validation fails.
+        Only applies to the rule that directly precedes it.
+
+        Args:
+            rule (IRuleBuilderOptions[T, TProperty]): The current rule.
+            errorMessage (Callable[[T], str]): Function that will be invoked to retrieve the localized message.
+
+        Returns:
+            IRuleBuilderOptions[T, TProperty]: The rule builder options with the custom error message applied.
+        """
+    ...
+    @overload
+    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: Callable[[T, TProperty], str]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Specifies a custom error message to use when validation fails.
+        Only applies to the rule that directly precedes it.
+
+        Args:
+            rule (IRuleBuilderOptions[T, TProperty]): The current rule.
+            errorMessage (Callable[[T, TProperty], str]): Function that will be invoked to retrieve the localized message, using the instance and property value.
+
+        Returns:
+            IRuleBuilderOptions[T, TProperty]: The rule builder options with the custom error message applied.
+        """
+        ...
+
+    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: str | Callable[[T], str] | Callable[[T, TProperty], str])->IRuleBuilderOptions[T, TProperty]:
         if callable(errorMessage):
             n_params = len(inspect.signature(errorMessage).parameters)
 
-            # TODOM: Check why 'instance_to_validate' is not detected by python's IDE
+            # TODOM [x]: Check why 'instance_to_validate' is not detected by python's IDE
             if n_params == 1:
                 ruleBuilder.configurable(ruleBuilder).Current.set_error_message(lambda ctx, val: errorMessage(None if ctx is None else ctx.instance_to_validate))
             elif n_params == 2:
@@ -121,42 +162,43 @@ class DefaultValidatorOptions[T, TProperty]:
 
         return ruleBuilder
 
-    # FIXME [ ]: the type of 'rule' used to be 'IRuleBuilderOptions' and it should return the same
-    def WithErrorCode(rule: IRuleBuilder[T, TProperty], errorCode: str) -> IRuleBuilder[T, TProperty]:
+    # FIXME [x]: the type of 'rule' used to be 'IRuleBuilderOptions' and it should return the same
+    def WithErrorCode(rule: IRuleBuilderOptions[T, TProperty], errorCode: str) -> IRuleBuilderOptions[T, TProperty]:
         rule.configurable(rule).Current.ErrorCode = errorCode
         return rule
 
-    # FIXME [ ]: the type of 'rule' used to be 'IRuleBuilderOptions' and it should return the same
-    def when(rule: IRuleBuilder[T, TProperty], predicate: Callable[[T], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> IRuleBuilder[T, TProperty]:
-        return rule._When(lambda x, _: predicate(x), applyConditionTo)
+    # FIXME [x]: the type of 'rule' used to be 'IRuleBuilderOptions' and it should return the same
+    def when(rule: IRuleBuilderOptions[T, TProperty], predicate: Callable[[T], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Specifies a condition limiting when the validator should run.
+        The validator will only be executed if the result of the predicate returns True.
 
-    # def when(rule:IRuleBuilderOptionsConditions[T, TProperty], predicate:Callable[[T],bool], applyConditionTo:ApplyConditionTo = ApplyConditionTo.AllValidators)->IRuleBuilderOptionsConditions[T, TProperty]:
-    #     return rule._When(lambda x, ctx: predicate(x), applyConditionTo)
+        Args:
+            rule (IRuleBuilderOptions[T, TProperty]): The current rule.
+            predicate (Callable[[T], bool]): A function that specifies a condition for when the validator should run.
+            applyConditionTo (ApplyConditionTo, optional): Whether the condition should be applied to the current rule or all rules in the chain. Defaults to ApplyConditionTo.AllValidators.
+
+        Returns:
+            IRuleBuilderOptions[T, TProperty]: The rule builder options with the condition applied.
+        """
+        return rule._When(lambda x, ctx: predicate(x), applyConditionTo)
 
     def _When(
-        rule: IRuleBuilder[T, TProperty],
+        rule: IRuleBuilderOptions[T, TProperty],
         predicate: Callable[[T, ValidationContext[T]], bool],
         applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators,
-    ) -> IRuleBuilder[T, TProperty]:
+    ) -> IRuleBuilderOptions[T, TProperty]:
         # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
         rule.configurable(rule).ApplyCondition(lambda ctx: predicate(ctx.instance_to_validate, ValidationContext[T].GetFromNonGenericContext(ctx)), applyConditionTo)
         return rule
 
-    # def when(rule:IRuleBuilderOptionsConditions[T, TProperty], predicate:Callable[[T, ValidationContext[T]], bool], applyConditionTo:ApplyConditionTo = ApplyConditionTo.AllValidators)->IRuleBuilderOptionsConditions[T, TProperty]:
-    #     # Default behaviour for when/unless as of v1.3 is to apply the condition to all previous validators in the chain.
-    #     rule.Configurable(rule).ApplyCondition(lambda ctx: predicate((T)ctx.InstanceToValidate, ValidationContext[T].GetFromNonGenericContext(ctx)), applyConditionTo)
-    #     return rule
+    # FIXME [x]: the type of 'rule' used to be 'IRuleBuilderOptions' and it should return the same
+    def unless(rule: IRuleBuilderOptions[T, TProperty], predicate: Callable[[T], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> IRuleBuilderOptions[T, TProperty]:
+        return rule._Unless(lambda x, ctx: predicate(x), applyConditionTo)
 
-    # FIXME [ ]: the type of 'rule' used to be 'IRuleBuilderOptions' and it should return the same
-    def unless(rule: IRuleBuilder[T, TProperty], predicate: Callable[[T], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> IRuleBuilder[T, TProperty]:
-        return rule._Unless(lambda x, _: predicate(x), applyConditionTo)
-
-    # def unless(rule:IRuleBuilderOptionsConditions[T, TProperty], predicate:Callable[[T],bool], applyConditionTo:ApplyConditionTo = ApplyConditionTo.AllValidators)->IRuleBuilderOptionsConditions[T, TProperty]:
-    #     return rule.unless(lambda x, ctx: predicate(x), applyConditionTo)
-
-    # FIXME [ ]: the type of 'rule' used to be 'IRuleBuilder' and it should return the same
+    # FIXME [x]: the type of 'rule' used to be 'IRuleBuilder' and it should return the same
     def _Unless(
-        rule: IRuleBuilder[T, TProperty], predicate: Callable[[T, ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators
+        rule: IRuleBuilderOptions[T, TProperty], predicate: Callable[[T, ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators
     ) -> IRuleBuilderOptions[T, TProperty]:
         return rule._When(lambda x, ctx: not predicate(x, ctx), applyConditionTo)
 
@@ -201,19 +243,19 @@ class DefaultValidatorOptions[T, TProperty]:
     #         return rule.WhenAsync(async (x, ctx, ct) => !await predicate(x, ctx, ct), applyConditionTo);
     #     }
 
-    # FIXME [ ]: the type var of rule would be 'IRuleBuilderInitialCollection'
-    def where[TCollectionElement](rule: IRuleBuilder[T, TCollectionElement], predicate: Callable[[TCollectionElement], bool]) -> IRuleBuilderInitialCollection[T, TCollectionElement]:
+    # FIXME [x]: the type var of rule would be 'IRuleBuilderInitialCollection'
+    def where[TCollectionElement](rule: IRuleBuilderInitialCollection[T, TCollectionElement], predicate: Callable[[TCollectionElement], bool]) -> IRuleBuilderInitialCollection[T, TCollectionElement]:
         # This overload supports RuleFor().SetCollectionValidator() (which returns IRuleBuilderOptions<T, IEnumerable<TElement>>)
         rule_configurable: ICollectionRule = rule.configurable(rule)
         rule_configurable.Filter = predicate
         return rule
 
     @overload
-    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: str) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilder[T, TProperty]: ...  # (?<!#)\s+IRuleBuilderOptions[T, TProperty]
+    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: Callable[[T], str]) -> IRuleBuilderOptions[T, TProperty]: ...  # (?<!#)\s+IRuleBuilderOptions[T, TProperty]
 
-    def with_name(rule: IRuleBuilder[T, TProperty], nameProvider: str | Callable[[T], str]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
+    def with_name(rule: IRuleBuilderOptions[T, TProperty], nameProvider: str | Callable[[T], str]) -> IRuleBuilderOptions[T, TProperty]:
         if callable(nameProvider):
 
             def _lambda(context: ValidationContext[T]):
@@ -229,11 +271,11 @@ class DefaultValidatorOptions[T, TProperty]:
         return rule
 
     @overload
-    def override_property_name(rule: IRuleBuilder[T, TProperty], propertyName: str) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    def override_property_name(rule: IRuleBuilderOptions[T, TProperty], propertyName: str) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def override_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]
+    def override_property_name(rule: IRuleBuilderOptions[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilderOptions[T, TProperty]: ...
 
-    def override_property_name(rule: IRuleBuilder[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]
+    def override_property_name(rule: IRuleBuilderOptions[T, TProperty], propertyName: Callable[[T], object]) -> IRuleBuilderOptions[T, TProperty]:
         if callable(propertyName):
             member = MemberInfo(propertyName)
             if member is None:
@@ -263,19 +305,15 @@ class DefaultValidatorOptions[T, TProperty]:
     #     }
 
     @overload
-    def with_severity(rule: IRuleBuilder[T, TProperty], severityProvider: _Severity) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
+    def with_severity(rule: IRuleBuilderOptions[T, TProperty], severityProvider: _Severity) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def with_severity(rule: IRuleBuilder[T, TProperty], severityProvider: Callable[[T], _Severity]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
+    def with_severity(rule: IRuleBuilderOptions[T, TProperty], severityProvider: Callable[[T], _Severity]) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def with_severity(rule: IRuleBuilder[T, TProperty], severityProvider: Callable[[T, TProperty], _Severity]) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
+    def with_severity(rule: IRuleBuilderOptions[T, TProperty], severityProvider: Callable[[T, TProperty], _Severity]) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def with_severity(
-        rule: IRuleBuilder[T, TProperty], severityProvider: Callable[[T, TProperty, ValidationContext[T]], _Severity]
-    ) -> IRuleBuilder[T, TProperty]: ...  # IRuleBuilderOptions[T, TProperty]:
+    def with_severity(rule: IRuleBuilderOptions[T, TProperty], severityProvider: Callable[[T, TProperty, ValidationContext[T]], _Severity]) -> IRuleBuilderOptions[T, TProperty]: ...
 
-    def with_severity(
-        rule: IRuleBuilder[T, TProperty], severityProvider: _Severity | Callable[[T, TProperty, ValidationContext[T]], _Severity]
-    ) -> IRuleBuilder[T, TProperty]:  # IRuleBuilderOptions[T, TProperty]:
+    def with_severity(rule: IRuleBuilderOptions[T, TProperty], severityProvider: _Severity | Callable[[T, TProperty, ValidationContext[T]], _Severity]) -> IRuleBuilderOptions[T, TProperty]:
         """Specifies custom severity that should be stored alongside the validation message when validation fails for this rule."""
 
         def SeverityProvider(ctx: ValidationContext[T], value: TProperty) -> _Severity:

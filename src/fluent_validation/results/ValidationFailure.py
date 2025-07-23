@@ -38,6 +38,10 @@ class ValidationFailure:
     def CustomState(self) -> object:
         return self._CustomState
 
+    @CustomState.setter
+    def CustomState(self, v: Any) -> object:
+        self._CustomState = v
+
     @property
     def Severity(self) -> _Severity:
         return self._severity

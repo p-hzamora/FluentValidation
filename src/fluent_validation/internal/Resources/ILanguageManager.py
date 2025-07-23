@@ -12,6 +12,11 @@ class CurrentThreadType(Protocol):
     CurrentUICulture: CultureInfo
 
 
+_language_map_similarity: dict[str, str] = {
+    "zh-CN": "zh-Hans",
+    "zh-SG": "zh-Hans",
+
+}
 _thread_culture: CurrentThreadType = threading.local()
 
 HYPHEN = "-"
@@ -45,8 +50,18 @@ class CultureInfo:
         return self._name
 
     @property
-    def Parent(self) -> "CultureInfo":
+    def TwoLettersISOLanguage(self) -> str:
+        if HYPHEN in self.Name and self.Name:
+            return self.Name.split(HYPHEN)[0]
+        return self.Name
+
+    @property
+    def Parent(self) -> CultureInfo:
         """Gets the parent culture (language without region)"""
+
+        if self.Name in _language_map_similarity:
+            return CultureInfo(_language_map_similarity[self.Name])
+
         if HYPHEN in self.Name and self.Name:
             parent_name = self.Name.split(HYPHEN)[:-1]
 
@@ -63,7 +78,7 @@ class CultureInfo:
     @classmethod
     def CurrentUICulture(cls) -> "CultureInfo":
         """Gets the current UI culture (cached)"""
-        if hasattr(_thread_culture, 'CurrentUICulture'):
+        if hasattr(_thread_culture, "CurrentUICulture"):
             return _thread_culture.CurrentUICulture
         return CultureInfo(get_default_ui())
 

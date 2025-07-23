@@ -1,4 +1,4 @@
-from typing import Optional, override
+from typing import Callable, Optional, override
 
 from .ILanguageManager import ILanguageManager, CultureInfo
 from .Lenguages import (
@@ -94,7 +94,7 @@ class LanguageManager(ILanguageManager):
         Optional[str]: The corresponding Language instance or null.
         """
 
-        dicc = {
+        dicc:dict[str,Callable[[str],str]] = {
             EnglishLanguage.AmericanCulture: lambda x: EnglishLanguage.GetTranslation(x),
             EnglishLanguage.BritishCulture: lambda x: EnglishLanguage.GetTranslation(x),
             EnglishLanguage.Culture: lambda x: EnglishLanguage.GetTranslation(x),

@@ -9,6 +9,8 @@ from fluent_validation.internal.RuleBase import RuleBase
 from fluent_validation.internal.RuleComponent import RuleComponent
 
 if TYPE_CHECKING:
+    from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
+    from fluent_validation.internal.TrackingCollection import IEnumerable
     from fluent_validation.validators.IpropertyValidator import IPropertyValidator
     from fluent_validation.IValidationContext import ValidationContext
 
@@ -20,7 +22,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
         propertyFunc: Callable[[T], TProperty],
         expression: Callable[..., Any],
         cascadeModeThunk: Callable[[], CascadeMode],
-        typeToValidate: type,
+        typeToValidate: Type,
     ) -> None:
         super().__init__(member, propertyFunc, expression, cascadeModeThunk, typeToValidate)
 
@@ -101,13 +103,10 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
             if len(context.Failures) > total_failures and cascade == CascadeMode.Stop:
                 break
 
-            # if len(context.Failures) <= total_failures & self.DependentRules is not None:
-            #     for dependentRule in self.DependentRules:
-            #         await dependentRule.ValidateAsync(context,useAsync)
+        if len(context.Failures) <= total_failures and self.DependentRules is not None:
+            for dependentRule in self.DependentRules:
+                await dependentRule.ValidateAsync(context)
 
-        # if len(context.Failures) <= total_failures and self.DependentRules is not None:
-        #     for dependentRules in self.DependentRules:
-        #         await dependentRules.ValidateAsync(context,useAsync)
         return None
 
     def ValidateSync(self, context: ValidationContext[T]) -> None:
@@ -154,4 +153,12 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
             if len(context.Failures) > total_failures and cascade == CascadeMode.Stop:
                 break
 
+        if len(context.Failures) <= total_failures and self.DependentRules is not None:
+            for dependentRule in self.DependentRules:
+                dependentRule.ValidateSync(context)
         return None
+
+    def AddDependentRules(self: IValidationRuleInternal[T], rules: IEnumerable[IValidationRuleInternal[T]]) -> None:
+        if self.DependentRules is None:
+            self.DependentRules = []
+        self.DependentRules.extend(rules)

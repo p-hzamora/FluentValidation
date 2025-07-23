@@ -1,6 +1,6 @@
 from __future__ import annotations
 import inspect
-from typing import Callable, TYPE_CHECKING, overload
+from typing import Any, Callable, TYPE_CHECKING, overload
 
 from fluent_validation.IValidator import IValidator
 from fluent_validation.validators.ChildValidatorAdaptor import ChildValidatorAdaptor
@@ -45,15 +45,15 @@ class RuleBuilder[T, TProperty](
             raise AttributeError(validator)
 
     @overload
-    def DependentRules(self: IRuleBuilderOptions, action: Callable) -> IRuleBuilderOptions[T, TProperty]: ...
+    def DependentRules(self: IRuleBuilderOptions, action: Callable[..., Any]) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def DependentRulesConditions(self: IRuleBuilderOptionsConditions, action: Callable) -> IRuleBuilderOptionsConditions[T, TProperty]: ...
+    def DependentRules(self: IRuleBuilderOptionsConditions, action: Callable[..., Any]) -> IRuleBuilderOptionsConditions[T, TProperty]: ...
 
-    def DependentRulesConditions(self, action: Callable) -> IRuleBuilderOptionsConditions[T, TProperty]:
+    def DependentRules(self, action: Callable[..., Any]) -> IRuleBuilderOptionsConditions[T, TProperty]:
         self._DependentRulesInternal(action)
         return self
 
-    def _DependentRulesInternal(self, action: Callable[..., None]):
+    def _DependentRulesInternal(self, action: Callable[..., None])->None:
         dependencyContainer: list[IValidationRuleInternal[T]] = []
 
         # Capture any rules added to the parent validator inside this delegate.
@@ -66,6 +66,7 @@ class RuleBuilder[T, TProperty](
                     dependentRule.RuleSets = self.Rule.RuleSets
 
         self.Rule.AddDependentRules(dependencyContainer)
+        return self
 
     def set_validator_IPropertyValidator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
         self.Rule.AddValidator(validator)

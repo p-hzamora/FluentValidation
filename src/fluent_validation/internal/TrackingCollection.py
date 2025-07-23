@@ -49,9 +49,10 @@ class EventDisposable[T](IDisposable):
 
 
 class CaptureDisposable[T](IDisposable):
-    def __init__(self, parent: TrackingCollection[T], _old: Callable[[T], None]):
+    def __init__(self, parent: TrackingCollection[T], handler: Callable[[T], None]):
         self._parent: TrackingCollection[T] = parent
-        self._old: Callable[[T], None] = _old
+        self._old: Callable[[T], None] = parent._capture
+        parent._capture = handler
 
     def __enter__(self):
         return self

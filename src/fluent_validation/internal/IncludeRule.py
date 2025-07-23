@@ -52,8 +52,8 @@ class IncludeRule[T](PropertyRule[T, T], IIncludeRule):
         # We need to disable the MemberName selector's cascade functionality whilst executing
         # an include rule, as an include rule should be have as if its children are actually children of the parent.
         # Also ensure that we only add/remove the state key if it's not present already.
-        # If it is present already then we're in a situation where there are nested Include rules
-        # in which case only the root Include rule should add/remove the key.
+        # If it is present already then we're in a situation where there are nested include rules
+        # in which case only the root include rule should add/remove the key.
         # See https://github.com/p-hzamora/FluentValidation/issues/1989
 
         shouldAddStateKey: bool = MemberNameValidatorSelector.DisableCascadeKey not in context.RootContextData

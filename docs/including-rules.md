@@ -18,13 +18,13 @@ class PersonNameValidator(AbstractValidator[Person]):
         self.rule_for(lambda x: x.Forename).not_null().length(0, 255)
 ```
 
-Because both of these validators are targetting the same model type (`Person`), you can combine them using `Include`:
+Because both of these validators are targetting the same model type (`Person`), you can combine them using `include`:
 
 ```python
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self):
-        self.Include(PersonAgeValidator())
-        self.Include(PersonNameValidator())
+        self.include(PersonAgeValidator())
+        self.include(PersonNameValidator())
 ```
 
 ```eval_rst

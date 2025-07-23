@@ -271,11 +271,11 @@ class AbstractValidator[T](IValidator[T]):
     #     return new AsyncConditionBuilder<T>(Rules).UnlessAsync(predicate, action)
 
     @overload
-    def Include(self, rulesToInclude: IValidator[T]) -> None: ...
+    def include(self, rulesToInclude: IValidator[T]) -> None: ...
     @overload
-    def Include[TValidator: IValidator[T]](self, rulesToInclude: Callable[[T], TValidator]): ...
+    def include[TValidator: IValidator[T]](self, rulesToInclude: Callable[[T], TValidator]): ...
 
-    def Include[TValidator: IValidator[T]](self, rulesToInclude: IValidator[T] | Callable[[T], TValidator]):
+    def include[TValidator: IValidator[T]](self, rulesToInclude: IValidator[T] | Callable[[T], TValidator]):
         rule = IncludeRule[T].Create(rulesToInclude, lambda: self.RuleLevelCascadeMode)
         self.Rules.append(rule)
         self.OnRuleAdded(rule)

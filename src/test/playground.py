@@ -65,8 +65,8 @@ class PersonNameValidator(AbstractValidator[Person]):
 class PersonValidator(AbstractValidator[Person]):
     def __init__(self):
         super().__init__(Person)
-        self.Include(PersonAgeValidator())
-        self.Include(PersonNameValidator())
+        self.include(PersonAgeValidator())
+        self.include(PersonNameValidator())
 
 
 validator = PersonValidator()

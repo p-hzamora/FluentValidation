@@ -114,7 +114,7 @@ class RulesetTests(unittest.TestCase):
 
     def test_Ruleset_selection_should_cascade_downwards_with_when_setting_child_validator_using_include_statement_with_lambda(self):
         validator = InlineValidator[Person](Person)
-        validator.Include(lambda x: TestValidator2())
+        validator.include(lambda x: TestValidator2())
         result = validator.validate(Person(), lambda v: v.IncludeRuleSets("Names"))
         self.assertFalse(result.is_valid)
 
@@ -293,8 +293,8 @@ class TestValidator3(AbstractValidator[Person]):
     def __init__(self):
         super().__init__(Person)
 
-        # TODOL: added Include method in AbstractValidator
-        self.Include(TestValidator2())
+        # TODOL [x]: added include method in AbstractValidator
+        self.include(TestValidator2())
 
 
 class PersonContainer:

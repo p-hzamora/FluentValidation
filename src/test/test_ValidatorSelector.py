@@ -80,7 +80,7 @@ class ValidatorSelectorTests(unittest.TestCase):
         validator2 = TestValidator()
         validator2.rule_for(lambda x: x.Forename).not_null()
 
-        validator.Include(validator2)
+        validator.include(validator2)
 
         result = validator.validate(Person(), lambda v: v.IncludeProperties("Forename"))
         self.assertFalse(result.is_valid)
@@ -90,7 +90,7 @@ class ValidatorSelectorTests(unittest.TestCase):
         validator2 = TestValidator()
         validator2.rule_for(lambda x: x.Forename).not_null()
         validator2.rule_for(lambda x: x.Surname).not_null()
-        validator.Include(validator2)
+        validator.include(validator2)
 
         result = validator.validate(Person(), lambda v: v.IncludeProperties("Forename"))
         self.assertEqual(len(result.errors), 1)
@@ -101,7 +101,7 @@ class ValidatorSelectorTests(unittest.TestCase):
     # 	validator2 = TestValidator()
     # 	validator2.rule_for(lambda x: x.Forename).not_null()
     # 	validator2.rule_for(lambda x: x.Surname).not_null()
-    # 	validator.Include(validator2)
+    # 	validator.include(validator2)
 
     # 	result = await validator.ValidateAsync(Person(), lambda v: v.IncludeProperties("Forename"))
     # 	self.assertEqual(len(result.errors),1)
@@ -111,15 +111,15 @@ class ValidatorSelectorTests(unittest.TestCase):
         validator3 = TestValidator()
         validator3.rule_for(lambda x: x.Age).greater_than(0)
 
-        # In the middle validator ensure that the Include statement is
+        # In the middle validator ensure that the include statement is
         # before the additional rules in order to trigger the case reported in
         # https://github.com/p-hzamora/FluentValidation/issues/1989
         validator2 = TestValidator()
-        validator2.Include(validator3)
+        validator2.include(validator3)
         validator2.rule_for(lambda x: x.Orders).not_empty()
 
         validator = TestValidator()
-        validator.Include(validator2)
+        validator.include(validator2)
 
         # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
         result = validator.validate(Person(), lambda v: v.IncludeProperties("Age"))

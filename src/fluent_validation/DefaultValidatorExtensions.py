@@ -1,6 +1,7 @@
 from __future__ import annotations
 from decimal import Decimal
 from typing import Callable, Optional, Type, get_args, overload, TYPE_CHECKING, get_origin
+import re
 import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
@@ -34,7 +35,7 @@ from .validators.LengthValidator import (
     MinimumLengthValidator,
 )
 from .validators.NotNullValidator import NotNullValidator
-from .validators.RegularExpressionValidator import RegularExpressionValidator
+from .validators.RegularExpressionValidator import RegularExpressionValidator, _FlagsType
 from .validators.NotEmptyValidator import NotEmptyValidator
 
 from .validators.LessThanValidator import LessThanValidator
@@ -62,8 +63,130 @@ class DefaultValidatorExtensions[T, TProperty]:
     def null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
         return ruleBuilder.set_validator(NullValidator[T, TProperty]())
 
-    def matches(ruleBuilder: IRuleBuilder[T, TProperty], pattern: str) -> IRuleBuilderOptions[T, TProperty]:
-        return ruleBuilder.set_validator(RegularExpressionValidator[T](pattern))
+    # region Matches
+
+    @overload
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: str) -> IRuleBuilderOptions[T, str]:
+        """
+        Defines a regular expression validator using a function to get the pattern.
+        Validation will fail if the value does not match the regular expression.
+
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            regex: Function that returns the regex pattern based on the object being validated
+
+        Returns:
+            IRuleBuilderOptions for method chaining
+
+        Example:
+            ruleBuilder.matches(lambda person: person.get_validation_pattern())
+        """
+        ...
+
+    @overload
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: re.Pattern) -> IRuleBuilderOptions[T, str]:
+        """
+        Defines a regular expression validator using a compiled regex pattern.
+        Validation will fail if the value does not match the regular expression.
+
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            regex: The compiled regular expression pattern to use
+
+        Returns:
+            IRuleBuilderOptions for method chaining
+
+        Example:
+            pattern = re.compile(r"^\d{3}-\d{2}-\d{4}$")  # SSN format
+            ruleBuilder.matches(pattern)
+        """
+        ...
+
+    @overload
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: str, flags: _FlagsType) -> IRuleBuilderOptions[T, str]:
+        """
+        Defines a regular expression validator using a function that returns a compiled regex.
+        Validation will fail if the value does not match the regular expression.
+
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            regex: Function that returns a compiled regex pattern based on the object
+
+        Returns:
+            IRuleBuilderOptions for method chaining
+
+        Example:
+            ruleBuilder.matches(lambda person: person.get_validation_regex())
+        """
+        ...
+
+    @overload
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: Callable[[T], str]) -> IRuleBuilderOptions[T, str]:
+        """
+        Defines a regular expression validator with specific regex flags.
+        Validation will fail if the value does not match the regular expression.
+
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            regex: The regular expression pattern to check the value against
+            flags: Regex flags (re.IGNORECASE, re.MULTILINE, etc.)
+
+        Returns:
+            IRuleBuilderOptions for method chaining
+
+        Example:
+            ruleBuilder.matches(r"^hello", re.IGNORECASE)
+        """
+        ...
+
+    @overload
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: Callable[[T], re.Pattern]) -> IRuleBuilderOptions[T, str]:
+        """
+        Defines a regular expression validator using a function with regex flags.
+        Validation will fail if the value does not match the regular expression.
+
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            regex: Function that returns the regex pattern
+            flags: Regex flags to apply to the pattern
+
+        Returns:
+            IRuleBuilderOptions for method chaining
+
+        Example:
+            ruleBuilder.matches(
+                lambda obj: obj.pattern,
+                re.IGNORECASE | re.MULTILINE
+            )
+        """
+        ...
+
+    @overload
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: Callable[[T], str], flags: _FlagsType) -> IRuleBuilderOptions[T, str]:
+        """
+        Defines a regular expression validator using a function with regex flags.
+        Validation will fail if the value does not match the regular expression.
+
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            regex: Function that returns the regex pattern
+            flags: Regex flags to apply to the pattern
+
+        Returns:
+            IRuleBuilderOptions for method chaining
+
+        Example:
+            ruleBuilder.matches(
+                lambda obj: obj.pattern,
+                re.IGNORECASE | re.MULTILINE
+            )
+        """
+        ...
+
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: str | Callable[[T], str|re.Pattern], flags: _FlagsType = re.NOFLAG):
+        return ruleBuilder.set_validator(RegularExpressionValidator(regex, flags))
+
+    # endregion
 
     def email_address(ruleBuilder: IRuleBuilder[T, str], mode: EmailValidationMode = EmailValidationMode.AspNetCoreCompatible) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions<T, string> :
         """
@@ -350,7 +473,7 @@ class DefaultValidatorExtensions[T, TProperty]:
     # 		Action<IRuleBuilderInitialCollection<IEnumerable<TElement>, TElement>> action) {
     # 		var innerValidator = InlineValidator<IEnumerable<TElement>>()
 
-    # 		# https://github.com/FluentValidation/FluentValidation/issues/1231
+    # 		# https://github.com/p-hzamora/FluentValidation/issues/1231
     # 		# We need to explicitly set a display name override on the nested validator
     # 		# so that it matches what would happen if the user had called RuleForEach initially.
     # 		var originalRule = DefaultValidatorOptions.Configurable(ruleBuilder)

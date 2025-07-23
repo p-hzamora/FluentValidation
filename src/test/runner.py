@@ -47,6 +47,7 @@ import test_ValidationResult
 import test_RuleDependency
 import test_RegularExpressionValidator
 import test_LocalisedMessages
+import test_PropertyChain
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -55,6 +56,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_PropertyChain),
         *loader.loadTestsFromModule(test_RegularExpressionValidator),
         *loader.loadTestsFromModule(test_LocalisedMessages),
         *loader.loadTestsFromModule(test_NotEmpty),  # FIXME [ ]: This test is depending on the other. Probably some contexts are not being erased as it should be

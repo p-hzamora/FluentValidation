@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import abstractmethod, ABC
-from typing import Self, Callable, overload, TYPE_CHECKING
+from typing import Any, Self, Callable, overload, TYPE_CHECKING
 
 from fluent_validation.DefaultValidatorExtensions import DefaultValidatorExtensions
 from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
@@ -73,7 +73,7 @@ class IRuleBuilderInitial[T, TProperty](IRuleBuilder[T, TProperty]): ...
 
 class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
     @abstractmethod
-    def dependent_rules(action) -> Self:
+    def dependent_rules(self, action: Callable[[], Any]) -> Self:
         """Creates a scope for declaring dependent rules."""
         ...
 

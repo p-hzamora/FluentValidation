@@ -74,7 +74,7 @@ class AbstractValidator[T](IValidator[T]):
             return self.validate(ValidationContext[T].CreateWithOptions(instance, options))
 
         if not options and isinstance(instance, IValidationContext):
-            # instance acts as context, due to does not exists override operator as C#, I need to call context attr as instance
+            # instance acts as context, because it does not exists override operator as C#, I need to call context attr as instance
             return self.__validate__(ValidationContext[T].GetFromNonGenericContext(instance))
 
         if not options and type(instance) is ValidationContext:
@@ -143,7 +143,7 @@ class AbstractValidator[T](IValidator[T]):
         return self.__validate_sync__(ValidationContext[T](instance, None, ValidatorOptions.Global.ValidatorSelectors.DefaultValidatorSelectorFactory()))
 
     def __validate_sync__(self, instance: ValidationContext[T]):
-        instance.IsAsync = True
+        instance.IsAsync = False
         return self.ValidateInternalSync(instance)
 
     def ValidateInternalSync(self, context: ValidationContext[T]) -> ValidationResult:

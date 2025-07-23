@@ -1,3 +1,4 @@
+import inspect
 from typing import Any, Callable, Type, get_type_hints, get_args, get_origin, Union
 from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction, TupleInstruction
 import types
@@ -24,15 +25,17 @@ class MemberInfo:
 
     def get_type_hint(self, type_model: Type) -> Type[Any]:
         def get_types(obj: Any):
-
             init_types = get_type_hints(obj.__init__) if hasattr(obj, "__init__") else {}
             annotations_types = obj.__annotations__ if hasattr(obj, "__annotations__") else {}
 
-            return init_types if len(init_types) > len(annotations_types) else annotations_types
+            functions_dict = {name: obj for name, obj in inspect.getmembers(type_model, predicate=inspect.isfunction)}
+
+            dict_types = init_types if len(init_types) > len(annotations_types) else annotations_types
+
+            dict_types.update(functions_dict)
+            return dict_types
 
         current_type_hints: dict[str, Any] = get_types(type_model)
-
-
 
         if not self._lambda_vars:
             return None

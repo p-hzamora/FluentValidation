@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import timedelta
 from decimal import Decimal
 from pathlib import Path
 import sys
@@ -10,6 +11,69 @@ from dataclasses import dataclass  # noqa: E402
 from fluent_validation.abstract_validator import AbstractValidator  # noqa: E402
 from fluent_validation.enums import CascadeMode, Severity  # noqa: E402
 from fluent_validation import IRuleBuilder, IRuleBuilderOptions
+
+
+@dataclass
+class Person:
+    Surname: Optional[str] = None
+    Forename: Optional[str] = None
+    DateOfBirth: datetime = datetime.min
+    min_age: int = 18
+
+
+class PersonAgeValidator(AbstractValidator[Person]):
+    def __init__(self):
+        super().__init__(Person)
+        # fmt: off
+        (
+            self.rule_for(lambda x: x.DateOfBirth)
+            .Cascade(CascadeMode.Stop)
+            .must(lambda x: isinstance(x, datetime)).with_message(lambda x: "Error for first must {PropertyValue}")
+            .not_empty()
+            .must(self.BeOver18).with_message(lambda x: f"The person is under {x.min_age}")
+        )
+        # fmt: on
+
+    def BeOver18(self, date: datetime) -> bool:
+        today = datetime.now()
+
+        # Calculate exact age
+        age = today.year - date.year
+
+        # Adjust if birthday hasn't occurred this year yet
+        if (today.month, today.day) < (date.month, date.day):
+            age -= 1
+
+        return age >= 18
+
+
+class PersonNameValidator(AbstractValidator[Person]):
+    def __init__(self):
+        super().__init__(Person)
+        # fmt: off
+        ( 
+        self.rule_for(lambda x: x.Surname)
+        .not_null().with_message('Error Null in Surname')
+        .length(0, 5).with_message('more than 5. you passed exactly "{total_length}" chars')
+        )
+
+        self.rule_for(lambda x: x.Forename).not_null().length(0, 255)
+
+        # fmt: on
+
+
+class PersonValidator(AbstractValidator[Person]):
+    def __init__(self):
+        super().__init__(Person)
+        self.Include(PersonAgeValidator())
+        self.Include(PersonNameValidator())
+
+
+validator = PersonValidator()
+
+print(print(validator.validate(Person(DateOfBirth=datetime(2010, 12, 16), Surname="good")).to_string("\n")))
+print(print(validator.validate(Person(DateOfBirth=datetime(1998, 12, 16), Surname="more than 5")).to_string("\n")))
+pass
 
 
 class RegexPattern:

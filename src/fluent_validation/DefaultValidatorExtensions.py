@@ -79,7 +79,7 @@ class DefaultValidatorExtensions[T, TProperty]:
             IRuleBuilderOptions for method chaining
 
         Example:
-            ruleBuilder.matches(lambda person: person.get_validation_pattern())
+            >>> ruleBuilder.matches(lambda person: person.get_validation_pattern())
         """
         ...
 
@@ -97,8 +97,8 @@ class DefaultValidatorExtensions[T, TProperty]:
             IRuleBuilderOptions for method chaining
 
         Example:
-            pattern = re.compile(r"^\d{3}-\d{2}-\d{4}$")  # SSN format
-            ruleBuilder.matches(pattern)
+            >>> pattern = re.compile(r'^\d{3}-\d{2}-\d{4}$')  # SSN format
+            >>> ruleBuilder.matches(pattern)
         """
         ...
 
@@ -116,7 +116,7 @@ class DefaultValidatorExtensions[T, TProperty]:
             IRuleBuilderOptions for method chaining
 
         Example:
-            ruleBuilder.matches(lambda person: person.get_validation_regex())
+            >>> ruleBuilder.matches(lambda person: person.get_validation_regex())
         """
         ...
 
@@ -135,7 +135,7 @@ class DefaultValidatorExtensions[T, TProperty]:
             IRuleBuilderOptions for method chaining
 
         Example:
-            ruleBuilder.matches(r"^hello", re.IGNORECASE)
+            >>> ruleBuilder.matches(r"^hello", re.IGNORECASE)
         """
         ...
 
@@ -154,10 +154,10 @@ class DefaultValidatorExtensions[T, TProperty]:
             IRuleBuilderOptions for method chaining
 
         Example:
-            ruleBuilder.matches(
-                lambda obj: obj.pattern,
-                re.IGNORECASE | re.MULTILINE
-            )
+            >>> ruleBuilder.matches(
+            >>>     lambda obj: obj.pattern,
+            >>>     re.IGNORECASE | re.MULTILINE
+            >>> )
         """
         ...
 
@@ -176,10 +176,10 @@ class DefaultValidatorExtensions[T, TProperty]:
             IRuleBuilderOptions for method chaining
 
         Example:
-            ruleBuilder.matches(
-                lambda obj: obj.pattern,
-                re.IGNORECASE | re.MULTILINE
-            )
+            >>> ruleBuilder.matches(
+            >>>     lambda obj: obj.pattern,
+            >>>     re.IGNORECASE | re.MULTILINE
+            >>> )
         """
         ...
 

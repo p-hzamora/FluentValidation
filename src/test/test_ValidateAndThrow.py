@@ -128,14 +128,18 @@ class ValidateAndThrowTester(unittest.TestCase):
     # 		deserialized.Errors.Count().ShouldEqual(1)
     # 	}
 
-    # 	def test_ValidationException_provides_correct_message_when_appendDefaultMessage_true(self)->None:
-    # 		userMessage = "exception occured during testing"
-    # 		validationFailures = List<ValidationFailure> {ValidationFailure("test", "test")}
-    # 		exception = ValidationException(validationFailures)
-    # 		exceptionWithUserMessage = ValidationException(userMessage, validationFailures, True)
+    # FIXME [ ]: Implement ValidationException's __init__ overload
+    # def test_ValidationException_provides_correct_message_when_appendDefaultMessage_true(self) -> None:
+    #     userMessage = "exception occured during testing"
+    #     validationFailures: list[ValidationFailure] = [ValidationFailure("test", "test")]
+    #     exception = ValidationException(errors=validationFailures)
+    #     exceptionWithUserMessage = ValidationException(
+    #         message=userMessage,
+    #         errors=validationFailures,
+    #         appendDefaultMessage=True,
+    #     )
 
-    # 		exceptionWithUserMessage.Message.ShouldEqual($"{userMessage} {exception.Message}")
-    # 	}
+    #     self.assertEqual(exceptionWithUserMessage.message, f"{userMessage} {exception.message}")
 
     # 	def test_ValidationException_provides_correct_message_when_appendDefaultMessage_False(self)->None:
     # 		userMessage = "exception occured during testing"
@@ -162,10 +166,9 @@ class ValidateAndThrowTester(unittest.TestCase):
                 self.assertEqual(len(e.Errors), 2)
                 raise ValidationException
 
-
-    def test_Throws_exception_when_preValidate_fails_and_continueValidation_true(self)->None:
+    def test_Throws_exception_when_preValidate_fails_and_continueValidation_true(self) -> None:
         validator = TestValidatorWithPreValidate(
-            PreValidateMethod = lambda context, result:(
+            PreValidateMethod=lambda context, result: (
                 result.errors.append(ValidationFailure("test", "test")),
                 True,
             )[1]
@@ -174,20 +177,14 @@ class ValidateAndThrowTester(unittest.TestCase):
         with self.assertRaises(ValidationException):
             validator.validate_and_throw(Person())
 
-
-    def test_Throws_exception_when_preValidate_fails_and_continueValidation_False(self)->None:
-        validator = TestValidatorWithPreValidate(
-            PreValidateMethod = lambda context, result:(
-                result.errors.append(ValidationFailure("test", "test")), 
-                False
-            )[1]
-        )
+    def test_Throws_exception_when_preValidate_fails_and_continueValidation_False(self) -> None:
+        validator = TestValidatorWithPreValidate(PreValidateMethod=lambda context, result: (result.errors.append(ValidationFailure("test", "test")), False)[1])
 
         with self.assertRaises(ValidationException):
             validator.validate_and_throw(Person())
 
-    def test_Does_not_throws_exception_when_preValidate_ends_with_continueValidation_False(self)->None:
-        validator = TestValidatorWithPreValidate(PreValidateMethod = lambda context, result:(False))
+    def test_Does_not_throws_exception_when_preValidate_ends_with_continueValidation_False(self) -> None:
+        validator = TestValidatorWithPreValidate(PreValidateMethod=lambda context, result: (False))
         validator.validate_and_throw(Person())
 
     # def test_Task Throws_exception_when_preValidate_fails_and_continueValidation_true_async(self)->None:
@@ -223,6 +220,7 @@ class ValidateAndThrowTester(unittest.TestCase):
 
     #     await validator.ValidateAndThrowAsync(Person())
     # )
+
 
 # 	def test_Throws_when_calling_validator_as_interface(self)->None:
 # 		IValidator<TestType> validator = InterfaceValidator()

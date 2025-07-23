@@ -548,7 +548,7 @@ class ForEachRuleTests(unittest.TestCase):
     # 		result.errors[0].ErrorMessage.ShouldEqual("1 must not be empty")
 
     def test_Failing_condition_should_prevent_multiple_components_running_and_not_throw(self):
-        # https://github.com/FluentValidation/FluentValidation/issues/1698
+        # https://github.com/p-hzamora/FluentValidation/issues/1698
         validator = InlineValidator[Person](Person)
 
         validator.rule_for_each(lambda x: x.Orders).not_null().not_null().when(lambda x: len(x.Orders) > 0)
@@ -557,7 +557,7 @@ class ForEachRuleTests(unittest.TestCase):
         self.assertTrue(result.is_valid)
 
     # 	def public async Task Failing_condition_should_prevent_multiple_components_running_and_not_throw_async(self):
-    # 		# https://github.com/FluentValidation/FluentValidation/issues/1698
+    # 		# https://github.com/p-hzamora/FluentValidation/issues/1698
     # 		validator = InlineValidator[Person](Person)
 
     # 		validator.rule_for_each(lambda x: x.Orders)
@@ -572,7 +572,7 @@ class ForEachRuleTests(unittest.TestCase):
     #     validator = InlineValidator[Person](Person)
 
     #     # These 2 rule definitions should produce the same error message and property name.
-    #     # https://github.com/FluentValidation/FluentValidation/issues/1231
+    #     # https://github.com/p-hzamora/FluentValidation/issues/1231
 
     #     (validator.rule_for_each(lambda x: x.NickNames).must(lambda x: False).with_message("{PropertyName}"))
 

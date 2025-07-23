@@ -107,27 +107,27 @@ class ValidatorSelectorTests(unittest.TestCase):
     # 	self.assertEqual(len(result.errors),1)
     #   self.assertEqual( 	result.errors[0].PropertyName,"Forename")
 
-    # def test_Executes_correct_rule_when_using_property_with_nested_includes(self):
-    # 	validator3 = TestValidator()
-    # 	validator3.rule_for(lambda x: x.Age).greater_than(0)
+    def test_Executes_correct_rule_when_using_property_with_nested_includes(self):
+        validator3 = TestValidator()
+        validator3.rule_for(lambda x: x.Age).greater_than(0)
 
-    # 	# In the middle validator ensure that the Include statement is
-    # 	# before the additional rules in order to trigger the case reported in
-    # 	# https://github.com/FluentValidation/FluentValidation/issues/1989
-    # 	validator2 = TestValidator()
-    # 	validator2.Include(validator3)
-    # 	validator2.rule_for(lambda x: x.Orders).not_empty()
+        # In the middle validator ensure that the Include statement is
+        # before the additional rules in order to trigger the case reported in
+        # https://github.com/p-hzamora/FluentValidation/issues/1989
+        validator2 = TestValidator()
+        validator2.Include(validator3)
+        validator2.rule_for(lambda x: x.Orders).not_empty()
 
-    # 	validator = TestValidator()
-    # 	validator.Include(validator2)
+        validator = TestValidator()
+        validator.Include(validator2)
 
-    # 	# FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # 	result = validator.validate(Person(), lambda v: v.IncludeProperties("Age"))
-    # 	self.assertEqual(len(result.errors),1)
-    # 	self.assertEqual(result.errors[0].PropertyName,"Age")
+        # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+        result = validator.validate(Person(), lambda v: v.IncludeProperties("Age"))
+        self.assertEqual(len(result.errors), 1)
+        self.assertEqual(result.errors[0].PropertyName, "Age")
 
-    # 	result = validator.validate(Person(Age = 1), lambda v: v.IncludeProperties("Age"))
-    # 	self.assertEqual(len(result.errors),0)
+        result = validator.validate(Person(Age=1), lambda v: v.IncludeProperties("Age"))
+        self.assertEqual(len(result.errors), 0)
 
     def test_Only_validates_doubly_nested_property(self):
         person = Person(Address=Address(Country=Country()), Orders=[Order(Amount=5), Order(ProductName="Foo")])
@@ -199,46 +199,46 @@ class ValidatorSelectorTests(unittest.TestCase):
         self.assertEqual(result.errors[1].PropertyName, "Orders[1].Amount")
         self.assertEqual(result.errors[1].ErrorMessage, "'Amount' must be greater than '6'.")
 
-    # # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # def test_Only_validates_single_child_property_of_all_elements_in_nested_collection(self):
-    #     person = Person(
-    #         Orders=[
-    #             Order(
-    #                 Amount=5,
-    #                 Payments=[
-    #                     Payment(Amount=0),
-    #                 ],
-    #             ),
-    #             Order(
-    #                 ProductName="Foo",
-    #                 Payments=[
-    #                     Payment(Amount=1),
-    #                     Payment(Amount=0),
-    #                 ],
-    #             ),
-    #         ],
-    #     )
+    # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+    def test_Only_validates_single_child_property_of_all_elements_in_nested_collection(self):
+        person = Person(
+            Orders=[
+                Order(
+                    Amount=5,
+                    Payments=[
+                        Payment(Amount=0),
+                    ],
+                ),
+                Order(
+                    ProductName="Foo",
+                    Payments=[
+                        Payment(Amount=1),
+                        Payment(Amount=0),
+                    ],
+                ),
+            ],
+        )
 
-    #     validator = InlineValidator[Person](Person)
-    #     validator.rule_for_each(lambda x: x.Orders).child_rules(
-    #         lambda x: (
-    #             x.rule_for(lambda y: y.Amount).greater_than(6),
-    #             x.rule_for_each(lambda y: y.Payments).child_rules(
-    #                 lambda a: (
-    #                     a.rule_for(
-    #                         lambda b: b.Amount,
-    #                     ).greater_than(0)
-    #                 )
-    #             ),
-    #         )
-    #     )
+        validator = InlineValidator[Person](Person)
+        validator.rule_for_each(lambda x: x.Orders).child_rules(
+            lambda x: (
+                x.rule_for(lambda y: y.Amount).greater_than(6),
+                x.rule_for_each(lambda y: y.Payments).child_rules(
+                    lambda a: (
+                        a.rule_for(
+                            lambda b: b.Amount,
+                        ).greater_than(0)
+                    )
+                ),
+            )
+        )
 
-    #     result = validator.validate(person, lambda opt: opt.IncludeProperties("Orders[].Payments[].Amount"))
-    #     self.assertEqual(len(result.errors), 2)
-    #     self.assertEqual(result.errors[0].PropertyName, "Orders[0].Payments[0].Amount")
-    #     self.assertEqual(result.errors[0].ErrorMessage, "'Amount' must be greater than '0'.")
-    #     self.assertEqual(result.errors[1].PropertyName, "Orders[1].Payments[1].Amount")
-    #     self.assertEqual(result.errors[1].ErrorMessage, "'Amount' must be greater than '0'.")
+        result = validator.validate(person, lambda opt: opt.IncludeProperties("Orders[].Payments[].Amount"))
+        self.assertEqual(len(result.errors), 2)
+        self.assertEqual(result.errors[0].PropertyName, "Orders[0].Payments[0].Amount")
+        self.assertEqual(result.errors[0].ErrorMessage, "'Amount' must be greater than '0'.")
+        self.assertEqual(result.errors[1].PropertyName, "Orders[1].Payments[1].Amount")
+        self.assertEqual(result.errors[1].ErrorMessage, "'Amount' must be greater than '0'.")
 
 
 if __name__ == "__main__":

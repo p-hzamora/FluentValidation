@@ -1,3 +1,4 @@
+from typing import Optional
 import unittest
 import sys
 from pathlib import Path
@@ -7,164 +8,165 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop(
 
 # from fluent_validation.results.ValidationFailure import ValidationFailure
 from fluent_validation.InlineValidator import InlineValidator
+from fluent_validation import AbstractValidator
 from TestValidator import TestValidator
 from person import Person
 
 
+# 	class SharedConditionValidator : AbstractValidator<Person> {
+# 		public SharedConditionValidator() {
+# 			# Start with a predicate to group rules together.
+# 			#
+# 			# The AbstractValidator appends this predicate
+# 			# to each inner rule_for so you only need write,
+# 			# maintain, and think about it in one place.
+# 			#
+# 			# You can finish with an unless clause that will
+# 			# void the validation for the entire set when it's
+# 			# predicate is True.
+# 			#
+# 			when(lambda x: x.Id > 0, lambda: {
+# 				rule_for(lambda x: x.Forename).NotEmpty()
+# 				rule_for(lambda x: x.Surname).NotEmpty().Equal("Smith")
+# 			})
+# 		}
+# 	}
+
+# 	class SharedAsyncConditionValidator : AbstractValidator<Person> {
+# 		public SharedAsyncConditionValidator() {
+# 			# Start with a predicate to group rules together.
+# 			#
+# 			# The AbstractValidator appends this predicate
+# 			# to each inner rule_for so you only need write,
+# 			# maintain, and think about it in one place.
+# 			#
+# 			# You can finish with an unless clause that will
+# 			# void the validation for the entire set when it's
+# 			# predicate is True.
+# 			#
+# 			WhenAsync(async (x,c) => x.Id > 0,
+# 				lambda: {
+# 					rule_for(lambda x: x.Forename).NotEmpty()
+# 					rule_for(lambda x: x.Surname).NotEmpty().Equal("Smith")
+# 				}
+# 			)
+# 		}
+# 	}
+
+# 	class SharedCollectionConditionValidator : AbstractValidator<Person> {
+# 		public SharedCollectionConditionValidator() {
+# 			# Start with a predicate to group rules together.
+# 			#
+# 			# The AbstractValidator appends this predicate
+# 			# to each inner rule_for so you only need write,
+# 			# maintain, and think about it in one place.
+# 			#
+# 			# You can finish with an unless clause that will
+# 			# void the validation for the entire set when it's
+# 			# predicate is True.
+# 			#
+# 			when((x) => x.Id > 0,
+# 				lambda: {
+# 					rule_for_each(lambda x: x.NickNames).NotEmpty()
+# 				}
+# 			)
+# 		}
+# 	}
+
+# 	class SharedAsyncCollectionConditionValidator : AbstractValidator<Person> {
+# 		public SharedAsyncCollectionConditionValidator() {
+# 			# Start with a predicate to group rules together.
+# 			#
+# 			# The AbstractValidator appends this predicate
+# 			# to each inner rule_for so you only need write,
+# 			# maintain, and think about it in one place.
+# 			#
+# 			# You can finish with an unless clause that will
+# 			# void the validation for the entire set when it's
+# 			# predicate is True.
+# 			#
+# 			WhenAsync(async (x,c) => x.Id > 0,
+# 				lambda: {
+# 					rule_for_each(lambda x: x.NickNames).NotEmpty()
+# 				}
+# 			)
+# 		}
+# 	}
+
+# 	class SharedConditionWithScopedUnlessValidator : AbstractValidator<Person> {
+# 		public SharedConditionWithScopedUnlessValidator() {
+# 			# inner rule_for() calls can contain their own,
+# 			# locally scoped when and unless calls that
+# 			# act only on that individual rule_for() yet the
+# 			# rule_for() respects the grouped when() and
+# 			# unless() predicates.
+# 			#
+# 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == False) })
+# 			#.unless(lambda x: x.Age > 65)
+# 		}
+# 	}
+
+# 	class SharedAsyncConditionWithScopedUnlessValidator : AbstractValidator<Person> {
+# 		public SharedAsyncConditionWithScopedUnlessValidator() {
+# 			# inner rule_for() calls can contain their own,
+# 			# locally scoped when and unless calls that
+# 			# act only on that individual rule_for() yet the
+# 			# rule_for() respects the grouped when() and
+# 			# unless() predicates.
+# 			#
+# 			WhenAsync(async (x,c) => x.Id > 0 && x.Age <= 65,
+# 				lambda: {
+# 					rule_for(lambda x: x.Orders.Count).Equal(0).UnlessAsync(async (x,c) => String.IsNullOrWhiteSpace(x.CreditCard) == False)
+# 				}
+# 			)
+# 		}
+# 	}
+
+# 	class SharedConditionInverseValidator : AbstractValidator<Person> {
+# 		public SharedConditionInverseValidator() {
+# 			unless(lambda x: x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
+# 		}
+# 	}
+
+# 	class SharedAsyncConditionInverseValidator : AbstractValidator<Person>
+# 	{
+# 		public SharedAsyncConditionInverseValidator()
+# 		{
+# 			UnlessAsync(async (x,c) => x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
+# 		}
+# 	}
+
+
+class BadValidatorDisablesNullCheck(AbstractValidator[str]):
+    def __init__(self):
+        super().__init__(str)
+        self.when(lambda x: x is not None, lambda: {self.rule_for(lambda x: x).must(lambda x: x != "foo")})
+
+
+# 		[Obsolete("Overriding the EnsureInstanceNotNull method to prevent FluentValidation for throwing an exception for null root models is no longer supported or recommended. The ability to override this method will be removed in FluentValidation 12. For details, see https:#github.com/FluentValidation/FluentValidation/issues/2069")]
+# 		protected override void EnsureInstanceNotNull(object instanceToValidate) {
+# 			#bad.
+# 		}
+# 	}
+
+# 	class AsyncBadValidatorDisablesNullCheck : AbstractValidator<string> {
+# 		public AsyncBadValidatorDisablesNullCheck() {
+# 			when(lambda x: x != null, lambda: {
+# 				rule_for(lambda x: x).Must(lambda x: x != "foo")
+# 			})
+
+# 			WhenAsync(async (x, ct) => x != null, lambda: {
+# 				rule_for(lambda x: x).Must(lambda x: x != "foo")
+# 			})
+# 		}
+
+
+# 		[Obsolete("Overriding the EnsureInstanceNotNull method to prevent FluentValidation for throwing an exception for null root models is no longer supported or recommended. The ability to override this method will be removed in FluentValidation 12. For details, see https:#github.com/FluentValidation/FluentValidation/issues/2069")]
+# 		protected override void EnsureInstanceNotNull(object instanceToValidate) {
+# 			#bad.
+# 		}
+# 	}
 class SharedConditionTests(unittest.TestCase):
-    # 	class SharedConditionValidator : AbstractValidator<Person> {
-    # 		public SharedConditionValidator() {
-    # 			# Start with a predicate to group rules together.
-    # 			#
-    # 			# The AbstractValidator appends this predicate
-    # 			# to each inner rule_for so you only need write,
-    # 			# maintain, and think about it in one place.
-    # 			#
-    # 			# You can finish with an unless clause that will
-    # 			# void the validation for the entire set when it's
-    # 			# predicate is True.
-    # 			#
-    # 			when(lambda x: x.Id > 0, lambda: {
-    # 				rule_for(lambda x: x.Forename).NotEmpty()
-    # 				rule_for(lambda x: x.Surname).NotEmpty().Equal("Smith")
-    # 			})
-    # 		}
-    # 	}
-
-    # 	class SharedAsyncConditionValidator : AbstractValidator<Person> {
-    # 		public SharedAsyncConditionValidator() {
-    # 			# Start with a predicate to group rules together.
-    # 			#
-    # 			# The AbstractValidator appends this predicate
-    # 			# to each inner rule_for so you only need write,
-    # 			# maintain, and think about it in one place.
-    # 			#
-    # 			# You can finish with an unless clause that will
-    # 			# void the validation for the entire set when it's
-    # 			# predicate is True.
-    # 			#
-    # 			WhenAsync(async (x,c) => x.Id > 0,
-    # 				lambda: {
-    # 					rule_for(lambda x: x.Forename).NotEmpty()
-    # 					rule_for(lambda x: x.Surname).NotEmpty().Equal("Smith")
-    # 				}
-    # 			)
-    # 		}
-    # 	}
-
-    # 	class SharedCollectionConditionValidator : AbstractValidator<Person> {
-    # 		public SharedCollectionConditionValidator() {
-    # 			# Start with a predicate to group rules together.
-    # 			#
-    # 			# The AbstractValidator appends this predicate
-    # 			# to each inner rule_for so you only need write,
-    # 			# maintain, and think about it in one place.
-    # 			#
-    # 			# You can finish with an unless clause that will
-    # 			# void the validation for the entire set when it's
-    # 			# predicate is True.
-    # 			#
-    # 			when((x) => x.Id > 0,
-    # 				lambda: {
-    # 					rule_for_each(lambda x: x.NickNames).NotEmpty()
-    # 				}
-    # 			)
-    # 		}
-    # 	}
-
-    # 	class SharedAsyncCollectionConditionValidator : AbstractValidator<Person> {
-    # 		public SharedAsyncCollectionConditionValidator() {
-    # 			# Start with a predicate to group rules together.
-    # 			#
-    # 			# The AbstractValidator appends this predicate
-    # 			# to each inner rule_for so you only need write,
-    # 			# maintain, and think about it in one place.
-    # 			#
-    # 			# You can finish with an unless clause that will
-    # 			# void the validation for the entire set when it's
-    # 			# predicate is True.
-    # 			#
-    # 			WhenAsync(async (x,c) => x.Id > 0,
-    # 				lambda: {
-    # 					rule_for_each(lambda x: x.NickNames).NotEmpty()
-    # 				}
-    # 			)
-    # 		}
-    # 	}
-
-    # 	class SharedConditionWithScopedUnlessValidator : AbstractValidator<Person> {
-    # 		public SharedConditionWithScopedUnlessValidator() {
-    # 			# inner rule_for() calls can contain their own,
-    # 			# locally scoped when and unless calls that
-    # 			# act only on that individual rule_for() yet the
-    # 			# rule_for() respects the grouped when() and
-    # 			# unless() predicates.
-    # 			#
-    # 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == False) })
-    # 			#.unless(lambda x: x.Age > 65)
-    # 		}
-    # 	}
-
-    # 	class SharedAsyncConditionWithScopedUnlessValidator : AbstractValidator<Person> {
-    # 		public SharedAsyncConditionWithScopedUnlessValidator() {
-    # 			# inner rule_for() calls can contain their own,
-    # 			# locally scoped when and unless calls that
-    # 			# act only on that individual rule_for() yet the
-    # 			# rule_for() respects the grouped when() and
-    # 			# unless() predicates.
-    # 			#
-    # 			WhenAsync(async (x,c) => x.Id > 0 && x.Age <= 65,
-    # 				lambda: {
-    # 					rule_for(lambda x: x.Orders.Count).Equal(0).UnlessAsync(async (x,c) => String.IsNullOrWhiteSpace(x.CreditCard) == False)
-    # 				}
-    # 			)
-    # 		}
-    # 	}
-
-    # 	class SharedConditionInverseValidator : AbstractValidator<Person> {
-    # 		public SharedConditionInverseValidator() {
-    # 			unless(lambda x: x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
-    # 		}
-    # 	}
-
-    # 	class SharedAsyncConditionInverseValidator : AbstractValidator<Person>
-    # 	{
-    # 		public SharedAsyncConditionInverseValidator()
-    # 		{
-    # 			UnlessAsync(async (x,c) => x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
-    # 		}
-    # 	}
-
-    # 	class BadValidatorDisablesNullCheck : AbstractValidator<string> {
-    # 		public BadValidatorDisablesNullCheck() {
-    # 			when(lambda x: x != null, lambda: {
-    # 				rule_for(lambda x: x).Must(lambda x: x != "foo")
-    # 			})
-    # 		}
-
-    # 		[Obsolete("Overriding the EnsureInstanceNotNull method to prevent FluentValidation for throwing an exception for null root models is no longer supported or recommended. The ability to override this method will be removed in FluentValidation 12. For details, see https:#github.com/FluentValidation/FluentValidation/issues/2069")]
-    # 		protected override void EnsureInstanceNotNull(object instanceToValidate) {
-    # 			#bad.
-    # 		}
-    # 	}
-
-    # 	class AsyncBadValidatorDisablesNullCheck : AbstractValidator<string> {
-    # 		public AsyncBadValidatorDisablesNullCheck() {
-    # 			when(lambda x: x != null, lambda: {
-    # 				rule_for(lambda x: x).Must(lambda x: x != "foo")
-    # 			})
-
-    # 			WhenAsync(async (x, ct) => x != null, lambda: {
-    # 				rule_for(lambda x: x).Must(lambda x: x != "foo")
-    # 			})
-    # 		}
-
-    # 		[Obsolete("Overriding the EnsureInstanceNotNull method to prevent FluentValidation for throwing an exception for null root models is no longer supported or recommended. The ability to override this method will be removed in FluentValidation 12. For details, see https:#github.com/FluentValidation/FluentValidation/issues/2069")]
-    # 		protected override void EnsureInstanceNotNull(object instanceToValidate) {
-    # 			#bad.
-    # 		}
-    # 	}
-
     # 	def void shared_When_not_applied_to_grouped_collection_rules_when_initial_predicate_is_false() {
     # 		validator = SharedCollectionConditionValidator()
     # 		person = Person() # fails the shared when predicate
@@ -700,60 +702,56 @@ class SharedConditionTests(unittest.TestCase):
         self.assertTrue(validationResult.is_valid)
         self.assertEqual(executions, 2)
 
+    # 	def async Task When_async_condition_executed_for_each_instance_of_RuleForEach_condition_should_not_be_cached() {
+    # 		person = Person {
+    # 			Children = list<Person> {
+    # 				Person { Id = 1},
+    # 				Person { Id = 0}
+    # 			}
+    # 		}
 
-# 	def async Task When_async_condition_executed_for_each_instance_of_RuleForEach_condition_should_not_be_cached() {
-# 		person = Person {
-# 			Children = list<Person> {
-# 				Person { Id = 1},
-# 				Person { Id = 0}
-# 			}
-# 		}
+    # 		childValidator = InlineValidator<Person>()
+    # 		int executions = 0
 
-# 		childValidator = InlineValidator<Person>()
-# 		int executions = 0
+    # 		childValidator.WhenAsync(async (a, ct) => {
+    # 			executions++
+    # 			return a.Id != 0
+    # 		}, lambda: {
+    # 			childValidator.rule_for(a => a.Id).Equal(1)
+    # 		})
+    # 		personValidator = InlineValidator<Person>()
+    # 		personValidator.rule_for_each(p => p.Children).SetValidator(childValidator)
 
-# 		childValidator.WhenAsync(async (a, ct) => {
-# 			executions++
-# 			return a.Id != 0
-# 		}, lambda: {
-# 			childValidator.rule_for(a => a.Id).Equal(1)
-# 		})
-# 		personValidator = InlineValidator<Person>()
-# 		personValidator.rule_for_each(p => p.Children).SetValidator(childValidator)
+    # 		validationResult = await personValidator.ValidateAsync(person)
+    # 		validationResult.is_valid.ShouldBeTrue()
+    # 		executions.ShouldEqual(2)
+    # 	}
 
-# 		validationResult = await personValidator.ValidateAsync(person)
-# 		validationResult.is_valid.ShouldBeTrue()
-# 		executions.ShouldEqual(2)
-# 	}
+    def test_Doesnt_throw_NullReferenceException_when_instance_not_null(self) -> None:
+        v = BadValidatorDisablesNullCheck()
+        result = v.validate(str, None)
+        self.assertTrue(result.is_valid)
 
-# 	def void Doesnt_throw_NullReferenceException_when_instance_not_null() {
-# 		v = BadValidatorDisablesNullCheck()
-# 		result = v.validate((string) null)
-# 		self.assertTrue(result.is_valid)
-# 	}
+    # 	def async Task Doesnt_throw_NullReferenceException_when_instance_not_null_async() {
+    # 		v = AsyncBadValidatorDisablesNullCheck()
+    # 		result = await v.ValidateAsync((string) null)
+    # 		self.assertTrue(result.is_valid)
+    # 	}
 
-# 	def async Task Doesnt_throw_NullReferenceException_when_instance_not_null_async() {
-# 		v = AsyncBadValidatorDisablesNullCheck()
-# 		result = await v.ValidateAsync((string) null)
-# 		self.assertTrue(result.is_valid)
-# 	}
+    # def test_Shouldnt_break_with_hashcode_collision(self):
+    #     v1 = InlineValidator(Collision1)
+    #     v2 = InlineValidator(Collision2)
 
-# def test_Shouldnt_break_with_hashcode_collision(self):
-#     v1 = InlineValidator[Collision1](Collision1)
-#     v2 = InlineValidator[Collision2](Collision2)
+    #     v = InlineValidator(CollisionBase)
+    #     v.when(lambda x: x, lambda: (v.rule_for(lambda x: x.Name).not_null()))
 
+    #     v.when(lambda x: x, lambda: v.rule_for(lambda x: x.Name).not_null())
 
-#     v = InlineValidator[CollisionBase](CollisionBase)
-#     v.when(lambda x: x is Collision1, lambda: (v.rule_for(lambda x: x.Name).not_null()))
+    #     # shouldn't throw an InvalidCastException.
+    #     containerValidator = InlineValidator(list[CollisionBase])
+    #     containerValidator.rule_for_each(lambda x: x).set_validator(v)
+    #     containerValidator.validate([Collision1(), Collision2()])
 
-#     v.when(lambda x: x is Collision2, lambda: v.rule_for(lambda x: x.Name).not_null())
-
-#     # shouldn't throw an InvalidCastException.
-#     containerValidator = InlineValidator[list[CollisionBase]](list[CollisionBase])
-#     containerValidator.rule_for_each(lambda x: x).SetValidator(v)
-#     containerValidator.validate(list[CollisionBase] {
-#         Collision1(), Collision2()
-#     })
 
 # 	def async Task Shouldnt_break_with_hashcode_collision_async() {
 # 		v1 = InlineValidator[Collision1](Collision1)
@@ -781,24 +779,19 @@ class CollisionBase: ...
 
 
 class Collision1(CollisionBase):
-    def __init__(self, Name: str) -> None:
-        self._Name: str = Name
+    def __init__(self):
+        self.Name = None
 
-    @property
-    def Name(self) -> str:
-        return self._Name
-
-    @Name.setter
-    def Name(self, value: str) -> None:
-        self._Name = value
-
-    def __hash__(self) -> int:
+    def __hash__(self):
         return 1
 
 
 class Collision2(CollisionBase):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self):
+        self.Name = None
+
+    def __hash__(self):
+        return 1
 
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ class CascadeModePropertiesTesterLegacy(unittest.TestCase, IDisposable):
         return super().__enter__()
 
     def __exit__(self, *args, **kwargs):
-        return super().__exit__(*args, **kwargs)
+        return self.Dispose()
 
     def test_Setting_global_default_CascadeMode_Stop_sets_both_rule_and_class_level_global_default_properties(self) -> None:
         ValidatorOptions.Global.CascadeMode = CascadeMode.Stop

@@ -26,7 +26,8 @@ class CascadingFailuresTester(unittest.TestCase, IDisposable):
         self.SetBothGlobalCascadeModes(CascadeMode.Continue)
 
     def __enter__(self): ...
-    def __exit__(self): ...
+    def __exit__(self): 
+        return self.Dispose()
 
     def test_Validation_continues_on_failure(self):
         self._validator.rule_for(lambda x: x.Surname).not_null().equal("Foo")
@@ -394,7 +395,7 @@ class CascadingFailuresTester(unittest.TestCase, IDisposable):
     # 	self.assertEqual(len(results.errors), 1)
 
     # async def test_Cascade_set_to_stop_in_child_validator_with_RuleForEach_in_parent(self):
-    # 	# See https://github.com/FluentValidation/FluentValidation/issues/2207
+    # 	# See https://github.com/p-hzamora/FluentValidation/issues/2207
 
     # 	childValidator = InlineValidator[Order](Order)
     # 	childValidator.ClassLevelCascadeMode = CascadeMode.Stop

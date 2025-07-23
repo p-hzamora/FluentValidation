@@ -173,7 +173,7 @@ class ChildRulesTests(unittest.TestCase):
 
     # def test_Doesnt_throw_InvalidCastException(self):
     # 	# FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # 	# See https://github.com/FluentValidation/FluentValidation/issues/2165
+    # 	# See https://github.com/p-hzamora/FluentValidation/issues/2165
     # 	validator = RootValidator()
     # 	_root = Root()
     # 	_root.Data = Bar()

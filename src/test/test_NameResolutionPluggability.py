@@ -28,18 +28,15 @@ class NameResolutionPluggabilityTester(unittest.TestCase, IDisposable):
         error = validator.validate(Person(Address=Address())).errors[0]
         self.assertEqual(error.PropertyName, "Address.Country")
 
-    # def ShouldHaveValidationError_Should_support_custom_propertynameresolver(self):
-    # 	try:
-    # 		ValidatorOptions.Global.PropertyNameResolver = lambda type, prop, expr: "foo"
-    # 		validator = TestValidator() {
-    # 			lambda v: v.rule_for(lambda x: x.Surname).not_null()
-    # 		}
-    # 		validator.TestValidate(Person()).ShouldHaveValidationErrorFor(lambda x: x.Surname)
-    # 	}
-    # 	finally {
-    # 		ValidatorOptions.Global.PropertyNameResolver = null
-    # 	}
-    # }
+    # def test_ShouldHaveValidationError_Should_support_custom_propertynameresolver(self):
+    #     try:
+    #         ValidatorOptions.Global.PropertyNameResolver = lambda type, prop, expr: "foo"
+    #         validator = TestValidator(
+    #             lambda v: v.rule_for(lambda x: x.Surname).not_null()
+    #         )
+    #         validator.TestValidate(Person()).ShouldHaveValidationErrorFor(lambda x: x.Surname)
+    #     finally:
+    #         ValidatorOptions.Global.PropertyNameResolver = None
 
     # def ShouldHaveValidationError_Should_support_custom_propertynameresolver_with_include_properties(self):
     # 	try:
@@ -74,7 +71,8 @@ class NameResolutionPluggabilityTester(unittest.TestCase, IDisposable):
     @override
     def __enter__(self): ...
     @override
-    def __exit__(self): ...
+    def __exit__(self):
+        return self.Dispose()
 
 
 if __name__ == "__main__":

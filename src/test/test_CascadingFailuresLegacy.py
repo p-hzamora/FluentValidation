@@ -30,7 +30,7 @@ class CascadingFailuresTesterLegacy(unittest.TestCase, IDisposable):
 
     @override
     def __exit__(self):
-        return super().__exit__()
+        return self.Dispose()
 
     def test_Validation_continues_on_failure(self):
         self.validator.rule_for(lambda x: x.Surname).not_null().equal("Foo")

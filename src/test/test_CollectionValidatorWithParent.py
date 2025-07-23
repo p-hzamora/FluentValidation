@@ -57,21 +57,21 @@ class CollectionValidatorWithParentTests(unittest.TestCase):
     # 	self.assertEqual(results.errors[1].PropertyName,"Orders[0].ProductName")
     # 	self.assertEqual(results.errors[2].PropertyName,"Orders[2].ProductName")
 
-    # def test_Validates_collection_several_levels_deep(self):
-    #     validator = TestValidator(
-    #         lambda v: v.rule_for(lambda x: x.Surname).not_null(),
-    #         lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(lambda y: OrderValidator(y)),
-    #     )
+    def test_Validates_collection_several_levels_deep(self):
+        validator = TestValidator(
+            lambda v: v.rule_for(lambda x: x.Surname).not_null(),
+            lambda v: v.rule_for_each(lambda x: x.Orders).set_validator(lambda y: OrderValidator(y)),
+        )
 
-    #     rootValidator = InlineValidator[NamedTupleTest[Person, Any]](NamedTupleTest[Person, Any])
-    #     rootValidator.rule_for(lambda x: x.Item1).set_validator(validator)
+        rootValidator = InlineValidator[NamedTupleTest[Person, Any]](NamedTupleTest[Person, Any])
+        rootValidator.rule_for(lambda x: x.Item1).set_validator(validator)
 
-    #     # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    #     results = rootValidator.validate(NamedTupleTest(self.person, object()))
-    #     self.assertEqual(len(results.errors), 3)
+        # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+        results = rootValidator.validate(NamedTupleTest(self.person, object()))
+        self.assertEqual(len(results.errors), 3)
 
-    #     self.assertEqual(results.errors[1].PropertyName, "Item1.Orders[0].ProductName")
-    #     self.assertEqual(results.errors[2].PropertyName, "Item1.Orders[2].ProductName")
+        self.assertEqual(results.errors[1].PropertyName, "Item1.Orders[0].ProductName")
+        self.assertEqual(results.errors[2].PropertyName, "Item1.Orders[2].ProductName")
 
     # async def test_Validates_collection_several_levels_deep_async(self):
     # 	validator = TestValidator(

@@ -159,25 +159,28 @@ class ConditionTests(unittest.TestCase):
 
     # 	Assert.Throws<AsyncValidatorInvokedSynchronouslyException>(() => validator.validate(Person {NickNames = string[0]}))
 
-    # def test_Can_access_property_value_in_custom_condition(self)->None:
-    #     validator = TestValidator()
-    #     validator.rule_for(lambda x: x.Surname).must(lambda v: False).Configure(lambda cfg: cfg.ApplyCondition(context => cfg.GetPropertyValue(context.InstanceToValidate) is not None))
+    def test_Can_access_property_value_in_custom_condition(self)->None:
+        validator = TestValidator()
 
-    #     result = validator.validate(Person())
-    #     self.assertTrue(result.is_valid)
+        validator.rule_for(lambda x: x.Surname).must(lambda v: False).configure(lambda cfg: cfg.ApplyCondition(lambda context: cfg.GetPropertyValue(context.instance_to_validate) is not None))
 
-    #     result = validator.validate(Person(Surname = "foo"))
-    #     self.assertFalse(result.is_valid)
+        result = validator.validate(Person())
+        self.assertTrue(result.is_valid)
 
-    # def test_Can_access_property_value_in_custom_condition_foreach(self)->None:
-    #     validator = TestValidator()
-    #     validator.rule_for_each(lambda x: x.Orders).must(lambda v: False).Configure(lambda cfg: cfg.ApplyCondition(context => cfg.GetPropertyValue(context.InstanceToValidate) is not None))
+        result = validator.validate(Person(Surname = "foo"))
+        self.assertFalse(result.is_valid)
 
-    #     result = validator.validate(Person())
-    #     self.assertTrue(result.is_valid)
+    def test_Can_access_property_value_in_custom_condition_foreach(self)->None:
+        validator = TestValidator()
+        validator.rule_for_each(lambda x: x.Orders).must(lambda v: False).configure(lambda cfg: cfg.ApplyCondition(lambda context: cfg.GetPropertyValue(context.instance_to_validate) is not None))
 
-    #     result = validator.validate(Person(Orders = [Order()]))
-    #     self.assertFalse(result.is_valid)
+        result = validator.validate(Person())
+        self.assertTrue(result.is_valid)
+
+        result = validator.validate(Person(Orders = [Order()]))
+        self.assertFalse(result.is_valid)
+
+
 
 
 if __name__ == "__main__":

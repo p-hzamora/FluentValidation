@@ -4,9 +4,9 @@ import test_AbstractValidator
 import test_Equal
 import test_GreaterThanOrEqual
 import test_GreaterThanValidator
-import test_LessThanOrEqual
+import test_LessThanOrEqualToValidator
 import test_LessThanValidator
-import test_LengtValidator
+import test_LengthValidator
 import test_PredicateValidator
 import test_Ruleset
 import test_NotNull
@@ -17,7 +17,7 @@ import test_NameResolutionPluggability
 import test_ForEachRule
 import test_DefaultValidatorExtension
 import test_CreditCardValidator
-import test_ScalePrecisionValidator
+import test_PrecisionScaleValidator
 import test_Empty
 import test_Null
 import test_CascadingFailures
@@ -38,6 +38,15 @@ import test_StringEnumValidator
 import test_ComplexValidation
 import test_InlineValidator
 import test_EmailValidator
+import test_TrackingCollection
+import test_LanguageManager
+import test_RuleBuilder
+import test_UserState
+import test_NotEmpty
+import test_ValidationResult
+import test_RuleDependency
+import test_RegularExpressionValidator
+import test_LocalisedMessages
 
 # initialize the test suite
 loader = unittest.TestLoader()
@@ -46,7 +55,13 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(test_RegularExpressionValidator),
+        *loader.loadTestsFromModule(test_LocalisedMessages),
+        *loader.loadTestsFromModule(test_NotEmpty),  # FIXME [ ]: This test is depending on the other. Probably some contexts are not being erased as it should be
+        *loader.loadTestsFromModule(test_RuleDependency),  # FIXME [ ]: This test is depending on the other. Probably some contexts are not being erased as it should be
+        *loader.loadTestsFromModule(test_RuleBuilder),
         *loader.loadTestsFromModule(test_EmailValidator),
+        *loader.loadTestsFromModule(test_TrackingCollection),
         *loader.loadTestsFromModule(test_InlineValidator),
         *loader.loadTestsFromModule(test_ComplexValidation),
         *loader.loadTestsFromModule(test_StringEnumValidator),
@@ -67,16 +82,16 @@ suite.addTests(
         *loader.loadTestsFromModule(test_Null),
         *loader.loadTestsFromModule(test_Empty),
         *loader.loadTestsFromModule(test_CreditCardValidator),
-        *loader.loadTestsFromModule(test_ScalePrecisionValidator),
+        *loader.loadTestsFromModule(test_PrecisionScaleValidator),
         *loader.loadTestsFromModule(test_DefaultValidatorExtension),
-        *loader.loadTestsFromModule(test_ForEachRule),  # FIXME [ ]: If I add this module at the end of the tuple, then I get 6 errors like '- foo[0].foo + Orders[0].ProductName'
         *loader.loadTestsFromModule(test_AbstractValidator),
+        *loader.loadTestsFromModule(test_ForEachRule),
         *loader.loadTestsFromModule(test_Equal),
         *loader.loadTestsFromModule(test_GreaterThanOrEqual),
         *loader.loadTestsFromModule(test_GreaterThanValidator),
-        *loader.loadTestsFromModule(test_LessThanOrEqual),
+        *loader.loadTestsFromModule(test_LessThanOrEqualToValidator),
         *loader.loadTestsFromModule(test_LessThanValidator),
-        *loader.loadTestsFromModule(test_LengtValidator),
+        *loader.loadTestsFromModule(test_LengthValidator),
         *loader.loadTestsFromModule(test_PredicateValidator),
         *loader.loadTestsFromModule(test_Ruleset),
         *loader.loadTestsFromModule(test_NotNull),
@@ -84,6 +99,9 @@ suite.addTests(
         *loader.loadTestsFromModule(test_SharedCondition),
         *loader.loadTestsFromModule(test_ValidateAndThrow),
         *loader.loadTestsFromModule(test_NameResolutionPluggability),
+        *loader.loadTestsFromModule(test_LanguageManager),
+        *loader.loadTestsFromModule(test_UserState),
+        *loader.loadTestsFromModule(test_ValidationResult),
     )
 )
 

@@ -100,45 +100,45 @@ class ComplexValidationTester(unittest.TestCase):
         self.validator: PersonValidator = PersonValidator()
         self.person: Person = Person(Address=Address(Country=Country()), Orders=[Order(Amount=5), Order(ProductName="Foo")])
 
-    # # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # def test_Validates_complex_property(self):
-    #     results = self.validator.validate(self.person)
+    # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+    def test_Validates_complex_property(self):
+        results = self.validator.validate(self.person)
 
-    #     self.assertEqual(len(results.errors), 3)
-    #     self.assertEqual(results.errors[0].PropertyName, "Forename")
-    #     self.assertEqual(results.errors[1].PropertyName, "Address.Postcode")
-    #     self.assertEqual(results.errors[2].PropertyName, "Address.Country.Name")
+        self.assertEqual(len(results.errors), 3)
+        self.assertEqual(results.errors[0].PropertyName, "Forename")
+        self.assertEqual(results.errors[1].PropertyName, "Address.Postcode")
+        self.assertEqual(results.errors[2].PropertyName, "Address.Country.Name")
 
-    # # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # def test_Should_override_propertyName(self):
-    #     validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).set_validator(AddressValidator()).override_property_name("Address2"))
+    # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+    def test_Should_override_propertyName(self):
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Address).set_validator(AddressValidator()).override_property_name("Address2"))
 
-    #     results = validator.validate(self.person)
-    #     self.assertEqual(results.errors[0].PropertyName, "Address2.Postcode")
+        results = validator.validate(self.person)
+        self.assertEqual(results.errors[0].PropertyName, "Address2.Postcode")
 
     def test_Complex_validator_should_not_be_invoked_on_null_property(self):
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 1)
 
-    # # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # def test_Should_allow_normal_rules_and_complex_property_on_same_property(self):
-    #     self.validator.rule_for(lambda x: x.Address.Line1).not_null()
-    #     result = self.validator.validate(self.person)
-    #     self.assertEqual(len(result.errors), 4)
+    # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+    def test_Should_allow_normal_rules_and_complex_property_on_same_property(self):
+        self.validator.rule_for(lambda x: x.Address.Line1).not_null()
+        result = self.validator.validate(self.person)
+        self.assertEqual(len(result.errors), 4)
 
-    # # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # def test_Explicitly_included_properties_should_be_propagated_to_nested_validators(self):
-    #     results = self.validator.validate(self.person, lambda v: v.IncludeProperties(lambda x: x.Address))
-    #     self.assertEqual(len(results.errors), 2)
-    #     self.assertEqual(results.errors[0].PropertyName, "Address.Postcode")
-    #     self.assertEqual(results.errors[-1].PropertyName, "Address.Country.Name")
+    # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+    def test_Explicitly_included_properties_should_be_propagated_to_nested_validators(self):
+        results = self.validator.validate(self.person, lambda v: v.IncludeProperties(lambda x: x.Address))
+        self.assertEqual(len(results.errors), 2)
+        self.assertEqual(results.errors[0].PropertyName, "Address.Postcode")
+        self.assertEqual(results.errors[-1].PropertyName, "Address.Country.Name")
 
-    # # FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # def test_Explicitly_included_properties_should_be_propagated_to_nested_validators_using_strings(self):
-    #     results = self.validator.validate(self.person, lambda v: v.IncludeProperties("Address"))
-    #     self.assertEqual(len(results.errors), 2)
-    #     self.assertEqual(results.errors[0].PropertyName, "Address.Postcode")
-    #     self.assertEqual(results.errors[-1].PropertyName, "Address.Country.Name")
+    # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+    def test_Explicitly_included_properties_should_be_propagated_to_nested_validators_using_strings(self):
+        results = self.validator.validate(self.person, lambda v: v.IncludeProperties("Address"))
+        self.assertEqual(len(results.errors), 2)
+        self.assertEqual(results.errors[0].PropertyName, "Address.Postcode")
+        self.assertEqual(results.errors[-1].PropertyName, "Address.Country.Name")
 
     def test_Complex_property_should_be_excluded(self):
         results = self.validator.validate(self.person, lambda v: v.IncludeProperties(lambda x: x.Surname))
@@ -212,7 +212,7 @@ class ComplexValidationTester(unittest.TestCase):
     # 	self.assertEqual(addressValidator.WasCalledAsync,True)
 
 
-# FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
+# FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
 # def test_Multiple_rules_in_chain_with_childvalidator_shouldnt_reuse_accessor(self):
 #     validator = InlineValidator[Person](Person)
 #     addrValidator = InlineValidator[Address](Address)

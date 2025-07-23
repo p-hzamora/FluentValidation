@@ -128,12 +128,12 @@ If you were making use of this property, you should use `DisableDataAnnotationsV
 ```python
 # Before:
 services.AddFluentValidation(fv => {
-  fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false
+  fv.RunDefaultMvcValidationAfterFluentValidationExecutes = False
 })
 
 # After:
 services.AddFluentValidation(fv => {
-  fv.DisableDataAnnotationsValidation = true
+  fv.DisableDataAnnotationsValidation = True
 })
 
 ```

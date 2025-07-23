@@ -1,6 +1,6 @@
 # Conditions
 
-The `when` and `unless` methods can be used to specify conditions that control when the rule should execute. For example, this rule on the `CustomerDiscount` property will only execute when `IsPreferredCustomer` is `true`:
+The `when` and `unless` methods can be used to specify conditions that control when the rule should execute. For example, this rule on the `CustomerDiscount` property will only execute when `IsPreferredCustomer` is `True`:
 
 ```python
 rule_for(customer => customer.CustomerDiscount).greater_than(0).when(customer => customer.IsPreferredCustomer)

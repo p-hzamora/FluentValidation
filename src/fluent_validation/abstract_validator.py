@@ -104,7 +104,7 @@ class AbstractValidator[T](IValidator[T]):
 
     async def ValidateInternalAsync(self, context: ValidationContext[T], useAsync: bool) -> ValidationResult:
         result: ValidationResult = ValidationResult(errors=context.Failures)
-        shouldContinue: bool = self.PreValidate(context, result)
+        shouldContinue: bool = self.pre_validate(context, result)
 
         if not shouldContinue:
             if not result.is_valid and context.ThrowOnFailures:
@@ -149,7 +149,7 @@ class AbstractValidator[T](IValidator[T]):
     def ValidateInternalSync(self, context: ValidationContext[T]) -> ValidationResult:
         """Synchronous version of ValidateInternalAsync to avoid event loop deadlocks in nested validations."""
         result: ValidationResult = ValidationResult(errors=context.Failures)
-        shouldContinue: bool = self.PreValidate(context, result)
+        shouldContinue: bool = self.pre_validate(context, result)
 
         if not shouldContinue:
             if not result.is_valid and context.ThrowOnFailures:
@@ -282,7 +282,7 @@ class AbstractValidator[T](IValidator[T]):
         self.Rules.append(rule)
         self.OnRuleAdded(rule)
 
-    def PreValidate(self, context: ValidationContext[T], result: ValidationResult) -> bool:
+    def pre_validate(self, context: ValidationContext[T], result: ValidationResult) -> bool:
         return True
 
     def RaiseValidationException(self, context: ValidationContext[T], result: ValidationResult) -> None:

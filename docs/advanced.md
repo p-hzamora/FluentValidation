@@ -2,32 +2,28 @@
 
 These features are not normally used in day-to-day use, but provide some additional extensibility points that may be useful in some circumstances.
 
-## PreValidate
+## pre_validate
 
-If you need to run specific code every time a validator is invoked, you can do this by overriding the `PreValidate` method. This method takes a `ValidationContext` as well as a `ValidationResult`, which you can use to customise the validation process.
+If you need to run specific code every time a validator is invoked, you can do this by overriding the `pre_validate` method. This method takes a `ValidationContext` as well as a `ValidationResult`, which you can use to customise the validation process.
 
-The method should return `true` if validation should continue, or `false` to immediately abort. Any modifications that you made to the `ValidationResult` will be returned to the user.
+The method should return `True` if validation should continue, or `False` to immediately abort. Any modifications that you made to the `ValidationResult` will be returned to the user.
 
 Note that this method is called before FluentValidation performs its standard null-check against the model being validated, so you can use this to generate an error if the whole model is null, rather than relying on FluentValidation's standard behaviour in this case (which is to throw an exception):
 
 ```python
-public class MyValidator : AbstractValidator<Person> 
-{
-  public MyValidator() 
-  {
-    rule_for(x => x.Name).not_null()
-  }
+class MyValidator(AbstractValidator[Person]):
+    def __init__(self):
+        super().__init__(Person)
+        self.rule_for(lambda x: x.Name).not_null()
 
-  protected override bool PreValidate(ValidationContext<Person> context, ValidationResult result) 
-  {
-    if (context.InstanceToValidate == null) 
-    {
-      result.Errors.Add(new ValidationFailure("", "Please ensure a model was supplied."))
-      return false
-    }
-    return true
-  }
-}
+    @override
+    def pre_validate(self, context: ValidationContext[Person], result: ValidationResult) -> bool:
+        if context.instance_to_validate is None:
+            
+            result.errors.append(ValidationFailure("", "Please ensure a model was supplied."))
+            return False
+        
+        return True
 ```
 
 ## Root Context Data

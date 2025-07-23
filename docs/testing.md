@@ -128,7 +128,7 @@ public class CustomerValidator : AbstractValidator<Customer>
 # If you needed to stub this failure in a unit/integration test,
 # you could do the following:
 var validator = new InlineValidator<Customer>()
-validator.rule_for(x => x.Id).must(id => false)
+validator.rule_for(x => x.Id).must(id => False)
 
 # This instance could then be passed into anywhere expecting an IValidator<Customer>
 ```

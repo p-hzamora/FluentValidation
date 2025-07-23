@@ -18,10 +18,10 @@ class TestValidatorWithPreValidate(InlineValidator[Person]):
     ) -> None:
         super().__init__(Person, *ruleCreator)
 
-        self.PreValidateMethod: None| Callable[[ValidationContext[Person], ValidationResult], bool] = PreValidateMethod
+        self.PreValidateMethod: None | Callable[[ValidationContext[Person], ValidationResult], bool] = PreValidateMethod
 
     @override
-    def PreValidate(self, context: ValidationContext[Person], result: ValidationResult) -> bool:
+    def pre_validate(self, context: ValidationContext[Person], result: ValidationResult) -> bool:
         if self.PreValidateMethod is not None:
             return self.PreValidateMethod(context, result)
-        return super().PreValidate(context, result)
+        return super().pre_validate(context, result)

@@ -60,7 +60,7 @@ This is a simple example that only replaces one validator's message in English o
 Of course, if all you want to do is replace this message for a single use of a validator, then you could just use `with_message("'{PropertyName}' is required")`
 
 ### Contributing Languages
-If you'd like to contribute a translation of FluentValidation's default messages, please open a pull request that adds a language file to the project. The current language files are [located in the GitHub repository](https://github.com/JeremySkinner/FluentValidation/tree/master/src/FluentValidation/Resources/Languages). Additionally you'll need to [add the new language to the default LanguageManager](https://github.com/FluentValidation/FluentValidation/blob/main/src/FluentValidation/Resources/LanguageManager.cs#L38) 
+If you'd like to contribute a translation of FluentValidation's default messages, please open a pull request that adds a language file to the project. The current language files are [located in the GitHub repository](https://github.com/JeremySkinner/FluentValidation/tree/master/src/FluentValidation/Resources/Languages). Additionally you'll need to [add the new language to the default LanguageManager](https://github.com/p-hzamora/FluentValidation/blob/main/src/FluentValidation/Resources/LanguageManager.cs#L38) 
 
 [The default English messages are stored here](https://github.com/JeremySkinner/FluentValidation/blob/master/src/FluentValidation/Resources/Languages/EnglishLanguage.cs)
 
@@ -68,7 +68,7 @@ If you'd like to contribute a translation of FluentValidation's default messages
 You can completely disable FluentValidation's support for localization, which will force the default English messages to be used, regardless of the thread's `CurrentUICulture`. This can be done in your application's startup routine by calling into the static `ValidatorOptions` class:
 
 ```python
-ValidatorOptions.Global.LanguageManager.Enabled = false
+ValidatorOptions.Global.LanguageManager.Enabled = False
 ```
 You can also force the default messages to always be displayed in a specific language:
 

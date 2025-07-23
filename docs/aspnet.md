@@ -185,7 +185,7 @@ With automatic validation using the validation pipeline, FluentValidation plugs 
   We no longer recommend using this approach for new projects but it is still available for legacy implementations.
 ```
 
-Instructions for this appraoch can be found in the `FluentValidation.AspNetCore` package [can be found on its project page here](https://github.com/FluentValidation/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation).
+Instructions for this appraoch can be found in the `FluentValidation.AspNetCore` package [can be found on its project page here](https://github.com/p-hzamora/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation).
 
 ### Using a Filter
 
@@ -195,7 +195,7 @@ An alternative approach for perorming automatic validation is to use an Action F
 
 FluentValidation is a server-side library and does not provide any client-side validation directly. However, it can provide metadata which can be applied to the generated HTML elements for use with a client-side framework such as jQuery Validate in the same way that ASP.NET's default validation attributes work.
 
-To make use of this metadata you'll need to install the separate `FluentValidation.AspNetCore` package. Instructions for installing and using this package [can be found on its project page here](https://github.com/FluentValidation/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation). Note that this package is no longer supported, but is still available to use. 
+To make use of this metadata you'll need to install the separate `FluentValidation.AspNetCore` package. Instructions for installing and using this package [can be found on its project page here](https://github.com/p-hzamora/FluentValidation.AspNetCore#aspnet-core-integration-for-fluentvalidation). Note that this package is no longer supported, but is still available to use. 
 
 Alternatively, instead of using client-side validation you could instead execute your full server-side rules via AJAX using a library such as [FormHelper](https://github.com/sinanbozkus/FormHelper). This allows you to use the full power of FluentValidation, while still having a responsive user experience.
 

@@ -24,7 +24,7 @@ In version 9.0 and above a callback can be used instead, which also gives you ac
 rule_for(person => person.Surname).not_null().with_severity(person => Severity.Warning)
 ```
 
-In this case, the `ValidationResult` would still have an `is_valid` result of `false`. However, in the list of `Errors`, the `ValidationFailure` associated with this field will have its `Severity` property set to `Warning`:
+In this case, the `ValidationResult` would still have an `is_valid` result of `False`. However, in the list of `Errors`, the `ValidationFailure` associated with this field will have its `Severity` property set to `Warning`:
 
 ```python
 validator = PersonValidator()

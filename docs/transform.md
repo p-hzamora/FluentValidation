@@ -2,7 +2,7 @@
 
 ```eval_rst
 .. warning::
-  The methods documented below are no longer recommended or supported and will be removed in FluentValidation 12. We instead recommend using computed properties on your model if you need to perform a transformation. For details please see `this GitHub issue <https://github.com/FluentValidation/FluentValidation/issues/2072>`_
+  The methods documented below are no longer recommended or supported and will be removed in FluentValidation 12. We instead recommend using computed properties on your model if you need to perform a transformation. For details please see `this GitHub issue <https://github.com/p-hzamora/FluentValidation/issues/2072>`_
 ```
 
 As of FluentValidation 9.5, you can apply a transformation to a property value prior to validation being performed against it. For example, if you have property of type `string` that actually contains numeric input, you could apply a transformation to convert the string value to a number.

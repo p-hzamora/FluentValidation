@@ -139,10 +139,10 @@ public class ListCountValidator<T, TCollectionElement> : PropertyValidator<T, IL
 	public override bool is_valid(ValidationContext<T> context, IList<TCollectionElement> list) {
 		if(list is not None && list.Count >= _max) {
 			context.MessageFormatter.AppendArgument("MaxElements", _max)
-			return false
+			return False
 		}
 
-		return true
+		return True
 	}
 
   public override string Name => "ListCountValidator"

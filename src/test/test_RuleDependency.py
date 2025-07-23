@@ -31,7 +31,7 @@ from fluent_validation.InlineValidator import InlineValidator
 # class AsyncValidator(AbstractValidator[int]):
 #     def __init__(self):
 #         super().__init__(int)
-#         self.rule_for(lambda model: model).must_async(lambda ie, ct: asyncio.create_task(self._async_validation_1(ie))).DependentRules(
+#         self.rule_for(lambda model: model).must_async(lambda ie, ct: asyncio.create_task(self._async_validation_1(ie))).dependent_rules(
 #             lambda: self.rule_for(lambda m: m).must_async(lambda ie, ct: asyncio.create_task(self._async_validation_2(ie)))
 #         )
 
@@ -47,7 +47,7 @@ from fluent_validation.InlineValidator import InlineValidator
 # class AsyncValidator2(AbstractValidator[int]):
 #     def __init__(self):
 #         super().__init__(int)
-#         self.rule_for(lambda model: model).must(lambda ie: True).DependentRules(lambda: self.rule_for(lambda m: m).must_async(lambda ie, ct: asyncio.create_task(self._async_validation(ie))))
+#         self.rule_for(lambda model: model).must(lambda ie: True).dependent_rules(lambda: self.rule_for(lambda m: m).must_async(lambda ie, ct: asyncio.create_task(self._async_validation(ie))))
 
 #     async def _async_validation(self, value):
 #         await asyncio.sleep(1.0)
@@ -57,7 +57,7 @@ from fluent_validation.InlineValidator import InlineValidator
 class RuleDependencyTests(unittest.TestCase):
     def test_Invokes_dependent_rule_if_parent_rule_passes(self):
         validator = TestValidator()
-        validator.rule_for(lambda x: x.Surname).not_null().DependentRules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
+        validator.rule_for(lambda x: x.Surname).not_null().dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
 
         results = validator.validate(Person(Surname="foo"))
         self.assertEqual(len(results.errors), 1)
@@ -65,7 +65,7 @@ class RuleDependencyTests(unittest.TestCase):
 
     def test_Does_not_invoke_dependent_rule_if_parent_rule_does_not_pass(self):
         validator = TestValidator()
-        validator.rule_for(lambda x: x.Surname).not_null().DependentRules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
+        validator.rule_for(lambda x: x.Surname).not_null().dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
 
         results = validator.validate(Person(Surname=None))
         self.assertEqual(len(results.errors), 1)
@@ -73,8 +73,8 @@ class RuleDependencyTests(unittest.TestCase):
 
     def test_Nested_dependent_rules(self):
         validator = TestValidator()
-        validator.rule_for(lambda x: x.Surname).not_null().DependentRules(
-            lambda: validator.rule_for(lambda x: x.Forename).not_null().DependentRules(lambda: validator.rule_for(lambda x: x.Forename).not_equal("foo"))
+        validator.rule_for(lambda x: x.Surname).not_null().dependent_rules(
+            lambda: validator.rule_for(lambda x: x.Forename).not_null().dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_equal("foo"))
         )
 
         results = validator.validate(Person(Surname="foo"))
@@ -88,7 +88,7 @@ class RuleDependencyTests(unittest.TestCase):
         validator.rule_set("MyRuleSet", lambda: 
                            
             validator.rule_for(lambda x: x.Surname).not_null()
-                .DependentRules(lambda: 
+                .dependent_rules(lambda: 
                     validator.rule_for(lambda x: x.Forename).not_null()))
 
         # fmt: on
@@ -102,7 +102,7 @@ class RuleDependencyTests(unittest.TestCase):
         validator.when(lambda o: o.Forename is not None, lambda: 
                        validator.rule_for(lambda o: o.Age).less_than(1)
                        
-                       .DependentRules(lambda: 
+                       .dependent_rules(lambda: 
                                        
                             validator.rule_for(lambda o: o.Forename).not_null()))
         # fmt: on
@@ -111,7 +111,7 @@ class RuleDependencyTests(unittest.TestCase):
 
     # async def test_TestAsyncWithdependent_rules_SyncEntry(self):
     #     validator = TestValidator()
-    #     validator.rule_for(lambda o: o.Forename).not_null().DependentRules(
+    #     validator.rule_for(lambda o: o.Forename).not_null().dependent_rules(
     #         lambda: [validator.rule_for(lambda o: o.Address).not_null(), validator.rule_for(lambda o: o.Age).must_async(lambda p, token: asyncio.create_task(self._async_age_check(p)))]
     #     )
 
@@ -126,7 +126,7 @@ class RuleDependencyTests(unittest.TestCase):
 
     # async def test_TestAsyncWithdependent_rules_AsyncEntry(self):
     #     validator = TestValidator()
-    #     validator.rule_for(lambda o: o).must_async(lambda p, ct: asyncio.create_task(self._async_person_check(p))).DependentRules(
+    #     validator.rule_for(lambda o: o).must_async(lambda p, ct: asyncio.create_task(self._async_person_check(p))).dependent_rules(
     #         lambda: [validator.rule_for(lambda o: o.Address).not_null(), validator.rule_for(lambda o: o.Age).must_async(lambda p, token: asyncio.create_task(self._async_age_check(p)))]
     #     )
 
@@ -156,7 +156,7 @@ class RuleDependencyTests(unittest.TestCase):
 
         validator.rule_for(lambda x: x.Surname).not_null()
          
-        .DependentRules(lambda: 
+        .dependent_rules(lambda: 
                 validator.rule_for(lambda x: x.Forename).not_null()  # Shouldn't be invoked
         )
         )
@@ -173,10 +173,10 @@ class RuleDependencyTests(unittest.TestCase):
         validator.rule_set("MyRuleSet",lambda: 
                            
             validator.rule_for(lambda x: x.Surname).not_null()
-            .DependentRules(lambda:  
+            .dependent_rules(lambda:  
                                    
                     validator.rule_for(lambda x: x.Forename).not_null()
-                    .DependentRules(lambda:  
+                    .dependent_rules(lambda:  
                                             
                         validator.rule_for(lambda x: x.Address).not_null())),
         )
@@ -193,10 +193,10 @@ class RuleDependencyTests(unittest.TestCase):
         validator.rule_set("MyRuleSet",lambda: 
             validator.rule_for(lambda x: x.Surname).not_null()
             
-            .DependentRules(lambda: 
+            .dependent_rules(lambda: 
                     validator.rule_for(lambda x: x.Forename).not_null()
                     
-                    .DependentRules(lambda: 
+                    .dependent_rules(lambda: 
                             validator.rule_for(lambda x: x.Address).not_null())),
         )
         # fmt:on
@@ -214,11 +214,11 @@ class RuleDependencyTests(unittest.TestCase):
 
             lambda: validator.rule_for(lambda x: x.Surname).not_null()
 
-            .DependentRules(lambda: 
+            .dependent_rules(lambda: 
                 
                 validator.rule_for(lambda x: x.Forename).not_null()
                 
-                .DependentRules(lambda: 
+                .dependent_rules(lambda: 
                                 
                     validator.rule_for(lambda x: x.Address).not_null())),
         )
@@ -235,11 +235,11 @@ class RuleDependencyTests(unittest.TestCase):
                            
             validator.rule_for(lambda x: x.Surname).not_null()
 
-            .DependentRules(lambda: 
+            .dependent_rules(lambda: 
                 
                     validator.rule_for(lambda x: x.Forename).not_null()
                     
-                    .DependentRules(lambda: 
+                    .dependent_rules(lambda: 
                             
                             self.BaseValidation(validator))),
         )
@@ -252,7 +252,7 @@ class RuleDependencyTests(unittest.TestCase):
     # FIXME [ ]: Custom method it's not included at this moment
     # def test_Invokes_dependent_rule_if_parent_custom_rule_passes(self):
     #     validator = TestValidator()
-    #     validator.rule_for(lambda x: x.Surname).Custom(lambda name, context: None).DependentRules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
+    #     validator.rule_for(lambda x: x.Surname).Custom(lambda name, context: None).dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
 
     #     results = validator.validate(Person(Surname="foo"))
     #     self.assertEqual(len(results.errors), 1)
@@ -263,7 +263,7 @@ class RuleDependencyTests(unittest.TestCase):
     #         context.AddFailure("Failed")
 
     #     validator = TestValidator()
-    #     validator.rule_for(lambda x: x.Surname).Custom(custom_validation).DependentRules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
+    #     validator.rule_for(lambda x: x.Surname).Custom(custom_validation).dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
 
     #     results = validator.validate(Person(Surname=None))
     #     self.assertEqual(len(results.errors), 1)

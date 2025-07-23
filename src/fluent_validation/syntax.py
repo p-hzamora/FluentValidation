@@ -73,7 +73,7 @@ class IRuleBuilderInitial[T, TProperty](IRuleBuilder[T, TProperty]): ...
 
 class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
     @abstractmethod
-    def DependentRules(action) -> Self:
+    def dependent_rules(action) -> Self:
         """Creates a scope for declaring dependent rules."""
         ...
 

@@ -45,15 +45,15 @@ class RuleBuilder[T, TProperty](
             raise AttributeError(validator)
 
     @overload
-    def DependentRules(self: IRuleBuilderOptions, action: Callable[..., Any]) -> IRuleBuilderOptions[T, TProperty]: ...
+    def dependent_rules(self: IRuleBuilderOptions, action: Callable[..., Any]) -> IRuleBuilderOptions[T, TProperty]: ...
     @overload
-    def DependentRules(self: IRuleBuilderOptionsConditions, action: Callable[..., Any]) -> IRuleBuilderOptionsConditions[T, TProperty]: ...
+    def dependent_rules(self: IRuleBuilderOptionsConditions, action: Callable[..., Any]) -> IRuleBuilderOptionsConditions[T, TProperty]: ...
 
-    def DependentRules(self, action: Callable[..., Any]) -> IRuleBuilderOptionsConditions[T, TProperty]:
+    def dependent_rules(self, action: Callable[..., Any]) -> IRuleBuilderOptionsConditions[T, TProperty]:
         self._DependentRulesInternal(action)
         return self
 
-    def _DependentRulesInternal(self, action: Callable[..., None])->None:
+    def _DependentRulesInternal(self, action: Callable[..., None]) -> None:
         dependencyContainer: list[IValidationRuleInternal[T]] = []
 
         # Capture any rules added to the parent validator inside this delegate.

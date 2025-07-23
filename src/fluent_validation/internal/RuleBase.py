@@ -159,11 +159,11 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
         self._rule_sets = value
 
     @property
-    def DependentRules(self) -> list[IValidationRuleInternal[T]]:
+    def dependent_rules(self) -> list[IValidationRuleInternal[T]]:
         return self._DependentRules
 
-    @DependentRules.setter
-    def DependentRules(self, value: list[IValidationRuleInternal[T]]) -> None:
+    @dependent_rules.setter
+    def dependent_rules(self, value: list[IValidationRuleInternal[T]]) -> None:
         self._DependentRules = value
 
     def ApplyCondition(self, predicate: Callable[[ValidationContext[T]], bool], applyConditionTo: ApplyConditionTo = ApplyConditionTo.AllValidators) -> None:
@@ -172,8 +172,8 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
             for validator in self._components:
                 validator.ApplyCondition(predicate)
 
-            if self.DependentRules is not None:
-                for dependentRule in self.DependentRules:
+            if self.dependent_rules is not None:
+                for dependentRule in self.dependent_rules:
                     dependentRule.ApplyCondition(predicate, applyConditionTo)
         else:
             self.Current.ApplyCondition(predicate)
@@ -185,8 +185,8 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
     # 			validator.ApplyAsyncCondition(predicate);
     # 		}
 
-    # 		if (DependentRules is not None) {
-    # 			foreach (var dependentRule in DependentRules) {
+    # 		if (dependent_rules is not None) {
+    # 			foreach (var dependentRule in dependent_rules) {
     # 				dependentRule.ApplyAsyncCondition(predicate, applyConditionTo);
     # 			}
     # 		}

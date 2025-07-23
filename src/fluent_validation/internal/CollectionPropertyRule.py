@@ -88,8 +88,8 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
 
     async def ValidateAsync(self, context: ValidationContext[T], useAsync: bool):  # CancellationToken cancellation
         async def AfterValidate():
-            if len(context.Failures) <= totalFailures and self.DependentRules is not None:
-                for dependentRule in self.DependentRules:
+            if len(context.Failures) <= totalFailures and self.dependent_rules is not None:
+                for dependentRule in self.dependent_rules:
                     # cancellation.ThrowIfCancellationRequested()
                     await dependentRule.ValidateAsync(context, useAsync)  # , cancellation
             return None
@@ -192,8 +192,8 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
         """Synchronous version of 'ValidateAsync' to avoid event loop deadlocks in nested collections."""
 
         def AfterValidateSync():
-            if len(context.Failures) <= totalFailures and self.DependentRules is not None:
-                for dependentRule in self.DependentRules:
+            if len(context.Failures) <= totalFailures and self.dependent_rules is not None:
+                for dependentRule in self.dependent_rules:
                     dependentRule.ValidateSync(context)
             return None
 
@@ -285,9 +285,9 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
 
     def AddDependentRules(self, rules: list[IValidationRuleInternal[T]]) -> None:
         # TODOM: Checked if the translation is correct
-        if self.DependentRules is None:
-            self.DependentRules = []
-        self.DependentRules.extend(rules)
+        if self.dependent_rules is None:
+            self.dependent_rules = []
+        self.dependent_rules.extend(rules)
 
     async def GetValidatorsToExecuteAsync(self, context: ValidationContext[T], useAsync: bool) -> list[RuleComponent[T, TElement]]:
         # Loop over each validator and check if its condition allows it to run.

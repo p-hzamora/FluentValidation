@@ -103,8 +103,8 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
             if len(context.Failures) > total_failures and cascade == CascadeMode.Stop:
                 break
 
-        if len(context.Failures) <= total_failures and self.DependentRules is not None:
-            for dependentRule in self.DependentRules:
+        if len(context.Failures) <= total_failures and self.dependent_rules is not None:
+            for dependentRule in self.dependent_rules:
                 await dependentRule.ValidateAsync(context)
 
         return None
@@ -153,12 +153,12 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
             if len(context.Failures) > total_failures and cascade == CascadeMode.Stop:
                 break
 
-        if len(context.Failures) <= total_failures and self.DependentRules is not None:
-            for dependentRule in self.DependentRules:
+        if len(context.Failures) <= total_failures and self.dependent_rules is not None:
+            for dependentRule in self.dependent_rules:
                 dependentRule.ValidateSync(context)
         return None
 
     def AddDependentRules(self: IValidationRuleInternal[T], rules: IEnumerable[IValidationRuleInternal[T]]) -> None:
-        if self.DependentRules is None:
-            self.DependentRules = []
-        self.DependentRules.extend(rules)
+        if self.dependent_rules is None:
+            self.dependent_rules = []
+        self.dependent_rules.extend(rules)

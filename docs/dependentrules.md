@@ -1,12 +1,12 @@
 # Dependent Rules
 
 
-By default, all rules in FluentValidation are separate and cannot influence one another. This is intentional and necessary for asynchronous validation to work. However, there may be some cases where you want to ensure that some rules are only executed after another has completed. You can use `DependentRules` to do this.
+By default, all rules in FluentValidation are separate and cannot influence one another. This is intentional and necessary for asynchronous validation to work. However, there may be some cases where you want to ensure that some rules are only executed after another has completed. You can use `dependent_rules` to do this.
 
-To use dependent rules, call the `DependentRules` method at the end of the rule that you want others to depend on. This method accepts a lambda expression inside which you can define other rules that will be executed only if the first rule passes:
+To use dependent rules, call the `dependent_rules` method at the end of the rule that you want others to depend on. This method accepts a lambda expression inside which you can define other rules that will be executed only if the first rule passes:
 
 ```python
-rule_for(x => x.Surname).not_null().DependentRules(() => {
+rule_for(x => x.Surname).not_null().dependent_rules(() => {
   rule_for(x => x.Forename).not_null()
 })
 ```

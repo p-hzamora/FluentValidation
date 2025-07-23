@@ -54,7 +54,7 @@ class IValidatoinRule_no_args(ABC):
 
     @property
     @abstractmethod
-    def DependentRules(self) -> Optional[list[IValidationRule]]: ...
+    def dependent_rules(self) -> Optional[list[IValidationRule]]: ...
 
 
 CancellationToken = TypeVar("CancellationToken")
@@ -108,4 +108,5 @@ class IValidationRule[T, TProperty](IValidationRule_one_arg[T]):
     def MessageBuilder(self, value: Callable[[IMessageBuilderContext[T, TProperty]], str]) -> None: ...
 
     if TYPE_CHECKING:
+
         def GetPropertyValue(self, prop_: T) -> TProperty: ...

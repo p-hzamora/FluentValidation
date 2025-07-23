@@ -54,7 +54,7 @@ class IValidatoinRule_no_args(ABC):
 
     @property
     @abstractmethod
-    def DependentRules(self) -> list[IValidationRule]: ...
+    def DependentRules(self) -> Optional[list[IValidationRule]]: ...
 
 
 CancellationToken = TypeVar("CancellationToken")

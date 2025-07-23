@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import datetime
 from decimal import Decimal
 from enum import Enum
+import re
 from typing import Optional, override
 
 
@@ -158,6 +159,7 @@ class Person:
         NullableInt: Optional[int] = None,
         NullableDiscount: Optional[Decimal] = None,
         OtherNullableInt: Optional[int] = None,
+        AnotherRegex: Optional[re.Pattern] = None,
     ) -> None:
         self.Children: list[Person] = Children
         self.Orders: list[Order] = Orders
@@ -181,6 +183,7 @@ class Person:
         self.max_length: int = max_length
         self.Gender: EnumGender = Gender
         self.GenderString: str = GenderString
+        self.AnotherRegex: re.Pattern = AnotherRegex
 
     @staticmethod
     def CalculateSalary() -> int:

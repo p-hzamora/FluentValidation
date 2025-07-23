@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Callable, Iterable, Any, Optional, override
 
 from fluent_validation.MemberInfo import MemberInfo
@@ -34,14 +35,14 @@ class PropertyChain:
     # 	return new PropertyChain(memberNames)
 
     @staticmethod
-    def FromExpression(expression: Callable[..., Any]) -> "PropertyChain":
+    def FromExpression(expression: Callable[..., Any]) -> PropertyChain:
+        """Creates a PropertyChain from a lambda expression"""
         # COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has.
         #  Since we always pass one attr, we only need to access the first position of the list if not empty
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
-            # FIXME [ ]: Checked who to resovle with original code
-            raise ValueError
-            return None
+            # FIXME [x]: Checked who to resovle with original code
+            return PropertyChain(None,[])
 
         # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
         var, *memberNames = memberNames[0].nested_element.parents

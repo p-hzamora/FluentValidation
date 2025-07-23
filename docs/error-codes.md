@@ -20,7 +20,7 @@ var validator = new PersonValidator()
 var result = validator.Validate(new Person())
 foreach (var failure in result.Errors)
 {
-  Console.WriteLine($"Property: {failure.PropertyName} Error Code: {failure.ErrorCode}")
+  print(f"Property: {failure.PropertyName} Error Code: {failure.ErrorCode}")
 }
 ```
 

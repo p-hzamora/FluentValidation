@@ -6,9 +6,11 @@ By default, all rules in FluentValidation are separate and cannot influence one 
 To use dependent rules, call the `dependent_rules` method at the end of the rule that you want others to depend on. This method accepts a lambda expression inside which you can define other rules that will be executed only if the first rule passes:
 
 ```python
-rule_for(x => x.Surname).not_null().dependent_rules(() => {
-  rule_for(x => x.Forename).not_null()
-})
+self.rule_for(x => x.Surname).not_null()
+.dependent_rules(lambda:
+
+    self.rule_for(x => x.Forename).not_null()
+)
 ```
 
 Here the rule against Forename will only be run if the Surname rule passes.

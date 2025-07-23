@@ -5,25 +5,21 @@ There may be an occasion where you'd like to return contextual information about
 We could assign a custom state by modifying a line to read:
 
 ```python
-public class PersonValidator : AbstractValidator<Person> 
-{
-  public PersonValidator() 
-  {
-    rule_for(person => person.Surname).not_null()
-    rule_for(person => person.Forename).not_null().with_state(person => 1234)  
-  }
-}
+public class PersonValidator(AbstractValidator[Person]):
+    def __init__(self) -> None:
+        super().__init__(Person)
+        self.rule_for(lambda person: person.Surname).not_null()
+        self.rule_for(lambda person: person.Forename).not_null().with_state(person => 1234)  
 ```
 
 This state is then available within the `CustomState` property of the `ValidationFailure`.
 
 ```python
-var validator = new PersonValidator()
-var result = validator.Validate(new Person())
-foreach (var failure in result.Errors) 
-{
-  Console.WriteLine($"Property: {failure.PropertyName} State: {failure.CustomState}")
-}
+validator = PersonValidator()
+result = validator.validate(Person())
+
+for failure in result.errors:
+  print(f"Property: {failure.PropertyName} State: {failure.CustomState}")
 ```
 
 The output would be:
@@ -33,4 +29,4 @@ Property: Surname State:
 Property: Forename State: 1234
 ```
 
-By default the `CustomState` property will be `null` if `with_state` hasn't been called.
+By default the `CustomState` property will be `None` if `with_state` hasn't been called.

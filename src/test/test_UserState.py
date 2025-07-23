@@ -63,11 +63,11 @@ class UserStateTester(unittest.TestCase):
 
     def test_Can_provide_state_from_validation_context(self):
         person = Person()
-        
-        self.validator.rule_for(lambda e: e.Surname).not_null().with_state(lambda p, surname,ctx: (p,surname,ctx.RootContextData['test']))
+
+        self.validator.rule_for(lambda e: e.Surname).not_null().with_state(lambda p, surname, ctx: (p, surname, ctx.RootContextData["test"]))
 
         context = ValidationContext(person)
-        context.RootContextData['test'] = 'foo'
+        context.RootContextData["test"] = "foo"
         result = self.validator.validate(context)
 
         custom_state = result.errors[0].CustomState

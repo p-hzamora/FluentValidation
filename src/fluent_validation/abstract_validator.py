@@ -128,8 +128,6 @@ class AbstractValidator[T](IValidator[T]):
 
         # COMMENT: used in private async ValueTask<ValidationResult> ValidateInternalAsync(ValidationContext<T> context, bool useAsync, CancellationToken cancellation) {...}
 
-
-
     @overload
     def ValidateSync(self, instance: IValidationContext) -> ValidationResult: ...
     @overload

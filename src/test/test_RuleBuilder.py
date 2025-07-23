@@ -154,7 +154,7 @@ class RuleBuilderTests(unittest.TestCase):
     #     self.assertIsNone(rule_container.rule.get_display_name(None))
     #     self.assertIsNone(rule_container.rule.PropertyName)
 
-    #TODOM []: This test no make sense on python
+    # TODOM []: This test no make sense on python
     # def test_Property_should_return_property_being_validated(self):
     #     property = type(Person().Surname)
     #     self.assertEqual(self._rule.Member, property)
@@ -162,7 +162,7 @@ class RuleBuilderTests(unittest.TestCase):
     def test_Property_should_return_null_when_it_is_not_a_property_being_validated(self):
         builder = self._validator.rule_for(lambda x: "Foo")
         rule_container = RuleContainer()
-        builder.configure(lambda r: setattr(rule_container,'rule',r))
+        builder.configure(lambda r: setattr(rule_container, "rule", r))
         self.assertIsNone(rule_container.rule.Member.Name)
 
     # FIXME [ ]: PropertyName remains unchanged when setting the name via 'with_name', but the error message properly shows 'foo'

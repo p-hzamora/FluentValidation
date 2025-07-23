@@ -32,7 +32,7 @@ class CustomMessageFormatTester(unittest.TestCase):
         self.assertEqual(error, "Test 0")
 
     def test_Uses_custom_delegate_for_building_message_only_for_specific_validator(self):
-        def _lambda(cfg: IValidationRule[Person,str]):
+        def _lambda(cfg: IValidationRule[Person, str]):
             cfg.MessageBuilder = lambda context: "Foo" if isinstance(context.PropertyValidator, INotNullValidator) else context.GetDefaultMessage()
 
         self.validator.rule_for(lambda x: x.Surname).not_null().not_empty().configure(_lambda)

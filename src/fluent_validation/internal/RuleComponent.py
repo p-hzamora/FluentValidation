@@ -90,7 +90,7 @@ class RuleComponent[T, TProperty](IRuleComponent):
 
     async def InvokePropertyValidatorAsync(self, context: ValidationContext[T], value: TProperty):
         return self._asyncPropertyValidator.IsValidAsync(context, value)
-    
+
     def ValidateSync(self, context: ValidationContext[T], value: TProperty) -> bool:
         """Synchronous version of ValidateAsync to avoid event loop issues."""
         if self.SupportsSynchronousValidation:

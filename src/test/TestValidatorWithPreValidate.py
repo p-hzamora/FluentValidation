@@ -1,4 +1,4 @@
-﻿from typing import Callable, override
+from typing import Callable, override
 import sys
 from pathlib import Path
 from person import Person

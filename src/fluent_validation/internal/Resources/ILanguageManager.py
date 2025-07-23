@@ -15,7 +15,6 @@ class CurrentThreadType(Protocol):
 _language_map_similarity: dict[str, str] = {
     "zh-CN": "zh-Hans",
     "zh-SG": "zh-Hans",
-
 }
 _thread_culture: CurrentThreadType = threading.local()
 

@@ -183,7 +183,7 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         ...
 
-    def matches(ruleBuilder: IRuleBuilder[T, str], regex: str | Callable[[T], str|re.Pattern], flags: _FlagsType = re.NOFLAG):
+    def matches(ruleBuilder: IRuleBuilder[T, str], regex: str | Callable[[T], str | re.Pattern], flags: _FlagsType = re.NOFLAG):
         return ruleBuilder.set_validator(RegularExpressionValidator(regex, flags))
 
     # endregion

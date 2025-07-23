@@ -1,4 +1,4 @@
-﻿import unittest
+import unittest
 import sys
 from parameterized import parameterized
 from pathlib import Path

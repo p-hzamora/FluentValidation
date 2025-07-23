@@ -62,9 +62,9 @@ class LessThanOrEqualToValidatorTester(unittest.TestCase):
         originalResolver = ValidatorOptions.Global.DisplayNameResolver
 
         try:
-            ValidatorOptions.Global.DisplayNameResolver = lambda type, member, exprlambda : member.Name + "Foo"
+            ValidatorOptions.Global.DisplayNameResolver = lambda type, member, exprlambda: member.Name + "Foo"
             validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).less_than_or_equal_to(lambda x: x.AnotherInt).with_message("{ComparisonProperty}"))
-            result = validator.validate(Person(Id = 1, AnotherInt = 0))
+            result = validator.validate(Person(Id=1, AnotherInt=0))
             self.assertEqual(result.errors[0].ErrorMessage, "AnotherIntFoo")
 
         finally:

@@ -43,7 +43,7 @@ class LocalisedNameTester(unittest.TestCase):
         CultureScope.SetDefaultCulture()
 
     def test_Uses_localized_name(self):
-        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).not_null().with_name('foo'))
+        validator = TestValidator(lambda v: v.rule_for(lambda x: x.Surname).not_null().with_name("foo"))
 
         result = validator.validate(Person())
         self.assertEqual(result.errors[0].ErrorMessage, "'foo' must not be empty.")

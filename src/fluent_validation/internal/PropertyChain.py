@@ -42,7 +42,7 @@ class PropertyChain:
         memberNames = TreeInstruction(expression).to_list()
         if not memberNames:
             # FIXME [x]: Checked who to resovle with original code
-            return PropertyChain(None,[])
+            return PropertyChain(None, [])
 
         # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
         var, *memberNames = memberNames[0].nested_element.parents

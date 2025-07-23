@@ -26,7 +26,7 @@ class CascadingFailuresTester(unittest.TestCase, IDisposable):
         self.SetBothGlobalCascadeModes(CascadeMode.Continue)
 
     def __enter__(self): ...
-    def __exit__(self): 
+    def __exit__(self):
         return self.Dispose()
 
     def test_Validation_continues_on_failure(self):

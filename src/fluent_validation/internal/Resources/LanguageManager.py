@@ -94,7 +94,7 @@ class LanguageManager(ILanguageManager):
         Optional[str]: The corresponding Language instance or null.
         """
 
-        dicc:dict[str,Callable[[str],str]] = {
+        dicc: dict[str, Callable[[str], str]] = {
             EnglishLanguage.AmericanCulture: lambda x: EnglishLanguage.GetTranslation(x),
             EnglishLanguage.BritishCulture: lambda x: EnglishLanguage.GetTranslation(x),
             EnglishLanguage.Culture: lambda x: EnglishLanguage.GetTranslation(x),
@@ -180,32 +180,30 @@ class LanguageManager(ILanguageManager):
             raise ValueError(f"'{key}' must not be empty")
         if message == "":
             raise ValueError(f"'{message}' must not be empty")
-        
 
         self._languages[f"{culture}:{key}"] = message
 
     @override
     def GetString(self, key: str, culture: Optional[CultureInfo] = None) -> str:
         """
-            Gets a translated string based on its key. If the culture is specific and it isn't registered, we try the neutral culture instead.
-            If no matching culture is found  to be registered we use English.
+        Gets a translated string based on its key. If the culture is specific and it isn't registered, we try the neutral culture instead.
+        If no matching culture is found  to be registered we use English.
 
-            Args:
-                key: The key
-                culture: The culture to translate into
+        Args:
+            key: The key
+            culture: The culture to translate into
 
-            Return:
-                str
+        Return:
+            str
 
         """
         if self._enabled:
-
             if culture is None:
                 if self.Culture is not None:
                     culture = self.Culture
                 else:
-                    culture =CultureInfo.CurrentUICulture()
-            
+                    culture = CultureInfo.CurrentUICulture()
+
             currentCultureKey: str = culture.Name + ":" + key
 
             value = self._languages.get(currentCultureKey, self.GetTranslation(culture.Name, key))

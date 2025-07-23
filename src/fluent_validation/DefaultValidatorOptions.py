@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import Callable, TYPE_CHECKING, overload
+from typing import Any, Callable, TYPE_CHECKING, overload
 
 from fluent_validation.enums import ApplyConditionTo, CascadeMode, Severity as _Severity
 from fluent_validation.IValidationContext import ValidationContext
@@ -93,8 +93,8 @@ class DefaultValidatorOptions[T, TProperty]:
     def Cascade(ruleBuilder: IRuleBuilderInitial[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]: ...
     @overload
     def Cascade(ruleBuilder: IRuleBuilderInitialCollection[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]: ...
-    
-    def Cascade(ruleBuilder: IRuleBuilderInitialCollection[T, TProperty]| IRuleBuilderInitial[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]:
+
+    def Cascade(ruleBuilder: IRuleBuilderInitialCollection[T, TProperty] | IRuleBuilderInitial[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]:
         ruleBuilder.configurable(ruleBuilder).CascadeMode = cascadeMode
         return ruleBuilder
 
@@ -104,7 +104,7 @@ class DefaultValidatorOptions[T, TProperty]:
     # }
 
     @overload
-    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: str) -> IRuleBuilderOptions[T, TProperty]: 
+    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: str) -> IRuleBuilderOptions[T, TProperty]:
         """
         Specifies a custom error message to use when validation fails.
         Only applies to the rule that directly precedes it.
@@ -117,8 +117,9 @@ class DefaultValidatorOptions[T, TProperty]:
             IRuleBuilderOptions[T, TProperty]: The rule builder options with the custom error message applied.
         """
         ...
+
     @overload
-    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: Callable[[T], str]) -> IRuleBuilderOptions[T, TProperty]: 
+    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: Callable[[T], str]) -> IRuleBuilderOptions[T, TProperty]:
         """
         Specifies a custom error message to use when validation fails.
         Only applies to the rule that directly precedes it.
@@ -130,7 +131,9 @@ class DefaultValidatorOptions[T, TProperty]:
         Returns:
             IRuleBuilderOptions[T, TProperty]: The rule builder options with the custom error message applied.
         """
+
     ...
+
     @overload
     def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: Callable[[T, TProperty], str]) -> IRuleBuilderOptions[T, TProperty]:
         """
@@ -146,7 +149,7 @@ class DefaultValidatorOptions[T, TProperty]:
         """
         ...
 
-    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: str | Callable[[T], str] | Callable[[T, TProperty], str])->IRuleBuilderOptions[T, TProperty]:
+    def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: str | Callable[[T], str] | Callable[[T, TProperty], str]) -> IRuleBuilderOptions[T, TProperty]:
         if callable(errorMessage):
             n_params = len(inspect.signature(errorMessage).parameters)
 
@@ -243,7 +246,7 @@ class DefaultValidatorOptions[T, TProperty]:
     #         return rule.WhenAsync(async (x, ctx, ct) => !await predicate(x, ctx, ct), applyConditionTo);
     #     }
 
-    # FIXME [x]: the type var of rule would be 'IRuleBuilderInitialCollection'
+    # FIXME [x]: the type of rule would be 'IRuleBuilderInitialCollection'
     def where[TCollectionElement](rule: IRuleBuilderInitialCollection[T, TCollectionElement], predicate: Callable[[TCollectionElement], bool]) -> IRuleBuilderInitialCollection[T, TCollectionElement]:
         # This overload supports RuleFor().SetCollectionValidator() (which returns IRuleBuilderOptions<T, IEnumerable<TElement>>)
         rule_configurable: ICollectionRule = rule.configurable(rule)
@@ -288,21 +291,34 @@ class DefaultValidatorOptions[T, TProperty]:
         rule.configurable(rule).PropertyName = propertyName
         return rule
 
-    #     public static IRuleBuilderOptions[T, TProperty] WithState(rule:IRuleBuilderOptions[T, TProperty], Callable<T, object> stateProvider) {
-    #         var wrapper = new Callable<ValidationContext[T], TProperty, object>((ctx, _) => stateProvider(ctx.InstanceToValidate));
-    #         Configurable(rule).Current.CustomStateProvider = wrapper;
-    #         return rule;
-    #     }
+    @overload
+    def with_state(rule: IRuleBuilderOptions[T, TProperty], stateProvider: Callable[[T], object]) -> IRuleBuilderOptions[T, TProperty]: ...
+    @overload
+    def with_state(rule: IRuleBuilderOptions[T, TProperty], stateProvider: Callable[[T, TProperty], object]) -> IRuleBuilderOptions[T, TProperty]: ...
+    @overload
+    def with_state(rule: IRuleBuilderOptions[T, TProperty], stateProvider: Callable[[T, TProperty, ValidationContext[T]], object]) -> IRuleBuilderOptions[T, TProperty]: ...
 
-    #     public static IRuleBuilderOptions[T, TProperty] WithState(rule:IRuleBuilderOptions[T, TProperty], Callable<T, TProperty, object> stateProvider) {
+    def with_state(rule: IRuleBuilderOptions[T, TProperty], stateProvider) -> IRuleBuilderOptions[T, TProperty]:
+        """
+            Specifies custom state that should be stored alongside the validation message when validation fails for this rule.
 
-    #         var wrapper = new Callable<ValidationContext[T], TProperty, object>((ctx, val) => {
-    #             return stateProvider(ctx.InstanceToValidate, val);
-    #         });
+        Args:
+                - rule:IRuleBuilderOptions
+                - stateProvider
+        """
+        n_params = len(inspect.signature(stateProvider).parameters)
 
-    #         Configurable(rule).Current.CustomStateProvider = wrapper;
-    #         return rule;
-    #     }
+        if n_params == 1:
+            wrapper: Callable[[ValidationContext[T]], Any] = lambda ctx, _: stateProvider(ctx.instance_to_validate)  # noqa: E731
+
+        elif n_params == 2:
+            wrapper: Callable[[ValidationContext[T, TProperty]], Any] = lambda ctx, val: stateProvider(ctx.instance_to_validate, val)  # noqa: E731
+
+        elif n_params == 3:
+            wrapper: Callable[[ValidationContext[T, TProperty]], Any] = lambda ctx, val: stateProvider(ctx.instance_to_validate, val, ctx)  # noqa: E731
+
+        rule.configurable(rule).Current.CustomStateProvider = wrapper
+        return rule
 
     @overload
     def with_severity(rule: IRuleBuilderOptions[T, TProperty], severityProvider: _Severity) -> IRuleBuilderOptions[T, TProperty]: ...

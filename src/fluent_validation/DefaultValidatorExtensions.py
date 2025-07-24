@@ -58,9 +58,29 @@ class DefaultValidatorExtensions[T, TProperty]:
     """
 
     def not_null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'not null' validator on the current rule builder.
+        Validation will fail if the property is null.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(NotNullValidator[T, TProperty]())
 
     def null(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'null' validator on the current rule builder.
+        Validation will fail if the property is not null.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(NullValidator[T, TProperty]())
 
     # region Matches
@@ -216,21 +236,86 @@ class DefaultValidatorExtensions[T, TProperty]:
     def length(ruleBuilder: IRuleBuilder[T, TProperty], min: int, max: int) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def length(ruleBuilder: IRuleBuilder[T, TProperty], min: int | T, max: int | T) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a length validator on the current rule builder, but only for string properties.
+        Validation will fail if the length of the string is outside of the specified range. The range is inclusive.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            min: Minimum allowed length
+            max: Maximum allowed length
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(LengthValidator[T](min, max))
 
     def exact_length(ruleBuilder: IRuleBuilder[T, TProperty], exactLength: int) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a length validator on the current rule builder, but only for string properties.
+        Validation will fail if the length of the string is not equal to the length specified.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            exactLength: The exact length required
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(ExactLengthValidator[T](exactLength))
 
     def max_length(ruleBuilder: IRuleBuilder[T, TProperty], max_length: int) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a length validator on the current rule builder, but only for string properties.
+        Validation will fail if the length of the string is larger than the length specified.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            max_length: Maximum allowed length
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(MaximumLengthValidator[T](max_length))
 
     def min_length(ruleBuilder: IRuleBuilder[T, TProperty], min_length: int) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a length validator on the current rule builder, but only for string properties.
+        Validation will fail if the length of the string is less than the length specified.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            min_length: Minimum allowed length
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(MinimumLengthValidator[T](min_length))
 
     def not_empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'not empty' validator on the current rule builder.
+        Validation will fail if the property is null, an empty string, whitespace, an empty collection or the default value for the type (for example, 0 for integers but null for nullable integers)
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(NotEmptyValidator[T, TProperty]())
 
     def empty(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'empty' validator on the current rule builder.
+        Validation will fail if the property is not null, an empty or the default value for the type (for example, 0 for integers)
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(EmptyValidator[T, TProperty]())
 
     # region less_than
@@ -244,6 +329,18 @@ class DefaultValidatorExtensions[T, TProperty]:
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'less than' validator on the current rule builder.
+        The validation will succeed if the property value is less than the specified value.
+        The validation will fail if the property value is greater than or equal to the specified value.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            valueToCompare: The value being compared or a function that returns the value
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -265,6 +362,18 @@ class DefaultValidatorExtensions[T, TProperty]:
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'less than or equal' validator on the current rule builder.
+        The validation will succeed if the property value is less than or equal to the specified value.
+        The validation will fail if the property value is greater than the specified value.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            valueToCompare: The value being compared or a function that returns the value
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -285,6 +394,19 @@ class DefaultValidatorExtensions[T, TProperty]:
     def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines an 'equals' validator on the current rule builder.
+        Validation will fail if the specified value is not equal to the value of the property.
+        For strings, this performs an ordinal comparison unless you specify a different comparer.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            toCompare: The value to compare or a function that returns the comparison value
+            comparer: Equality comparer to use
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         expression = toCompare
         if not comparer:
             comparer = lambda x, y: x == y  # noqa: E731
@@ -319,6 +441,21 @@ class DefaultValidatorExtensions[T, TProperty]:
     def must(
         ruleBuilder: IRuleBuilder[T, TProperty], predicate: Callable[[TProperty], bool] | Callable[[T, TProperty], bool] | Callable[[T, TProperty, ValidationContext[T]], bool]
     ) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a predicate validator on the current rule builder using a lambda expression to specify the predicate.
+        Validation will fail if the specified lambda returns false.
+        Validation will succeed if the specified lambda returns true.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            predicate: A lambda expression specifying the predicate. Can accept 1, 2, or 3 parameters:
+                      - Callable[[TProperty], bool]: predicate(value)
+                      - Callable[[T, TProperty], bool]: predicate(instance, value) 
+                      - Callable[[T, TProperty, ValidationContext[T]], bool]: predicate(instance, value, context)
+                      
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         num_args = len(inspect.signature(predicate).parameters)
 
         if num_args == 1:
@@ -349,6 +486,19 @@ class DefaultValidatorExtensions[T, TProperty]:
     def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: Callable[[T], str], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]: ...
 
     def not_equal(ruleBuilder: IRuleBuilder[T, TProperty], toCompare: str | Callable[[T], TProperty], comparer: Optional[Callable[[TProperty, str], bool]] = None) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'not equal' validator on the current rule builder.
+        Validation will fail if the specified value is equal to the value of the property.
+        For strings, this performs an ordinal comparison unless you specify a different comparer.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            toCompare: The value to compare or a function that returns the comparison value
+            comparer: Equality comparer to use
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         expression = toCompare
         if not comparer:
             comparer = lambda x, y: x == y  # noqa: E731
@@ -380,6 +530,18 @@ class DefaultValidatorExtensions[T, TProperty]:
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'greater than' validator on the current rule builder.
+        The validation will succeed if the property value is greater than the specified value.
+        The validation will fail if the property value is less than or equal to the specified value.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            valueToCompare: The value being compared or a function that returns the value
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -400,6 +562,18 @@ class DefaultValidatorExtensions[T, TProperty]:
         ruleBuilder: IRuleBuilder[T, TProperty],
         valueToCompare: Callable[[T], TProperty] | TProperty,
     ) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines a 'greater than or equal' validator on the current rule builder.
+        The validation will succeed if the property value is greater than or equal the specified value.
+        The validation will fail if the property value is less than the specified value.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            valueToCompare: The value being compared or a function that returns the value
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         if callable(valueToCompare):
             func = valueToCompare
             member = MemberInfo(valueToCompare)
@@ -418,6 +592,19 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilderOptions[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
     def inclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines an 'inclusive between' validator on the current rule builder, but only for properties of types that implement IComparable.
+        Validation will fail if the value of the property is outside of the specified range. The range is inclusive.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            from_: The lowest allowed value
+            to: The highest allowed value
+            comparer: Comparer to use (optional)
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         if comparer is None:
             return ruleBuilder.set_validator(RangeValidatorFactory.CreateInclusiveBetween(from_, to))
         return ruleBuilder.set_validator(InclusiveBetweenValidator[T, TProperty](from_, to, comparer))
@@ -430,14 +617,45 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilderOptions[T, TProperty]: ...  # IRuleBuilderOptions[T,TProperty] :
 
     def exclusive_between(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], from_: TProperty, to: TProperty, comparer: Optional[IComparer[T]] = None) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines an 'exclusive between' validator on the current rule builder, but only for properties of types that implement IComparable.
+        Validation will fail if the value of the property is outside of the specified range. The range is exclusive.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            from_: The lowest allowed value
+            to: The highest allowed value
+            comparer: Comparer to use (optional)
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         if comparer is None:
             return ruleBuilder.set_validator(RangeValidatorFactory.CreateExclusiveBetween(from_, to))
         return ruleBuilder.set_validator(ExclusiveBetweenValidator[T, TProperty](from_, to, comparer))
 
     def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions[T, str]
+        """
+        Defines a credit card validator for the current rule builder that ensures that the specified string is a valid credit card number.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(CreditCardValidator[T]())
 
     def is_in_enum(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
+        """
+        Defines a enum value validator on the current rule builder that ensures that the specific value is a valid enum value.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(EnumValidator[T, TProperty](ruleBuilder.Rule.TypeToValidate))
 
     # region precision_scale
@@ -449,6 +667,21 @@ class DefaultValidatorExtensions[T, TProperty]:
     def precision_scale[TPrecision](
         ruleBuilder: IRuleBuilder[T, TPrecision], precision: int, scale: int, ignoreTrailingZeros: bool
     ) -> IRuleBuilderOptions[T, TPrecision]:  # IRuleBuilderOptions<T, Decimal?>
+        """
+        Defines a scale precision validator on the current rule builder that ensures a decimal the specified precision and scale.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            precision: Allowed precision of the value
+            scale: Allowed scale of the value
+            ignoreTrailingZeros: Whether the validator will ignore trailing zeros after the decimal point. 
+                               For example, when set to true the decimal 123.4500 will be considered to have 
+                               a precision of 5 and scale of 2. When set to false, it will be considered to 
+                               have a precision of 7 and scale of 4.
+                               
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(ScalePrecisionValidator[T](scale, precision, ignoreTrailingZeros))
 
     # endregion
@@ -491,12 +724,36 @@ class DefaultValidatorExtensions[T, TProperty]:
     # 	}
 
     def is_enum_name(ruleBuilder: IRuleBuilder[T, str], enumType: Type, caseSensitive: True = True) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions<T, str>:
+        """
+        Defines a enum value validator on the current rule builder that ensures that the specific value is a valid enum name.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            enumType: The enum whose the string should match any name
+            caseSensitive: If the comparison between the string and the enum names should be case sensitive
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+        """
         return ruleBuilder.set_validator(StringEnumValidator[T](enumType, caseSensitive))
 
     def child_rules[T, TProperty](
         ruleBuilder: IRuleBuilder[T, TProperty],
         action: None | Callable[[InlineValidator[TProperty], None]],
     ) -> IRuleBuilderOptions[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
+        """
+        Defines child rules for a nested property.
+        
+        Args:
+            ruleBuilder: The rule builder on which the validator should be defined
+            action: Callback that will be invoked to build the rules
+            
+        Returns:
+            IRuleBuilderOptions for method chaining
+            
+        Raises:
+            ValueError: If action is None
+        """
         from fluent_validation.internal.ChildRulesContainer import ChildRulesContainer
 
         if action is None:

@@ -18,7 +18,7 @@
 
 from __future__ import annotations
 from decimal import Decimal
-from typing import Callable, Optional, Type, get_args, overload, TYPE_CHECKING, get_origin
+from typing import Callable, Optional, Type, overload, TYPE_CHECKING
 import re
 import inspect
 
@@ -79,10 +79,10 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a 'not null' validator on the current rule builder.
         Validation will fail if the property is null.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -92,10 +92,10 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a 'null' validator on the current rule builder.
         Validation will fail if the property is not null.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -257,12 +257,12 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a length validator on the current rule builder, but only for string properties.
         Validation will fail if the length of the string is outside of the specified range. The range is inclusive.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             min: Minimum allowed length
             max: Maximum allowed length
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -272,11 +272,11 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a length validator on the current rule builder, but only for string properties.
         Validation will fail if the length of the string is not equal to the length specified.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             exactLength: The exact length required
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -286,11 +286,11 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a length validator on the current rule builder, but only for string properties.
         Validation will fail if the length of the string is larger than the length specified.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             max_length: Maximum allowed length
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -300,11 +300,11 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a length validator on the current rule builder, but only for string properties.
         Validation will fail if the length of the string is less than the length specified.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             min_length: Minimum allowed length
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -314,10 +314,10 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a 'not empty' validator on the current rule builder.
         Validation will fail if the property is null, an empty string, whitespace, an empty collection or the default value for the type (for example, 0 for integers but null for nullable integers)
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -327,10 +327,10 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines a 'empty' validator on the current rule builder.
         Validation will fail if the property is not null, an empty or the default value for the type (for example, 0 for integers)
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -351,11 +351,11 @@ class DefaultValidatorExtensions[T, TProperty]:
         Defines a 'less than' validator on the current rule builder.
         The validation will succeed if the property value is less than the specified value.
         The validation will fail if the property value is greater than or equal to the specified value.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             valueToCompare: The value being compared or a function that returns the value
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -384,11 +384,11 @@ class DefaultValidatorExtensions[T, TProperty]:
         Defines a 'less than or equal' validator on the current rule builder.
         The validation will succeed if the property value is less than or equal to the specified value.
         The validation will fail if the property value is greater than the specified value.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             valueToCompare: The value being compared or a function that returns the value
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -416,12 +416,12 @@ class DefaultValidatorExtensions[T, TProperty]:
         Defines an 'equals' validator on the current rule builder.
         Validation will fail if the specified value is not equal to the value of the property.
         For strings, this performs an ordinal comparison unless you specify a different comparer.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             toCompare: The value to compare or a function that returns the comparison value
             comparer: Equality comparer to use
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -463,14 +463,14 @@ class DefaultValidatorExtensions[T, TProperty]:
         Defines a predicate validator on the current rule builder using a lambda expression to specify the predicate.
         Validation will fail if the specified lambda returns false.
         Validation will succeed if the specified lambda returns true.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             predicate: A lambda expression specifying the predicate. Can accept 1, 2, or 3 parameters:
                       - Callable[[TProperty], bool]: predicate(value)
-                      - Callable[[T, TProperty], bool]: predicate(instance, value) 
+                      - Callable[[T, TProperty], bool]: predicate(instance, value)
                       - Callable[[T, TProperty, ValidationContext[T]], bool]: predicate(instance, value, context)
-                      
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -508,12 +508,12 @@ class DefaultValidatorExtensions[T, TProperty]:
         Defines a 'not equal' validator on the current rule builder.
         Validation will fail if the specified value is equal to the value of the property.
         For strings, this performs an ordinal comparison unless you specify a different comparer.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             toCompare: The value to compare or a function that returns the comparison value
             comparer: Equality comparer to use
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -552,11 +552,11 @@ class DefaultValidatorExtensions[T, TProperty]:
         Defines a 'greater than' validator on the current rule builder.
         The validation will succeed if the property value is greater than the specified value.
         The validation will fail if the property value is less than or equal to the specified value.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             valueToCompare: The value being compared or a function that returns the value
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -584,11 +584,11 @@ class DefaultValidatorExtensions[T, TProperty]:
         Defines a 'greater than or equal' validator on the current rule builder.
         The validation will succeed if the property value is greater than or equal the specified value.
         The validation will fail if the property value is less than the specified value.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             valueToCompare: The value being compared or a function that returns the value
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -613,13 +613,13 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines an 'inclusive between' validator on the current rule builder, but only for properties of types that implement IComparable.
         Validation will fail if the value of the property is outside of the specified range. The range is inclusive.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             from_: The lowest allowed value
             to: The highest allowed value
             comparer: Comparer to use (optional)
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -638,13 +638,13 @@ class DefaultValidatorExtensions[T, TProperty]:
         """
         Defines an 'exclusive between' validator on the current rule builder, but only for properties of types that implement IComparable.
         Validation will fail if the value of the property is outside of the specified range. The range is exclusive.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             from_: The lowest allowed value
             to: The highest allowed value
             comparer: Comparer to use (optional)
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -655,10 +655,10 @@ class DefaultValidatorExtensions[T, TProperty]:
     def credit_card(ruleBuilder: IRuleBuilder[T, str]) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions[T, str]
         """
         Defines a credit card validator for the current rule builder that ensures that the specified string is a valid credit card number.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -667,10 +667,10 @@ class DefaultValidatorExtensions[T, TProperty]:
     def is_in_enum(ruleBuilder: IRuleBuilder[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
         """
         Defines a enum value validator on the current rule builder that ensures that the specific value is a valid enum value.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -687,16 +687,16 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilderOptions[T, TPrecision]:  # IRuleBuilderOptions<T, Decimal?>
         """
         Defines a scale precision validator on the current rule builder that ensures a decimal the specified precision and scale.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             precision: Allowed precision of the value
             scale: Allowed scale of the value
-            ignoreTrailingZeros: Whether the validator will ignore trailing zeros after the decimal point. 
-                               For example, when set to true the decimal 123.4500 will be considered to have 
-                               a precision of 5 and scale of 2. When set to false, it will be considered to 
+            ignoreTrailingZeros: Whether the validator will ignore trailing zeros after the decimal point.
+                               For example, when set to true the decimal 123.4500 will be considered to have
+                               a precision of 5 and scale of 2. When set to false, it will be considered to
                                have a precision of 7 and scale of 4.
-                               
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -744,12 +744,12 @@ class DefaultValidatorExtensions[T, TProperty]:
     def is_enum_name(ruleBuilder: IRuleBuilder[T, str], enumType: Type, caseSensitive: True = True) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions<T, str>:
         """
         Defines a enum value validator on the current rule builder that ensures that the specific value is a valid enum name.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             enumType: The enum whose the string should match any name
             caseSensitive: If the comparison between the string and the enum names should be case sensitive
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
         """
@@ -761,14 +761,14 @@ class DefaultValidatorExtensions[T, TProperty]:
     ) -> IRuleBuilderOptions[T, TProperty]:  # IRuleBuilderOptions[T,TProperty]
         """
         Defines child rules for a nested property.
-        
+
         Args:
             ruleBuilder: The rule builder on which the validator should be defined
             action: Callback that will be invoked to build the rules
-            
+
         Returns:
             IRuleBuilderOptions for method chaining
-            
+
         Raises:
             ValueError: If action is None
         """
@@ -780,14 +780,9 @@ class DefaultValidatorExtensions[T, TProperty]:
         # COMMENT: As the datatype of property we are validating is an Iterable object
         # we're going to get the type of each element. We assumed that all element are of the same type,
         # so we get the __args__ and get the first element of the tuple
-        model = get_args(ruleBuilder.Rule.TypeToValidate)[0]
-        t_property = MemberInfo.get_args(model)
+        t_property = MemberInfo.get_property_class(ruleBuilder.Rule.TypeToValidate)
+        validator = ChildRulesContainer(t_property)
 
-        t_property_origin = get_origin(t_property)
-        if t_property_origin and issubclass(t_property_origin, list):
-            # COMMENT: As the datatype of property we are validating is an Iterable object
-            t_property = get_args(t_property)[0]
-        validator = ChildRulesContainer[TProperty](t_property)
         # parentValidator = ((IRuleBuilderInternal[T]) ruleBuilder).ParentValidator
         parentValidator = ruleBuilder.ParentValidator
 

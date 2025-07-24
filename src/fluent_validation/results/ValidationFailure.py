@@ -3,6 +3,16 @@ from fluent_validation.enums import Severity as _Severity
 
 
 class ValidationFailure:
+    __slots__ = (
+        "_PropertyName",
+        "_ErrorMessage",
+        "_AttemptedValue",
+        "_CustomState",
+        "_ErrorCode",
+        "_severity",
+        "_FormattedMessagePlaceholderValues",
+    )
+
     def __init__(
         self,
         PropertyName: str = None,

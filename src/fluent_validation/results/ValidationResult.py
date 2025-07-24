@@ -9,6 +9,11 @@ if TYPE_CHECKING:
 
 
 class ValidationResult:
+    __slots__ = (
+        "_rule_sets_executed",
+        "_errors",
+    )
+
     @overload
     def __init__(self): ...
 

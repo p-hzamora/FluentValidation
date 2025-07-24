@@ -7,6 +7,18 @@ from fluent_validation.validators.IpropertyValidator import IAsyncPropertyValida
 
 
 class RuleComponent[T, TProperty](IRuleComponent):
+    __slots__ = (
+        "_property_validator",
+        "_error_message",
+        "_error_code",
+        "_asyncPropertyValidator",
+        "_errorMessageFactory",
+        "_condition",
+        "_CustomStateProvider",
+        "_SeverityProvider",
+        "_asyncCondition",
+    )
+
     @overload
     def __init__(self, property_validator: IPropertyValidator[T, TProperty]) -> None: ...
     @overload

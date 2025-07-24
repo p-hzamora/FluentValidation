@@ -21,6 +21,23 @@ if TYPE_CHECKING:
 
 
 class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
+    __slots__ = (
+        "_member",
+        "_PropertyFunc",
+        "_expression",
+        "_typeToValidate",
+        "_cascadeModeThunk",
+        "_propertyDisplayName",
+        "_displayNameFactory",
+        "_displayNameFunc",
+        "_components",
+        "_condition",
+        "_displayName",
+        "_rule_sets",
+        "_DependentRules",
+        "_MessageBuilder",
+    )
+
     def __init__(
         self,
         member: MemberInfo,

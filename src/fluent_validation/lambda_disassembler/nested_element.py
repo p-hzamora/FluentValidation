@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Iterable
 
 
@@ -17,7 +18,7 @@ class NestedElement[T]:
             return self._cond
 
     @property
-    def parent(self) -> "NestedElement":
+    def parent(self) -> NestedElement:
         if not self._parent_list:
             raise ValueError(f"Attribute '{self._cond}' has not parent values")
         new_cond = self._parent_list[:-1]
@@ -40,5 +41,5 @@ class NestedElement[T]:
             return _list
 
     @staticmethod
-    def __get_parent(constructor: T) -> "NestedElement":
+    def __get_parent(constructor: T) -> NestedElement:
         return NestedElement[T](constructor)

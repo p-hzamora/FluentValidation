@@ -31,8 +31,8 @@ class CultureInfo:
     """Python implementation of .NET CultureInfo class"""
 
     # Class variables for cached instances
-    _current_ui_culture: ClassVar[Optional["CultureInfo"]] = None
-    _invariant_culture: ClassVar[Optional["CultureInfo"]] = None
+    _current_ui_culture: ClassVar[Optional[CultureInfo]] = None
+    _invariant_culture: ClassVar[Optional[CultureInfo]] = None
 
     @overload
     def __init__(self): ...
@@ -75,19 +75,19 @@ class CultureInfo:
         return HYPHEN not in self.Name and self.Name != ""
 
     @classmethod
-    def CurrentUICulture(cls) -> "CultureInfo":
+    def CurrentUICulture(cls) -> CultureInfo:
         """Gets the current UI culture (cached)"""
         if hasattr(_thread_culture, "CurrentUICulture"):
             return _thread_culture.CurrentUICulture
         return CultureInfo(get_default_ui())
 
     @classmethod
-    def set_current_ui_culture(cls, culture: "CultureInfo") -> None:
+    def set_current_ui_culture(cls, culture: CultureInfo) -> None:
         """Sets the current UI culture"""
         cls._current_ui_culture = culture
 
     @classmethod
-    def InvariantCulture(cls) -> "CultureInfo":
+    def InvariantCulture(cls) -> CultureInfo:
         """Gets the invariant culture (cached)"""
         if cls._invariant_culture is None:
             cls._invariant_culture = CultureInfo("")

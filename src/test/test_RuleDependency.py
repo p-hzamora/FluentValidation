@@ -180,7 +180,7 @@ class RuleDependencyTests(unittest.TestCase):
                                             
                         validator.rule_for(lambda x: x.Address).not_null())),
         )
-        #fmt: off
+        # fmt: on
 
         results = validator.validate(Person(Surname="foo", Forename="foo"), lambda v: v.IncludeRuleSets("MyRuleSet"))
         self.assertEqual(len(results.errors), 1)

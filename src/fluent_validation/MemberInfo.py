@@ -44,13 +44,14 @@ class MemberInfo:
     def get_type_hint(self, type_model: Type) -> Type[Any]:
         def get_types(obj: Any):
             init_types = get_type_hints(obj.__init__) if hasattr(obj, "__init__") else {}
-            annotations_types = obj.__annotations__ if hasattr(obj, "__annotations__") else {}
+            annotations_types = get_type_hints(obj) if hasattr(obj, "__annotations__") else {}
 
             functions_dict = {name: obj for name, obj in inspect.getmembers(type_model, predicate=inspect.isfunction)}
 
-            dict_types = init_types if len(init_types) > len(annotations_types) else annotations_types
+            dict_types = init_types
 
             dict_types.update(functions_dict)
+            dict_types.update(annotations_types)
             return dict_types
 
         current_type_hints: dict[str, Any] = get_types(type_model)
@@ -70,14 +71,30 @@ class MemberInfo:
             raise TypeError(f"The variable '{self.Name}' does not exist in '{type_model.__name__}' class")
 
         current_instance_var = None
+
+        # Means that we accessing the own class lambda x: x
+        if len(nested_name) == 0:
+            return type_model
+        
         for var in nested_name:
             var_type_hint = current_type_hints[var]
 
             # It would be something like:   int | float | Decimal | ...
-            if self.isUnionType(var_type_hint):
-                return var_type_hint
+            if self.isUnionType(var_type_hint) or self.isOptional(var_type_hint):
+                # For Union types, try to extract the non-None type
+                return self.get_args(var_type_hint)
 
             current_instance_var = self.get_args(var_type_hint)
+            
+            # Handle Enum types - they don't have type hints like regular classes
+            if isinstance(current_instance_var, type) and issubclass(current_instance_var, Enum):
+                # For Enum types, we can't get further type hints, so return the Enum class itself
+                if len(nested_name) == 1:  # If this is the last variable in the chain
+                    return current_instance_var
+                else:
+                    # If there are more variables after an Enum, that's likely an error
+                    raise TypeError(f"Cannot access nested properties on Enum type '{current_instance_var.__name__}'")
+            
             current_type_hints = get_types(current_instance_var)
         return current_instance_var
 

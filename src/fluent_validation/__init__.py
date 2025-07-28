@@ -26,6 +26,7 @@ from fluent_validation.IValidationContext import ValidationContext as Validation
 from fluent_validation.abstract_validator import AbstractValidator as AbstractValidator
 from fluent_validation.syntax import IRuleBuilder as IRuleBuilder
 from fluent_validation.syntax import IRuleBuilderOptions as IRuleBuilderOptions
+from fluent_validation.IValidator import IValidator as IValidator
 
 # Internal class
 from fluent_validation.internal.PropertyChain import PropertyChain as PropertyChain

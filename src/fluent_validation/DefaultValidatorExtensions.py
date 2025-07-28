@@ -18,15 +18,19 @@
 
 from __future__ import annotations
 from decimal import Decimal
-from typing import Callable, Optional, Type, overload, TYPE_CHECKING
+from typing import Callable, Optional, Type, cast, overload, TYPE_CHECKING
 import re
 import inspect
 
 from fluent_validation.MemberInfo import MemberInfo
+
 from fluent_validation.internal.AccessorCache import AccessorCache
+from fluent_validation.internal.RuleComponentForNullableStruct import RuleComponentForNullableStruct
 from fluent_validation.validators.EmptyValidator import EmptyValidator
+from fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator
 from fluent_validation.validators.NullValidator import NullValidator
 from fluent_validation.validators.InclusiveBetweenValidator import InclusiveBetweenValidator
+from fluent_validation.validators.PolymorphicValidator import PolymorphicValidator
 from fluent_validation.validators.RangeValidator import IComparer, RangeValidatorFactory
 from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
 from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
@@ -123,7 +127,7 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     @overload
     def matches(ruleBuilder: IRuleBuilder[T, str], regex: re.Pattern) -> IRuleBuilderOptions[T, str]:
-        """
+        r"""
         Defines a regular expression validator using a compiled regex pattern.
         Validation will fail if the value does not match the regular expression.
 
@@ -135,7 +139,7 @@ class DefaultValidatorExtensions[T, TProperty]:
             IRuleBuilderOptions for method chaining
 
         Example:
-            >>> pattern = re.compile(r'^\d{3}-\d{2}-\d{4}$')  # SSN format
+            >>> pattern = re.compile(r"^\d{3}-\d{2}-\d{4}$")  # SSN format
             >>> ruleBuilder.matches(pattern)
         """
         ...
@@ -225,6 +229,35 @@ class DefaultValidatorExtensions[T, TProperty]:
         return ruleBuilder.set_validator(RegularExpressionValidator(regex, flags))
 
     # endregion
+
+    def SetAsyncValidator(ruleBuilder: IRuleBuilder[T, Optional[TProperty]], validator: IAsyncPropertyValidator[T, TProperty]) -> "IRuleBuilderOptions[T, Optional[TProperty]]":
+        """
+        Associates an async validator with this the property for this rule builder.
+        This overload handles type conversion for nullable value types, allowing a validator for TProperty
+        to be applied to a property of type Optional[TProperty] (Python's equivalent to Nullable<TProperty>).
+
+        Args:
+            ruleBuilder: The rule builder instance for Optional[TProperty]
+            validator: The validator to set for TProperty
+
+        Returns:
+            IRuleBuilderOptions[T, Optional[TProperty]]
+
+        Note:
+            In C#, this method has a 'where TProperty : struct' constraint.
+            Python doesn't have exact equivalent, but this is intended for value types.
+        """
+        from fluent_validation.abstract_validator import RuleBuilder
+
+        # Check if validator also implements IPropertyValidator (equivalent to C# 'as' operator)
+        sync_validator = None
+
+        # Create the component for nullable struct handling
+        component = RuleComponentForNullableStruct[T, TProperty](validator, sync_validator)
+
+        # Cast to RuleBuilder (equivalent to C# cast)
+        cast(RuleBuilder, ruleBuilder).AddComponent(component)
+        return ruleBuilder
 
     def email_address(ruleBuilder: IRuleBuilder[T, str], mode: EmailValidationMode = EmailValidationMode.AspNetCoreCompatible) -> IRuleBuilderOptions[T, str]:  # IRuleBuilderOptions<T, string> :
         """

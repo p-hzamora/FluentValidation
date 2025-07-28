@@ -132,3 +132,95 @@ class MemberInfo:
             return value
             
         return value
+
+    @classmethod
+    def extract_base_class(cls, type_hint: Any) -> Type[Any]:
+        """
+        Extracts the actual class type from a complex type annotation,
+        removing generic wrappers like Literal, Union, List, Optional, etc.
+
+        Args:
+            type_hint: The type annotation to extract the class from
+
+        Returns:
+            The actual class type without generic wrappers
+
+        Examples:
+            >>> MemberInfo.extract_base_class(List[Person]) → Person
+            >>> MemberInfo.extract_base_class(Optional[Person]) → Person
+            >>> MemberInfo.extract_base_class(Union[Person, str]) → Person
+            >>> MemberInfo.extract_base_class(Literal["admin", "user"]) → str
+            >>> MemberInfo.extract_base_class(Optional[MyEnum]) → MyEnum
+            >>> MemberInfo.extract_base_class(MyEnum) → MyEnum
+        """
+        # Handle None type
+        if type_hint is None or type_hint is type(None):
+            return type(None)
+
+        # If it's already a regular class, return it
+        if isinstance(type_hint, type) and not hasattr(type_hint, "__origin__"):
+            return type_hint
+        
+        # Handle Enum types specifically
+        if isinstance(type_hint, type) and issubclass(type_hint, Enum):
+            return type_hint
+
+        # Get the origin type (List, Union, Optional, etc.)
+        origin = get_origin(type_hint)
+
+        if origin is None:
+            # No origin means it's likely a regular class
+            return type_hint if isinstance(type_hint, type) else type(type_hint)
+
+        # Get the arguments of the generic type
+        args = get_args(type_hint)
+        if not args:
+            return origin
+
+        # Handle common generic types
+        if isinstance(origin, Iterable):
+            # For List[SomeClass], extract SomeClass
+            return cls.extract_base_class(args[0])
+
+        elif cls.isOptional(type_hint) or cls.isUnionType(type_hint):
+            # For Union types (including Optional), find the first non-None type
+            non_none_types = [arg for arg in args if arg is not type(None)]
+            if non_none_types:
+                # If the first non-None type is an Enum, return it directly
+                first_type = non_none_types[0]
+                if isinstance(first_type, type) and issubclass(first_type, Enum):
+                    return first_type
+                return cls.extract_base_class(first_type)
+            return type(None)
+
+        elif hasattr(type_hint, "_name") and type_hint._name == "Literal":
+            # For Literal types, return the type of the first literal value
+            if args:
+                return type(args[0])
+            return str  # Default for empty Literal
+
+        elif origin is tuple:
+            # For Tuple[SomeClass, ...], extract the first type
+            return cls.extract_base_class(args[0]) if args else tuple
+
+        else:
+            # For other generic types, try to extract the first argument
+            # or return the origin type
+            if args:
+                return cls.extract_base_class(args[0])
+            return origin
+
+    @classmethod
+    def get_property_class(cls, obj: Any) -> Type[Any]:
+        """
+        Extracts the actual class type from a complex type annotation using MemberInfo's get_args,
+        removing generic wrappers like Literal, Union, List, Optional, etc.
+
+        Args:
+            obj: The type object to extract the class from
+
+        Returns:
+            The actual class type without generic wrappers
+        """
+        t_property = cls.get_args(obj)
+        return cls.extract_base_class(t_property)

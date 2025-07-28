@@ -27,6 +27,7 @@ from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 from fluent_validation.syntax import IRuleBuilderInternal, IRuleBuilderOptions, IRuleBuilderInitial, IRuleBuilderInitialCollection, IRuleBuilderOptionsConditions
 
 if TYPE_CHECKING:
+    from fluent_validation.internal.RuleComponent import RuleComponent
     from fluent_validation.IValidationRuleInternal import IValidationRuleInternal
     from fluent_validation.abstract_validator import AbstractValidator
 
@@ -113,3 +114,7 @@ class RuleBuilder[T, TProperty](
         # ChildValidatorAdaptor supports both sync and async execution.
         self.Rule.AddAsyncValidator(adaptor, adaptor)
         return self
+
+    def AddComponent(self, component: RuleComponent[T, TProperty]) -> None:
+        self.Rule.Components.append(component)
+        return None

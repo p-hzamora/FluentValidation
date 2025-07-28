@@ -241,6 +241,9 @@ class CollectionPropertyRule[T, TElement](RuleBase[T, list[TElement], TElement],
 
         try:
             collection: list[TElement] = self.PropertyFunc(context.instance_to_validate)
+            # FIXME [x]: in order to avoid iterate through string objects 'Bob' ['B' ,'o', 'b']
+            if isinstance(collection, str):
+                collection = (collection,)
         except TypeError:
             raise TypeError(f"TypeError occurred when executing rule for '{self.Expression.lambda_to_string}'. If this property can be None you should add a null check using a when condition")
 

@@ -840,12 +840,25 @@ class DefaultValidatorExtensions[T, TProperty]:
 
         return ruleBuilder.set_validator(validator)
 
-    # 	static IRuleBuilderOptions[T,TProperty] SetInheritanceValidator[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<PolymorphicValidator[T,TProperty]> validatorConfiguration) {
-    # 		if (validatorConfiguration == null) throw ArgumentNullException(nameof(validatorConfiguration))
-    # 		var validator = PolymorphicValidator[T,TProperty]()
-    # 		validatorConfiguration(validator)
-    # 		return ruleBuilder.SetAsyncValidator((IAsyncPropertyValidator[T,TProperty]) validator)
-    # 	}
+    def SetInheritanceValidator(ruleBuilder: IRuleBuilder[T, TProperty], validatorConfiguration: Callable[[PolymorphicValidator[T, TProperty]], None]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Defines one or more validators that can be used to validate sub-classes or implementors
+        in an inheritance hierarchy. This is useful when the property being validated is an interface
+        or base-class, but you want to define rules for properties of a specific subclass.
+
+        Args:
+            ruleBuilder: The rule builder instance
+            validatorConfiguration: Callback for setting up the inheritance validators.
+
+        Returns:
+            IRuleBuilderOptions[T, TProperty]
+        """
+        if validatorConfiguration is None:
+            raise ValueError("validatorConfiguration cannot be None")
+
+        validator = PolymorphicValidator(ruleBuilder.Rule.TypeToValidate)
+        validatorConfiguration(validator)
+        return ruleBuilder.SetAsyncValidator(validator)
 
     @staticmethod
     def get_display_name(member: MemberInfo, expression: Callable[[T], TProperty]) -> None | str:

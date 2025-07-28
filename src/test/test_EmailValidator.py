@@ -104,7 +104,7 @@ class EmailValidatorTests(unittest.TestCase):
             ["someName@a@b.com"],
         ]
     )
-    def test_AAFails_email_validation_aspnetcore_compatible(self, email: str):
+    def test_Fails_email_validation_aspnetcore_compatible(self, email: str):
         validator = InlineValidator[Person](Person)
         validator.rule_for(lambda x: x.Email).email_address(EmailValidationMode.AspNetCoreCompatible)
         self.assertFalse(validator.validate(Person(Email=email)).is_valid)

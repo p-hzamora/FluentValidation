@@ -15,8 +15,8 @@
 #
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
-
-from typing import Callable
+from __future__ import annotations
+from typing import Callable, Optional
 import unittest
 import sys
 from pathlib import Path
@@ -45,48 +45,55 @@ class RulesetChildRulesValidator(AbstractValidator[Person]):
 
 
 class RulesetChildValidatorRulesValidator(AbstractValidator[Person]):
-    class RulesetOrderValidator(AbstractValidator[Order]):
-        def __init__(self) -> None:
-            super().__init__(Order)
-            self.rule_set("b", lambda: (self.rule_for(lambda o: o.ProductName).not_empty()))
-
     def __init__(self) -> None:
         super().__init__(Person)
+        # fmt:off
         self.rule_set(
             "a, b",
             lambda: (
                 self.rule_for(lambda x: x.Surname).not_empty(),
-                self.rule_for(lambda x: x).child_rules(lambda child: (child.rule_for_each(lambda o: o.Orders).set_validator(self.RulesetOrderValidator()))),
+                self.rule_for(lambda x: x).child_rules(lambda child: 
+                            child.rule_for_each(lambda o: o.Orders).set_validator(self.RulesetOrderValidator())),
             ),
         )
+        # fmt:on
+
+    class RulesetOrderValidator(AbstractValidator[Order]):
+        def __init__(self) -> None:
+            super().__init__(Order)
+
+            # fmt:off
+            self.rule_set("b", lambda: 
+                self.rule_for(lambda o: o.ProductName).not_empty())
+            # fmt:on
 
     class Foo:
-        def __init__(self):
-            self.Names: list[str] = []
+        def __init__(self, Names: Optional[list[str]] = None):
+            self.Names: list[str] = [] if Names is None else Names
 
     class Bar:
-        def __init__(self):
-            self.Foos: list[RulesetChildValidatorRulesValidator.Foo] = []
+        def __init__(self, Foos: Optional[list[RulesetChildValidatorRulesValidator.Foo]] = None):
+            self.Foos = [] if Foos is None else Foos
 
     class Baz:
-        def __init__(self):
-            self.Bars: list[RulesetChildValidatorRulesValidator.Bar] = []
+        def __init__(self, Bars: Optional[list[RulesetChildValidatorRulesValidator.Bar]] = None):
+            self.Bars = [] if Bars is None else Bars
 
 
 class Root:
-    def __init__(self):
-        self.Data: Bar = None
+    def __init__(self, Data: Optional[Bar] = None):
+        self.Data: Bar = Data
 
 
 class Base:
-    def __init__(self) -> None:
-        self.Value: int = None
+    def __init__(self, Value: Optional[int]) -> None:
+        self.Value: int = Value
 
 
 class Bar(Base):
-    def __init__(self) -> None:
-        super().__init__()
-        self.BarValue: int = None
+    def __init__(self, BarValue: Optional[int] = None, Value: Optional[int] = None) -> None:
+        super().__init__(Value)
+        self.BarValue: int = BarValue
 
 
 class RootValidator(AbstractValidator[Root]):
@@ -144,61 +151,63 @@ class ChildRulesTests(unittest.TestCase):
         result = validator.validate(Person(Orders=[Order()]), lambda options: options.IncludeRuleSets("other"))
         self.assertEqual(len(result.errors), 0)
 
-    # def test_ChildRules_works_with_SetValidator_and_RuleSet(self):
-    # 	validator = RulesetChildValidatorRulesValidator()
+    def test_ChildRules_works_with_SetValidator_and_RuleSet(self):
+        validator = RulesetChildValidatorRulesValidator()
 
-    # 	# If the validator inside a child rule specifies a rule set "b",
-    # 	# the rules inside the rule set "b" should not be used for the validation
-    # 	# if the validation context specified the ruleset "a"
-    # 	result = validator.validate(Person {
-    # 		Orders = [
-    # 			Order()
-    # 		}
-    # 	}, lambda options: options.IncludeRuleSets("a"))
+        # If the validator inside a child rule specifies a rule set "b",
+        # the rules inside the rule set "b" should not be used for the validation
+        # if the validation context specified the ruleset "a"
+        result = validator.validate(Person(Orders = [Order()]), lambda options: options.IncludeRuleSets("a"))
 
-    # 	self.assertEqual(len(result.errors),1)
-    # 	self.assertEqual(result.errors[0].PropertyName,"Surname")
-    # }
+        self.assertEqual(len(result.errors),1)
+        self.assertEqual(result.errors[0].PropertyName,"Surname")
 
-    # def test_Multiple_levels_of_nested_child_rules_in_ruleset(self):
-    # 	validator = InlineValidator<RulesetChildValidatorRulesValidator.Baz>()
-    # 	validator.rule_set("Set1", lambda:(
-    # 		validator.rule_for_each(baz => baz.Bars)
-    # 			.child_rules(barRule => barRule.rule_for_each(bar => bar.Foos)
-    # 				.child_rules(fooRule => fooRule.rule_for_each(foo => foo.Names)
-    # 					.child_rules(name => name.rule_for(n => n)
-    # 						.not_empty()
-    # 						.WithMessage("Name is required"))))
-    # 	})
 
-    # 	foos = self.oo:list[RulesetChildValidatorRulesValidator] = []
-    # 		new() { Names = { "Bob" }},
-    # 		new() { Names = { string.Empty }},
-    # 	}
+    def test_Multiple_levels_of_nested_child_rules_in_ruleset(self):
+        validator = InlineValidator(RulesetChildValidatorRulesValidator.Baz)
+        # fmt:off
+        validator.rule_set("Set1", lambda:
+            validator.rule_for_each(lambda baz: baz.Bars)
+                .child_rules(lambda barRule: barRule.rule_for_each(lambda bar: bar.Foos)
+                    .child_rules(lambda fooRule: fooRule.rule_for_each(lambda foo: foo.Names)
+                        .child_rules(lambda name: name.rule_for(lambda n: n)
+                            .not_empty()
+                            .with_message("Name is required"))))
+        )
+        # fmt:on
 
-    # 	bars = self.ar:list[RulesetChildValidatorRulesValidator] = []
-    # 		new(),
-    # 		new() { Foos = foos }
-    # 	}
+        foos: list[RulesetChildValidatorRulesValidator.Foo] = [
+            RulesetChildValidatorRulesValidator.Foo(Names="Bob"),
+            RulesetChildValidatorRulesValidator.Foo(Names=""),
+        ]
 
-    # 	baz = RulesetChildValidatorRulesValidator.Baz {
-    # 		Bars = bars
-    # 	}
+        bars: list[RulesetChildValidatorRulesValidator.Bar] = [
+            RulesetChildValidatorRulesValidator.Bar(),
+            RulesetChildValidatorRulesValidator.Bar(Foos=foos),
+        ]
 
-    # 	result = validator.validate(baz, lambda options: options.IncludeRuleSets("Set1"))
-    # 	result.is_valid.ShouldBeFalse()
-    # }
+        baz = RulesetChildValidatorRulesValidator.Baz(Bars=bars)
 
-    # def test_Doesnt_throw_InvalidCastException(self):
-    # 	# FIXME [ ]: We need to resolve event loop to propagate the values throw the conditions properly
-    # 	# See https://github.com/p-hzamora/FluentValidation/issues/2165
-    # 	validator = RootValidator()
-    # 	_root = Root()
-    # 	_root.Data = Bar()
-    # 	_root.Data.Value = -1
-    # 	result = validator.validate(_root)
-    # 	self.assertEqual(len(result.errors), 1)
+        result = validator.validate(baz, lambda options: options.IncludeRuleSets("Set1"))
+        self.assertFalse(result.is_valid)
+
+    def test_Doesnt_throw_InvalidCastException(self):
+        # FIXME [x]: We need to resolve event loop to propagate the values throw the conditions properly
+        # See https://github.com/p-hzamora/FluentValidation/issues/2165
+        validator = RootValidator()
+        _root = Root()
+        _root.Data = Bar()
+        _root.Data.Value = -1
+        result = validator.validate(_root)
+        self.assertEqual(len(result.errors), 1)
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+    from fluent_validation import IValidator
+
+    asdf:IValidator[Person] = ...
+
+    asdf.CanValidateInstancesOfType()

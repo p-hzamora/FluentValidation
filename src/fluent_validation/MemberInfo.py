@@ -17,7 +17,8 @@
 # endregion
 
 import inspect
-from typing import Any, Callable, Type, get_type_hints, get_args, get_origin, Union
+from enum import Enum
+from typing import Any, Callable, Iterable, Type, get_type_hints, get_args, get_origin, Union
 from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction, TupleInstruction
 import types
 
@@ -108,6 +109,26 @@ class MemberInfo:
 
     @classmethod
     def get_args(cls, value: Any) -> Any:
+        # Handle Enum types first - they don't need unwrapping
+        if isinstance(value, type) and issubclass(value, Enum):
+            return value
+            
+        # Handle Optional types (Union[T, None])
         if cls.isOptional(value):
-            return get_args(value)[0]
+            args = get_args(value)
+            # Return the first non-None type
+            for arg in args:
+                if arg is not type(None):
+                    return arg
+            return value
+            
+        # Handle other Union types (new Python 3.10+ syntax)
+        if cls.isUnionType(value):
+            args = get_args(value)
+            # Return the first non-None type
+            for arg in args:
+                if arg is not type(None):
+                    return arg
+            return value
+            
         return value

@@ -325,7 +325,7 @@ class InheritanceValidatorTest(unittest.TestCase):
     def test_Can_use_custom_subclass_with_nongeneric_overload(self):
         """Test using custom subclass with non-generic overload"""
         validator = InlineValidator(Root)
-        validator.rule_for(lambda x: x.Foo).SetAsyncValidator(TypeUnsafePolymorphicValidator())
+        validator.rule_for(lambda x: x.Foo).set_validator(TypeUnsafePolymorphicValidator())
         result = validator.validate(Root(Foo=FooImpl1()))
         self.assertEqual(result.errors[0].PropertyName, "Foo.Name")
 

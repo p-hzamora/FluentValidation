@@ -38,6 +38,7 @@ from fluent_validation.results.ValidationFailure import ValidationFailure as Val
 
 # Custom Validation
 from fluent_validation.validators.PropertyValidator import PropertyValidator as PropertyValidator
+from fluent_validation.validators.PolymorphicValidator import PolymorphicValidator as PolymorphicValidator
 
 # Global class
 from fluent_validation.ValidatorOptions import ValidatorOptions as ValidatorOptions

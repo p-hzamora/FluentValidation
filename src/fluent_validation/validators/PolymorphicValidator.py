@@ -128,6 +128,12 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
         return self
 
     def add[TDerived](self, validatorFactory: Callable[[T, TDerived], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
+        # when we passes a IValidator
+        if len(ruleSets) == 1 and isinstance(ruleSets[0], IValidator):
+            validator = ruleSets[0]
+            ruleSets = ruleSets[1:]
+            return self._add_with_type(validatorFactory, validator, *ruleSets)
+
         if not callable(validatorFactory):
             return self.__add_with_validator(validatorFactory, *ruleSets)
 

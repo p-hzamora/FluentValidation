@@ -64,7 +64,6 @@ class Organisation(IContact):
 
 
 class ContactRequest(BaseModel):
-    Contact: IContact
     MessageToSend: str
     Contacts: list[IContact] = Field(default_factory=list)
 
@@ -90,12 +89,9 @@ class ContactRequestValidator(AbstractValidator[ContactRequest]):
     def __init__(self):
         super().__init__(ContactRequest)
 
-        # fmt: off
-        self.rule_for(lambda x: x.Contact).set_inheritance_validator(lambda v: self.inheritance_from_IContact(v))
-        # fmt: on
 
         # fmt: off
-        self.rule_for_each(lambda x: x.Contact).set_inheritance_validator(lambda v: (
+        self.rule_for_each(lambda x: x.Contacts).set_inheritance_validator(lambda v: (
             v.add(OrganisationValidator()),
             v.add(PersonValidator()),
         ))

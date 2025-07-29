@@ -70,7 +70,7 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
     def __init__(self, t_property: Type[TProperty]):
         super().__init__(None, t_property)
 
-    def add_with_validator[TDerived](self, validatorFactory: IValidator[TDerived], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
+    def __add_with_validator[TDerived](self, validatorFactory: IValidator[TDerived], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
         """
         Adds a validator to handle a specific subclass.
 
@@ -88,7 +88,7 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
         self._derivedValidators[derivedType] = DerivedValidatorFactory(validatorFactory, *ruleSets)
         return self
 
-    def add_with_factory_single_param(self, validatorFactory: Callable[[T], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
+    def __add_with_factory_single_param(self, validatorFactory: Callable[[T], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
         """
         Adds a validator to handle a specific subclass.
 
@@ -108,7 +108,7 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
         self._derivedValidators[derivedType] = DerivedValidatorFactory(lambda context, _: validatorFactory(context.instance_to_validate), *ruleSets)
         return self
 
-    def add_with_factory_two_params[TDerived](self, validatorFactory: Callable[[T, TDerived], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
+    def __add_with_factory_two_params[TDerived](self, validatorFactory: Callable[[T, TDerived], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
         """
         Adds a validator to handle a specific subclass.
 
@@ -129,14 +129,14 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
 
     def add[TDerived](self, validatorFactory: Callable[[T, TDerived], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
         if not callable(validatorFactory):
-            return self.add_with_validator(validatorFactory, *ruleSets)
+            return self.__add_with_validator(validatorFactory, *ruleSets)
 
         n_param = len(inspect.signature(validatorFactory).parameters)
         if n_param == 1:
-            return self.add_with_factory_single_param(validatorFactory, *ruleSets)
+            return self.__add_with_factory_single_param(validatorFactory, *ruleSets)
 
         if n_param == 2:
-            return self.add_with_factory_two_params(validatorFactory, *ruleSets)
+            return self.__add_with_factory_two_params(validatorFactory, *ruleSets)
 
         raise ValueError
 

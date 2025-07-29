@@ -840,7 +840,7 @@ class DefaultValidatorExtensions[T, TProperty]:
 
         return ruleBuilder.set_validator(validator)
 
-    def SetInheritanceValidator(ruleBuilder: IRuleBuilder[T, TProperty], validatorConfiguration: Callable[[PolymorphicValidator[T, TProperty]], None]) -> IRuleBuilderOptions[T, TProperty]:
+    def set_inheritance_validator(ruleBuilder: IRuleBuilder[T, TProperty], validatorConfiguration: Callable[[PolymorphicValidator[T, TProperty]], None]) -> IRuleBuilderOptions[T, TProperty]:
         """
         Defines one or more validators that can be used to validate sub-classes or implementors
         in an inheritance hierarchy. This is useful when the property being validated is an interface

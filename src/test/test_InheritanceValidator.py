@@ -70,7 +70,7 @@ class InheritanceValidatorTest(unittest.TestCase):
         impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
         # fmt: off
-        validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(lambda v: (
+        validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (
             v.add(impl1Validator)
                 .add(impl2_validator)
         ))
@@ -96,7 +96,7 @@ class InheritanceValidatorTest(unittest.TestCase):
     #     impl1Validator.rule_for(lambda x: x.Name).not_null()
     #     impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
-    #     validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(lambda v: (v.add(impl1Validator).add(impl2_validator)))
+    #     validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (v.add(impl1Validator).add(impl2_validator)))
 
     #     # Test with FooImpl1
     #     result = await validator.validate_async(Root(Foo=FooImpl1()))
@@ -118,7 +118,7 @@ class InheritanceValidatorTest(unittest.TestCase):
         impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
         # fmt: off
-        validator.rule_for_each(lambda x: x.Foos).SetInheritanceValidator(lambda v: (
+        validator.rule_for_each(lambda x: x.Foos).set_inheritance_validator(lambda v: (
             v.add(impl1Validator)
                 .add(impl2_validator)))
         # fmt: on
@@ -144,7 +144,7 @@ class InheritanceValidatorTest(unittest.TestCase):
     #     impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
     #     # Note: RuleForEach needs to be implemented - testing collection validation manually for now
-    #     validator.rule_for(lambda x: x.Foos).SetInheritanceValidator(lambda v: (v.add(impl1Validator).add(impl2_validator)))
+    #     validator.rule_for(lambda x: x.Foos).set_inheritance_validator(lambda v: (v.add(impl1Validator).add(impl2_validator)))
 
     #     # Test with FooImpl1 in collection
     #     result = await validator.validate_async(Root(Foos=[FooImpl1()]))
@@ -166,7 +166,7 @@ class InheritanceValidatorTest(unittest.TestCase):
         impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
         # fmt:off
-        validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(lambda v: (
+        validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (
             v.add(lambda x: impl1Validator)
                 .add(lambda x: impl2_validator)
         ))
@@ -192,7 +192,7 @@ class InheritanceValidatorTest(unittest.TestCase):
     #     impl1Validator.rule_for(lambda x: x.Name).not_null()
     #     impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
-    #     validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(lambda v: (v.add(lambda x: impl1Validator).add(lambda x: impl2_validator)))
+    #     validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (v.add(lambda x: impl1Validator).add(lambda x: impl2_validator)))
 
     #     # Test with FooImpl1
     #     result = await validator.validate_async(Root(Foo=FooImpl1()))
@@ -214,7 +214,7 @@ class InheritanceValidatorTest(unittest.TestCase):
         impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
         # Note: Generic type constraints need to be implemented - using basic Add for now
-        validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(
+        validator.rule_for(lambda x: x.Foo).set_inheritance_validator(
             lambda v: (v.add(lambda x, impl1: (self.assertIsNotNone(impl1), impl1Validator)[1]).add(lambda x, impl2: (self.assertIsNotNone(impl2), impl2_validator)[1]))
         )
 
@@ -239,7 +239,7 @@ class InheritanceValidatorTest(unittest.TestCase):
     #     impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
     #     # Note: Generic type constraints need to be implemented - using basic Add for now
-    #     validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(
+    #     validator.rule_for(lambda x: x.Foo).set_inheritance_validator(
     #         lambda v: (v.add(lambda x, impl1: (self.assertIsNotNone(impl1), impl1Validator)[1]).add(lambda x, impl2: (self.assertIsNotNone(impl2), impl2_validator)[1]))
     #     )
 
@@ -270,7 +270,7 @@ class InheritanceValidatorTest(unittest.TestCase):
             impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
         ))
 
-        validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(lambda v: (
+        validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (
             v.add(impl1Validator, "RuleSet1")   
                 .add(impl2_validator, "RuleSet2")
         ))
@@ -310,7 +310,7 @@ class InheritanceValidatorTest(unittest.TestCase):
     #         ),
     #     )
 
-    #     validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(lambda v: (v.add(impl1Validator, "RuleSet1").add(impl2_validator, "RuleSet2")))
+    #     validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (v.add(impl1Validator, "RuleSet1").add(impl2_validator, "RuleSet2")))
 
     #     # Test with FooImpl1
     #     result = await validator.validate_async(Root(Foo=FooImpl1()))
@@ -337,7 +337,7 @@ class InheritanceValidatorTest(unittest.TestCase):
         validator = InlineValidator(Root)
         # fmt:off
         validator.rule_set("test",lambda: (
-            validator.rule_for(lambda x: x.Foo).SetInheritanceValidator(lambda v: (
+            validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (
                 v.add(foo_validator)
             ))
         ))

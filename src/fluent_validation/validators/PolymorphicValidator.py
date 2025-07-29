@@ -75,11 +75,11 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
         Adds a validator to handle a specific subclass.
 
         Args:
-        	derivedValidator: The derived validator
-        	ruleSets: Optionally specify rulesets to execute. If set, rules not in these rulesets will not be run
+                derivedValidator: The derived validator
+                ruleSets: Optionally specify rulesets to execute. If set, rules not in these rulesets will not be run
 
         Returns:
-        	PolymorphicValidator[T, TProperty]
+                PolymorphicValidator[T, TProperty]
         """
         if validatorFactory is None:
             raise ValueError("derivedValidator cannot be None")

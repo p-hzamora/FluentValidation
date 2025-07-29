@@ -132,70 +132,70 @@ class DefaultValidatorOptions[T, TProperty]:
         """
         Specifies a custom error message to use when validation fails.
         Only applies to the rule that directly precedes it.
-        
+
         This method supports three different ways to specify error messages:
-        
+
         1. **Static string message**: A simple string that will be used as-is
-        2. **Dynamic message with instance**: A function that takes the instance being validated 
+        2. **Dynamic message with instance**: A function that takes the instance being validated
            and returns a localized message string
-        3. **Dynamic message with instance and property**: A function that takes both the instance 
+        3. **Dynamic message with instance and property**: A function that takes both the instance
            being validated and the property value, returning a localized message string
-        
+
         Args:
             ruleBuilder (IRuleBuilderOptions[T, TProperty]): The current rule builder
-            errorMessage (str | Callable[[T], str] | Callable[[T, TProperty], str]): 
+            errorMessage (str | Callable[[T], str] | Callable[[T, TProperty], str]):
                 The error message to use. Can be:
                 - str: A static error message
                 - Callable[[T], str]: Function taking instance, returning message
                 - Callable[[T, TProperty], str]: Function taking instance and property value, returning message
-        
+
         Returns:
             IRuleBuilderOptions[T, TProperty]: The rule builder options with the custom error message applied
-        
+
         ## Available Placeholders
-        
+
         When using string messages, you can include placeholders that will be automatically replaced:
-        
+
         ### Common Placeholders (available for all validators):
         - `{PropertyName}` - Name of the property being validated
-        - `{PropertyValue}` - Current value of the property  
+        - `{PropertyValue}` - Current value of the property
         - `{PropertyPath}` - The full path of the property
-        
+
         ### Validator-Specific Placeholders:
-        
+
         **Comparison Validators** (`equal`, `not_equal`, `less_than`, `greater_than`, etc.):
         - `{ComparisonValue}` - Value being compared against
         - `{ComparisonProperty}` - Name of the property being compared against (if any)
-        
+
         **Length Validators** (`length`, `min_length`, `max_length`):
         - `{min_length}` - Minimum length
-        - `{max_length}` - Maximum length  
+        - `{max_length}` - Maximum length
         - `{total_length}` - Number of characters entered
-        
+
         **Range Validators** (`inclusive_between`, `exclusive_between`):
         - `{From}` - Lower bound of the range
         - `{To}` - Upper bound of the range
-        
+
         **Regular Expression Validator** (`matches`):
         - `{RegularExpression}` - Regular expression that was not matched
-        
+
         **Precision/Scale Validator** (`precision_scale`):
         - `{ExpectedPrecision}` - Expected precision
         - `{ExpectedScale}` - Expected scale
         - `{Digits}` - Total number of digits in the property value
         - `{ActualScale}` - Actual scale of the property value
-            
+
         Examples:
             >>> # Static message
             >>> rule.with_message("This field is required")
-            
+
             >>> # Static message with placeholders
             >>> rule.with_message("'{PropertyName}' should be between {min_length} and {max_length} characters")
-            
+
             >>> # Dynamic message using instance
             >>> rule.with_message(lambda person: f"Name is required for {person.title}")
-            
-            >>> # Dynamic message using instance and property value  
+
+            >>> # Dynamic message using instance and property value
             >>> rule.with_message(lambda person, age: f"Age {age} is invalid for {person.name}")
         """
         if callable(errorMessage):

@@ -157,11 +157,10 @@ class ChildRulesTests(unittest.TestCase):
         # If the validator inside a child rule specifies a rule set "b",
         # the rules inside the rule set "b" should not be used for the validation
         # if the validation context specified the ruleset "a"
-        result = validator.validate(Person(Orders = [Order()]), lambda options: options.IncludeRuleSets("a"))
+        result = validator.validate(Person(Orders=[Order()]), lambda options: options.IncludeRuleSets("a"))
 
-        self.assertEqual(len(result.errors),1)
-        self.assertEqual(result.errors[0].PropertyName,"Surname")
-
+        self.assertEqual(len(result.errors), 1)
+        self.assertEqual(result.errors[0].PropertyName, "Surname")
 
     def test_Multiple_levels_of_nested_child_rules_in_ruleset(self):
         validator = InlineValidator(RulesetChildValidatorRulesValidator.Baz)
@@ -205,9 +204,8 @@ class ChildRulesTests(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 
-
     from fluent_validation import IValidator
 
-    asdf:IValidator[Person] = ...
+    asdf: IValidator[Person] = ...
 
     asdf.CanValidateInstancesOfType()

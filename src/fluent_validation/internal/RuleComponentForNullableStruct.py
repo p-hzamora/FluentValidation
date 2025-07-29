@@ -26,7 +26,6 @@ if TYPE_CHECKING:
     from fluent_validation.validators.IpropertyValidator import IAsyncPropertyValidator, IPropertyValidator
 
 
-
 class RuleComponentForNullableStruct[T, TProperty](RuleComponent[T, Optional[TProperty]]):
     __slots__ = (
         "_propertyValidator",
@@ -36,15 +35,14 @@ class RuleComponentForNullableStruct[T, TProperty](RuleComponent[T, Optional[TPr
     _propertyValidator: IPropertyValidator[T, TProperty]
     _asyncPropertyValidator: IAsyncPropertyValidator[T, TProperty]
 
-    def __init__(self, propertyValidator: IPropertyValidator[T, TProperty] = None, 
-                 _asyncPropertyValidator: IAsyncPropertyValidator[T, TProperty] = None) -> None:
+    def __init__(self, propertyValidator: IPropertyValidator[T, TProperty] = None, _asyncPropertyValidator: IAsyncPropertyValidator[T, TProperty] = None) -> None:
         super().__init__(None)
         self._propertyValidator: Optional[IPropertyValidator[T, TProperty]] = propertyValidator
         self._asyncPropertyValidator: Optional[IAsyncPropertyValidator[T, TProperty]] = _asyncPropertyValidator
 
     @override
     @property
-    def Validator(self) -> IPropertyValidator| IAsyncPropertyValidator:
+    def Validator(self) -> IPropertyValidator | IAsyncPropertyValidator:
         return self._propertyValidator or self._asyncPropertyValidator
 
     @override

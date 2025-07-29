@@ -76,7 +76,7 @@ class MemberInfo:
         # Means that we accessing the own class lambda x: x
         if len(nested_name) == 0:
             return type_model
-        
+
         for var in nested_name:
             var_type_hint = current_type_hints[var]
 
@@ -86,7 +86,7 @@ class MemberInfo:
                 return self.get_args(var_type_hint)
 
             current_instance_var = self.get_args(var_type_hint)
-            
+
             # Handle Enum types - they don't have type hints like regular classes
             if isinstance(current_instance_var, type) and issubclass(current_instance_var, Enum):
                 # For Enum types, we can't get further type hints, so return the Enum class itself
@@ -95,7 +95,7 @@ class MemberInfo:
                 else:
                     # If there are more variables after an Enum, that's likely an error
                     raise TypeError(f"Cannot access nested properties on Enum type '{current_instance_var.__name__}'")
-            
+
             current_type_hints = get_types(current_instance_var)
         return current_instance_var
 
@@ -112,7 +112,7 @@ class MemberInfo:
         # Handle Enum types first - they don't need unwrapping
         if isinstance(value, type) and issubclass(value, Enum):
             return value
-            
+
         # Handle Optional types (Union[T, None])
         if cls.isOptional(value):
             args = get_args(value)
@@ -121,7 +121,7 @@ class MemberInfo:
                 if arg is not type(None):
                     return arg
             return value
-            
+
         # Handle other Union types (new Python 3.10+ syntax)
         if cls.isUnionType(value):
             args = get_args(value)
@@ -130,7 +130,7 @@ class MemberInfo:
                 if arg is not type(None):
                     return arg
             return value
-            
+
         return value
 
     @classmethod
@@ -160,7 +160,7 @@ class MemberInfo:
         # If it's already a regular class, return it
         if isinstance(type_hint, type) and not hasattr(type_hint, "__origin__"):
             return type_hint
-        
+
         # Handle Enum types specifically
         if isinstance(type_hint, type) and issubclass(type_hint, Enum):
             return type_hint

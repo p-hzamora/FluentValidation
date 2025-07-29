@@ -16,6 +16,7 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
+
 class DanishLanguage:
     Culture: str = "da"
 

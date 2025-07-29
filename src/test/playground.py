@@ -89,15 +89,12 @@ class ContactRequestValidator(AbstractValidator[ContactRequest]):
     def __init__(self):
         super().__init__(ContactRequest)
 
-
         # fmt: off
         self.rule_for_each(lambda x: x.Contacts).set_inheritance_validator(lambda v: (
             v.add(OrganisationValidator()),
             v.add(PersonValidator()),
         ))
         # fmt: on
-
-
 
 
 validator = ContactRequestValidator()
@@ -122,6 +119,7 @@ result = validator.validate(
 )
 
 pass
+
 
 @dataclass
 class Person:

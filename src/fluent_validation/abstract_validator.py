@@ -48,10 +48,11 @@ from fluent_validation.internal.ConditionBuilder import ConditionBuilder
 
 class AbstractValidator[T](IValidator[T]):
     """Base class for object validators.
-    
+
     Args:
         T: The type of the object being validated
     """
+
     # region constructor
     def __init__(self, type_model: Type[T]) -> None:
         self._type_model: Type[T] = type_model
@@ -62,12 +63,12 @@ class AbstractValidator[T](IValidator[T]):
     @property
     def CascadeMode(self) -> CascadeMode:
         """Gets or sets the cascade mode for this validator.
-        
+
         This property is deprecated. Use ClassLevelCascadeMode and RuleLevelCascadeMode instead.
-        
+
         Returns:
             The cascade mode value
-            
+
         Raises:
             Exception: When there's no conversion to a single CascadeMode value from the current combination
         """
@@ -104,11 +105,11 @@ class AbstractValidator[T](IValidator[T]):
     @override
     def validate(self, instance: T | IValidationContext, options: Optional[Callable[[ValidationStrategy[T]], None]] = None) -> ValidationResult:
         """Validates the specified instance.
-        
+
         Args:
             instance: The object to validate or validation context
             options: Optional validation strategy options
-            
+
         Returns:
             A ValidationResult object containing any validation failures
         """
@@ -136,10 +137,10 @@ class AbstractValidator[T](IValidator[T]):
     @override
     async def ValidateAsync(self, instance):
         """Validates the specified instance asynchronously.
-        
+
         Args:
             instance: The object to validate or validation context
-            
+
         Returns:
             A ValidationResult object containing any validation failures
         """
@@ -154,11 +155,11 @@ class AbstractValidator[T](IValidator[T]):
 
     async def ValidateInternalAsync(self, context: ValidationContext[T], useAsync: bool) -> ValidationResult:
         """Internal asynchronous validation method.
-        
+
         Args:
             context: The validation context
             useAsync: Whether to use asynchronous validation
-            
+
         Returns:
             A ValidationResult object containing any validation failures
         """
@@ -195,10 +196,10 @@ class AbstractValidator[T](IValidator[T]):
     @override
     def ValidateSync(self, instance):
         """Validates the specified instance synchronously.
-        
+
         Args:
             instance: The object to validate or validation context
-            
+
         Returns:
             A ValidationResult object containing any validation failures
         """
@@ -238,7 +239,7 @@ class AbstractValidator[T](IValidator[T]):
 
     def SetExecutedRuleSets(self, result: ValidationResult, context: ValidationContext[T]) -> None:
         """Sets the executed rule sets in the validation result.
-        
+
         Args:
             result: The validation result to update
             context: The validation context
@@ -254,10 +255,10 @@ class AbstractValidator[T](IValidator[T]):
 
     def CanValidateInstancesOfType(self, _type: Type) -> bool:
         """Determines whether this validator can validate instances of the specified type.
-        
+
         Args:
             _type: The type to check
-            
+
         Returns:
             True if this validator can validate instances of the specified type, False otherwise
         """
@@ -267,13 +268,13 @@ class AbstractValidator[T](IValidator[T]):
 
     def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilderInitial[T, TProperty]:
         """Defines a validation rule for a specific property.
-        
+
         Example:
             rule_for(lambda x: x.surname)...
-            
+
         Args:
             expression: The expression representing the property to validate
-            
+
         Returns:
             An IRuleBuilderInitial instance on which validators can be defined
         """
@@ -301,10 +302,10 @@ class AbstractValidator[T](IValidator[T]):
 
     def rule_for_each[TElement](self, expression: Callable[[T], list[TElement]]) -> IRuleBuilder[T, TElement]:  # IRuleBuilderInitialCollection[T, TElement]:
         """Invokes a rule for each item in the collection.
-        
+
         Args:
             expression: Expression representing the collection to validate
-            
+
         Returns:
             An IRuleBuilder instance on which validators can be defined
         """
@@ -333,7 +334,7 @@ class AbstractValidator[T](IValidator[T]):
     # FIXME [x]: It's wrong implementation
     def rule_set(self, rule_set_name: str, action: Callable[[], None]) -> None:
         """Defines a RuleSet that can be used to group together several validators.
-        
+
         Args:
             rule_set_name: The name of the ruleset
             action: Action that encapsulates the rules in the ruleset
@@ -350,11 +351,11 @@ class AbstractValidator[T](IValidator[T]):
     @override
     def when(self, predicate, action) -> IConditionBuilder:
         """Defines a condition that applies to several rules.
-        
+
         Args:
             predicate: The condition that should apply to multiple rules
             action: Action that encapsulates the rules
-            
+
         Returns:
             An IConditionBuilder instance
         """
@@ -370,11 +371,11 @@ class AbstractValidator[T](IValidator[T]):
     @override
     def unless(self, predicate, action) -> IConditionBuilder:
         """Defines an inverse condition that applies to several rules.
-        
+
         Args:
             predicate: The condition that should be applied to multiple rules
             action: Action that encapsulates the rules
-            
+
         Returns:
             An IConditionBuilder instance
         """
@@ -402,7 +403,7 @@ class AbstractValidator[T](IValidator[T]):
 
     def include[TValidator: IValidator[T]](self, rulesToInclude: IValidator[T] | Callable[[T], TValidator]):
         """Includes the rules from the specified validator.
-        
+
         Args:
             rulesToInclude: The validator whose rules should be included, or a function that returns such a validator
         """
@@ -412,13 +413,13 @@ class AbstractValidator[T](IValidator[T]):
 
     def pre_validate(self, context: ValidationContext[T], result: ValidationResult) -> bool:
         """Determines if validation should occur and provides a means to modify the context and ValidationResult prior to execution.
-        
+
         If this method returns False, then the ValidationResult is immediately returned from validate/ValidateAsync.
-        
+
         Args:
             context: The validation context
             result: The validation result
-            
+
         Returns:
             True if validation should continue, False otherwise
         """
@@ -426,14 +427,14 @@ class AbstractValidator[T](IValidator[T]):
 
     def RaiseValidationException(self, context: ValidationContext[T], result: ValidationResult) -> None:
         """Raises a ValidationException.
-        
+
         This method will only be called if the validator has been configured
         to throw exceptions if validation fails. The default behaviour is not to throw an exception.
-        
+
         Args:
             context: The validation context
             result: The validation result
-            
+
         Raises:
             ValidationException: Always raises this exception when called
         """
@@ -441,9 +442,9 @@ class AbstractValidator[T](IValidator[T]):
 
     def OnRuleAdded(self, rule: IValidationRule[T]) -> None:
         """This method is invoked when a rule has been created (via rule_for/rule_for_each) and has been added to the validator.
-        
+
         You can override this method to provide customizations to all rule instances.
-        
+
         Args:
             rule: The rule that was added
         """
@@ -453,7 +454,7 @@ class AbstractValidator[T](IValidator[T]):
     @property
     def Rules(self) -> TrackingCollection[IValidationRuleInternal[T]]:
         """Gets the collection of validation rules for this validator.
-        
+
         Returns:
             The tracking collection containing all validation rules
         """
@@ -462,14 +463,14 @@ class AbstractValidator[T](IValidator[T]):
     @property
     def ClassLevelCascadeMode(self) -> CascadeMode:
         """Sets the cascade behaviour between rules in this validator.
-        
+
         This overrides the default value set in ValidatorOptions.Global.DefaultClassLevelCascadeMode.
-        
+
         If set to CascadeMode.Continue then all rules in the class will execute regardless of failures.
         If set to CascadeMode.Stop then execution of the validator will stop after any rule fails.
-        
+
         Note that cascade behaviour within individual rules is controlled by RuleLevelCascadeMode.
-        
+
         Returns:
             The class-level cascade mode
         """
@@ -482,13 +483,13 @@ class AbstractValidator[T](IValidator[T]):
     @property
     def RuleLevelCascadeMode(self) -> CascadeMode:
         """Sets the default cascade behaviour within each rule in this validator.
-        
+
         This overrides the default value set in ValidatorOptions.Global.DefaultRuleLevelCascadeMode.
-        
+
         It can be further overridden for specific rules by calling the Cascade method on rule builders.
-        
+
         Note that cascade behaviour between rules is controlled by ClassLevelCascadeMode.
-        
+
         Returns:
             The rule-level cascade mode
         """

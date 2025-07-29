@@ -213,10 +213,14 @@ class InheritanceValidatorTest(unittest.TestCase):
         impl1Validator.rule_for(lambda x: x.Name).not_null()
         impl2_validator.rule_for(lambda x: x.Number).greater_than(0)
 
-        # Note: Generic type constraints need to be implemented - using basic Add for now
-        validator.rule_for(lambda x: x.Foo).set_inheritance_validator(
-            lambda v: (v.add(lambda x, impl1: (self.assertIsNotNone(impl1), impl1Validator)[1]).add(lambda x, impl2: (self.assertIsNotNone(impl2), impl2_validator)[1]))
+        # fmt: off
+        validator.rule_for(lambda x: x.Foo).set_inheritance_validator(lambda v: (
+            v.add(lambda x, impl1: (
+                self.assertIsNotNone(impl1), impl1Validator)[1])
+                
+                    .add(lambda x, impl2: (self.assertIsNotNone(impl2), impl2_validator)[1]))
         )
+        # fmt: on
 
         # Test with FooImpl1
         result = validator.validate(Root(Foo=FooImpl1()))

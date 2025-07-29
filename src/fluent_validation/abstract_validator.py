@@ -261,6 +261,8 @@ class AbstractValidator[T](IValidator[T]):
         Returns:
             True if this validator can validate instances of the specified type, False otherwise
         """
+        if issubclass(type(self), AbstractValidator):
+            return issubclass(_type, self._type_model)
         return issubclass(_type, self.__orig_bases__[0].__args__[0])
 
     def rule_for[TProperty](self, expression: Callable[[T], TProperty]) -> IRuleBuilderInitial[T, TProperty]:

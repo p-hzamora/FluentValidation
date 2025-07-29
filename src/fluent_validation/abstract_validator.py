@@ -253,8 +253,12 @@ class AbstractValidator[T](IValidator[T]):
             action()
         return None
 
+    @overload
+    def when(self, predicate: Callable[[T], bool]) -> IConditionBuilder: ...
+    @overload
+    def when(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder: ...
     @override
-    def when(self, predicate: Callable[[T], bool], action: Callable[..., None]) -> IConditionBuilder:
+    def when(self, predicate, action) -> IConditionBuilder:
         """
         Defines a condition that applies to several rules
 

@@ -17,7 +17,6 @@
 # endregion
 
 from datetime import datetime
-from datetime import timedelta
 from decimal import Decimal
 from pathlib import Path
 import sys
@@ -30,6 +29,103 @@ from fluent_validation.abstract_validator import AbstractValidator  # noqa: E402
 from fluent_validation.enums import CascadeMode, Severity  # noqa: E402
 from fluent_validation import IRuleBuilder, IRuleBuilderOptions
 
+from pydantic import BaseModel, Field
+
+
+class Address(BaseModel):
+    Line1: Optional[str] = None
+    Line2: Optional[str] = None
+    Town: Optional[str] = None
+    Country: Optional[str] = None
+    Postcode: Optional[str] = None
+
+
+class AddressValidator(AbstractValidator[Address]):
+    def __init__(self):
+        super().__init__(Address)
+        self.rule_for(lambda x: x.Line1).not_empty()
+        self.rule_for(lambda x: x.Line2).not_empty()
+        self.rule_for(lambda x: x.Town).not_empty()
+        self.rule_for(lambda x: x.Country).not_empty()
+        self.rule_for(lambda x: x.Postcode).not_empty()
+
+
+class IContact(BaseModel):
+    Name: str
+    Email: str
+
+
+class Person(IContact):
+    DateOfBirth: datetime
+
+
+class Organisation(IContact):
+    Headquarters: Address
+
+
+class ContactRequest(BaseModel):
+    Contact: IContact
+    MessageToSend: str
+    Contacts: list[IContact] = Field(default_factory=list)
+
+
+class PersonValidator(AbstractValidator[Person]):
+    def __init__(self):
+        super().__init__(Person)
+        self.rule_for(lambda x: x.Name).not_null()
+        self.rule_for(lambda x: x.Email).not_null().email_address()
+        self.rule_for(lambda x: x.DateOfBirth).greater_than(datetime.min)
+
+
+class OrganisationValidator(AbstractValidator[Organisation]):
+    def __init__(self):
+        super().__init__(Organisation)
+
+        self.rule_for(lambda x: x.Name).not_null()
+        self.rule_for(lambda x: x.Email).not_null().email_address()
+        self.rule_for(lambda x: x.Headquarters).set_validator(AddressValidator())
+
+
+class ContactRequestValidator(AbstractValidator[ContactRequest]):
+    def __init__(self):
+        super().__init__(ContactRequest)
+
+        # fmt: off
+        self.rule_for(lambda x: x.Contact).set_inheritance_validator(lambda v: self.inheritance_from_IContact(v))
+        # fmt: on
+
+        # fmt: off
+        self.rule_for_each(lambda x: x.Contact).set_inheritance_validator(lambda v: (
+            v.add(OrganisationValidator()),
+            v.add(PersonValidator()),
+        ))
+        # fmt: on
+
+
+
+
+validator = ContactRequestValidator()
+
+
+contact = Organisation(
+    Name="",
+    Email="",
+    Headquarters=Address(Line1="linea 1"),
+)
+
+
+result = validator.validate(
+    ContactRequest(
+        Contact=contact,
+        MessageToSend="",
+        Contacts=(
+            Person(Name="Pablo", Email="pablo@gmail.com", DateOfBirth=datetime.min),
+            Organisation(Name="not_valid organisation", Email="not valid email", Headquarters=Address(Postcode="28026")),
+        ),
+    )
+)
+
+pass
 
 @dataclass
 class Person:
@@ -69,7 +165,7 @@ class PersonNameValidator(AbstractValidator[Person]):
     def __init__(self):
         super().__init__(Person)
         # fmt: off
-        ( 
+        (
         self.rule_for(lambda x: x.Surname)
         .not_null().with_message('Error Null in Surname')
         .length(0, 5).with_message('more than 5. you passed exactly "{total_length}" chars')

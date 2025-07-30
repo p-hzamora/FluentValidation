@@ -80,7 +80,17 @@ from .Lenguages import (
 )
 
 
-class LanguageManager(ILanguageManager):
+class LanguageManagerExtension:
+    def ResolveErrorMessageUsingErrorCode(languageManager: ILanguageManager, error_code: str, fall_back_Key: str) -> str:
+        if error_code is not None:
+            result: str = languageManager.GetString(error_code)
+
+            if result is not None and not result.isspace():
+                return result
+        return languageManager.GetString(fall_back_Key)
+
+
+class LanguageManager(ILanguageManager, LanguageManagerExtension):
     """Allows the default error message translations to be managed."""
 
     _enabled: bool

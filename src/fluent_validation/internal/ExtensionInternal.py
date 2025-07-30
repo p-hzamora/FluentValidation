@@ -17,10 +17,7 @@
 # endregion
 
 from __future__ import annotations
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from .Resources.ILanguageManager import ILanguageManager
+from typing import Any
 
 
 class ExtensionsInternal:
@@ -74,15 +71,3 @@ class ExtensionsInternal:
     # 	dict[key] = val;
     # 	return val;
     # }
-
-    @staticmethod
-    def ResolveErrorMessageUsingErrorCode(error_code: str, fall_back_Key: str) -> str:
-        from .Resources.LanguageManager import LanguageManager
-
-        languageManager: ILanguageManager = LanguageManager()
-        if error_code is not None:
-            result: str = languageManager.GetString(error_code)
-
-            if result is not None and not result.isspace():
-                return result
-        return languageManager.GetString(fall_back_Key)

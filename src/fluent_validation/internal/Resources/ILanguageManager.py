@@ -20,7 +20,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import locale
 import threading
-from typing import ClassVar, Optional, Protocol, overload
+from typing import ClassVar, Optional, Protocol, overload, TYPE_CHECKING
 
 from fluent_validation.internal.ExtensionInternal import ExtensionsInternal
 
@@ -154,3 +154,6 @@ class ILanguageManager(ABC, ExtensionsInternal):
 
         """
         ...
+
+    if TYPE_CHECKING:
+        def ResolveErrorMessageUsingErrorCode(languageManager: ILanguageManager, error_code: str, fall_back_Key: str) -> str: ...

@@ -16,7 +16,6 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
-from typing import Optional
 import unittest
 import sys
 from pathlib import Path

@@ -24,7 +24,6 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop(
 
 from fluent_validation.internal.PropertyChain import PropertyChain
 from fluent_validation.MemberInfo import MemberInfo
-from person import Person
 
 
 class Parent:

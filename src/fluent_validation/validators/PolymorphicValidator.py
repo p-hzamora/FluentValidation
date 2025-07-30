@@ -19,14 +19,47 @@
 
 from __future__ import annotations
 from typing import Type, Optional, overload, Callable, override
+from types import NoneType
 
 from fluent_validation.IValidator import IValidator
 from fluent_validation.internal.IValidatorSelector import IValidatorSelector
 from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector
 from fluent_validation.validators.EmptyValidator import ValidationContext
+from fluent_validation.MemberInfo import MemberInfo
 
 import inspect
 from .ChildValidatorAdaptor import ChildValidatorAdaptor
+
+
+def _extract_derived_type_from_factory[T](validatorFactory: Callable[[T], IValidator]) -> Type:
+    """
+    Extracts the derived type from a validator factory function using MemberInfo utilities.
+
+    Args:
+        validatorFactory: The validator factory function
+
+    Returns:
+        The derived type extracted from the function signature
+
+    Raises:
+        ValueError: If the derived type cannot be determined
+    """
+    sig = inspect.signature(validatorFactory)
+
+    # Try to get from return type annotation first (for single param factories)
+    return_annotation = sig.return_annotation
+    if hasattr(return_annotation, "__args__") and return_annotation.__args__:
+        return MemberInfo.extract_base_class(return_annotation.__args__[0])
+
+    # Try to get from second parameter (for two param factories)
+    params = list(sig.parameters.values())
+    if len(params) >= 2 and params[1].annotation != inspect._empty:
+        return MemberInfo.extract_base_class(params[1].annotation)
+
+    # For cases where we can't determine type from annotations,
+    # we need to return a special marker that will be handled later
+    # This is a fundamental limitation when lambda parameters lack type annotations
+    return NoneType  # Use None type as a placeholder for "unknown type"
 
 
 class DerivedValidatorFactory[T, TProperty]:
@@ -65,6 +98,7 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
     """
 
     _derivedValidators: dict[Type, DerivedValidatorFactory] = {}
+    _unknownTypeValidators: list[DerivedValidatorFactory] = []  # COMMENT: Only for python purpose. For factories with unknown types
 
     # Need the base constructor call, even though we're just passing None.
     def __init__(self, t_property: Type[TProperty]):
@@ -102,10 +136,13 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
         if validatorFactory is None:
             raise ValueError("validatorFactory cannot be None")
 
-        # Note: In Python, we'd need to handle type detection differently
-        # This is a simplified version - you'd need to specify the type somehow
-        derivedType = None  # Would need to be passed or inferred
-        self._derivedValidators[derivedType] = DerivedValidatorFactory(lambda context, _: validatorFactory(context.instance_to_validate), *ruleSets)
+        derivedType = _extract_derived_type_from_factory(validatorFactory)
+        factory = DerivedValidatorFactory(lambda context, _: validatorFactory(context.instance_to_validate), *ruleSets)
+
+        if issubclass(derivedType, NoneType):
+            self._unknownTypeValidators.append(factory)
+        else:
+            self._derivedValidators[derivedType] = factory
         return self
 
     def __add_with_factory_two_params[TDerived](self, validatorFactory: Callable[[T, TDerived], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
@@ -122,9 +159,13 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
         if validatorFactory is None:
             raise ValueError("validatorFactory cannot be None")
 
-        # Note: In Python, we'd need to handle type detection differently
-        derivedType = None  # Would need to be passed or inferred
-        self._derivedValidators[derivedType] = DerivedValidatorFactory(lambda context, value: validatorFactory(context.instance_to_validate, value), *ruleSets)
+        derivedType = _extract_derived_type_from_factory(validatorFactory)
+        factory = DerivedValidatorFactory(lambda context, value: validatorFactory(context.instance_to_validate, value), *ruleSets)
+
+        if issubclass(derivedType, NoneType):
+            self._unknownTypeValidators.append(factory)
+        else:
+            self._derivedValidators[derivedType] = factory
         return self
 
     def add[TDerived](self, validatorFactory: Callable[[T, TDerived], IValidator], *ruleSets: str) -> PolymorphicValidator[T, TProperty]:
@@ -171,7 +212,7 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
             subclass_type_name = subclassType.__name__
             raise RuntimeError(f"Validator {validator_type_name} can't validate instances of type {subclass_type_name}")
 
-        self._derivedValidators[subclassType] = DerivedValidatorFactory(validator, ruleSets)
+        self._derivedValidators[subclassType] = DerivedValidatorFactory(validator, *ruleSets)
         return self
 
     @override
@@ -180,8 +221,22 @@ class PolymorphicValidator[T, TProperty](ChildValidatorAdaptor[T, TProperty]):
         if value is None:
             return None
 
+        # Try exact type match first
         if derivedValidatorFactory := (self._derivedValidators.get(type(value))):
             return derivedValidatorFactory.GetValidator(context, value)
+
+        # COMMENT: Only for python purpose
+        # If no exact match, try factories with unknown types
+        for factory in self._unknownTypeValidators:
+            try:
+                validator = factory.GetValidator(context, value)
+                if validator and hasattr(validator, "_type_model") and validator._type_model is type(value):
+                    # Move this factory to the correct type for future lookups
+                    self._derivedValidators[type(value)] = factory
+                    self._unknownTypeValidators.remove(factory)
+                    return validator
+            except Exception:
+                continue
 
         return None
 

@@ -31,6 +31,7 @@ from fluent_validation.IValidator import IValidator as IValidator
 # Internal class
 from fluent_validation.internal.PropertyChain import PropertyChain as PropertyChain
 from fluent_validation.internal.RuleSetValidatorSelector import RulesetValidatorSelector as RulesetValidatorSelector
+from fluent_validation.internal.Resources.ILanguageManager import CultureInfo as CultureInfo
 
 # Result class
 from fluent_validation.results.ValidationResult import ValidationResult as ValidationResult

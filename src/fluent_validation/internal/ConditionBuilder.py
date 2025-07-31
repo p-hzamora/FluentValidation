@@ -33,7 +33,7 @@ class ConditionBuilder[T]:
     def __init__(self, rules: TrackingCollection[IValidationRuleInternal[T]]):
         self._rules: TrackingCollection[IValidationRuleInternal[T]] = rules
 
-    def when(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[..., None]) -> IConditionBuilder:
+    def when(self, predicate: Callable[[T, ValidationContext[T]], bool], action: Callable[[], None]) -> IConditionBuilder:
         propertyRules: list[IValidationRuleInternal[T]] = []
 
         with self._rules.OnItemAdded(propertyRules.append):

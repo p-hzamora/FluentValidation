@@ -41,6 +41,7 @@ HYPHEN = "-"
 
 def get_default_ui() -> str:
     """Get the default UI culture from system locale"""
+    # getlocale() method should always return a tuple of two elements
     loc = locale.getlocale()[0] or "en-US"
     return loc.replace("_", HYPHEN)
 

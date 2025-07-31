@@ -18,7 +18,7 @@
 
 
 class SpanishLanguage:
-    Culture: str = "es_ES"
+    Culture: str = "es-ES"
 
     @staticmethod
     def GetTranslation(key: str) -> str:

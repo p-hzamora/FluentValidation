@@ -16,6 +16,7 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
+from typing import Optional
 import unittest
 import sys
 from pathlib import Path
@@ -27,29 +28,32 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop(
 from fluent_validation.InlineValidator import InlineValidator
 from fluent_validation import AbstractValidator
 from TestValidator import TestValidator
-from person import Person
+from person import Order, Person
 
 
-# 	class SharedConditionValidator : AbstractValidator<Person> {
-# 		public SharedConditionValidator() {
-# 			# Start with a predicate to group rules together.
-# 			#
-# 			# The AbstractValidator appends this predicate
-# 			# to each inner rule_for so you only need write,
-# 			# maintain, and think about it in one place.
-# 			#
-# 			# You can finish with an unless clause that will
-# 			# void the validation for the entire set when it's
-# 			# predicate is True.
-# 			#
-# 			when(lambda x: x.Id > 0, lambda: {
-# 				rule_for(lambda x: x.Forename).NotEmpty()
-# 				rule_for(lambda x: x.Surname).NotEmpty().Equal("Smith")
-# 			})
-# 		}
-# 	}
+class SharedConditionValidator(AbstractValidator[Person]):
+    def __init__(self):
+        # Start with a predicate to group rules together.
+        #
+        # The AbstractValidator appends this predicate
+        # to each inner rule_for so you only need write,
+        # maintain, and think about it in one place.
+        #
+        # You can finish with an unless clause that will
+        # void the validation for the entire set when it's
+        # predicate is True.
+        #
+        super().__init__(Person)
+        # fmt:off
+        self.when(lambda x: x.Id > 0, lambda: (
+            self.rule_for(lambda x: x.Forename).not_empty(),
+            self.rule_for(lambda x: x.Surname).not_empty().equal("Smith")
+            )
+    )
+        # fmt:on
 
-# 	class SharedAsyncConditionValidator : AbstractValidator<Person> {
+
+# 	class SharedAsyncConditionValidator(AbstractValidator[Person]):
 # 		public SharedAsyncConditionValidator() {
 # 			# Start with a predicate to group rules together.
 # 			#
@@ -70,27 +74,29 @@ from person import Person
 # 		}
 # 	}
 
-# 	class SharedCollectionConditionValidator : AbstractValidator<Person> {
-# 		public SharedCollectionConditionValidator() {
-# 			# Start with a predicate to group rules together.
-# 			#
-# 			# The AbstractValidator appends this predicate
-# 			# to each inner rule_for so you only need write,
-# 			# maintain, and think about it in one place.
-# 			#
-# 			# You can finish with an unless clause that will
-# 			# void the validation for the entire set when it's
-# 			# predicate is True.
-# 			#
-# 			when((x) => x.Id > 0,
-# 				lambda: {
-# 					rule_for_each(lambda x: x.NickNames).NotEmpty()
-# 				}
-# 			)
-# 		}
-# 	}
 
-# 	class SharedAsyncCollectionConditionValidator : AbstractValidator<Person> {
+class SharedCollectionConditionValidator(AbstractValidator[Person]):
+    def __init__(self):
+        super().__init__(Person)
+        # Start with a predicate to group rules together.
+        #
+        # The AbstractValidator appends this predicate
+        # to each inner rule_for so you only need write,
+        # maintain, and think about it in one place.
+        #
+        # You can finish with an unless clause that will
+        # void the validation for the entire set when it's
+        # predicate is True.
+        #
+        # fmt:off
+        self.when(lambda x: x.Id > 0,lambda:(
+            self.rule_for_each(lambda x: x.NickNames).not_empty()
+        )
+        #fmt:on
+        )
+
+
+# 	class SharedAsyncCollectionConditionValidator(AbstractValidator[Person]):
 # 		public SharedAsyncCollectionConditionValidator() {
 # 			# Start with a predicate to group rules together.
 # 			#
@@ -110,20 +116,27 @@ from person import Person
 # 		}
 # 	}
 
-# 	class SharedConditionWithScopedUnlessValidator : AbstractValidator<Person> {
-# 		public SharedConditionWithScopedUnlessValidator() {
-# 			# inner rule_for() calls can contain their own,
-# 			# locally scoped when and unless calls that
-# 			# act only on that individual rule_for() yet the
-# 			# rule_for() respects the grouped when() and
-# 			# unless() predicates.
-# 			#
-# 			when(lambda x: x.Id > 0 && x.Age <= 65, lambda: { rule_for(lambda x: x.Orders.Count).Equal(0).unless(lambda x: String.IsNullOrWhiteSpace(x.CreditCard) == False) })
-# 			#.unless(lambda x: x.Age > 65)
-# 		}
-# 	}
 
-# 	class SharedAsyncConditionWithScopedUnlessValidator : AbstractValidator<Person> {
+class SharedConditionWithScopedUnlessValidator(AbstractValidator[Person]):
+    def __init__(self):
+        # inner rule_for() calls can contain their own,
+        # locally scoped when and unless calls that
+        # act only on that individual rule_for() yet the
+        # rule_for() respects the grouped when() and
+        # unless() predicates.
+        #
+        # fmt:off
+        super().__init__(Person)
+        self.when(lambda x: x.Id > 0 and x.Age <= 65,
+                lambda: self.rule_for(lambda x: len(x.Orders))
+                    .equal(0)
+                    .unless(lambda x: x.CreditCard is not None and x.CreditCard.strip() != "")
+            )
+        #.unless(lambda x: x.Age > 65)
+        # fmt:on
+
+
+# 	class SharedAsyncConditionWithScopedUnlessValidator(AbstractValidator[Person]):
 # 		public SharedAsyncConditionWithScopedUnlessValidator() {
 # 			# inner rule_for() calls can contain their own,
 # 			# locally scoped when and unless calls that
@@ -131,7 +144,7 @@ from person import Person
 # 			# rule_for() respects the grouped when() and
 # 			# unless() predicates.
 # 			#
-# 			WhenAsync(async (x,c) => x.Id > 0 && x.Age <= 65,
+# 			WhenAsync(async (x,c) => x.Id > 0 and x.Age <= 65,
 # 				lambda: {
 # 					rule_for(lambda x: x.Orders.Count).Equal(0).UnlessAsync(async (x,c) => String.IsNullOrWhiteSpace(x.CreditCard) == False)
 # 				}
@@ -139,14 +152,14 @@ from person import Person
 # 		}
 # 	}
 
-# 	class SharedConditionInverseValidator : AbstractValidator<Person> {
-# 		public SharedConditionInverseValidator() {
-# 			unless(lambda x: x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
-# 		}
-# 	}
 
-# 	class SharedAsyncConditionInverseValidator : AbstractValidator<Person>
-# 	{
+class SharedConditionInverseValidator(AbstractValidator[Person]):
+    def __init__(self):
+        super().__init__(Person)
+        self.unless(lambda x: x.Id == 0, lambda: self.rule_for(lambda x: x.Forename).not_null())
+
+
+# 	class SharedAsyncConditionInverseValidator(AbstractValidator[Person]): 	{
 # 		public SharedAsyncConditionInverseValidator()
 # 		{
 # 			UnlessAsync(async (x,c) => x.Id == 0, lambda: { rule_for(lambda x: x.Forename).not_null() })
@@ -184,32 +197,30 @@ class BadValidatorDisablesNullCheck(AbstractValidator[str]):
 # 		}
 # 	}
 class SharedConditionTests(unittest.TestCase):
-    # 	def void shared_When_not_applied_to_grouped_collection_rules_when_initial_predicate_is_false() {
-    # 		validator = SharedCollectionConditionValidator()
-    # 		person = Person() # fails the shared when predicate
+    def test_shared_When_not_applied_to_grouped_collection_rules_when_initial_predicate_is_false(self):
+        validator = SharedCollectionConditionValidator()
+        person = Person()  # fails the shared when predicate
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(0)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 0)
 
-    # 	def async Task shared_async_when_not_applied_to_grouped_collection_rules_when_initial_predicate_is_false() {
-    # 		validator = SharedAsyncCollectionConditionValidator()
-    # 		person = Person() # fails the shared when predicate
+    # def async Task shared_async_when_not_applied_to_grouped_collection_rules_when_initial_predicate_is_false() {
+    #     validator = SharedAsyncCollectionConditionValidator()
+    #     person = Person() # fails the shared when predicate
 
-    # 		result = await validator.ValidateAsync(person)
-    # 		result.Errors.Count.ShouldEqual(0)
-    # 	}
+    #     result = await validator.ValidateAsync(person)
+    #     result.Errors.Count.ShouldEqual(0)
+    # }
 
-    # 	def void Shared_When_is_applied_to_grouped_collection_rules_when_initial_predicate_is_true() {
-    # 		validator = SharedCollectionConditionValidator()
-    # 		person = Person() {
-    # 			Id = 4, # triggers the shared when predicate
-    # 			NickNames = string[] { null },
-    # 		}
+    def test_Shared_When_is_applied_to_grouped_collection_rules_when_initial_predicate_is_true(self):
+        validator = SharedCollectionConditionValidator()
+        person = Person(
+            Id=4,  # triggers the shared when predicate
+            NickNames=[None],
+        )
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(1)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 1)
 
     # 	def async Task Shared_async_When_is_applied_to_grouped_collection_rules_when_initial_predicate_is_true() {
     # 		validator = SharedAsyncCollectionConditionValidator()
@@ -222,16 +233,15 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Count.ShouldEqual(1)
     # 	}
 
-    # 	def void Shared_When_is_applied_to_grouped_rules_collection_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
-    # 		validator = SharedCollectionConditionValidator()
-    # 		person = Person() {
-    # 			Id = 4, # triggers the shared when predicate
-    # 			NickNames = new[] { "Foo"},
-    # 		}
+    def test_Shared_When_is_applied_to_grouped_rules_collection_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied(self):
+        validator = SharedCollectionConditionValidator()
+        person = Person(
+            Id=4,  # triggers the shared when predicate
+            NickNames=["Foo"],
+        )
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(0)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 0)
 
     # 	def async Task Shared_async_When_is_applied_to_grouped_rules_collection_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
     # 		validator = SharedAsyncCollectionConditionValidator()
@@ -256,13 +266,12 @@ class SharedConditionTests(unittest.TestCase):
     # 		})
     # 	}
 
-    # 	def void Shared_When_is_not_applied_to_grouped_rules_when_initial_predicate_is_false() {
-    # 		validator = SharedConditionValidator()
-    # 		person = Person() # fails the shared when predicate
+    def test_Shared_When_is_not_applied_to_grouped_rules_when_initial_predicate_is_false(self):
+        validator = SharedConditionValidator()
+        person = Person()  # fails the shared when predicate
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(0)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 0)
 
     # 	def async Task Shared_async_When_is_not_applied_to_grouped_rules_when_initial_predicate_is_false() {
     # 		validator = SharedAsyncConditionValidator()
@@ -272,15 +281,14 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Count.ShouldEqual(0)
     # 	}
 
-    # 	def void Shared_When_is_applied_to_grouped_rules_when_initial_predicate_is_true() {
-    # 		validator = SharedConditionValidator()
-    # 		person = Person() {
-    # 			Id = 4 # triggers the shared when predicate
-    # 		}
+    def test_Shared_When_is_applied_to_grouped_rules_when_initial_predicate_is_true(self):
+        validator = SharedConditionValidator()
+        person = Person(
+            Id=4  # triggers the shared when predicate
+        )
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(3)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 3)
 
     # 	def async Task Shared_async_When_is_applied_to_grouped_rules_when_initial_predicate_is_true() {
     # 		validator = SharedAsyncConditionValidator()
@@ -292,17 +300,16 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Count.ShouldEqual(3)
     # 	}
 
-    # 	def void Shared_When_is_applied_to_groupd_rules_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
-    # 		validator = SharedConditionValidator()
-    # 		person = Person() {
-    # 			Id = 4, # triggers the shared when predicate
-    # 			Forename = "Kevin", # satisfies rule_for( lambda x: x.Forename ).NotEmpty()
-    # 			Surname = "Smith", # satisfies rule_for( lambda x: x.Surname ).NotEmpty().Equal( "Smith" )
-    # 		}
+    def test_Shared_When_is_applied_to_groupd_rules_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied(self):
+        validator = SharedConditionValidator()
+        person = Person(
+            Id=4,  # triggers the shared when predicate
+            Forename="Kevin",  # satisfies rule_for( lambda x: x.Forename ).NotEmpty()
+            Surname="Smith",  # satisfies rule_for( lambda x: x.Surname ).NotEmpty().Equal( "Smith" )
+        )
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(0)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 0)
 
     # 	def async Task Shared_async_When_is_applied_to_groupd_rules_when_initial_predicate_is_true_and_all_individual_rules_are_satisfied() {
     # 		validator = SharedAsyncConditionValidator()
@@ -316,18 +323,15 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Count.ShouldEqual(0)
     # 	}
 
-    # 	def void Shared_When_respects_the_smaller_scope_of_an_inner_Unless_when_the_inner_Unless_predicate_is_satisfied() {
-    # 		validator = SharedConditionWithScopedUnlessValidator()
-    # 		person = Person() {
-    # 			Id = 4 # triggers the shared when predicate
-    # 		}
+    def test_Shared_When_respects_the_smaller_scope_of_an_inner_Unless_when_the_inner_Unless_predicate_is_satisfied(self):
+        validator = SharedConditionWithScopedUnlessValidator()
+        person = Person(Id=4)  # triggers the shared when predicate
 
-    # 		person.CreditCard = "1234123412341234" # satisfies the inner unless predicate
-    # 		person.Orders.Add(Order())
+        person.CreditCard = "1234123412341234"  # satisfies the inner unless predicate
+        person.Orders.append(Order())
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(0)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 0)
 
     # 	def async Task Shared_async_When_respects_the_smaller_scope_of_an_inner_Unless_when_the_inner_Unless_predicate_is_satisfied() {
     # 		validator = SharedAsyncConditionWithScopedUnlessValidator()
@@ -342,17 +346,16 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Count.ShouldEqual(0)
     # 	}
 
-    # 	def void Shared_When_respects_the_smaller_scope_of_a_inner_Unless_when_the_inner_Unless_predicate_fails() {
-    # 		validator = SharedConditionWithScopedUnlessValidator()
-    # 		person = Person() {
-    # 			Id = 4 # triggers the shared when predicate
-    # 		}
+    def test_Shared_When_respects_the_smaller_scope_of_a_inner_Unless_when_the_inner_Unless_predicate_fails(self):
+        validator = SharedConditionWithScopedUnlessValidator()
+        person = Person(
+            Id=4  # triggers the shared when predicate
+        )
 
-    # 		person.Orders.Add(Order()) # fails the inner unless predicate
+        person.Orders.append(Order())  # fails the inner unless predicate
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(1)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 1)
 
     # 	def async Task Shared_async_When_respects_the_smaller_scope_of_a_inner_Unless_when_the_inner_Unless_predicate_fails() {
     # 		validator = SharedAsyncConditionWithScopedUnlessValidator()
@@ -366,18 +369,17 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Count.ShouldEqual(1)
     # 	}
 
-    # 	def void Outer_Unless_clause_will_trump_an_inner_Unless_clause_when_inner_fails_but_the_outer_is_satisfied() {
-    # 		validator = SharedConditionWithScopedUnlessValidator()
-    # 		person = Person() {
-    # 			Id = 4, # triggers the shared when predicate
-    # 			Age = 70 # satisfies the outer unless predicate
-    # 		}
+    def test_Outer_Unless_clause_will_trump_an_inner_Unless_clause_when_inner_fails_but_the_outer_is_satisfied(self):
+        validator = SharedConditionWithScopedUnlessValidator()
+        person = Person(
+            Id=4,  # triggers the shared when predicate
+            Age=70,  # satisfies the outer unless predicate
+        )
 
-    # 		person.Orders.Add(Order()) # fails the inner unless predicate
+        person.Orders.append(Order())  # fails the inner unless predicate
 
-    # 		result = validator.validate(person)
-    # 		result.Errors.Count.ShouldEqual(0)
-    # 	}
+        result = validator.validate(person)
+        self.assertEqual(len(result.errors), 0)
 
     # 	def async Task Outer_async_Unless_clause_will_trump_an_inner_Unless_clause_when_inner_fails_but_the_outer_is_satisfied() {
     # 		validator = SharedAsyncConditionWithScopedUnlessValidator()
@@ -392,17 +394,21 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Count.ShouldEqual(0)
     # 	}
 
-    # 	def void Condition_can_be_used_inside_ruleset() {
-    # 		validator = TestValidator()
-    # 		validator.RuleSet("foo", lambda: { validator.when(lambda x: x.Id > 0, lambda: { validator.rule_for(lambda x: x.Forename).not_null() }) })
-    # 		validator.rule_for(lambda x: x.Surname).not_null()
+    def test_Condition_can_be_used_inside_ruleset(self):
+        validator = TestValidator()
+        # fmt:off
+        validator.rule_set("foo", lambda: ( 
+            validator.when(lambda x: x.Id > 0, lambda: ( 
+                validator.rule_for(lambda x: x.Forename).not_null() 
+            )) 
+        ))
+        # fmt:on
+        validator.rule_for(lambda x: x.Surname).not_null()
 
-    # #pragma warning disable 618
-    # 		result = validator.validate(Person {Id = 5}, v => v.IncludeRuleSets("foo"))
-    # #pragma warning restore 618
-    # 		result.Errors.Count.ShouldEqual(1)
-    # 		result.Errors.Single().PropertyName.ShouldEqual("Forename")
-    # 	}
+        result = validator.validate(Person(Id=5), lambda v: v.IncludeRuleSets("foo"))
+        self.assertEqual(len(result.errors), 1)
+
+        self.assertEqual(result.errors[0].PropertyName, "Forename")
 
     # 	def async Task Async_condition_can_be_used_inside_ruleset() {
     # 		validator = TestValidator()
@@ -420,8 +426,13 @@ class SharedConditionTests(unittest.TestCase):
 
     def test_RuleSet_can_be_used_inside_condition(self):
         validator = TestValidator()
-
-        validator.when(lambda x: x.Id > 0, lambda: {validator.rule_set("foo", lambda: {validator.rule_for(lambda x: x.Forename).not_null()})})
+        # fmt:off
+        validator.when(lambda x: x.Id > 0, lambda: (
+                validator.rule_set("foo", lambda: (
+                    validator.rule_for(lambda x: x.Forename).not_null()
+            ))
+        ))
+        # fmt:on
 
         validator.rule_for(lambda x: x.Surname).not_null()
 
@@ -441,11 +452,10 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.Errors.Single().PropertyName.ShouldEqual("Forename")
     # 	}
 
-    # 	def void Rules_invoke_when_inverse_shared_condition_matches() {
-    # 		validator = SharedConditionInverseValidator()
-    # 		result = validator.validate(Person {Id = 1})
-    # 		result.is_valid.ShouldBeFalse()
-    # 	}
+    def test_Rules_invoke_when_inverse_shared_condition_matches(self):
+        validator = SharedConditionInverseValidator()
+        result = validator.validate(Person(Id=1))
+        self.assertFalse(result.is_valid)
 
     # 	def async Task Rules_invoke_when_inverse_shared_async_condition_matches() {
     # 		validator = SharedAsyncConditionInverseValidator()
@@ -453,11 +463,10 @@ class SharedConditionTests(unittest.TestCase):
     # 		result.is_valid.ShouldBeFalse()
     # 	}
 
-    # 	def void Rules_not_invoked_when_inverse_shared_condition_does_not_match() {
-    # 		validator = SharedConditionInverseValidator()
-    # 		result = validator.validate(Person())
-    # 		self.assertTrue(result.is_valid)
-    # 	}
+    def test_Rules_not_invoked_when_inverse_shared_condition_does_not_match(self):
+        validator = SharedConditionInverseValidator()
+        result = validator.validate(Person())
+        self.assertTrue(result.is_valid)
 
     # 	def async Task Rules_not_invoked_when_inverse_shared_async_condition_does_not_match() {
     # 		validator = SharedAsyncConditionInverseValidator()
@@ -485,17 +494,15 @@ class SharedConditionTests(unittest.TestCase):
     # 		self.assertTrue(result.is_valid)
     # 	}
 
-    # 	def void Does_not_execute_customasync_Rule_when_condition_false()
-    # 	{
-    # 		validator = TestValidator()
-    # 		validator.when(lambda x: False, lambda: {
+    # def test_Does_not_execute_customasync_Rule_when_condition_false(self):
+    #     validator = TestValidator()
+    #     validator.when(lambda x: False, lambda: (
 
-    # 			validator.rule_for(lambda x: x).CustomAsync(async (x,ctx,c) => ctx.AddFailure(ValidationFailure("foo", "bar")))
-    # 		})
+    #         validator.rule_for(lambda x: x).CustomAsync(async lambda x,ctx,c: ctx.AddFailure(ValidationFailure("foo", "bar")))
+    #     ))
 
-    # 		result = validator.validate(Person())
-    # 		self.assertTrue(result.is_valid)
-    # 	}
+    #     result = validator.validate(Person())
+    #     self.assertTrue(result.is_valid)
 
     # 	def async Task Does_not_execute_customasync_Rule_when_async_condition_false() {
     # 		validator = TestValidator()
@@ -508,16 +515,15 @@ class SharedConditionTests(unittest.TestCase):
     # 		self.assertTrue(result.is_valid)
     # 	}
 
-    # 	def void Executes_custom_rule_when_condition_true() {
-    # 		validator = TestValidator()
-    # 		validator.when(lambda x: True, lambda: {
-    # 			validator.rule_for(lambda x: x).Custom(lambda x,ctx: ctx.AddFailure(ValidationFailure("foo", "bar")))
+    # def test_Executes_custom_rule_when_condition_true(self):
+    #     validator = TestValidator()
+    #     validator.when(lambda x: True, lambda: (
+    #         validator.rule_for(lambda x: x).Custom(lambda x,ctx: ctx.AddFailure(ValidationFailure("foo", "bar")))
 
-    # 		})
+    #     ))
 
-    # 		result = validator.validate(Person())
-    # 		result.is_valid.ShouldBeFalse()
-    # 	}
+    #     result = validator.validate(Person())
+    #     self.assertFalse(result.is_valid)
 
     # 	def async Task Executes_custom_rule_when_async_condition_true() {
     # 		validator = TestValidator()
@@ -755,19 +761,19 @@ class SharedConditionTests(unittest.TestCase):
     # 		self.assertTrue(result.is_valid)
     # 	}
 
-    # def test_Shouldnt_break_with_hashcode_collision(self):
-    #     v1 = InlineValidator(Collision1)
-    #     v2 = InlineValidator(Collision2)
+    def test_Shouldnt_break_with_hashcode_collision(self):
+        v1 = InlineValidator(Collision1)
+        v2 = InlineValidator(Collision2)
 
-    #     v = InlineValidator(CollisionBase)
-    #     v.when(lambda x: x, lambda: (v.rule_for(lambda x: x.Name).not_null()))
+        v = InlineValidator(CollisionBase)
+        v.when(lambda x: x, lambda: (v.rule_for(lambda x: x.Name).not_null()))
 
-    #     v.when(lambda x: x, lambda: v.rule_for(lambda x: x.Name).not_null())
+        v.when(lambda x: x, lambda: v.rule_for(lambda x: x.Name).not_null())
 
-    #     # shouldn't throw an InvalidCastException.
-    #     containerValidator = InlineValidator(list[CollisionBase])
-    #     containerValidator.rule_for_each(lambda x: x).set_validator(v)
-    #     containerValidator.validate([Collision1(), Collision2()])
+        # shouldn't throw an InvalidCastException.
+        containerValidator = InlineValidator(list[CollisionBase])
+        containerValidator.rule_for_each(lambda x: x).set_validator(v)
+        containerValidator.validate([Collision1(), Collision2()])
 
 
 # 	def async Task Shouldnt_break_with_hashcode_collision_async() {
@@ -792,20 +798,22 @@ class SharedConditionTests(unittest.TestCase):
 # 	}
 
 
-class CollisionBase: ...
+class CollisionBase:
+    def __init__(self, Name: Optional[str] = None):
+        self.Name = Name
 
 
 class Collision1(CollisionBase):
-    def __init__(self):
-        self.Name = None
+    def __init__(self, Name: Optional[str] = None):
+        super().__init__(Name)
 
     def __hash__(self):
         return 1
 
 
 class Collision2(CollisionBase):
-    def __init__(self):
-        self.Name = None
+    def __init__(self, Name: Optional[str] = None):
+        super().__init__(Name)
 
     def __hash__(self):
         return 1

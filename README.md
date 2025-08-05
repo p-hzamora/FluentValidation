@@ -17,7 +17,13 @@ The original library is written in .NET.
 ### Supporting the project
 This module has been translated by [@p-hzamora](https://github.com/p-hzamora).
 
-If you use FluentValidation in a commercial project, please sponsor the project financially. FluentValidation is developed and supported by [@JeremySkinner](https://github.com/JeremySkinner) for free in his spare time and financial sponsorship helps keep the project going. You can sponsor the project via either [GitHub sponsors](https://github.com/sponsors/JeremySkinner) or [OpenCollective](https://opencollective.com/FluentValidation).
+If you use FluentValidation in a commercial project, please sponsor the project financially. FluentValidation is developed and supported by [@JeremySkinner](https://github.com/JeremySkinner) for free in his spare time and financial sponsorship helps keep the project going. You can sponsor the project via:
+
+[GitHub sponsors (Phzamora)](https://github.com/sponsors/p-hzamora)
+
+[GitHub sponsors (JeremySkinner)](https://github.com/sponsors/JeremySkinner)
+
+[OpenCollective](https://opencollective.com/FluentValidation)
 
 ---
 

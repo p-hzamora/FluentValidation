@@ -33,7 +33,11 @@ if TYPE_CHECKING:
 
 
 class RuleBuilder[T, TProperty](
-    IRuleBuilderOptions[T, TProperty], IRuleBuilderInitial[T, TProperty], IRuleBuilderInitialCollection[T, TProperty], IRuleBuilderOptionsConditions[T, TProperty], IRuleBuilderInternal[T, TProperty]
+    IRuleBuilderOptions[T, TProperty],
+    IRuleBuilderInitial[T, TProperty],
+    IRuleBuilderInitialCollection[T, TProperty],
+    IRuleBuilderOptionsConditions[T, TProperty],
+    IRuleBuilderInternal[T, TProperty],
 ):
     def __init__(self, rule: IValidationRuleInternal[T, TProperty], parent: AbstractValidator[T]):
         self._rule: IValidationRuleInternal[T, TProperty] = rule

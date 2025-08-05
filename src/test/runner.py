@@ -67,7 +67,7 @@ import test_RegularExpressionValidator
 import test_LocalisedMessages
 import test_PropertyChain
 import test_InheritanceValidator
-
+import python_test.test_extract_type_when_using_cast_method as _python_cast_method
 # initialize the test suite
 loader = unittest.TestLoader()
 suite = unittest.TestSuite()
@@ -75,6 +75,7 @@ suite = unittest.TestSuite()
 # add tests to the test suite
 suite.addTests(
     (
+        *loader.loadTestsFromModule(_python_cast_method),
         *loader.loadTestsFromModule(test_InheritanceValidator),
         *loader.loadTestsFromModule(test_PropertyChain),
         *loader.loadTestsFromModule(test_RegularExpressionValidator),

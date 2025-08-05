@@ -18,27 +18,59 @@
 
 import inspect
 from enum import Enum
-from typing import Any, Callable, Iterable, Type, get_type_hints, get_args, get_origin, Union
+from typing import Any, Callable, Iterable, Optional, Type, get_type_hints, get_args, get_origin, Union, overload
 from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction, TupleInstruction
 import types
 
 
-class MemberInfo:
-    def __init__(self, func: Callable[..., Any]) -> None:
-        self._func: Callable[..., Any] = func
+class MemberInfo[T]:
+    @overload
+    def __init__(self, func: Callable[[T], Any], model: T) -> None: ...
+    @overload
+    def __init__(self, func: Callable[..., Any]) -> None: ...
+
+    def __init__(self, func: Callable[[T], Any], model: Optional[T] = None) -> None:
+        self._nested_names: list[str] = []
+
+        self._model = model
+        self._func: Callable[[T], Any] = func
         self._disassembler: TreeInstruction = TreeInstruction(func)
         self._lambda_vars: list[TupleInstruction] = self._disassembler.to_list()
 
-        self._name: None | str = self.assign_name()
+        self._name: Optional[str] = self.assign_name()
 
     @property
-    def Name(self) -> str:
+    def Name(self) -> Optional[str]:
         return self._name
 
-    def assign_name(self) -> str | None:
+    @property
+    def NestedNames(self) -> str:
+        return self._nested_names
+
+    def assign_name(self) -> Optional[list[str] | str]:
+        if self._model:
+            try:
+                obj = self._func(self._model)
+
+                # If "__name__" attribute is implemented we can return the name without working with lambda function in string.
+                # COMMENT: This method allow us to use 'cast' method from typing when working with 'rule_for'
+                if not isinstance(obj, type) and hasattr(obj, "__name__"):
+                    return obj.__name__
+
+            except AttributeError:
+                pass
+
         if not self._lambda_vars:
             return None
+
+        # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
         lambda_var, *nested_name = self._lambda_vars[0].nested_element.parents
+
+        if not nested_name:
+            if len(self._lambda_vars) == 3 and len(n := self._lambda_vars[-1].nested_element.parents) == 2:
+                return n[-1]
+
+        self._nested_names = nested_name
 
         return lambda_var if not nested_name else nested_name[-1]
 

@@ -49,7 +49,7 @@ class PropertyRule[T, TProperty](RuleBase[T, TProperty, TProperty]):
 
     @classmethod
     def create(cls, expression: Callable[[T], TProperty], cascadeModeThunk: Callable[[], CascadeMode], type_model: Type[T], bypassCache: bool = False) -> Self:
-        member = MemberInfo(expression)
+        member = MemberInfo(expression, type_model)
         compiled = AccessorCache[T].GetCachedAccessor(member, expression, bypassCache)
 
         t_property: Type[TProperty] = member.get_type_hint(type_model)

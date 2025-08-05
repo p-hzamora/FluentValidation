@@ -20,6 +20,8 @@ twine = "^5.1.1"
 ruff = "^0.6.2"
 parameterized = "^0.9.0"
 pydantic = "^2.11.7"
+ormlambda="3.34.7"
+python-dotenv = "^1.1.1"
 
 [build-system]
 requires = ["poetry-core"]

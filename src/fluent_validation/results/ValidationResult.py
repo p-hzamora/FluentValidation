@@ -69,6 +69,9 @@ class ValidationResult:
         else:
             raise Exception(f"No se ha inicializado la clase {self.__class__.__name__}")
 
+    def __repr__(self) -> str:
+        return f"{ValidationResult.__name__}: Valid={self.is_valid}; RuleSetsExecuted={self.RuleSetsExecuted}"
+    
     @property
     def is_valid(self) -> bool:
         return len(self._errors) == 0

@@ -21,7 +21,6 @@ from typing import Callable, Iterable, Any, Optional, override
 
 from fluent_validation.MemberInfo import MemberInfo
 from fluent_validation.ValidatorOptions import ValidatorOptions
-from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction
 
 
 class PropertyChain:
@@ -57,16 +56,17 @@ class PropertyChain:
         """Creates a PropertyChain from a lambda expression"""
         # COMMENT: TreeInstruction().to_list() returns a list depending on the number of attributes the lambda has.
         #  Since we always pass one attr, we only need to access the first position of the list if not empty
-        memberNames = TreeInstruction(expression).to_list()
-        if not memberNames:
+        member_info = MemberInfo(expression)
+
+        name = member_info.Name
+        nested_names = member_info.NestedNames
+        if not name:
             # FIXME [x]: Checked who to resovle with original code
             return PropertyChain(None, [])
 
-        # COMMENT: We return the parents list starting from the second element ([1:]) to exclude the unnecessary lambda parameter
-        var, *memberNames = memberNames[0].nested_element.parents
-        if not memberNames:
-            return PropertyChain(None, var)
-        return PropertyChain(None, memberNames)
+        if not nested_names:
+            return PropertyChain(None, [name])
+        return PropertyChain(None, nested_names)
 
     # TODOM: Checked if the MemberInfo class from C# is registering the same value in python using __class__.__name__
     def Add(self, member: MemberInfo) -> None:

@@ -74,13 +74,47 @@ class IRuleBuilder[T, TProperty](IRuleBuilderInternal[T, TProperty], DefaultVali
         return func
 
     @overload
-    def set_validator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]: ...
+    def set_validator(self, validator: IPropertyValidator[T, TProperty]) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Associates a validator with this the property for this rule builder.
+
+        Args:
+            validator:The validator to set
+        """
+        ...
+
     @overload
-    def set_validator(self, validator: IValidator[TProperty], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: ...
+    def set_validator(self, validator: IValidator[TProperty], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Associates an instance of IValidator with the current property rule.
+
+        Args:
+                validator:The validator to use
+                ruleSets
+        """
+        ...
+
     @overload
-    def set_validator(self, validator: Callable[[T], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: ...
+    def set_validator(self, validator: Callable[[T], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Associates a validator provider with the current property rule.
+
+        Args:
+                validatorProvider:The validator provider to use
+                ruleSets
+        """
+        ...
+
     @overload
-    def set_validator(self, validator: Callable[[T, TProperty], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]: ...
+    def set_validator(self, validator: Callable[[T, TProperty], IValidator[TProperty]], *ruleSets: str) -> IRuleBuilderOptions[T, TProperty]:
+        """
+        Associates a validator provider with the current property rule.
+
+        Args:
+                validatorProvider:The validator provider to use
+                ruleSets
+        """
+        ...
 
     @abstractmethod
     def set_validator(self, validator, *ruleSets) -> IRuleBuilderOptions[T, TProperty]: ...

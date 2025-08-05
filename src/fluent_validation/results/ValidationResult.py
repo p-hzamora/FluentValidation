@@ -71,7 +71,7 @@ class ValidationResult:
 
     def __repr__(self) -> str:
         return f"{ValidationResult.__name__}: Valid={self.is_valid}; RuleSetsExecuted={self.RuleSetsExecuted}"
-    
+
     @property
     def is_valid(self) -> bool:
         return len(self._errors) == 0

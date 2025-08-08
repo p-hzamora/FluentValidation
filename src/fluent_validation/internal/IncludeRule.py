@@ -52,17 +52,17 @@ class IncludeRule[T](PropertyRule[T, T], IIncludeRule):
 
     @overload
     @staticmethod
-    def Create(validator: IValidator[T], cascadeModeThunk: Callable[[], CascadeMode]) -> IncludeRule[T]: ...
+    def Create(validator: IValidator[T], cascadeModeThunk: Callable[[], CascadeMode], type_model: T) -> IncludeRule[T]: ...
     @overload
     @staticmethod
-    def Create[TValidator: IValidator[T]](validator: Callable[[T], TValidator], cascadeModeThunk: Callable[[], CascadeMode]) -> IncludeRule[T]: ...
+    def Create[TValidator: IValidator[T]](validator: Callable[[T], TValidator], cascadeModeThunk: Callable[[], CascadeMode], type_model: T) -> IncludeRule[T]: ...
 
     @staticmethod
-    def Create[TValidator: IValidator[T]](validator: Callable[[T], TValidator], cascadeModeThunk: Callable[[], CascadeMode]) -> IncludeRule[T]:
+    def Create[TValidator: IValidator[T]](validator: Callable[[T], TValidator], cascadeModeThunk: Callable[[], CascadeMode], type_model: T) -> IncludeRule[T]:
         if callable(validator):
-            return IncludeRule[T](lambda ctx, _: validator(ctx.instance_to_validate), cascadeModeThunk, type(T), type(TValidator))
+            return IncludeRule[T](lambda ctx, _: validator(ctx.instance_to_validate), cascadeModeThunk, type_model, type(TValidator))
         else:
-            return IncludeRule[T](validator, cascadeModeThunk, type(T))
+            return IncludeRule[T](validator, cascadeModeThunk, type_model)
 
     @override
     async def ValidateAsync(self, context: ValidationContext[T], useAsync: bool):  # , CancellationToken cancellation

@@ -407,7 +407,7 @@ class AbstractValidator[T](IValidator[T]):
         Args:
             rulesToInclude: The validator whose rules should be included, or a function that returns such a validator
         """
-        rule = IncludeRule[T].Create(rulesToInclude, lambda: self.RuleLevelCascadeMode)
+        rule = IncludeRule[T].Create(rulesToInclude, lambda: self.RuleLevelCascadeMode, type_model=self._type_model)
         self.Rules.append(rule)
         self.OnRuleAdded(rule)
 

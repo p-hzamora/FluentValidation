@@ -128,6 +128,9 @@ class MemberInfo[T]:
                     # If there are more variables after an Enum, that's likely an error
                     raise TypeError(f"Cannot access nested properties on Enum type '{current_instance_var.__name__}'")
 
+            if hasattr(current_instance_var, 'dtype'):
+                return current_instance_var.dtype
+            
             current_type_hints = get_types(current_instance_var)
         return current_instance_var
 

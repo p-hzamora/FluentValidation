@@ -16,7 +16,6 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
-import inspect
 from enum import Enum
 from typing import Any, Callable, Iterable, Optional, Type, get_type_hints, get_args, get_origin, Union, overload
 from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction, TupleInstruction
@@ -79,11 +78,8 @@ class MemberInfo[T]:
             init_types = get_type_hints(obj.__init__) if hasattr(obj, "__init__") else {}
             annotations_types = get_type_hints(obj) if hasattr(obj, "__annotations__") else {}
 
-            functions_dict = {name: obj for name, obj in inspect.getmembers(type_model, predicate=inspect.isfunction)}
-
             dict_types = init_types
 
-            dict_types.update(functions_dict)
             dict_types.update(annotations_types)
             return dict_types
 
@@ -128,9 +124,9 @@ class MemberInfo[T]:
                     # If there are more variables after an Enum, that's likely an error
                     raise TypeError(f"Cannot access nested properties on Enum type '{current_instance_var.__name__}'")
 
-            if hasattr(current_instance_var, 'dtype'):
+            if hasattr(current_instance_var, "dtype"):
                 return current_instance_var.dtype
-            
+
             current_type_hints = get_types(current_instance_var)
         return current_instance_var
 

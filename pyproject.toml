@@ -3,7 +3,7 @@ line-length = 200
 
 [tool.poetry]
 name = "fluent_validation"
-version = "4.3.25"
+version = "4.3.26"
 description = "A popular .NET validation library developed by 'Jeremy Skinner' for building strongly-typed validation rules, rewritten in python by 'Pablo Hernández'"
 authors = [
     "p-hzamora <p.hzamora@icloud.com>",

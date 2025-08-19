@@ -43,3 +43,5 @@ from fluent_validation.validators.PolymorphicValidator import PolymorphicValidat
 
 # Global class
 from fluent_validation.ValidatorOptions import ValidatorOptions as ValidatorOptions
+
+from fluent_validation.InlineValidator import InlineValidator as InlineValidator

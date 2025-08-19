@@ -72,26 +72,26 @@ class CascadingFailuresTesterLegacy(unittest.TestCase, IDisposable):
     def test_Validation_continues_on_failure_when_set_to_Stop_globally_and_overriden_at_rule_level(self):
         ValidatorOptions.Global.CascadeMode = CascadeMode.Stop
 
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_continues_on_failure_when_set_to_Stop_globally_and_overriden_at_rule_level_legacy(self):
         ValidatorOptions.Global.CascadeMode = CascadeMode.Stop
 
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_stops_on_first_Failure_when_set_to_Continue_globally_and_overriden_at_rule_level(self):
         ValidatorOptions.Global.CascadeMode = CascadeMode.Continue
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Stop).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Stop).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 1)
 
     def test_Validation_stops_on_first_Failure_when_set_to_Continue_globally_and_overriden_at_rule_level_legacy(self):
         ValidatorOptions.Global.CascadeMode = CascadeMode.Continue
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Stop).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Stop).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 1)
 
@@ -132,28 +132,28 @@ class CascadingFailuresTesterLegacy(unittest.TestCase, IDisposable):
     def test_Validation_continues_on_failure_when_set_to_Stop_at_validator_level_and_overriden_at_rule_level(self):
         self.validator.CascadeMode = CascadeMode.Stop
 
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_continues_on_failure_when_set_to_StopOnFirstFailure_at_validator_level_and_overriden_at_rule_level_legacy(self):
         self.validator.CascadeMode = CascadeMode.Stop
 
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_stops_on_failure_when_set_to_Continue_and_overriden_at_rule_level(self):
         self.validator.CascadeMode = CascadeMode.Continue
 
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Stop).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Stop).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 1)
 
     def test_Validation_stops_on_failure_when_set_to_Continue_and_overriden_at_rule_level_legacy(self):
         self.validator.CascadeMode = CascadeMode.Continue
 
-        self.validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Stop).not_null().equal("Foo")
+        self.validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Stop).not_null().equal("Foo")
         results = self.validator.validate(Person())
         self.assertEqual(len(results.errors), 1)
 

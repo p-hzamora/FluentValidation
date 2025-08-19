@@ -98,28 +98,21 @@ class DefaultValidatorOptions[T, TProperty]:
 
     @overload
     @staticmethod
-    def configurable[TCollectionElement](ruleBuilder: IRuleBuilderInitialCollection[T, TCollectionElement]) -> ICollectionRule[T, TCollectionElement]:
-        ...
-        # return (ICollectionRule[T, TCollectionElement]) ((IRuleBuilderInternal[T, TCollectionElement]) ruleBuilder).Rule;
+    def configurable[TCollectionElement](ruleBuilder: IRuleBuilderInitialCollection[T, TCollectionElement]) -> ICollectionRule[T, TCollectionElement]: ...
 
     @staticmethod
     def configurable(ruleBuilder: IRuleBuilder[T, TProperty]) -> IValidationRule[T, TProperty]:
         return ruleBuilder.Rule
 
     # FIXME [x]: the type of 'ruleBuilder' used to be 'IRuleBuilderInitial' and it should return the same
-    @overload
-    def Cascade(ruleBuilder: IRuleBuilderInitial[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]: ...
-    @overload
-    def Cascade(ruleBuilder: IRuleBuilderInitialCollection[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]: ...
-
-    def Cascade(ruleBuilder: IRuleBuilderInitialCollection[T, TProperty] | IRuleBuilderInitial[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]:
+    def cascade(ruleBuilder: IRuleBuilder[T, TProperty], cascadeMode: CascadeMode) -> IRuleBuilderInitial[T, TProperty]:
+        """
+        Specifies the cascade mode for failures.
+        If set to cref="CascadeMode.Stop" then execution of the rule will stop once the first validator in the chain fails.
+        If set to cref="CascadeMode.Continue" then all validators in the chain will execute regardless of failures.
+        """
         ruleBuilder.configurable(ruleBuilder).CascadeMode = cascadeMode
         return ruleBuilder
-
-    # public static IRuleBuilderInitialCollection[T, TProperty] Cascade[T, TProperty](this IRuleBuilderInitialCollection[T, TProperty] ruleBuilder, CascadeMode cascadeMode) {
-    #     Configurable(ruleBuilder).CascadeMode = cascadeMode;
-    #     return ruleBuilder;
-    # }
 
     @overload
     def with_message(ruleBuilder: IRuleBuilderOptions[T, TProperty], errorMessage: str) -> IRuleBuilderOptions[T, TProperty]: ...

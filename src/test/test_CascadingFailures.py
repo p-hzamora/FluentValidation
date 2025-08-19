@@ -82,16 +82,16 @@ class CascadingFailuresTester(unittest.TestCase, IDisposable):
     def test_Validation_continues_on_failure_when_globaldefault_both_Stop_and_ruleleveloverride_Continue(self):
         self.SetBothGlobalCascadeModes(CascadeMode.Stop)
 
-        self._validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
         results = self._validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_continues_on_failure_when_globaldefault_rule_stop_and_ruleleveloverride_Continue(self):
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop
 
-        self._validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
-        self._validator.rule_for(lambda x: x.Forename).Cascade(CascadeMode.Continue).not_null().equal("Foo")
-        self._validator.rule_for(lambda x: x.Email).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Forename).cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Email).cascade(CascadeMode.Continue).not_null().equal("Foo")
 
         results = self._validator.validate(Person())
         self.assertEqual(len(results.errors), 6)
@@ -99,16 +99,16 @@ class CascadingFailuresTester(unittest.TestCase, IDisposable):
     def test_Validation_stops_after_first_rule_failure_when_globaldefault_class_stop_and_ruleleveloverride_Continue(self):
         ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop
 
-        self._validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
-        self._validator.rule_for(lambda x: x.Forename).Cascade(CascadeMode.Continue).not_null().equal("Foo")
-        self._validator.rule_for(lambda x: x.Email).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Forename).cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Email).cascade(CascadeMode.Continue).not_null().equal("Foo")
 
         results = self._validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_stops_on_first_failure_when_globaldefault_both_Continue_and_ruleleveloverride_Stop(self):
         self.SetBothGlobalCascadeModes(CascadeMode.Continue)
-        self._validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Stop).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Stop).not_null().equal("Foo")
         results = self._validator.validate(Person())
         self.assertEqual(len(results.errors), 1)
 
@@ -173,21 +173,21 @@ class CascadingFailuresTester(unittest.TestCase, IDisposable):
     def test_Validation_continues_on_failure_when_classlevel_Stop_and_ruleleveldefault_Stop_and_ruleleveloverride_Continue(self):
         self.SetBothValidatorCascadeModes(CascadeMode.Stop)
 
-        self._validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
         results = self._validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_continues_on_failure_when_ruleleveldefault_Stop_and_ruleleveloverride_Continue(self):
         self._validator.RuleLevelCascadeMode = CascadeMode.Stop
 
-        self._validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Continue).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Continue).not_null().equal("Foo")
         results = self._validator.validate(Person())
         self.assertEqual(len(results.errors), 2)
 
     def test_Validation_stops_on_failure_when_classlevel_Continue_and_ruleleveldefault_Continue_and_ruleleveloverride_Stop(self):
         self.SetBothValidatorCascadeModes(CascadeMode.Continue)
 
-        self._validator.rule_for(lambda x: x.Surname).Cascade(CascadeMode.Stop).not_null().equal("Foo")
+        self._validator.rule_for(lambda x: x.Surname).cascade(CascadeMode.Stop).not_null().equal("Foo")
         results = self._validator.validate(Person())
         self.assertEqual(len(results.errors), 1)
 

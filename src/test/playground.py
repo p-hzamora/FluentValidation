@@ -135,7 +135,7 @@ class PersonAgeValidator(AbstractValidator[Person]):
         # fmt: off
         (
             self.rule_for(lambda x: x.DateOfBirth)
-            .Cascade(CascadeMode.Stop)
+            .cascade(CascadeMode.Stop)
             .must(lambda x: isinstance(x, datetime)).with_message(lambda x: "Error for first must {PropertyValue}")
             .not_empty()
             .must(self.BeOver18).with_message(lambda x: f"The person is under {x.min_age}")
@@ -232,8 +232,8 @@ class PersonValidator(AbstractValidator[Person]):
         super().__init__(Person)
         self.ClassLevelCascadeMode = CascadeMode.Continue
         self.RuleLevelCascadeMode = CascadeMode.Continue
-        self.rule_for(lambda x: x.name).Cascade(CascadeMode.Continue).not_null().not_empty().max_length(30)
-        self.rule_for(lambda x: x.age).Cascade(CascadeMode.Stop).not_null().must(lambda obj, value: obj.min_age <= value <= obj.max_age).with_severity(Severity.Warning)
+        self.rule_for(lambda x: x.name).cascade(CascadeMode.Continue).not_null().not_empty().max_length(30)
+        self.rule_for(lambda x: x.age).cascade(CascadeMode.Stop).not_null().must(lambda obj, value: obj.min_age <= value <= obj.max_age).with_severity(Severity.Warning)
         self.rule_for(lambda x: x.start_date).not_null().less_than_or_equal_to(lambda x: x.deadline)
         self.rule_for(lambda x: x.invoice).precision_scale(5, 2, True)
         self.rule_for(lambda x: x.start_date).not_null().less_than_or_equal_to(datetime.today())

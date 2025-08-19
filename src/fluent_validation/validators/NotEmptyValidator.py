@@ -16,21 +16,40 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
-import datetime
+import datetime as dt
+from decimal import Decimal
 from typing import override, Iterable
 from fluent_validation.IValidationContext import ValidationContext
 from fluent_validation.validators.PropertyValidator import PropertyValidator
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
 
 
-def is_not_default(value):
-    if isinstance(value, int | float):
-        return value != 0
-
-    if isinstance(value, datetime.datetime):
+def is_not_default(value) -> bool:
+    default_values = {
+        # Numeric types
+        int: 0,
+        float: 0.0,
+        complex: 0j,
+        Decimal: Decimal("0"),
+        # Date/time types
         # We assume that a minimun datetime means that the data is not valid, that is, it's empty
-        return value != datetime.datetime.min
-    return value is not None
+        dt.datetime: dt.datetime.min,
+        dt.date: dt.date.min,
+        dt.time: dt.time.min,
+        dt.timezone: dt.timezone.min,
+        dt.timedelta: dt.timedelta(),  # Zero timedelta, more common than min
+        # String and bytes
+        str: "",
+        bytes: b"",
+        bytearray: bytearray(),
+        type(None): None,
+    }
+
+    resolver_defaults = default_values.get(type(value), None)
+
+    if resolver_defaults is None:
+        return True
+    return resolver_defaults != value
 
 
 class INotEmptyValidator(IPropertyValidator): ...

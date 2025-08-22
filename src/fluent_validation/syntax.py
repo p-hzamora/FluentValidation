@@ -18,7 +18,7 @@
 
 from __future__ import annotations
 from abc import abstractmethod, ABC
-from typing import Any, Self, Callable, overload, TYPE_CHECKING
+from typing import Any, Callable, overload, TYPE_CHECKING
 
 from fluent_validation.DefaultValidatorExtensions import DefaultValidatorExtensions
 from fluent_validation.DefaultValidatorOptions import DefaultValidatorOptions
@@ -125,7 +125,7 @@ class IRuleBuilderInitial[T, TProperty](IRuleBuilder[T, TProperty]): ...
 
 class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
     @abstractmethod
-    def dependent_rules(self, action: Callable[[], Any]) -> Self:
+    def dependent_rules(self, action: Callable[[], Any]) -> IRuleBuilderOptions[T,TProperty]:
         """Creates a scope for declaring dependent rules."""
         ...
 
@@ -133,7 +133,10 @@ class IRuleBuilderOptions[T, TProperty](IRuleBuilder[T, TProperty]):
 class IRuleBuilderOptionsConditions[T, TProperty](IRuleBuilder[T, TProperty]):
     """Rule builder that starts the chain for a child collection"""
 
-    ...
+    @abstractmethod
+    def dependent_rules(self, action: Callable[[], Any]) -> IRuleBuilderOptionsConditions[T,TProperty]:
+        """Creates a scope for declaring dependent rules."""
+        ...
 
 
 class IRuleBuilderInitialCollection[T, TElement](IRuleBuilder[T, TElement]): ...

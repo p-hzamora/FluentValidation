@@ -18,6 +18,8 @@
 
 import unittest
 
+from fluent_validation import ValidatorOptions
+
 from person import Person
 from TestValidator import TestValidator
 from CultureScope import CultureScope
@@ -54,17 +56,17 @@ class GreaterThanOrEqualToValidatorTester(unittest.TestCase):
         self.assertFalse(result.is_valid)
         self.assertEqual(result.errors[0].ErrorMessage, "Another Int")
 
-    # def test_Comparison_property_uses_custom_resolver(self):
-    #     originalResolver= ValidatorOptions.Global.DisplayNameResolver
+    def test_Comparison_property_uses_custom_resolver(self):
+        originalResolver= ValidatorOptions.Global.DisplayNameResolver
 
-    #     try:
-    #         ValidatorOptions.Global.DisplayNameResolver = (type, member, exprlambda ): member.Name + "Foo"
-    #         validator= TestValidator(lambda v: v.rule_for(lambda x: x.Id).greater_than_or_equal_to(lambda x: x.AnotherInt).with_message("{ComparisonProperty}"))
-    #         result= self.validator.validate(Person(Id = 0, AnotherInt = 1))
-    #         self.assertEqual(result.errors[0].ErrorMessage, "AnotherIntFoo")
+        try:
+            ValidatorOptions.Global.DisplayNameResolver = lambda type, member, exprlambda: member.Name + "Foo"
+            validator= TestValidator(lambda v: v.rule_for(lambda x: x.Id).greater_than_or_equal_to(lambda x: x.AnotherInt).with_message("{ComparisonProperty}"))
+            result= validator.validate(Person(Id = 0, AnotherInt = 1))
+            self.assertEqual(result.errors[0].ErrorMessage, "AnotherIntFoo")
 
-    #     finally:
-    #         ValidatorOptions.Global.DisplayNameResolver = originalResolver
+        finally:
+            ValidatorOptions.Global.DisplayNameResolver = originalResolver
 
     def test_Validates_with_nullable_property(self):
         validator = TestValidator(lambda v: v.rule_for(lambda x: x.Id).greater_than_or_equal_to(lambda x: x.NullableInt))

@@ -26,7 +26,7 @@ sys.path.append([str(x) for x in Path(__file__).parents if x.name == "src"].pop(
 
 # from fluent_validation.results.ValidationFailure import ValidationFailure
 from fluent_validation.InlineValidator import InlineValidator
-from fluent_validation import AbstractValidator
+from fluent_validation import AbstractValidator, ValidationFailure
 from TestValidator import TestValidator
 from person import Order, Person
 
@@ -515,15 +515,12 @@ class SharedConditionTests(unittest.TestCase):
     # 		self.assertTrue(result.is_valid)
     # 	}
 
-    # def test_Executes_custom_rule_when_condition_true(self):
-    #     validator = TestValidator()
-    #     validator.when(lambda x: True, lambda: (
-    #         validator.rule_for(lambda x: x).Custom(lambda x,ctx: ctx.AddFailure(ValidationFailure("foo", "bar")))
+    def test_Executes_custom_rule_when_condition_true(self):
+        validator = TestValidator()
+        validator.when(lambda x: True, lambda: (validator.rule_for(lambda x: x).custom(lambda x, ctx: ctx.AddFailure(ValidationFailure("foo", "bar")))))
 
-    #     ))
-
-    #     result = validator.validate(Person())
-    #     self.assertFalse(result.is_valid)
+        result = validator.validate(Person())
+        self.assertFalse(result.is_valid)
 
     # 	def async Task Executes_custom_rule_when_async_condition_true() {
     # 		validator = TestValidator()
@@ -762,8 +759,8 @@ class SharedConditionTests(unittest.TestCase):
     # 	}
 
     def test_Shouldnt_break_with_hashcode_collision(self):
-        v1 = InlineValidator(Collision1)
-        v2 = InlineValidator(Collision2)
+        InlineValidator(Collision1)
+        InlineValidator(Collision2)
 
         v = InlineValidator(CollisionBase)
         v.when(lambda x: x, lambda: (v.rule_for(lambda x: x.Name).not_null()))

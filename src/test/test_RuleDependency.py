@@ -249,25 +249,28 @@ class RuleDependencyTests(unittest.TestCase):
         self.assertEqual(len(results.errors), 1)
         self.assertEqual(results.errors[0].PropertyName, "Address")
 
-    # FIXME [ ]: Custom method it's not included at this moment
-    # def test_Invokes_dependent_rule_if_parent_custom_rule_passes(self):
-    #     validator = TestValidator()
-    #     validator.rule_for(lambda x: x.Surname).Custom(lambda name, context: None).dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
+    # FIXME [x]: Custom method it's not included at this moment
+    def test_Invokes_dependent_rule_if_parent_custom_rule_passes(self):
+        validator = TestValidator()
+        validator.rule_for(lambda x: x.Surname).custom(lambda name, context: None).dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
 
-    #     results = validator.validate(Person(Surname="foo"))
-    #     self.assertEqual(len(results.errors), 1)
-    #     self.assertEqual(results.errors[0].PropertyName, "Forename")
+        results = validator.validate(Person(Surname="foo"))
+        self.assertEqual(len(results.errors), 1)
+        self.assertEqual(results.errors[0].PropertyName, "Forename")
 
-    # def test_Does_not_invoke_dependent_rule_if_parent_custom_rule_does_not_pass(self):
-    #     def custom_validation(name, context):
-    #         context.AddFailure("Failed")
+    def test_Does_not_invoke_dependent_rule_if_parent_custom_rule_does_not_pass(self):
+        validator = TestValidator()
+        # fmt:off
+        validator.rule_for(lambda x: x.Surname).custom(lambda name, context: (
+            context.AddFailure(errorMessage="Failed")
+            )
+        ).dependent_rules(lambda: 
+            validator.rule_for(lambda x: x.Forename).not_null())
+        # fmt:on
 
-    #     validator = TestValidator()
-    #     validator.rule_for(lambda x: x.Surname).Custom(custom_validation).dependent_rules(lambda: validator.rule_for(lambda x: x.Forename).not_null())
-
-    #     results = validator.validate(Person(Surname=None))
-    #     self.assertEqual(len(results.errors), 1)
-    #     self.assertEqual(results.errors[0].PropertyName, "Surname")
+        results = validator.validate(Person(Surname=None))
+        self.assertEqual(len(results.errors), 1)
+        self.assertEqual(results.errors[0].PropertyName, "Surname")
 
     def BaseValidation(self, validator: InlineValidator[Person]):
         validator.rule_for(lambda x: x.Address).not_null()

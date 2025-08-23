@@ -17,6 +17,7 @@
 # endregion
 
 # Enums
+from fluent_validation.DefaultValidatorExtensions import EmailValidationMode as EmailValidationMode
 from fluent_validation.enums import CascadeMode as CascadeMode
 from fluent_validation.enums import ApplyConditionTo as ApplyConditionTo
 from fluent_validation.enums import Severity as Severity

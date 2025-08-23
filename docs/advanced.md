@@ -40,16 +40,18 @@ var validator = new PersonValidator()
 validator.Validate(context)
 ```
 
-The RootContextData can then be accessed inside any custom property validators, as well as calls to `Custom`:
+The RootContextData can then be accessed inside any custom property validators, as well as calls to `custom`:
 
 ```python
-rule_for(x => x.Surname).Custom((x, context) => 
-{
-  if(context.RootContextData.ContainsKey("MyCustomData")) 
-  {
-    context.AddFailure("My error message")
-  }
-})
+# fmt:off
+self.rule_for(lambda x: x.Surname).custom(lambda x, context: (
+    context.AddFailure("My error message") 
+    if (context.RootContextData.get("MyCustomData")) 
+    else None,
+    )
+)
+# fmt:on
+
 ```
 
 ## Customizing the Validation Exception
@@ -85,6 +87,16 @@ public static class FluentValidationExtensions
         }
     }
 }
+
+
+class FluentValidationExtensions:
+    def validate_and_throw_argument_exception[T](validator: IValidator[T], instance: T) -> None:
+        res = validator.validate(instance)
+
+        
+        if not res.is_valid:
+            ex = ValidationException(res.Errors)
+            raise ValidationException(message=ex.Message,ex)
 ```
 
 This approach is more useful if you only want to throw the custom exception when your specific method is invoked, rather than any time `validate_and_throw` is invoked.

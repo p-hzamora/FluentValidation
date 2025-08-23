@@ -866,5 +866,5 @@ class DefaultValidatorExtensions[T, TProperty]:
         if (display_name_resolver := ValidatorOptions.Global.DisplayNameResolver(type(T), member, expression)) is not None:
             return display_name_resolver
         if member is not None:
-            return ExtensionsInternal.split_pascal_case(member.Name)
+            return ExtensionsInternal.split_by_case(member.Name)
         return None

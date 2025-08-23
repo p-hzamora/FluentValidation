@@ -17,7 +17,7 @@
 # endregion
 
 from __future__ import annotations
-from typing import Any
+from typing import Any, Optional
 
 
 class ExtensionsInternal:
@@ -58,6 +58,34 @@ class ExtensionsInternal:
                 retVal.append(current_char)
 
         return "".join(retVal).strip()
+
+    @staticmethod
+    def split_snake_case(input_str: Optional[str]) -> str:
+        if input_str is None or input_str.isspace():
+            return input_str
+
+        retVal = []
+        length = len(input_str)
+        for i in range(length):
+            current_char = input_str[i]
+
+            if not current_char.isupper() and i == 0:
+                retVal.append(current_char.upper())
+
+            elif current_char == "_":
+                retVal.append(" ")
+
+            elif not current_char == "." or i + 1 == length:
+                retVal.append(current_char)
+
+        return "".join(retVal).strip()
+
+    @staticmethod
+    def split_by_case(input_str: Optional[str]) -> str:
+        if isinstance(input_str, str) and not input_str.isspace():
+            if input_str[0].isupper():
+                return ExtensionsInternal.split_pascal_case(input_str)
+            return ExtensionsInternal.split_snake_case(input_str)
 
     # @staticmethod
     # T GetOrAdd<T>(this IDictionary<string, object> dict, string key, Func<T> value) {

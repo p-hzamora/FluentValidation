@@ -146,7 +146,7 @@ class RuleBase[T, TProperty, TValue](IValidationRule[T, TValue]):
     @PropertyName.setter
     def PropertyName(self, value: Optional[str]) -> None:
         self._propertyName = value
-        self._propertyDisplayName = ExtensionsInternal.split_pascal_case(self._propertyName)
+        self._propertyDisplayName = ExtensionsInternal.split_by_case(self._propertyName)
 
     @overload
     def SetDisplayName(self, name: str): ...

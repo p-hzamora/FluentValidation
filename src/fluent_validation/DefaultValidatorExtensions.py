@@ -46,6 +46,7 @@ if TYPE_CHECKING:
     from fluent_validation.DefaultValidatorOptions import IRuleBuilderOptions
     from fluent_validation.InlineValidator import InlineValidator
     from fluent_validation.syntax import IRuleBuilder
+    from fluent_validation.syntax import IRuleBuilderOptionsConditions
 
 
 from fluent_validation.ValidatorOptions import ValidatorOptions
@@ -737,13 +738,11 @@ class DefaultValidatorExtensions[T, TProperty]:
 
     # endregion
 
-    # 	static IRuleBuilderOptionsConditions[T,TProperty] Custom[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Action<TProperty, ValidationContext<T>> action) {
-    # 		if (action == null) throw ArgumentNullException(nameof(action))
-    # 		return (IRuleBuilderOptionsConditions[T,TProperty])ruleBuilder.Must((parent, value, context) => {
-    # 			action(value, context)
-    # 			return true
-    # 		})
-    # 	}
+    def custom[T, TProperty](ruleBuilder: IRuleBuilder[T, TProperty], action: Callable[[TProperty, ValidationContext[T]], None]) -> IRuleBuilderOptionsConditions[T, TProperty]:
+        if action is None:
+            raise ValueError("action")
+
+        return ruleBuilder.must(lambda parent, value, context: (action(value, context), True)[1])
 
     # 	static IRuleBuilderOptionsConditions[T,TProperty] CustomAsync[T,TProperty](ruleBuilder: IRuleBuilder[T,TProperty] , Func<TProperty, ValidationContext<T>, CancellationToken, Task> action) {
     # 		if (action == null) throw ArgumentNullException(nameof(action))

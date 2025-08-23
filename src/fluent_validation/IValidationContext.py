@@ -318,32 +318,49 @@ class ValidationContext[T](IValidationContext, IHasFailures):
         self.PropertyChain = state.Chain
         self._sharedConditionCache = state.SharedConditionCache
 
-    def AddFailure_validationFailure(self, failure: ValidationFailure) -> None:
+    def __AddFailure_validationFailure(self, failure: ValidationFailure) -> None:
         self.Failures.append(failure)
 
-    def AddFailure_property_errorMssg(self, propertyName: str, errorMessage: str) -> None:
-        errorMessage = MessageFormatter.BuildMessage(errorMessage)
+    def __AddFailure_property_errorMssg(self, propertyName: str, errorMessage: str) -> None:
+        errorMessage = self.MessageFormatter.BuildMessage(errorMessage)
         prop_name: str = propertyName if propertyName is not None else ""
         self.AddFailure(ValidationFailure(PropertyChain.BuildPropertyPath(prop_name), errorMessage))
 
-    def AddFailure_errorMssg(self, errorMessage: str) -> None:
-        errorMessage = MessageFormatter.BuildMessage(errorMessage)
+    def __AddFailure_errorMssg(self, errorMessage: str) -> None:
+        errorMessage = self.MessageFormatter.BuildMessage(errorMessage)
         self.AddFailure(ValidationFailure(self.PropertyPath, errorMessage))
 
     @overload
-    def AddFailure(self, failure: ValidationFailure) -> None: ...
-    @overload
-    def AddFailure(self, propertyName: str, errorMessage: str) -> None: ...
-    @overload
-    def AddFailure(self, errorMessage: str) -> None: ...
+    def AddFailure(self, failure: ValidationFailure) -> None:
+        """Adds a new validation failure."""
+        ...
 
-    def AddFailure(self, failure: Optional[ValidationFailure] = None, propertyName: Optional[str] = None, errorMessage: Optional[str] = None) -> None:
+    @overload
+    def AddFailure(self, propertyName: str, errorMessage: str) -> None:
+        """Adds a new validation failure for the specified property."""
+        ...
+
+    @overload
+    def AddFailure(self, errorMessage: str) -> None:
+        """
+        Adds a new validation failure for the specified message.
+            The failure will be associated with the current property being validated.
+        """
+        ...
+
+    def AddFailure(
+        self,
+        failure: Optional[ValidationFailure] = None,
+        *,
+        propertyName: Optional[str] = None,
+        errorMessage: Optional[str] = None,
+    ) -> None:
         if failure and not all([propertyName, errorMessage]):
-            self.AddFailure_validationFailure(failure)
+            self.__AddFailure_validationFailure(failure)
         elif not all([failure, propertyName]) and errorMessage:
-            self.AddFailure_errorMssg(errorMessage)
+            self.__AddFailure_errorMssg(errorMessage)
         elif not failure and propertyName is not None and errorMessage is not None:
-            self.AddFailure_property_errorMssg(propertyName, errorMessage)
+            self.__AddFailure_property_errorMssg(propertyName, errorMessage)
         else:
             raise AttributeError
 

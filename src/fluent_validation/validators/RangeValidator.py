@@ -17,8 +17,10 @@
 # endregion
 
 from __future__ import annotations
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import override, TYPE_CHECKING
+
+from fluent_validation.validators.ComparableComparer import IComparer
 
 if TYPE_CHECKING:
     from fluent_validation.validators.ExclusiveBetweenValidator import ExclusiveBetweenValidator
@@ -27,32 +29,6 @@ from fluent_validation.IValidationContext import ValidationContext
 
 from fluent_validation.validators.PropertyValidator import PropertyValidator
 from fluent_validation.validators.IpropertyValidator import IPropertyValidator
-
-
-class IComparer[T](ABC):
-    """
-    Summary:
-        Compares two objects and returns a value indicating whether one is less than,
-        equal to, or greater than the other.
-
-    Parámetros:
-    x:
-        The first object to compare.
-
-    y:
-        The second object to compare.
-
-    returns:
-        A signed integer that indicates the relative values of x and y, as shown in the
-        following table.
-        Value – Meaning
-        Less than zero –x is less than y.
-        Zero –x equals y.
-        Greater than zero –x is greater than y.
-    """
-
-    @abstractmethod
-    def Compare(self, x: T = None, y: T = None) -> int: ...
 
 
 class IBetweenValidator(IPropertyValidator):

@@ -16,34 +16,44 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
+from abc import ABC, abstractmethod
 from typing import Optional
-from fluent_validation.validators.RangeValidator import IComparer
 
 
-class IComparable[T]:
+class IComparer[T](ABC):
+    """
+    Summary:
+                    Compares the current instance with another object of the same type and returns
+                    an integer that indicates whether the current instance precedes, follows, or
+                    occurs in the same position in the sort order as the other object.
+
+    Parameters:
+    other:
+                    An object to compare with this instance.
+
+    Returns:
+                    A value that indicates the relative order of the objects being compared. The
+                    return value has these meanings:
+
+                    Value			 	Meaning
+                    -----				-------
+                    
+                    Less than zero 		This instance precedes other in the sort order.
+                    Zero 				This instance occurs in the same position in the sort order as other.
+                    Greater than zero 	This instance follows other in the sort order.
+    """
+
+    @abstractmethod
+    def Compare(self, x: T = None, y: T = None) -> int: ...
+
+
+class IComparable[T](ABC):
+    def CompareTo(self, other: Optional[T]) -> int: ...
+
+
+class Comparable[T](IComparable[T]):
     def __init__(self, value: T) -> None:
         self.value: T = value
-
-    """
-	Summary:
-			Compares the current instance with another object of the same type and returns
-			an integer that indicates whether the current instance precedes, follows, or
-			occurs in the same position in the sort order as the other object.
-
-	Parameters:
-	other:
-			An object to compare with this instance.
-
-	Returns:
-			A value that indicates the relative order of the objects being compared. The
-			return value has these meanings:
-
-			Value – Meaning
-			Less than zero – This instance precedes other in the sort order.
-			Zero – This instance occurs in the same position in the sort order as other.
-
-			Greater than zero – This instance follows other in the sort order.
-	"""
 
     def CompareTo(self, other: Optional[T]) -> int:
         if self.value < other:
@@ -56,4 +66,4 @@ class IComparable[T]:
 class ComparableComparer[T: IComparable[T]](IComparer[T]):
     @staticmethod
     def Compare(x: T, y: T) -> int:
-        return IComparable(x).CompareTo(y)
+        return Comparable(x).CompareTo(y)

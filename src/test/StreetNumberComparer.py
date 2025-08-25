@@ -17,7 +17,7 @@
 # endregion
 
 from fluent_validation.validators.RangeValidator import IComparer
-from fluent_validation.validators.ComparableComparer import IComparable
+from fluent_validation import ComparableComparer
 from person import _Address as Address
 
 
@@ -43,4 +43,4 @@ class StreetNumberComparer(IComparer[Address]):
             return -1
         if y is None:
             return 1
-        return IComparable(self.GetValue(x)).CompareTo(self.GetValue(y))
+        return ComparableComparer.Compare(self.GetValue(x), self.GetValue(y))

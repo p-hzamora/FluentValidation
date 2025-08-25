@@ -16,6 +16,9 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
+# Interfaces
+from fluent_validation.validators.ComparableComparer import IComparer as IComparer
+from fluent_validation.validators.ComparableComparer import ComparableComparer as ComparableComparer
 # Enums
 from fluent_validation.DefaultValidatorExtensions import EmailValidationMode as EmailValidationMode
 from fluent_validation.enums import CascadeMode as CascadeMode

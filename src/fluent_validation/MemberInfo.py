@@ -17,9 +17,39 @@
 # endregion
 
 from enum import Enum
-from typing import Any, Callable, Iterable, Optional, Type, get_type_hints, get_args, get_origin, Union, overload
+from typing import (
+    Annotated,
+    Any,
+    Callable,
+    Iterable,
+    Optional,
+    Type,
+    get_type_hints,
+    get_args,
+    get_origin,
+    Union,
+    overload,
+)
 from fluent_validation.lambda_disassembler.tree_instruction import TreeInstruction, TupleInstruction
 import types
+
+
+def is_optional(type_: Type):
+    if get_origin(type_) is not Union:
+        return False
+
+    args = get_args(type_)
+
+    return len(args) == 2 and type(None) in args
+
+
+def applied_metadata_from_annotated(type_: Annotated) -> Type:
+    actual_type, metadata = get_args(type_)
+
+    if is_optional(actual_type):
+        return Optional[metadata]
+
+    return metadata
 
 
 class MemberInfo[T]:
@@ -75,12 +105,32 @@ class MemberInfo[T]:
 
     def get_type_hint(self, type_model: Type) -> Type[Any]:
         def get_types(obj: Any):
-            init_types = get_type_hints(obj.__init__) if hasattr(obj, "__init__") else {}
-            annotations_types = get_type_hints(obj) if hasattr(obj, "__annotations__") else {}
+            init_types = get_type_hints(obj.__init__, include_extras=True) if hasattr(obj, "__init__") else {}
+            annotations_types = get_type_hints(obj, include_extras=True) if hasattr(obj, "__annotations__") else {}
 
             dict_types = init_types
 
             dict_types.update(annotations_types)
+
+
+            for key in dict_types:
+                type_ = dict_types[key]
+
+                # COMMENT: Bypass pydantic Enum validation
+                # Deal with Annotated with the main goal to pass Other types as default values.
+                # If your're working with pydantic, it will validate against enums so you're going to get an error 
+                # in the instantiation and you cannot validate the attribute with fluent_validation
+                # Example 
+                """
+                >>> class Address(BaseModel):
+                >>>     Line1: Optional[str] = None
+                >>>     Town: Optional[str] = None
+                >>>     Country: Annotated[Optional[int], CountryEnum] = None # Country:Optional[CoutryEnum]
+                >>>     Postcode: Optional[str] = None
+                """
+                if get_origin(type_) is Annotated:
+                    dict_types[key] = applied_metadata_from_annotated(type_)
+
             return dict_types
 
         current_type_hints: dict[str, Any] = get_types(type_model)

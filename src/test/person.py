@@ -23,7 +23,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 import re
-from typing import Optional, override
+from typing import Annotated, Optional, override
 
 
 @dataclass
@@ -170,7 +170,7 @@ class Person:
         Regex: Optional[str] = None,
         min_length: int = 0,
         max_length: int = 0,
-        Gender: Optional[EnumGender] = 0,
+        Gender: Annotated[Optional[int],EnumGender] = 0,
         GenderString: Optional[str] = None,
         Children: list[Optional[Person]] = [],
         Orders: list[Optional[Order]] = [],
@@ -199,7 +199,7 @@ class Person:
         self.Regex: str = Regex
         self.min_length: int = min_length
         self.max_length: int = max_length
-        self.Gender: EnumGender = Gender
+        self.Gender: Annotated[Optional[int],EnumGender] = Gender
         self.GenderString: str = GenderString
         self.AnotherRegex: re.Pattern = AnotherRegex
 

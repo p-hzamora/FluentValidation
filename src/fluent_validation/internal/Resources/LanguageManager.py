@@ -16,7 +16,7 @@
 # The latest version of this file can be found at https://github.com/p-hzamora/FluentValidation
 # endregion
 
-from typing import Callable, Optional, override
+from typing import Callable, Literal, Optional, override
 
 from .ILanguageManager import ILanguageManager, CultureInfo
 from .Lenguages import (
@@ -77,6 +77,35 @@ from .Lenguages import (
     UzbekLatinLanguage,
     VietnameseLanguage,
     WelshLanguage,
+)
+
+type ValidatorType = (
+    str
+    | Literal[
+        "EmailValidator",
+        "GreaterThanOrEqualValidator",
+        "GreaterThanValidator",
+        "LengthValidator",
+        "MinimumLengthValidator",
+        "MaximumLengthValidator",
+        "LessThanOrEqualValidator",
+        "LessThanValidator",
+        "NotEmptyValidator",
+        "NotEqualValidator",
+        "NotNullValidator",
+        "PredicateValidator",
+        "AsyncPredicateValidator",
+        "RegularExpressionValidator",
+        "EqualValidator",
+        "ExactLengthValidator",
+        "InclusiveBetweenValidator",
+        "ExclusiveBetweenValidator",
+        "CreditCardValidator",
+        "ScalePrecisionValidator",
+        "EmptyValidator",
+        "NullValidator",
+        "EnumValidator",
+    ]
 )
 
 
@@ -199,7 +228,7 @@ class LanguageManager(ILanguageManager, LanguageManagerExtension):
         """Removes all languages except the default."""
         self._languages.clear()
 
-    def AddTranslation(self, culture: str, key: str, message: str) -> None:
+    def AddTranslation(self, culture: str, key: ValidatorType, message: str) -> None:
         """Adds a custom translation for a specific culture and key."""
 
         if culture == "":
